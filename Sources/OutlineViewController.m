@@ -33,7 +33,7 @@
 
 #define SUD [NSUserDefaults standardUserDefaults]
 
-extern int shouldFilter;
+extern int g_shouldFilter;
 
 // ================================================================
 // Method implimentations
@@ -374,14 +374,14 @@ static OutlineViewController *sharedOutlineViewController = nil;
 	NSString *draggedString = ([draggedNodes count]>0)?([[draggedNodes objectAtIndex: 0] content]):@"";
 	if (!draggedString)
 		draggedString = @"";	// content may be nil?
-	if (shouldFilter == filterMacJ) 
+	if (g_shouldFilter == filterMacJ) 
 	{
 		if ([SUD boolForKey:@"ConvertToBackslash"]) // this case isn't necessary?
 			draggedString = filterYenToBackslash(draggedString);
 		else
 			draggedString = filterBackslashToYen(draggedString);
 	}
-	else if (shouldFilter == filterNSSJIS) 
+	else if (g_shouldFilter == filterNSSJIS) 
 	{
 		if ([SUD boolForKey:@"ConvertToYen"])
 			draggedString = filterBackslashToYen(draggedString);
@@ -465,15 +465,15 @@ static OutlineViewController *sharedOutlineViewController = nil;
 	{
         NSString *string = [pboard stringForType: NSStringPboardType];
 		NSString *tempStr = string;
-		if (shouldFilter == filterMacJ)	
+		if (g_shouldFilter == filterMacJ)	
 			tempStr = filterBackslashToYen(string);
-		else if (shouldFilter == filterNSSJIS)	
+		else if (g_shouldFilter == filterNSSJIS)	
 			tempStr = filterYenToBackslash(string);
 		NSMutableString *nameStr = [NSMutableString stringWithString: 
 							[tempStr substringToIndex: ([tempStr length]<50)?[tempStr length]:50]];
 		[nameStr replaceOccurrencesOfString: @"\n" withString: @""
 									options: 0 range: NSMakeRange(0, [nameStr length])];		
-		if (shouldFilter)	// we only use backslashes
+		if (g_shouldFilter)	// we only use backslashes
 			string = filterYenToBackslash(string);
 		MyTreeNode *newItem = [MyTreeNode nodeWithName: nameStr content: string key: nil];
 		

@@ -10,10 +10,8 @@
 @interface PrintView : NSView 
 {
     NSPDFImageRep	*myRep;
-    NSPrintOperation	*myPrintOperation;
 }
     
 - (PrintView *) initWithRep: (NSPDFImageRep *) aRep;
-- (void) setPrintOperation: (NSPrintOperation *)aPrintOperation;
 - (BOOL) knowsPageRange:(NSRangePointer)range;
 @end

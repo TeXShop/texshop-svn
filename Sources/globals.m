@@ -150,20 +150,19 @@ NSString *ExternalEditorNotification = @"ExternalEditorNotification";
 
 /*" Other variables "*/
 // BOOL documentsHaveLoaded;
-NSMutableDictionary 	*TSEnvironment;
-int			shouldFilter;
-int			texChar;
-NSDictionary		*autocompletionDictionary;  // added by Greg Landweber
+NSMutableDictionary 	*g_environment;
+int			g_shouldFilter;
+int			g_texChar;
+NSDictionary		*g_autocompletionDictionary;  // added by Greg Landweber
 /* Code by Anton Leuski */
-NSArray*		kTaggedTeXSections; 
-NSArray*		kTaggedTagSections; 
+NSArray*		g_taggedTeXSections; 
+NSArray*		g_taggedTagSections; 
 
 // mitsu 1.29 (P)-- command completion
-NSString *commandCompletionChar = nil;
-NSMutableString *commandCompletionList = nil;
-BOOL canRegisterCommandCompletion = NO;
+NSString *g_commandCompletionChar = nil;
+NSMutableString *g_commandCompletionList = nil;
+BOOL g_canRegisterCommandCompletion = NO;
 // end mitsu 1.29
-//int imageCopyType; // was defined in MyPDFView.m // mitsu 1.29b not used
 
 // Koch 8/24/03
-int	macroType;
+int	g_macroType;

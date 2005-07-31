@@ -15,7 +15,7 @@
 */
 
 #import "TextFinder.h"
-// added by mitsu --(A) TeXChar filtering and (G) EncodingSupport
+// added by mitsu --(A) g_texChar filtering and (G) EncodingSupport
 #import "EncodingSupport.h"
 // end addition
 
@@ -87,7 +87,7 @@ static id sharedFindObject = nil;
             return;
         }
 	if (self == sharedFindObject) [[findTextField window] setFrameAutosaveName:@"Find"];
-// added by mitsu --(A) TeXChar filtering
+// added by mitsu --(A) g_texChar filtering
 		[findTextField setDelegate: [EncodingSupport sharedInstance]];
 		[replaceTextField setDelegate: [EncodingSupport sharedInstance]];
 // end addition

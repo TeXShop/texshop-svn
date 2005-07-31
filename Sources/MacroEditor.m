@@ -15,7 +15,7 @@
 
 #define SUD [NSUserDefaults standardUserDefaults]
 
-extern int shouldFilter;
+extern int g_shouldFilter;
 
 @implementation MacroEditor
 
@@ -61,7 +61,7 @@ static int savedFilter = filterNone;
 		// load tree from macroDictionary
 		MyTreeNode *newRoot = [MyTreeNode nodeFromDictionary: 
 							[[MacroMenuController sharedInstance] macroDictionary]];
-		savedFilter = shouldFilter;
+		savedFilter = g_shouldFilter;
 		
 		// register for ntification
 		[[NSNotificationCenter defaultCenter] addObserver:self 
@@ -165,7 +165,7 @@ static int savedFilter = filterNone;
         defaultPathStr = [defaultPathStr stringByAppendingPathExtension:@"plist"];
         
         pathStr = [MacrosPathKey stringByStandardizingPath];
-        switch (macroType) {
+        switch (g_macroType) {
             case TexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Tex"]; break;
             case LatexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
             case BibtexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Bibtex"]; break;
@@ -319,9 +319,9 @@ static int savedFilter = filterNone;
 	if (newItem && [newItem isStandardItem])
 	{
 		contentString = [newItem content]?[newItem content]:@"";
-		if (shouldFilter == filterMacJ)
+		if (g_shouldFilter == filterMacJ)
 			contentString = filterBackslashToYen(contentString);
-		savedFilter = shouldFilter;	// remember this filter option
+		savedFilter = g_shouldFilter;	// remember this filter option
 		[contentTextView setString: contentString];
 		[contentTextView setEditable: YES];
 		NSString *KeyEquiv = getKeyEquivalentFromString([newItem key]);
@@ -478,9 +478,9 @@ static int savedFilter = filterNone;
 - (void)windowDidBecomeKey: (NSNotification *)aNotification
 {
 	NSString *string;
-	if (shouldFilter != savedFilter) // if the encoding was changed while MacroEditor is open...
+	if (g_shouldFilter != savedFilter) // if the encoding was changed while MacroEditor is open...
 	{
-		if (shouldFilter == filterMacJ)
+		if (g_shouldFilter == filterMacJ)
 		{
 			string = [contentTextView string];
 			string = filterBackslashToYen(string);
@@ -496,7 +496,7 @@ static int savedFilter = filterNone;
 			[contentTextView setString: string];
 			[contentTextView setDelegate: self];
 		}
-		savedFilter = shouldFilter;
+		savedFilter = g_shouldFilter;
 	}
 }
 

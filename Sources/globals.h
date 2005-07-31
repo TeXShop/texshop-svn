@@ -152,21 +152,18 @@ extern NSString *ExternalEditorNotification;
 
 /*" Other variables "*/
 // extern BOOL documentsHaveLoaded;
-extern NSMutableDictionary 	*TSEnvironment;	/*" Store for environment for subtasks, set in TSPreferences "*/
-extern int			shouldFilter;   /*" Used for Japanese yen conversion "*/
-extern int			texChar;	/*" The tex command character; usually \ but yen in Japanese yen "*/
-extern NSDictionary		*autocompletionDictionary;  // added by Greg Landweber
-extern int			macroType; // = EngineCommand for current window
+extern NSMutableDictionary 	*g_environment;	/*" Store for environment for subtasks, set in TSPreferences "*/
+extern int			g_shouldFilter;   /*" Used for Japanese yen conversion "*/
+extern int			g_texChar;	/*" The tex command character; usually \ but yen in Japanese yen "*/
+extern NSDictionary		*g_autocompletionDictionary;  // added by Greg Landweber
+extern int			g_macroType; // = EngineCommand for current window
 /* Code by Anton Leuski */
-extern NSArray*			kTaggedTeXSections; /*" Used by Tag menu; modified slightly for Japanese yen "*/
-extern NSArray*			kTaggedTagSections; /*" Used by Tag menu; "*/
+extern NSArray*			g_taggedTeXSections; /*" Used by Tag menu; modified slightly for Japanese yen "*/
+extern NSArray*			g_taggedTagSections; /*" Used by Tag menu; "*/
 // mitsu 1.29 (P)-- command completion
-extern NSString *commandCompletionChar;
-extern NSMutableString *commandCompletionList;
-extern BOOL canRegisterCommandCompletion;
-// end mitsu 1.29
-// mitsu 1.29 (O)
-//extern int imageCopyType; // defined in MyPDFView.m // mitsu 1.29b not used 
+extern NSString *g_commandCompletionChar;
+extern NSMutableString *g_commandCompletionList;
+extern BOOL g_canRegisterCommandCompletion;
 // end mitsu 1.29
 
 

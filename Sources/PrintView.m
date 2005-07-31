@@ -12,14 +12,32 @@
 
 - (PrintView *) initWithRep: (NSPDFImageRep *) aRep;
 {
-    id		value;
+    NSRect	frame;
     
-    myRep = aRep;
-    // mitsu change; in Japan, dvipdfmx creates pdf files with nonzero origin
-    // value = [super initWithFrame: [myRep bounds]];
-    value = [super initWithFrame: NSMakeRect(0, 0, [myRep bounds].size.width, [myRep bounds].size.height)];
+    frame.origin.x = 0;
+	frame.origin.y = 0;
+    frame.size = [aRep size];
+    if ((self = [super initWithFrame: frame]))
+	{
+		myRep = [aRep retain];
+	}
     // end
     return self;
+}
+
+- (void)dealloc {
+    [myRep release];
+    [super dealloc];
+}
+
+- (BOOL)isVerticallyCentered;
+{
+    return YES;
+}
+
+- (BOOL)isHorizontallyCentered;
+{
+    return YES;
 }
 
 - (void)drawRect:(NSRect)aRect 
@@ -34,10 +52,7 @@
     myRect.size.height = myRect.size.height * scale;
     myRect.size.width = myRect.size.width * scale;
     
-    if (myRep != nil) {
-//        [myRep draw];
-          [myRep drawInRect: myRect];
-        }
+	[myRep drawInRect: myRect];
 }
 
 
@@ -47,17 +62,6 @@
     (*range).length = [myRep pageCount];
     return YES;
 }
-
-- (BOOL)isVerticallyCentered;
-{
-    return YES;
-}
-
-- (BOOL)isHorizontallyCentered;
-{
-    return YES;
-}
-
 
 - (NSRect)rectForPage:(int)pageNumber;
 {
@@ -81,17 +85,5 @@
     
     return aRect;
 }
-
-- (void)dealloc {
-    [myRep release];
-    [super dealloc];
-}
-
-- (void) setPrintOperation: (NSPrintOperation *)aPrintOperation;
-{
-    myPrintOperation = aPrintOperation;
-}
-
-
 
 @end

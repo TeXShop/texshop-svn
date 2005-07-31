@@ -214,24 +214,16 @@
     aRep = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
         if ((myImageType == isTeX) || (myImageType == isPDF))
-            aRep = [[NSPDFImageRep imageRepWithContentsOfFile: imagePath] retain];
-        else if (myImageType == isJPG)
-            aRep = [[NSImageRep imageRepWithContentsOfFile: imagePath] retain];
-        else if (myImageType == isTIFF)
-            aRep = [[NSImageRep imageRepWithContentsOfFile: imagePath] retain];
-        else
-            return;
-        if (aRep == nil) return;
+            aRep = [NSPDFImageRep imageRepWithContentsOfFile: imagePath];
+        else if (myImageType == isJPG || myImageType == isTIFF)
+            aRep = [NSImageRep imageRepWithContentsOfFile: imagePath];
+        if (aRep == nil)
+			return;
         if ((myImageType == isJPG) || (myImageType == isTIFF)) 
             printView = [[PrintBitmapView alloc] initWithBitmapRep: aRep];
         else
             printView = [[PrintView alloc] initWithRep: aRep];
-        printOperation = [NSPrintOperation printOperationWithView:printView
-            printInfo: [self printInfo]];
-        if ((myImageType == isJPG) || (myImageType == isTIFF))
-            [printView setBitmapPrintOperation: printOperation]; 
-        else
-            [printView setPrintOperation: printOperation];
+        printOperation = [NSPrintOperation printOperationWithView:printView printInfo: [self printInfo]];
         [printOperation setShowPanels:flag];
         [printOperation runOperation];
         [printView release];
@@ -266,7 +258,7 @@
         
     detexTask = [[NSTask alloc] init];
     [detexTask setCurrentDirectoryPath: [myFileName stringByDeletingLastPathComponent]];
-    [detexTask setEnvironment: TSEnvironment];
+    [detexTask setEnvironment: g_environment];
     enginePath = [[NSBundle mainBundle] pathForResource:@"detexwrap" ofType:nil];
     tetexBinPath = [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath];
     args = [NSMutableArray array];
@@ -418,11 +410,11 @@ NS_ENDHANDLER
     autocompletionPath = [autocompletionPath stringByAppendingPathComponent:@"autocompletion"];
     autocompletionPath = [autocompletionPath stringByAppendingPathExtension:@"plist"];
     if ([[NSFileManager defaultManager] fileExistsAtPath: autocompletionPath]) 
-	autocompletionDictionary=[NSDictionary dictionaryWithContentsOfFile:autocompletionPath];
+	g_autocompletionDictionary=[NSDictionary dictionaryWithContentsOfFile:autocompletionPath];
     else
-	autocompletionDictionary=[NSDictionary dictionaryWithContentsOfFile:
+	g_autocompletionDictionary=[NSDictionary dictionaryWithContentsOfFile:
 	 [[NSBundle mainBundle] pathForResource:@"autocompletion" ofType:@"plist"]];
-    [autocompletionDictionary retain];
+    [g_autocompletionDictionary retain];
     // end of code added by Greg Landweber
 */
     backgroundColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:background_RKey]
@@ -534,8 +526,8 @@ NS_ENDHANDLER
     b = [SUD floatForKey:markerblueKey];
     markerColor = [[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] retain];
 
-  doAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
-  [self fixAutoMenu];
+	doAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
+	[self fixAutoMenu];
 
 
 /* when opening an empty document, must open the source editor */         
@@ -875,7 +867,7 @@ NS_ENDHANDLER
            // [pdfWindow setTitle: [imagePath lastPathComponent]];
            // [pdfWindow makeKeyAndOrderFront: self];
         }
-// added by mitsu --(A) TeXChar filtering
+// added by mitsu --(A) g_texChar filtering
 	[texCommand setDelegate: [EncodingSupport sharedInstance]];
 // end addition
 
@@ -1409,7 +1401,7 @@ preference change is cancelled. "*/
     // mitsu 1.29 (P)
     if (!fileIsTex && [[self fileName] isEqualToString: 
             [CommandCompletionPathKey stringByStandardizingPath]])
-        canRegisterCommandCompletion = YES;
+        g_canRegisterCommandCompletion = YES;
     // end mitsu 1.29
 
     [super close];
@@ -2084,7 +2076,7 @@ preference change is cancelled. "*/
             [texTask setCurrentDirectoryPath: TempOutputKey];
         else
             [texTask setCurrentDirectoryPath: [sourcePath stringByDeletingLastPathComponent]];
-        [texTask setEnvironment: TSEnvironment];
+        [texTask setEnvironment: g_environment];
         
         if ([[myFileName pathExtension] isEqualToString:@"dvi"]) {
             if (! writeable) {
@@ -2469,7 +2461,7 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
     [task setLaunchPath: filename];
     [task setArguments: args];
     [task setCurrentDirectoryPath: [sourcePath stringByDeletingLastPathComponent]];
-    [task setEnvironment: TSEnvironment];
+    [task setEnvironment: g_environment];
     [task setStandardOutput: outputPipe];
     [task setStandardError: outputPipe];
     [task setStandardInput: inputPipe];
@@ -2750,7 +2742,7 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
             /*
             if ((enginePath != nil) && ([[NSFileManager defaultManager] fileExistsAtPath: enginePath])) {
                 [texTask setCurrentDirectoryPath: [sourcePath stringByDeletingLastPathComponent]];
-                [texTask setEnvironment: TSEnvironment];
+                [texTask setEnvironment: g_environment];
                 [texTask setLaunchPath:enginePath];
                 [texTask setArguments:args];
                 [texTask setStandardOutput: outputPipe];
@@ -3040,7 +3032,7 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
     if ((typesetStart) && (inputPipe)) {
         command = [[texCommand stringValue] stringByAppendingString:@"\n"];
 // added by mitsu --(F) TeXInput in Console Window with yen character
-			if (shouldFilter == filterMacJ) {
+			if (g_shouldFilter == filterMacJ) {
 				command = filterYenToBackslash(command);
 			}
 // end addition
@@ -3277,13 +3269,13 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
     /* code by Anton Leuski */
     if ([SUD boolForKey: TagSectionsKey]) { 
 		unsigned  i;
-		for(i = 0; i < [kTaggedTeXSections count]; ++i) {
-			NSString*  tag = [kTaggedTagSections objectAtIndex:i];
+		for (i = 0; i < [g_taggedTagSections count]; ++i) {
+			NSString*  tag = [g_taggedTagSections objectAtIndex:i];
 			if ([title hasPrefix:tag]) {
 				sectionIndex = i;
-                                myRange.location = [tag length];
-                                myRange.length = [title length] - myRange.location;
-                                mainTitle = [title substringWithRange: myRange];
+				myRange.location = [tag length];
+				myRange.length = [title length] - myRange.location;
+				mainTitle = [title substringWithRange: myRange];
 				break;
 			}
 		}
@@ -3322,9 +3314,9 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
                     }
     
                 /* code by Anton Leuski */
-                else if ((theChar == texChar) && (start < length - 8) && (sectionIndex >= 0)) {
+                else if ((theChar == g_texChar) && (start < length - 8) && (sectionIndex >= 0)) {
                             
-                    NSString*  tag	= [kTaggedTeXSections objectAtIndex:sectionIndex];
+                    NSString*  tag	= [g_taggedTeXSections objectAtIndex:sectionIndex];
                     nameRange.location	= start;
                     nameRange.length	= [tag length];
                     tagString 		= [text substringWithRange: nameRange];
@@ -3530,60 +3522,6 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
     return fileIsTex;
 }
 
-
-/*
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem {
-    BOOL  result;
-    
-    result = [super validateMenuItem: anItem];
-    if (fileIsTex)
-        return result;
-    else if ([[anItem title] isEqualToString:NSLocalizedString(@"Save", @"Save")]) {
-        if (myImageType == isOther)
-            return YES;
-        else
-            return NO;
-        }
-    else if([[anItem title] isEqualToString:NSLocalizedString(@"Print Source...", @"Print Source...")]) {
-        if (myImageType == isOther)
-            return YES;
-        else
-            return NO;
-        }
-    else if ([[anItem title] isEqualToString:@"Plain TeX"]) {
-        return NO;
-        }
-    else if ([[anItem title] isEqualToString:@"LaTeX"]) {
-        return NO;
-        }
-    else if ([[anItem title] isEqualToString:@"BibTeX"]) {
-        return NO;
-        }
-    else if ([[anItem title] isEqualToString:@"MakeIndex"]) {
-        return NO;
-        }
-    else if ([[anItem title] isEqualToString:@"MetaPost"]) {
-        return NO;
-        }
-    else if ([[anItem title] isEqualToString:@"ConTeXt"]) {
-        return NO;
-        }
-    else if ([[anItem title] isEqualToString: NSLocalizedString(@"Print...", @"Print...")]) {
-        if ((myImageType == isPDF) || (myImageType == isJPG) || (myImageType == isTIFF))
-            return YES;
-        else
-            return NO;
-        }
-    else if ([[anItem title] 
-            isEqualToString: NSLocalizedString(@"Set Project Root...", @"Set Project Root...")]) {
-        return NO;
-        }
-    else return result;
-}
-*/
-
-// Revised code by Max Horn
-
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem {
 
     if (!fileIsTex) {
@@ -3703,7 +3641,7 @@ BOOL isText1(int c) {
                 location = end;
                 }
                 
-             else if (theChar == texChar) {
+             else if (theChar == g_texChar) {
                 colorRange.location = location;
                 colorRange.length = 1;
                 location++;
@@ -3798,8 +3736,8 @@ BOOL isText1(int c) {
  if ([SUD boolForKey: TagSectionsKey]) {
 	
     unsigned	i;
-    for(i = 0; i < [kTaggedTeXSections count]; ++i) {
-        tagRange = [replacementString rangeOfString:[kTaggedTeXSections objectAtIndex:i]];
+    for(i = 0; i < [g_taggedTeXSections count]; ++i) {
+        tagRange = [replacementString rangeOfString:[g_taggedTeXSections objectAtIndex:i]];
         if (tagRange.length != 0) {
             tagLine = YES;
             break;
@@ -3814,9 +3752,9 @@ BOOL isText1(int c) {
         tagRange.location	= start;
         tagRange.length		= end - start;
 
-        for(i = 0; i < [kTaggedTeXSections count]; ++i) {
+        for(i = 0; i < [g_taggedTeXSections count]; ++i) {
             matchRange = [textString rangeOfString:
-                [kTaggedTeXSections objectAtIndex:i] options:0 range:tagRange];
+                [g_taggedTeXSections objectAtIndex:i] options:0 range:tagRange];
             if (matchRange.length != 0) {
                 tagLine = YES;
                 break;
@@ -3847,11 +3785,11 @@ BOOL isText1(int c) {
         if (doAutoComplete) {
         if ( rightpar >= 128 ||
             [textView selectedRange].location == 0 ||
-            [textString characterAtIndex:[textView selectedRange].location - 1 ] != texChar ) {
+            [textString characterAtIndex:[textView selectedRange].location - 1 ] != g_texChar ) {
         
-                NSString *completionString = [autocompletionDictionary objectForKey:replacementString];
-                if ( completionString && (shouldFilter != filterMacJ || [replacementString
-                    characterAtIndex:0]!=texChar)) {
+                NSString *completionString = [g_autocompletionDictionary objectForKey:replacementString];
+                if ( completionString && (g_shouldFilter != filterMacJ || [replacementString
+                    characterAtIndex:0]!=g_texChar)) {
                     // should really send this as a notification, instead of calling it directly,
                     // or should separate out the code that actually performs the completion
                     // from the code that responds to the notification sent by the LaTeX panel.
@@ -4039,7 +3977,7 @@ BOOL isText1(int c) {
                     tagString = [text substringWithRange: nameRange];
                     // [tags addItemWithTitle: tagString];
                     [tags addItemWithTitle: @""];
-		    newItem = [tags lastItem];
+					newItem = [tags lastItem];
                     [newItem setAction: @selector(doTag:)];
                     [newItem setTarget: self];
                     [newItem setTag: lineNumber];
@@ -4050,11 +3988,11 @@ BOOL isText1(int c) {
                 }
                 
                 /* code by Anton Leuski */
-                else if ((theChar == texChar) &&  ([SUD boolForKey: TagSectionsKey])) {
+                else if ((theChar == g_texChar) &&  ([SUD boolForKey: TagSectionsKey])) {
 					
                     unsigned	i;
-                    for(i = 0; i < [kTaggedTeXSections count]; ++i) {
-                        NSString* tag = [kTaggedTeXSections objectAtIndex:i];
+                    for(i = 0; i < [g_taggedTeXSections count]; ++i) {
+                        NSString* tag = [g_taggedTeXSections objectAtIndex:i];
                         nameRange.location	= start;
                         nameRange.length	= [tag length];
                         /* change by Koch to fix tag bug in 1.16 and 1.17 */
@@ -4065,10 +4003,9 @@ BOOL isText1(int c) {
                         if ((tagString != nil) && ([tagString isEqualToString:tag])) {
                             nameRange.location = start + [tag length];
                             nameRange.length = (end - start - [tag length]);
-                            tagString = [NSString stringWithString:
-                                [kTaggedTagSections objectAtIndex:i]];
+                            tagString = [g_taggedTagSections objectAtIndex:i];
                             tagString = [tagString stringByAppendingString: 
-                            [text substringWithRange: nameRange]];
+								[text substringWithRange: nameRange]];
                             [tags addItemWithTitle: @""];
                             newItem = [tags lastItem];
                             [newItem setAction: @selector(doTag:)];
@@ -4224,7 +4161,7 @@ void report(NSString *itest)
         myAttribString = [[[NSMutableAttributedString alloc] initWithAttributedString:[textView attributedSubstringFromRange: newRange]] autorelease];
         myAttributes = [myAttribString attributesAtIndex: 0 effectiveRange: NULL];
         previousColor = [myAttributes objectForKey:NSForegroundColorAttributeName];
-        if ((!isText1(theChar)) && (previousChar == texChar)) {
+        if ((!isText1(theChar)) && (previousChar == g_texChar)) {
             if (previousColor == commentColor)
                 [textView setTextColor: commentColor range: colorRange];
             else if (previousColor == commandColor) {
@@ -4315,7 +4252,7 @@ void report(NSString *itest)
             fastColor = NO;
             return;
             }
-        if (theChar == texChar) {
+        if (theChar == g_texChar) {
             if (previousColor == commentColor)
                 [textView setTextColor: commentColor range: colorRange];
             else {
@@ -4341,7 +4278,7 @@ void report(NSString *itest)
             return;
             }
             
-        if ((theChar != texChar) && (theChar != 0x007b) && (theChar != 0x007d) && (theChar != 0x0024) &&
+        if ((theChar != g_texChar) && (theChar != 0x007b) && (theChar != 0x007d) && (theChar != 0x0024) &&
             (theChar != 0x0025) && (theChar != 0x0020) && (previousChar != 0x007d) && (previousChar != 0x007b)
             && (previousChar != 0x0024) ) {
                 if ((previousColor == commandColor) && (! isText1(theChar))) {
@@ -4362,7 +4299,7 @@ void report(NSString *itest)
 
                     [textView setTextColor: regularColor range: wordRange];
                      }
-                else if ((previousColor == commandColor) && (! isText1(previousChar)) && (previousChar != texChar)) {
+                else if ((previousColor == commandColor) && (! isText1(previousChar)) && (previousChar != g_texChar)) {
                     [textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
                     wordRange.location = colorRange.location;
                     wordRange.length = end - wordRange.location;
@@ -4415,67 +4352,63 @@ void report(NSString *itest)
     [textView setTextColor: regularColor range: newRange1];
 // End of fix
 
-   [textView setTextColor: regularColor range: colorRange]; 
+	[textView setTextColor: regularColor range: colorRange]; 
     
-    while (location < final) {
-            itest = location; if ((itest < 0) || (itest >= length)) {report(@"bug11"); return;}
-            theChar = [textString characterAtIndex: location];
-            
-             if ((theChar == 0x007b) || (theChar == 0x007d) || (theChar == 0x0024)) {
-                colorRange.location = location;
-                colorRange.length = 1;
-                [textView setTextColor: markerColor range: colorRange];
-                colorRange.location = colorRange.location + colorRange.length - 1;
-                colorRange.length = 0;
-               [textView setTextColor: regularColor range: colorRange];
-                location++;
-                }
-                
-             else if (theChar == 0x0025) {
-                colorRange.location = location;
-                colorRange.length = 0;
-                [textString getLineStart:NULL end:NULL contentsEnd:&end forRange:colorRange];
-                colorRange.length = (end - location);
-                [textView setTextColor: commentColor range: colorRange];
-                colorRange.location = colorRange.location + colorRange.length - 1;
-                colorRange.length = 0;
-               [textView setTextColor: regularColor range: colorRange];
-                location = end;
-                }
-                
-             else if (theChar == texChar) {
-                colorRange.location = location;
-                colorRange.length = 1;
-                location++;
-               itest = location; if (location < final) if ((itest < 0) || (itest >= length)) {report(@"bug12"); return;}
-               if ((location < final) && (!isText1([textString characterAtIndex: location]))) {
-                    location++;
-                    colorRange.length = location - colorRange.location;
-                    }
-                else {
-                    itest = location; if (location < final) if ((itest < 0) || (itest >= length)) {report(@"bug13"); return;}
-                    while ((location < final) && (isText1([textString characterAtIndex: location]))) {
-                    location++;
-                    colorRange.length = location - colorRange.location;
-                    itest = location; if (location < final) if ((itest < 0) || (itest >= length)) {report(@"bug14"); return;}
-                    }}
-                [textView setTextColor: commandColor range: colorRange];
-                colorRange.location = location;
-                colorRange.length = 0;
-               [textView setTextColor: regularColor range: colorRange];
-                }
+	while (location < final) {
+		itest = location; if ((itest < 0) || (itest >= length)) {report(@"bug11"); return;}
+		theChar = [textString characterAtIndex: location];
+		
+		if ((theChar == 0x007b) || (theChar == 0x007d) || (theChar == 0x0024)) {
+			colorRange.location = location;
+			colorRange.length = 1;
+			[textView setTextColor: markerColor range: colorRange];
+			colorRange.location = colorRange.location + colorRange.length - 1;
+			colorRange.length = 0;
+			[textView setTextColor: regularColor range: colorRange];
+			location++;
+		}
+		
+		else if (theChar == 0x0025) {
+			colorRange.location = location;
+			colorRange.length = 0;
+			[textString getLineStart:NULL end:NULL contentsEnd:&end forRange:colorRange];
+			colorRange.length = (end - location);
+			[textView setTextColor: commentColor range: colorRange];
+			colorRange.location = colorRange.location + colorRange.length - 1;
+			colorRange.length = 0;
+			[textView setTextColor: regularColor range: colorRange];
+			location = end;
+		}
+		
+		else if (theChar == g_texChar) {
+			colorRange.location = location;
+			colorRange.length = 1;
+			location++;
+			itest = location; if (location < final) if ((itest < 0) || (itest >= length)) {report(@"bug12"); return;}
+			if ((location < final) && (!isText1([textString characterAtIndex: location]))) {
+				location++;
+				colorRange.length = location - colorRange.location;
+			}
+			else {
+				itest = location; if (location < final) if ((itest < 0) || (itest >= length)) {report(@"bug13"); return;}
+				while ((location < final) && (isText1([textString characterAtIndex: location]))) {
+					location++;
+					colorRange.length = location - colorRange.location;
+					itest = location; if (location < final) if ((itest < 0) || (itest >= length)) {report(@"bug14"); return;}
+				}
+			}
+			[textView setTextColor: commandColor range: colorRange];
+			colorRange.location = location;
+			colorRange.length = 0;
+			[textView setTextColor: regularColor range: colorRange];
+		}
+		else
+			location++;
+	}
 
-            else
-                location++;
-            }
-         // [[textView textStorage] endEditing];
-         [textStorage endEditing];
-
-
-       
+	// [[textView textStorage] endEditing];
+	[textStorage endEditing];
 }
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -4513,7 +4446,7 @@ void report(NSString *itest)
 
 - (void)abort:(id)sender;
 {
-        NSDate      *myDate;
+	NSDate      *myDate;
         
     if (! fileIsTex)
         return;
@@ -4533,43 +4466,47 @@ void report(NSString *itest)
     taskDone = YES;
     
     if (texTask != nil) {
-                if (theScript == 101) {
-                    kill( -[texTask processIdentifier], SIGTERM);
-                    }
-                else
-                    [texTask terminate];
-                myDate = [NSDate date];
-                while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [texTask release];
-                texTask = nil;
-            }
-            
+		if (theScript == 101) {
+			kill( -[texTask processIdentifier], SIGTERM);
+		}
+		else
+			[texTask terminate];
+		myDate = [NSDate date];
+		while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
+			;
+		[texTask release];
+		texTask = nil;
+	}
+	
     if (bibTask != nil) {
-                [bibTask terminate];
-                myDate = [NSDate date];
-                while (([bibTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [bibTask release];
-                bibTask = nil;
-            }
-            
+		[bibTask terminate];
+		myDate = [NSDate date];
+		while (([bibTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
+			;
+		[bibTask release];
+		bibTask = nil;
+	}
+	
     if (indexTask != nil) {
-                [indexTask terminate];
-                myDate = [NSDate date];
-                while (([indexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [indexTask release];
-                indexTask = nil;
-            }
-            
+		[indexTask terminate];
+		myDate = [NSDate date];
+		while (([indexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
+			;
+		[indexTask release];
+		indexTask = nil;
+	}
+	
     if (metaFontTask != nil) {
-                [metaFontTask terminate];
-                myDate = [NSDate date];
-                while (([metaFontTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [metaFontTask release];
-                metaFontTask = nil;
-            }
-       
-      [inputPipe release];
-      inputPipe = 0;
+		[metaFontTask terminate];
+		myDate = [NSDate date];
+		while (([metaFontTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
+			;
+		[metaFontTask release];
+		metaFontTask = nil;
+	}
+	
+	[inputPipe release];
+	inputPipe = 0;
 }
 
 - (void)bringPdfWindowFront{
@@ -5677,7 +5614,7 @@ aSelector
         // Insert the new text
 // changed by mitsu --(E) LaTex panel with yen; conversion backslash<->yen is handled by insertText
 //        [textView insertText: newString]; // this was late changed by mitsu to
-          if (shouldFilter == filterMacJ)
+          if (g_shouldFilter == filterMacJ)
                 newString = filterBackslashToYen(newString);
           [textView replaceCharactersInRange:oldRange withString:newString];
 
@@ -5745,19 +5682,19 @@ aSelector
 {
 /*
     if (whichEngine == 6)
-        macroType = 1;
+        g_macroType = 1;
     else
-        macroType = 0;
+        g_macroType = 0;
 */
-    macroType = whichEngine;
+    g_macroType = whichEngine;
     [[MacroMenuController sharedInstance] reloadMacrosOnly];
     [self resetMacroButton: nil]; 
 }
 
 - (void) fixMacroMenuForWindowChange;
 {
-    if (macroType != whichEngine) {
-        macroType = whichEngine;
+    if (g_macroType != whichEngine) {
+        g_macroType = whichEngine;
         [[MacroMenuController sharedInstance] reloadMacrosOnly];
         }
 }
@@ -5900,7 +5837,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 - (void)resetMacroButton:(NSNotification *)notification;
 //-----------------------------------------------------------------------------
 {
-    if (macroType == whichEngine) {
+    if (g_macroType == whichEngine) {
         [[MacroMenuController sharedInstance] addItemsToPopupButton: macroButton];
         [[MacroMenuController sharedInstance] addItemsToPopupButton: macroButtonEE];
         }
@@ -6275,7 +6212,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
     aRange=NSMakeRange(0,[theSource length]);
     slist=[[NSMutableArray alloc] init];
     searchString = [NSString stringWithString:@"\\input"];
-    if (shouldFilter == filterMacJ)
+    if (g_shouldFilter == filterMacJ)
                 searchString = filterBackslashToYen(searchString);
     while(YES)
     {	aRange=[theSource rangeOfString:searchString options:NSLiteralSearch range:aRange];
@@ -6412,7 +6349,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
     
     // see if \jobname is there
     searchString = [NSString stringWithString:@"\\jobname"];
-    if (shouldFilter == filterMacJ)
+    if (g_shouldFilter == filterMacJ)
         searchString = filterBackslashToYen(searchString);
     aRange=[saveName rangeOfString:searchString options:NSLiteralSearch];
     if(aRange.location==NSNotFound) return saveName;
@@ -6507,7 +6444,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		[newString replaceCharactersInRange:searchRange withString:@""];
 
 	// Filtering for Japanese
-	if (shouldFilter == filterMacJ)
+	if (g_shouldFilter == filterMacJ)
 		newString = filterBackslashToYen(newString);
 
 	// Replace the text--
@@ -6560,7 +6497,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		[newString replaceCharactersInRange:searchRange withString:@""];
 
 	// Filtering for Japanese
-	if (shouldFilter == filterMacJ)
+	if (g_shouldFilter == filterMacJ)
 		newString = filterBackslashToYen(newString);
 
 	// Insert the new text

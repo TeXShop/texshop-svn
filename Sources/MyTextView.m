@@ -1,6 +1,6 @@
 #import "MyTextView.h"
 
-// added by mitsu --(A) TeXChar filtering
+// added by mitsu --(A) g_texChar filtering
 #import "EncodingSupport.h"
 #import "globals.h"
 #import "MyDocument.h" // mitsu 1.29 (T2-4)
@@ -167,25 +167,25 @@
                 NSString *rPath = [[TSPreferences sharedInstance] relativePath: fPath fromFile: thisFile ];
                 if( [fExt isEqualToString: @"cls"] ){
                     [ self insertText:
-                        [NSString stringWithFormat: @"%cdocumentclass{%@}\n", texChar, bPath ]];
+                        [NSString stringWithFormat: @"%cdocumentclass{%@}\n", g_texChar, bPath ]];
                 }else if( [fExt isEqualToString: @"sty"] ){
                     [ self insertText:
-                        [NSString stringWithFormat: @"%cusepackage{%@}\n", texChar, bPath ]];
+                        [NSString stringWithFormat: @"%cusepackage{%@}\n", g_texChar, bPath ]];
                 }else if( [fExt isEqualToString: @"bib"] ){
                     [ self insertText:
-                        [NSString stringWithFormat: @"%cbibliography{%@}\n", texChar, bPath ]];
+                        [NSString stringWithFormat: @"%cbibliography{%@}\n", g_texChar, bPath ]];
                 }else if( [fExt isEqualToString: @"bst"] ){
                     [ self insertText:
-                        [NSString stringWithFormat: @"%cbibliographystyle{%@}\n", texChar, bPath ]];
+                        [NSString stringWithFormat: @"%cbibliographystyle{%@}\n", g_texChar, bPath ]];
                 }else if( ([fExt isEqualToString: @"pdf"] ) ||
                     ([fExt isEqualToString: @"jpeg"]) || ([fExt isEqualToString: @"jpg"]) ||
                     ([fExt isEqualToString: @"tiff"]) || ([fExt isEqualToString: @"tif"]) ||
                     ([fExt isEqualToString: @"eps"] ) || ([fExt isEqualToString: @"ps"] ) ){
                     [ self insertText:
-                        [NSString stringWithFormat: @"%cincludegraphics[]{%@}\n", texChar, rPath ]];
+                        [NSString stringWithFormat: @"%cincludegraphics[]{%@}\n", g_texChar, rPath ]];
                 }else{
                     [ self insertText:
-                        [NSString stringWithFormat: @"%cinput{%@}\n", texChar, rPath ]];
+                        [NSString stringWithFormat: @"%cinput{%@}\n", g_texChar, rPath ]];
                     }
                 }
             [ self display ];
@@ -558,16 +558,16 @@
 */
 }
 
-// added by mitsu --(A) TeXChar filtering
+// added by mitsu --(A) g_texChar filtering
 - (void)insertText:(id)aString
 {
 // old code was: 
 /*
-	if (shouldFilter == filterMacJ)
+	if (g_shouldFilter == filterMacJ)
 	{
 		aString = filterBackslashToYen(aString);
 	}
-	else if (shouldFilter == filterNSSJIS)
+	else if (g_shouldFilter == filterNSSJIS)
 	{
 		aString = filterYenToBackslash(aString);
 	}
@@ -588,11 +588,11 @@
 	{
         if ( [aString characterAtIndex:0] >= 128 ||
             [self selectedRange].location == 0 ||
-            [[self string] characterAtIndex:[self selectedRange].location - 1 ] != texChar ) 
+            [[self string] characterAtIndex:[self selectedRange].location - 1 ] != g_texChar ) 
 		{
-			NSString *completionString = [autocompletionDictionary objectForKey:aString];
+			NSString *completionString = [g_autocompletionDictionary objectForKey:aString];
 			if ( completionString && 
-				(!shouldFilter || [aString characterAtIndex:0]!=0x00a5)) // avoid completing yen
+				(!g_shouldFilter || [aString characterAtIndex:0]!=0x00a5)) // avoid completing yen
 			{
 #define ALLOW_UNDO_AUTOCOMPLETION
 #ifdef ALLOW_UNDO_AUTOCOMPLETION
@@ -611,11 +611,11 @@
 #endif //AUTOCOMPLETE_IN_INSERTTEXT
 
 	// Filtering for Japanese
-	if (shouldFilter == filterMacJ)
+	if (g_shouldFilter == filterMacJ)
 	{
 		newString = filterBackslashToYen(newString);
 	}
-	else if (shouldFilter == filterNSSJIS)
+	else if (g_shouldFilter == filterNSSJIS)
 	{
 		newString = filterYenToBackslash(newString);
 	}
@@ -638,13 +638,13 @@
 	NSMutableString *newString;
 	
 	BOOL returnValue = [super writeSelectionToPasteboard:pboard type:type];
-	if ((shouldFilter == filterMacJ) && returnValue && 
+	if ((g_shouldFilter == filterMacJ) && returnValue && 
 			[SUD boolForKey:@"ConvertToBackslash"] && [type isEqualToString: NSStringPboardType])
 	{
 		newString = filterYenToBackslash([pboard stringForType: NSStringPboardType]);
 		returnValue = [pboard setString: newString forType: NSStringPboardType];
 	}
-	else if ((shouldFilter == filterNSSJIS) && returnValue && 
+	else if ((g_shouldFilter == filterNSSJIS) && returnValue && 
 			[SUD boolForKey:@"ConvertToYen"] && [type isEqualToString: NSStringPboardType])
 	{
 		newString = filterBackslashToYen([pboard stringForType: NSStringPboardType]);
@@ -655,16 +655,16 @@
 
 - (BOOL)readSelectionFromPasteboard:(NSPasteboard *)pboard type:(NSString *)type
 {
-	if(shouldFilter && [type isEqualToString: NSStringPboardType])
+	if(g_shouldFilter && [type isEqualToString: NSStringPboardType])
 	{
 		NSString *string = [pboard stringForType: NSStringPboardType];
 		if (string)
 		{
 		// mitsu 1.29 (T1)-- in order to enable "Undo Paste"
 			// Filtering for Japanese
-			if (shouldFilter == filterMacJ)
+			if (g_shouldFilter == filterMacJ)
 				string = filterBackslashToYen(string);
-			else if (shouldFilter == filterNSSJIS)
+			else if (g_shouldFilter == filterNSSJIS)
 				string = filterYenToBackslash(string);
                                 
                         // zenitani 1.35 (A) -- normalizing newline character for regular expression
@@ -735,12 +735,12 @@
 
 // Trap "keyDown:" for command completion:
 // most of command completion function is concentrated here.  
-// two types of completions are activated on escape or commandCompletionChar: 
+// two types of completions are activated on escape or g_commandCompletionChar: 
 // (1) ordinary: staring from the insertion point search backward for word boundary,  
 // which are defined by space, tab, linefeed, period, comma, colon, semicolon, {. }, (, ),  
 // and TeX character.  the string up to the boundary (TeX character and "{" are inclusive 
 // and others are not) is compared with the completion list.  the line whose beginning 
-// matches with the string will be inserted.  further escape(commandCompletionChar) 
+// matches with the string will be inserted.  further escape(g_commandCompletionChar) 
 // will cycle through the candidates.  it cycles backward with shift key.  
 // special treatments: in the candiate, 
 //     #RET# will be replaced by linefeed (new line)
@@ -751,7 +751,7 @@
 // linefeeds is completed, and the insertion point will be placed after "\begin{...}".  
 // these two types can be combined:  if after type (1) completion the situation matches 
 // with type (2) then the next candidate will be type (2).  
-// you only need to supply commandCompletionChar(unichar) and commandCompletionList
+// you only need to supply g_commandCompletionChar(unichar) and g_commandCompletionList
 // (a string which starts and ends with line feeds).  
 // so the code can be reused in other applications???  
 - (void)keyDown:(NSEvent *)theEvent
@@ -771,11 +771,11 @@
 	NSCharacterSet *charSet;
 	unichar c;
 	
-        if ([[theEvent characters] isEqualToString: commandCompletionChar] && 
+        if ([[theEvent characters] isEqualToString: g_commandCompletionChar] && 
 			(([theEvent modifierFlags] & NSAlternateKeyMask) == 0) && 
-			![self hasMarkedText] && commandCompletionList)
+			![self hasMarkedText] && g_commandCompletionList)
         
-      //  if ([[theEvent characters] isEqualToString: commandCompletionChar] && (![self hasMarkedText]) && commandCompletionList)
+      //  if ([[theEvent characters] isEqualToString: g_commandCompletionChar] && (![self hasMarkedText]) && g_commandCompletionList)
 	{
                 textString = [self string]; // this will change during operations (such as undo)
 		selectedLocation = [self selectedRange].location;
@@ -784,11 +784,11 @@
 					&& !latexSpecial)
 		{
 			charSet = [NSCharacterSet characterSetWithCharactersInString: 
-						[NSString stringWithFormat: @"\n \t.,;;{}()%C", texChar]]; //should be global?
+						[NSString stringWithFormat: @"\n \t.,;;{}()%C", g_texChar]]; //should be global?
 			foundRange = [textString rangeOfCharacterFromSet:charSet 
 						options:NSBackwardsSearch range:NSMakeRange(0,selectedLocation-1)];
 			if (foundRange.location != NSNotFound  &&  foundRange.location >= 6  &&
-				[textString characterAtIndex: foundRange.location-6] == texChar  &&
+				[textString characterAtIndex: foundRange.location-6] == g_texChar  &&
 				[[textString substringWithRange: NSMakeRange(foundRange.location-5, 6)] 
 															isEqualToString: @"begin{"])
 			{
@@ -855,7 +855,7 @@
 		{
 			// determine the word to complete--search for word boundary
 			charSet = [NSCharacterSet characterSetWithCharactersInString: 
-						[NSString stringWithFormat: @"\n \t.,;;{}()%C", texChar]];
+						[NSString stringWithFormat: @"\n \t.,;;{}()%C", g_texChar]];
 			foundRange = [textString rangeOfCharacterFromSet:charSet 
 						options:NSBackwardsSearch range:NSMakeRange(0,selectedLocation)];
 			if (foundRange.location != NSNotFound)
@@ -863,7 +863,7 @@
 				if (foundRange.location + 1 == selectedLocation)
 					return; // no string to match
 				c = [textString characterAtIndex: foundRange.location];
-				if (c == texChar || c == '{') // special characters
+				if (c == g_texChar || c == '{') // special characters
 					replaceLocation = foundRange.location; // include these characters for search
 				else
 					replaceLocation = foundRange.location + 1;
@@ -876,7 +876,7 @@
 			}
 			originalString = [textString substringWithRange: 
 						NSMakeRange(replaceLocation, selectedLocation-replaceLocation)];
-			//if (shouldFilter == filterMacJ)// we now use current encoding, so this isn't necessary
+			//if (g_shouldFilter == filterMacJ)// we now use current encoding, so this isn't necessary
 			//	originalString = filterYenToBackslash(originalString);
 			[originalString retain];
 			completionListLocation = 0;
@@ -895,10 +895,10 @@
 				else
 				{	// forward
 					searchRange.location = completionListLocation;
-					searchRange.length = [commandCompletionList length] - completionListLocation;
+					searchRange.length = [g_commandCompletionList length] - completionListLocation;
 				}
 				// search the string in the completion list
-				foundRange = [commandCompletionList rangeOfString: 
+				foundRange = [g_commandCompletionList rangeOfString: 
 						[@"\n" stringByAppendingString: originalString] 
 						options: ([theEvent modifierFlags]?NSBackwardsSearch:0)
 						range: searchRange];
@@ -914,9 +914,9 @@
 					// get the whole line
 					foundRange.location ++; // eliminate first LF
 					foundRange.length--;
-					foundRange = [commandCompletionList lineRangeForRange: foundRange];
+					foundRange = [g_commandCompletionList lineRangeForRange: foundRange];
 					foundRange.length--; // eliminate last LF
-					foundString = [commandCompletionList substringWithRange: foundRange];
+					foundString = [g_commandCompletionList substringWithRange: foundRange];
 					completionListLocation = foundRange.location; // remember this location
 					// check if there is ":="
 					spaceRange = [foundString rangeOfString: @":="
@@ -936,7 +936,7 @@
 					if (insRange.location != NSNotFound)
 						[newString replaceCharactersInRange:insRange withString:@""];
 					// Filtering for Japanese
-					//if (shouldFilter == filterMacJ)//we use current encoding, so this isn't necessary
+					//if (g_shouldFilter == filterMacJ)//we use current encoding, so this isn't necessary
 					//	newString = filterBackslashToYen(newString);
 					if (![newString isEqualToString: originalString])
 						break;		// continue search if newString is equal to originalString
@@ -951,14 +951,14 @@
 				originalString = [[NSString stringWithString: @""] retain];
 				replaceLocation = selectedLocation;
 				newString = [NSMutableString stringWithFormat: @"\n%Cend%@\n", 
-									texChar, latexString];
+									g_texChar, latexString];
 				insRange.location = 0;
 				completionListLocation = NSNotFound; // just to remember that it wasn't completed
 			}
 			else
 			{	// reuse the current string
 				newString = [NSMutableString stringWithFormat: @"%@\n%Cend%@\n", 
-									currentString, texChar, latexString];
+									currentString, g_texChar, latexString];
 				insRange.location = [currentString length];
 				[currentString release];
 			}
@@ -1028,17 +1028,17 @@
         int			theTag;
         NSStringEncoding	theEncoding;
     
-	if (!commandCompletionList) return;
+	if (!g_commandCompletionList) return;
 	// get the word(s) to register
 	initialWord = [[self string] substringWithRange: [self selectedRange]];
         aWord = [initialWord stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
-	//if (shouldFilter == filterMacJ)// we now use current encoding, so this isn't necessary
+	//if (g_shouldFilter == filterMacJ)// we now use current encoding, so this isn't necessary
 	//	aWord = filterYenToBackslash(aWord);
 	// add to the list-- it will be ideal if one can check redundancy
-	[commandCompletionList deleteCharactersInRange:NSMakeRange(0,1)]; // remove first LF
-	[commandCompletionList appendString: aWord];
-	if ([commandCompletionList characterAtIndex: [commandCompletionList length]-1] != '\n')
-		[commandCompletionList appendString: @"\n"];
+	[g_commandCompletionList deleteCharactersInRange:NSMakeRange(0,1)]; // remove first LF
+	[g_commandCompletionList appendString: aWord];
+	if ([g_commandCompletionList characterAtIndex: [g_commandCompletionList length]-1] != '\n')
+		[g_commandCompletionList appendString: @"\n"];
 	
     completionPath = [CommandCompletionPathKey stringByStandardizingPath];
 	// back up old list
@@ -1051,36 +1051,36 @@
 	NS_HANDLER
 	NS_ENDHANDLER
 	// save the new list to file
-	//myData = [commandCompletionList dataUsingEncoding: NSUTF8StringEncoding]; // not used
+	//myData = [g_commandCompletionList dataUsingEncoding: NSUTF8StringEncoding]; // not used
         
         // theTag = [[EncodingSupport sharedInstance] tagForEncodingPreference];
         theTag = [[EncodingSupport sharedInstance] tagForEncoding: @"UTF-8 Unicode"];
 		theEncoding = [[EncodingSupport sharedInstance] stringEncodingForTag: theTag];
-        myData = [commandCompletionList dataUsingEncoding: theEncoding allowLossyConversion:YES];
+        myData = [g_commandCompletionList dataUsingEncoding: theEncoding allowLossyConversion:YES];
         
         /*
 	if([[SUD stringForKey:EncodingKey] isEqualToString:@"MacOSRoman"])
-		myData = [commandCompletionList dataUsingEncoding: NSMacOSRomanStringEncoding allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: NSMacOSRomanStringEncoding allowLossyConversion:YES];
 	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"IsoLatin"])
-		myData = [commandCompletionList dataUsingEncoding: NSISOLatin1StringEncoding allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: NSISOLatin1StringEncoding allowLossyConversion:YES];
 	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"IsoLatin2"])
-		myData = [commandCompletionList dataUsingEncoding: NSISOLatin2StringEncoding allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: NSISOLatin2StringEncoding allowLossyConversion:YES];
 	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"MacJapanese"]) 
-		myData = [commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacJapanese) allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacJapanese) allowLossyConversion:YES];
 	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"DOSJapanese"]) 
-		myData = [commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese) allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese) allowLossyConversion:YES];
 	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"EUC_JP"]) 
-		myData = [commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP) allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP) allowLossyConversion:YES];
 	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"JISJapanese"]) 
-		myData = [commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP) allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP) allowLossyConversion:YES];
 	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"MacKorean"]) 
-		myData = [commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacKorean) allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacKorean) allowLossyConversion:YES];
 	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"UTF-8 Unicode"]) 
-		myData = [commandCompletionList dataUsingEncoding: NSUTF8StringEncoding allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: NSUTF8StringEncoding allowLossyConversion:YES];
 	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"Standard Unicode"])
-		myData = [commandCompletionList dataUsingEncoding: NSUnicodeStringEncoding allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: NSUnicodeStringEncoding allowLossyConversion:YES];
 	else 
-		myData = [commandCompletionList dataUsingEncoding: NSMacOSRomanStringEncoding allowLossyConversion:YES];
+		myData = [g_commandCompletionList dataUsingEncoding: NSMacOSRomanStringEncoding allowLossyConversion:YES];
 */
 	
 	if (myData)
@@ -1090,14 +1090,14 @@
 		NS_HANDLER
 		NS_ENDHANDLER
 	}
-	[commandCompletionList insertString: @"\n" atIndex: 0];
+	[g_commandCompletionList insertString: @"\n" atIndex: 0];
 }
 
 
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem {
 
     if ([anItem action] == @selector(registerForCommandCompletion:))
-		return (canRegisterCommandCompletion && ([self selectedRange].length > 0));
+		return (g_canRegisterCommandCompletion && ([self selectedRange].length > 0));
 	
 	return [super validateMenuItem: anItem];
 }

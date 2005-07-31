@@ -10,28 +10,22 @@
 
 - (PrintBitmapView *) initWithBitmapRep: (NSBitmapImageRep *) aRep;
 {
-    id		value;
-    int		h, v;
-    NSSize	theSize;
-    NSRect	bounds;
+    NSRect	frame;
     
-    myRep = aRep;
-    h = [myRep pixelsHigh]; v = [myRep pixelsWide];
-    theSize = [myRep size];
-    bounds.origin.x = 0; bounds.origin.y = 0;
-    bounds.size = theSize;
-    value = [super initWithFrame: bounds];
+    frame.origin.x = 0;
+	frame.origin.y = 0;
+    frame.size = [aRep size];
+    if ((self = [super initWithFrame: frame]))
+	{
+		myRep = [aRep retain];
+	}
     return self;
 }
 
-- (void)drawRect:(NSRect)aRect 
-{
-    NSEraseRect([self bounds]);
-    if (myRep != nil) {
-        [myRep draw];
-        }
+- (void)dealloc {
+    [myRep release];
+    [super dealloc];
 }
-
 
 - (BOOL)isVerticallyCentered;
 {
@@ -43,15 +37,10 @@
     return YES;
 }
 
-
-- (void)dealloc {
-    [myRep release];
-    [super dealloc];
-}
-
-- (void) setBitmapPrintOperation: (NSPrintOperation *)aPrintOperation;
+- (void)drawRect:(NSRect)aRect 
 {
-    myPrintOperation = aPrintOperation;
+    NSEraseRect([self bounds]);
+	[myRep draw];
 }
 
 @end

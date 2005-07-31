@@ -41,7 +41,6 @@
 		407880660519249A006979EA /* MyWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CFF0F1000AD1547F000001 /* MyWindow.h */; };
 		407880670519249A006979EA /* PrintView.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CFF0F5000AD1F27F000001 /* PrintView.h */; };
 		407880680519249A006979EA /* MyView.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CFF0F9000AD2807F000001 /* MyView.h */; };
-		407880690519249A006979EA /* extras.h in Headers */ = {isa = PBXBuildFile; fileRef = 00FE5082000C0E287F000001 /* extras.h */; };
 		4078806A0519249A006979EA /* TSPreferences.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AC768C30010B1D17F000001 /* TSPreferences.h */; };
 		4078806B0519249A006979EA /* TSAppDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E7EAC1001D35FA7F000001 /* TSAppDelegate.h */; };
 		4078806C0519249A006979EA /* TSWindowManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E5E439003E251B7F000001 /* TSWindowManager.h */; };
@@ -207,7 +206,6 @@
 		407881750519249A006979EA /* split1.png in Resources */ = {isa = PBXBuildFile; fileRef = 40BA4A4704B54E5500000B3B /* split1.png */; };
 		407881780519249A006979EA /* MyDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */; settings = {ATTRIBUTES = (); }; };
 		407881790519249A006979EA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
-		4078817B0519249A006979EA /* extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 03515346FFDB31747F000001 /* extras.m */; settings = {ATTRIBUTES = (); }; };
 		4078817C0519249A006979EA /* ConsoleWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CFF0EB000ACFFC7F000001 /* ConsoleWindow.m */; settings = {ATTRIBUTES = (); }; };
 		4078817D0519249A006979EA /* MainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CFF0EE000AD0B87F000001 /* MainWindow.m */; settings = {ATTRIBUTES = (); }; };
 		4078817E0519249A006979EA /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CFF0F2000AD1547F000001 /* MyWindow.m */; settings = {ATTRIBUTES = (); }; };
@@ -256,6 +254,8 @@
 		40FF5D9D06D5674C00426CC9 /* XeLaTeX.engine in Resources */ = {isa = PBXBuildFile; fileRef = 40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */; };
 		40FF5DA806D567C600426CC9 /* XeTeX.engine in Resources */ = {isa = PBXBuildFile; fileRef = 40FF5DA706D567C600426CC9 /* XeTeX.engine */; };
 		52917509089D430200577613 /* More in Resources */ = {isa = PBXBuildFile; fileRef = 529174F8089D430200577613 /* More */; };
+		529B9B73089D8287006CC11B /* BackAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B71089D8287006CC11B /* BackAdorn.tif */; };
+		529B9B74089D8287006CC11B /* ForwardAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B72089D8287006CC11B /* ForwardAdorn.tif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -324,10 +324,8 @@
 		00E5E43A003E251B7F000001 /* TSWindowManager.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TSWindowManager.m; sourceTree = "<group>"; };
 		00E7EAC1001D35FA7F000001 /* TSAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
 		00E7EAC2001D35FA7F000001 /* TSAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TSAppDelegate.m; sourceTree = "<group>"; };
-		00FE5082000C0E287F000001 /* extras.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = extras.h; sourceTree = "<group>"; };
 		0187897CFF29F6DE7F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/FindPanel.nib; sourceTree = "<group>"; };
 		01E48F62FF2A05357F000001 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/FindPanel.strings; sourceTree = "<group>"; };
-		03515346FFDB31747F000001 /* extras.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = extras.m; sourceTree = "<group>"; };
 		03E61893009B32C77F000001 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0AC768BF001078217F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
@@ -549,6 +547,8 @@
 		52917488089D418B00577613 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/ToolbarItems.strings; sourceTree = "<group>"; };
 		52917489089D418E00577613 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Spanish; path = Spanish.lproj/TeXShopHelp; sourceTree = "<group>"; };
 		529174F8089D430200577613 /* More */ = {isa = PBXFileReference; lastKnownFileType = folder; path = More; sourceTree = "<group>"; };
+		529B9B71089D8287006CC11B /* BackAdorn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BackAdorn.tif; sourceTree = "<group>"; };
+		529B9B72089D8287006CC11B /* ForwardAdorn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ForwardAdorn.tif; sourceTree = "<group>"; };
 		66A63DCE0114947700000001 /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
 		66A63DCF0114947700000001 /* epstopdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = epstopdfwrap; sourceTree = "<group>"; };
 		66A63DD00114947700000001 /* ps2pdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = ps2pdfwrap; sourceTree = "<group>"; };
@@ -699,6 +699,8 @@
 		0273C927FF23CC9B80DF2474 /* Graphics */ = {
 			isa = PBXGroup;
 			children = (
+				529B9B71089D8287006CC11B /* BackAdorn.tif */,
+				529B9B72089D8287006CC11B /* ForwardAdorn.tif */,
 				F5ECC30C021466FC01DF2474 /* BibTeXAction.tiff */,
 				F5ECC30D021466FC01DF2474 /* ConTeXAction.tiff */,
 				4005D64D03D1217000000009 /* MetaFontAction.tiff */,
@@ -841,8 +843,6 @@
 		2A37F4AFFDCFA73011CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				00FE5082000C0E287F000001 /* extras.h */,
-				03515346FFDB31747F000001 /* extras.m */,
 				0AC768C70010B25E7F000001 /* globals.h */,
 				0AC768C80010B25E7F000001 /* globals.m */,
 				2A37F4B0FDCFA73011CA2CEA /* main.m */,
@@ -1112,7 +1112,6 @@
 				407880660519249A006979EA /* MyWindow.h in Headers */,
 				407880670519249A006979EA /* PrintView.h in Headers */,
 				407880680519249A006979EA /* MyView.h in Headers */,
-				407880690519249A006979EA /* extras.h in Headers */,
 				4078806A0519249A006979EA /* TSPreferences.h in Headers */,
 				4078806B0519249A006979EA /* TSAppDelegate.h in Headers */,
 				4078806C0519249A006979EA /* TSWindowManager.h in Headers */,
@@ -1407,6 +1406,8 @@
 				40658EEB07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff in Resources */,
 				40E94AFA07ECF1F500782DE9 /* TextTool.tiff in Resources */,
 				52917509089D430200577613 /* More in Resources */,
+				529B9B73089D8287006CC11B /* BackAdorn.tif in Resources */,
+				529B9B74089D8287006CC11B /* ForwardAdorn.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1429,7 +1430,6 @@
 			files = (
 				407881780519249A006979EA /* MyDocument.m in Sources */,
 				407881790519249A006979EA /* main.m in Sources */,
-				4078817B0519249A006979EA /* extras.m in Sources */,
 				4078817C0519249A006979EA /* ConsoleWindow.m in Sources */,
 				4078817D0519249A006979EA /* MainWindow.m in Sources */,
 				4078817E0519249A006979EA /* MyWindow.m in Sources */,

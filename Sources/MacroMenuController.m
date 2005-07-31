@@ -69,7 +69,7 @@ static id sharedMacroMenuController = nil;
         defaultPathStr = [defaultPathStr stringByAppendingPathExtension:@"plist"];
         
         pathStr = [MacrosPathKey stringByStandardizingPath];
-        switch (macroType) {
+        switch (g_macroType) {
             case TexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Tex"]; break;
             case LatexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
             case BibtexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Bibtex"]; break;

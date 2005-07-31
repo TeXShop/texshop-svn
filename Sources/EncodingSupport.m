@@ -40,7 +40,7 @@ static id sharedEncodingSupport = nil;
 	{
 		sharedEncodingSupport = [super init];
 		
-                shouldFilter = filterNone;
+                g_shouldFilter = filterNone;
 		// initialize yen string
 		unichar yenChar = 0x00a5;
 		yenString = [[NSString stringWithCharacters: &yenChar length:1] retain];
@@ -77,13 +77,13 @@ static id sharedEncodingSupport = nil;
 	NSRange selectedRange = [fieldEditor selectedRange];
 	NSString *newString;
 	
-	if (shouldFilter == filterMacJ)
+	if (g_shouldFilter == filterMacJ)
 	{
 		newString = filterBackslashToYen(oldString);
 		[fieldEditor setString: newString];
 		[fieldEditor setSelectedRange: selectedRange];
 	}
-	else if (shouldFilter == filterNSSJIS)
+	else if (g_shouldFilter == filterNSSJIS)
 	{
 		newString = filterYenToBackslash(oldString);
 		[fieldEditor setString: newString];
@@ -92,7 +92,7 @@ static id sharedEncodingSupport = nil;
 }
 
 
-// set up texChar, kTaggedTeXSections and menu item for tex character conversion
+// set up g_texChar, g_taggedTeXSections and menu item for tex character conversion
 //------------------------------------------------------------------------------
 - (void)setupForEncoding
 //------------------------------------------------------------------------------
@@ -140,27 +140,26 @@ static id sharedEncodingSupport = nil;
 	if ([currentEncoding isEqualToString:@"MacJapanese"] ||
             [currentEncoding isEqualToString:@"SJIS_X0213"] )
 	{
-		texChar = 0x00a5; // yen
-		if (kTaggedTeXSections)
-			[kTaggedTeXSections release];
-		kTaggedTeXSections = [[NSArray alloc] initWithObjects:
+		g_texChar = 0x00a5; // yen
+		[g_taggedTeXSections release];
+		g_taggedTeXSections = [[NSArray alloc] initWithObjects:
 							filterBackslashToYen(@"\\chapter"),
 							filterBackslashToYen(@"\\section"),
 							filterBackslashToYen(@"\\subsection"),
 							filterBackslashToYen(@"\\subsubsection"),
 							nil];
                 // mitsu 1.29 (P)
-		if (shouldFilter != filterMacJ && commandCompletionList)
+		if (g_shouldFilter != filterMacJ && g_commandCompletionList)
 		{
-			[commandCompletionList replaceOccurrencesOfString: @"\\" withString: yenString
-						options: 0 range: NSMakeRange(0, [commandCompletionList length])];
+			[g_commandCompletionList replaceOccurrencesOfString: @"\\" withString: yenString
+						options: 0 range: NSMakeRange(0, [g_commandCompletionList length])];
 			theDoc = [[NSDocumentController sharedDocumentController] 
 				documentForFileName: [CommandCompletionPathKey stringByStandardizingPath]];
 			if (theDoc)
 				[[theDoc textView] setString: filterBackslashToYen([[theDoc textView] string])];
 		}
 		// end mitsu 1.29
-		shouldFilter = filterMacJ;
+		g_shouldFilter = filterMacJ;
 		// set up menu item
 		if (editMenu)
 		{
@@ -177,20 +176,19 @@ static id sharedEncodingSupport = nil;
 	}
 	else 
 	{
-		texChar = 0x005c; // backslash
-		if (kTaggedTeXSections)
-			[kTaggedTeXSections release];
-		kTaggedTeXSections = [[NSArray alloc] initWithObjects:
+		g_texChar = 0x005c; // backslash
+		[g_taggedTeXSections release];
+		g_taggedTeXSections = [[NSArray alloc] initWithObjects:
 							@"\\chapter",
 							@"\\section",
 							@"\\subsection",
 							@"\\subsubsection",
 							nil];
                 // mitsu 1.29 (P)
-		if (shouldFilter == filterMacJ && commandCompletionList)
+		if (g_shouldFilter == filterMacJ && g_commandCompletionList)
 		{
-			[commandCompletionList replaceOccurrencesOfString: yenString withString: @"\\"
-						options: 0 range: NSMakeRange(0, [commandCompletionList length])];
+			[g_commandCompletionList replaceOccurrencesOfString: yenString withString: @"\\"
+						options: 0 range: NSMakeRange(0, [g_commandCompletionList length])];
 			theDoc = [[NSDocumentController sharedDocumentController] 
 				documentForFileName: [CommandCompletionPathKey stringByStandardizingPath]];
 			if (theDoc)
@@ -202,7 +200,7 @@ static id sharedEncodingSupport = nil;
 				[currentEncoding isEqualToString:@"EUC_JP"] || 
 				[currentEncoding isEqualToString:@"JISJapanese"])
 		{
-			shouldFilter = filterNSSJIS;
+			g_shouldFilter = filterNSSJIS;
 			// set up menu item
 			if (editMenu)
 			{
@@ -219,7 +217,7 @@ static id sharedEncodingSupport = nil;
 		}
 		else
 		{
-			shouldFilter = filterNone;
+			g_shouldFilter = filterNone;
 		}
 	}
 }
@@ -564,20 +562,20 @@ static id sharedEncodingSupport = nil;
 /*                switch([aGlyph characterCollection]){
 		case NSAdobeCNS1CharacterCollection:
                     utfString = [NSMutableString stringWithFormat:@"%cCIDC{%d}",
-                                    texChar, [aGlyph characterIdentifier]];
+                                    g_texChar, [aGlyph characterIdentifier]];
                     break;
 		case NSAdobeGB1CharacterCollection:
                     utfString = [NSMutableString stringWithFormat:@"%cCIDT{%d}",
-                                    texChar, [aGlyph characterIdentifier]];
+                                    g_texChar, [aGlyph characterIdentifier]];
                     break;
 		case NSAdobeKorea1CharacterCollection:
                     utfString = [NSMutableString stringWithFormat:@"%cCIDK{%d}",
-                                    texChar, [aGlyph characterIdentifier]];
+                                    g_texChar, [aGlyph characterIdentifier]];
                     break;
 		case NSAdobeJapan1CharacterCollection:
 		case NSAdobeJapan2CharacterCollection:*/
                     utfString = [NSMutableString stringWithFormat:@"%CCID{%d}",
-                                    texChar, [aGlyph characterIdentifier]];
+                                    g_texChar, [aGlyph characterIdentifier]];
 /*                    break;
 		case NSIdentityMappingCharacterCollection:
                 default:
@@ -586,7 +584,7 @@ static id sharedEncodingSupport = nil;
                 }*/
             }else if( charRange.length > 1 ){
                 NSLayoutManager *aLayout = [dataView layoutManager];
-                utfString = [NSMutableString stringWithFormat:@"%CCID{%d}", texChar,
+                utfString = [NSMutableString stringWithFormat:@"%CCID{%d}", g_texChar,
                     [aLayout glyphAtIndex:charRange.location]];
             // 0x2014,0x2015 fix (reported by Kino-san)
             }else if( ![[self encodingForTag:tag] isEqualToString:@"SJIS_X0213"] &&
@@ -594,7 +592,7 @@ static id sharedEncodingSupport = nil;
                 utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
             }else{
                 utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}",
-                    texChar, [subString characterAtIndex: 0]];
+                    g_texChar, [subString characterAtIndex: 0]];
             }
             if( ( charRange.location + charRange.length ) == end ){
                 [utfString appendString: @"%"];
