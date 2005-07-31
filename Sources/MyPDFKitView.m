@@ -91,6 +91,8 @@
  	
 	// Clean up.
 	[_searchResults release];
+	
+	[super dealloc];
 }
 
 
@@ -255,8 +257,6 @@
 {
 
 		PDFDocument	*pdfDoc;
-		PDFPage	*aPage;
-		NSRect	tempRect;
 		
 		sourceFiles = nil;
 		pdfDoc = [[[PDFDocument alloc] initWithURL: [NSURL fileURLWithPath: imagePath]] retain];
@@ -910,9 +910,6 @@
 	NSPoint 		initialLocation;
     NSRect			visibleRect;
     BOOL			keepGoing;
-	NSNumber		*myNumber;
-	NSPoint			aPoint;
-	NSRect			aRect;
 
 	initialLocation = [theEvent locationInWindow];
 	visibleRect = [[self documentView] visibleRect];
@@ -1019,7 +1016,7 @@
 	int					pagenumber;
 	NSPoint				p;
 	int					rotation;
-	NSRect				boxRect, tempRect;
+	NSRect				boxRect;
 	NSAffineTransform   *transform;
 	
 	// boxRect = [page boundsForBox: [self displayBox]];
@@ -2995,7 +2992,7 @@ done:
 	NSImage *image = nil;
 	NSBitmapImageFileType fileType;
 	NSDictionary *dict;
-	NSColor *backColor, *oldBackColor, *backColor1, *oldBackColor1;
+	NSColor *backColor, *oldBackColor;
 	
 	mySelectedRect = [self convertRect: selectedRect fromView: [self documentView]];
 	visRect = [self visibleRect];
@@ -3403,7 +3400,7 @@ done:
 	sourceText = [[myDocument textView] string];
 	sourceLength = [sourceText length];
 	
-	searchText = @"\include{";
+	searchText = @"\\include{";
 	done = NO;
 	maskRange.location = 0;
 	maskRange.length = sourceLength;
@@ -3438,7 +3435,7 @@ done:
 			}
 		}
 		
-	searchText = @"\input{";
+	searchText = @"\\input{";
 	done = NO;
 	maskRange.location = 0;
 	maskRange.length = sourceLength;
@@ -3485,7 +3482,7 @@ done:
 			}
 		}
 
-	searchText = @"\import{";
+	searchText = @"\\import{";
 	done = NO;
 	maskRange.location = 0;
 	maskRange.length = sourceLength;
@@ -3532,10 +3529,9 @@ done:
 - (BOOL)doNewSync: (NSEvent *)theEvent;
 {
 	int						theIndex;
-	int						searchStart, searchEnd, testIndex;
+	int						testIndex;	
 	int						pageNumber, numberOfTests;
 	int						searchWindow;
-	unsigned int			searchlength;
 	unsigned int			sourcelength[NUMBER_OF_SOURCE_FILES + 1];
 	int						startIndex, endIndex;
 	NSRange					searchRange, newSearchRange, maskRange, theRange;
@@ -4742,7 +4738,7 @@ done:
 {
 	NSPoint mouseLocWindow, mouseLocView, mouseLocDocumentView;
 	NSRect oldBounds, newBounds, magRectWindow, magRectView;
-	BOOL postNote, postnoteDV, cursorVisible;
+	BOOL postNote, cursorVisible;
 	float magWidth, magHeight, magOffsetX, magOffsetY;
 	int originalLevel, currentLevel;
 	float magScale; 	//0.4	// you may want to change this
@@ -4906,7 +4902,6 @@ done:
 - (void)setMagnification: (double)magnification
 {
     int		scale;
-    double	magSize;
     
 	[self cleanupMarquee: YES];
 	

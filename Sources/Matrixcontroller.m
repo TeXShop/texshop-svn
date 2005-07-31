@@ -577,7 +577,7 @@ static id _sharedInstance = nil;
     activeCols=num;
 }
 
--(NSMutableArray *)myRowAtIndex:(unsigned)row {
+-(id)myRowAtIndex:(unsigned)row {
     return [[rows objectAtIndex:row]retain];
 }
 

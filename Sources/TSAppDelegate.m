@@ -47,7 +47,7 @@
     NSMutableString *path;
     NSDictionary *factoryDefaults;
 //	OgreTextFinder *theFinder;
-    id *theFinder;
+    id theFinder;
 	long	MacVersion;
 	
     // documentsHaveLoaded = NO;

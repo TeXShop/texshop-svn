@@ -707,7 +707,7 @@
     return self;
 }
 
-- (void)setDocument: (NSDocument *)doc
+- (void)setDocument: (MyDocument *)doc
 {
 	document = doc;
 }

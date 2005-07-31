@@ -13,6 +13,8 @@
 #define isJPG		4
 #define isTIFF		5
 
+@class MyPDFKitView;
+
 
 @interface MyDocument : NSDocument 
 {
@@ -137,7 +139,7 @@
     NSWindow            *callingWindow;
     int                 badEncoding;
     BOOL                showBadEncodingDialog;
-	id					*myPDFKitView;
+	MyPDFKitView		*myPDFKitView;
 	BOOL				PDFfromKit;
 	unsigned int		pdfCharacterIndex;
 	BOOL				textSelectionYellow;

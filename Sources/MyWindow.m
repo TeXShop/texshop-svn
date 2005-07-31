@@ -26,7 +26,6 @@ extern NSPanel *pageNumberWindow;
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)backingType defer:(BOOL)flag
 {
     id		result;
-	NSColor	*backColor;
 	
     result = [super initWithContentRect:contentRect styleMask:styleMask backing:backingType defer:flag];
 	

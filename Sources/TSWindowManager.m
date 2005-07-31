@@ -9,7 +9,6 @@
 
 #import "TSWindowManager.h"
 #import "globals.h"
-#import "extras.h"
 // added by mitsu --(J+) Check mark in "Typeset" menu
 #import "MyDocument.h"
 // end addition

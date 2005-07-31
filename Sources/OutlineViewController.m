@@ -43,7 +43,7 @@ extern int shouldFilter;
 
 static OutlineViewController *sharedOutlineViewController = nil;
 
-+ (id)sharedInstance 
++ (OutlineViewController *)sharedInstance 
 {
     if (sharedOutlineViewController == nil) 
         sharedOutlineViewController = [[[OutlineViewController alloc] init] autorelease];

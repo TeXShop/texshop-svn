@@ -47,7 +47,7 @@
 - (IBAction)insertMatrix:(id)sender;
 - (IBAction)resetMatrix:(id)sender;
 - (IBAction)resizeMatrix:(id)sender;
-- (NSMutableArray*)draggedRows;
+- (NSArray*)draggedRows;
 
 @end
 
@@ -57,7 +57,6 @@
     int activeCols;
 }
 
-- (NSMutableArray *)rowAtIndex:(unsigned)row;
 - (int)rowCount;
 - (int)colCount;
 - (id)objectInRow:(unsigned)row inCol:(unsigned)col;

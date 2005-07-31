@@ -11,7 +11,6 @@
 #import "TSWindowManager.h"
 #import "EncodingSupport.h"
 #import "globals.h"
-#import "extras.h"
 #import "MyWindow.h"
 #import "TSAppDelegate.h" // mitsu 1.29 (O)
 #import "MyDocument.h"

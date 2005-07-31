@@ -18,12 +18,13 @@
 #else
 #import "MyView.h"
 #endif
+// FIXME / TODO Max Horn: The following should only be #included for 10.4+ builds
+#import "MyPDFKitView.h"
 
 #import "PrintView.h"
 #import "PrintBitmapView.h"
 #import "TSPreferences.h"
 #import "TSWindowManager.h"
-#import "extras.h"
 #import "globals.h"
 #import "Autrecontroller.h"
 #import "Matrixcontroller.h" // Matrix panel addition by Jonas
@@ -401,8 +402,8 @@
 // in Panther developer releases; it is probably not necessary for
 // the final release
 NS_DURING
-    spellExists = YES;
     NSSpellChecker *myChecker = [NSSpellChecker sharedSpellChecker];
+	spellExists = (myChecker != 0);
 NS_HANDLER
     spellExists = NO;
 NS_ENDHANDLER
@@ -6226,15 +6227,10 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 
 - (void) checkFileLinksA
 {
-    NSString *home,*jobname=[[self fileName] stringByDeletingLastPathComponent];
-    NSRange aRange,bRange;
-    NSString *saveName, *searchString;
-    NSMutableArray *slist;
     NSArray *wlist;
     NSEnumerator *en;
     id obj;
     id theRoot;
-    unsigned numFiles,i;
     
     // first save all related, open, dirty files
     if (rootDocument != nil)
@@ -6266,7 +6262,6 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
     NSArray *wlist;
     NSEnumerator *en;
     id obj;
-    id theRoot;
     unsigned numFiles,i;
     
     if (![SUD boolForKey:SaveRelatedKey])
