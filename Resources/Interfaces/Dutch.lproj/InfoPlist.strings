@@ -6,7 +6,6 @@ CFBundleGetInfoString = "TeXShop Versie 2, Copyright 2001-2005, Eugene Algorithm
 NSHumanReadableCopyright = "Copyright 2001-2005, Eugene Algorithms \n http://www.uoregon.edu/~koch/texshop";
 CFBundleHelpBookFolder = "TeXShopHelp";
 CFBundleHelpBookName = "TeXShop Help";
-NSAppleScriptEnabled = YES;
 NSTypes = (
      {
         NSName = "tex";
