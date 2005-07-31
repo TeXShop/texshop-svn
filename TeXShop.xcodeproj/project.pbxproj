@@ -498,8 +498,8 @@
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		40007FA806DC591F004DFAD1 /* More */ = {isa = PBXFileReference; lastKnownFileType = folder; path = More; sourceTree = "<group>"; };
-		40008E6A055436A5005D78AB /* mptopdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = mptopdfwrap; sourceTree = "<group>"; };
-		400477A2057B0F06000B3E9D /* ScriptRunner.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = ScriptRunner.app; sourceTree = "<group>"; };
+		40008E6A055436A5005D78AB /* mptopdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = file; path = mptopdfwrap; sourceTree = "<group>"; };
+		400477A2057B0F06000B3E9D /* ScriptRunner.app */ = {isa = PBXFileReference; lastKnownFileType = file; path = ScriptRunner.app; sourceTree = "<group>"; };
 		4005D64D03D1217000000009 /* MetaFontAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MetaFontAction.tiff; sourceTree = "<group>"; };
 		40160CAB0409574C00000009 /* Select.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Select.tiff; sourceTree = "<group>"; };
 		401FA08006DBF8C300EA4793 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Dutch; path = Dutch.lproj/TeXShopHelp; sourceTree = "<group>"; };
@@ -546,7 +546,7 @@
 		4068429A0405969B00000009 /* MyPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPDFView.h; sourceTree = "<group>"; };
 		4068429B0405969B00000009 /* MyPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPDFView.m; sourceTree = "<group>"; };
 		4068429E0405A20000000009 /* UseMitsu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UseMitsu.h; sourceTree = "<group>"; };
-		406A69F4060F8C170028E210 /* detexwrap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = detexwrap; sourceTree = "<group>"; };
+		406A69F4060F8C170028E210 /* detexwrap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = detexwrap; sourceTree = "<group>"; };
 		4077C62203C7FAE800000009 /* MacroEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacroEditor.h; sourceTree = "<group>"; };
 		4077C62303C7FAE800000009 /* MacroEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MacroEditor.m; sourceTree = "<group>"; };
 		4077C62403C7FAE800000009 /* MacroMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacroMenuController.h; sourceTree = "<group>"; };
@@ -577,14 +577,14 @@
 		4077C67003C7FDA500000009 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/ToolbarItems.strings; sourceTree = "<group>"; };
 		407881960519249A006979EA /* Info-TeXShop__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Info-TeXShop__Upgraded_.plist"; sourceTree = "<group>"; };
 		407881970519249A006979EA /* TeXShop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeXShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		407DE7500409C05300000009 /* GrabHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = GrabHandCursor.tiff; path = Icons/GrabHandCursor.tiff; sourceTree = "<group>"; };
-		407DE7520409C06F00000009 /* OpenHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = OpenHandCursor.tiff; path = Icons/OpenHandCursor.tiff; sourceTree = "<group>"; };
-		407DE7540409C08300000009 /* MagGlass.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = MagGlass.tiff; path = Icons/MagGlass.tiff; sourceTree = "<group>"; };
-		407DE7560409C09600000009 /* MagGlassL.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = MagGlassL.tiff; path = Icons/MagGlassL.tiff; sourceTree = "<group>"; };
+		407DE7500409C05300000009 /* GrabHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = GrabHandCursor.tiff; sourceTree = "<group>"; };
+		407DE7520409C06F00000009 /* OpenHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OpenHandCursor.tiff; sourceTree = "<group>"; };
+		407DE7540409C08300000009 /* MagGlass.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagGlass.tiff; sourceTree = "<group>"; };
+		407DE7560409C09600000009 /* MagGlassL.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagGlassL.tiff; sourceTree = "<group>"; };
 		40839127060963C800266FAB /* TextFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFinder.h; sourceTree = "<group>"; };
 		40839128060963C800266FAB /* TextFinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFinder.m; sourceTree = "<group>"; };
 		4085F83B03BBA8DA0000009E /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
-		40923AD00570A1770089F69B /* altpdflatex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = altpdflatex; sourceTree = "<group>"; };
+		40923AD00570A1770089F69B /* altpdflatex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = altpdflatex; sourceTree = "<group>"; };
 		4096186205824CF2000D94FD /* Matrixcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrixcontroller.h; sourceTree = "<group>"; };
 		4096186305824CF2000D94FD /* Matrixcontroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Matrixcontroller.m; sourceTree = "<group>"; };
 		409618B60582545A000D94FD /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/matrixpanel.nib; sourceTree = "<group>"; };
@@ -602,17 +602,17 @@
 		40A07C8F0566C25D00C66A86 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Romanian; path = Romanian.lproj/Preferences.nib; sourceTree = "<group>"; };
 		40A07C930566C25D00C66A86 /* Romanian */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Romanian; path = Romanian.lproj/TeXShop.scriptTerminology; sourceTree = "<group>"; };
 		40A07CDD0566C25E00C66A86 /* Romanian */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Romanian; path = Romanian.lproj/ToolbarItems.strings; sourceTree = "<group>"; };
-		40A3BBC703CCC58100000009 /* Separator.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Separator.tiff; path = Icons/Separator.tiff; sourceTree = "<group>"; };
+		40A3BBC703CCC58100000009 /* Separator.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Separator.tiff; sourceTree = "<group>"; };
 		40A4053503BFD1090000001E /* autocompletion.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = autocompletion.plist; sourceTree = "<group>"; };
-		40A43B82056FE6ED00AFDC86 /* TeXShop.scriptSuite */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TeXShop.scriptSuite; sourceTree = "<group>"; };
-		40A8847D072CABF5007BFAF6 /* TEXTEDIT.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = TEXTEDIT.app; sourceTree = "<group>"; };
+		40A43B82056FE6ED00AFDC86 /* TeXShop.scriptSuite */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = TeXShop.scriptSuite; sourceTree = "<group>"; };
+		40A8847D072CABF5007BFAF6 /* TEXTEDIT.app */ = {isa = PBXFileReference; lastKnownFileType = file; path = TEXTEDIT.app; sourceTree = "<group>"; };
 		40AA2B8103C79AF800000009 /* EncodingSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncodingSupport.h; sourceTree = "<group>"; };
 		40AA2B8203C79AF800000009 /* EncodingSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EncodingSupport.m; sourceTree = "<group>"; };
-		40B1DDC706EB6E540083A311 /* altpdftex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = altpdftex; sourceTree = "<group>"; };
-		40B275F603EF6F9D00000009 /* split.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = split.tiff; path = Icons/split.tiff; sourceTree = "<group>"; };
+		40B1DDC706EB6E540083A311 /* altpdftex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = altpdftex; sourceTree = "<group>"; };
+		40B275F603EF6F9D00000009 /* split.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = split.tiff; sourceTree = "<group>"; };
 		40B7DEA9057139E2002872F2 /* MyDocumentScripting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDocumentScripting.h; sourceTree = "<group>"; };
 		40B7DEAA057139E2002872F2 /* MyDocumentScripting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDocumentScripting.m; sourceTree = "<group>"; };
-		40BA4A4704B54E5500000B3B /* split1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = split1.png; path = Icons/split1.png; sourceTree = "<group>"; };
+		40BA4A4704B54E5500000B3B /* split1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = split1.png; sourceTree = "<group>"; };
 		40BA961106DC2A1500077BCF /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Japanese; path = Japanese.lproj/TeXShopHelp; sourceTree = "<group>"; };
 		40CD913407E4CE6C00DE6448 /* MyPDFKitView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyPDFKitView.h; sourceTree = "<group>"; };
 		40CD913507E4CE6C00DE6448 /* MyPDFKitView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyPDFKitView.m; sourceTree = "<group>"; };
@@ -623,14 +623,14 @@
 		40D1F2CB06040BCF00087115 /* mat02.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = mat02.tiff; sourceTree = "<group>"; };
 		40DB3D7103C63A3C00000009 /* French */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = French; path = French.lproj/Credits.rtf; sourceTree = "<group>"; };
 		40E55A8B073B2A3000860060 /* pdf.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = pdf.icns; sourceTree = "<group>"; };
-		40E94AF907ECF1F500782DE9 /* TextTool.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TextTool.tiff; path = Icons/TextTool.tiff; sourceTree = "<group>"; };
+		40E94AF907ECF1F500782DE9 /* TextTool.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TextTool.tiff; sourceTree = "<group>"; };
 		40EB71E50400BE1000000009 /* MyDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDocumentController.h; sourceTree = "<group>"; };
 		40EB71E60400BE1000000009 /* MyDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDocumentController.m; sourceTree = "<group>"; };
 		40F66D7D06041188000993D5 /* matrixpanel_1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = matrixpanel_1.plist; sourceTree = "<group>"; };
 		40FEB2920540E7E7006370DB /* Macros_Latex.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = Macros_Latex.plist; sourceTree = "<group>"; };
 		40FEB2960540E7FA006370DB /* Macros_Context.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = Macros_Context.plist; sourceTree = "<group>"; };
-		40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = XeLaTeX.engine; sourceTree = "<group>"; };
-		40FF5DA706D567C600426CC9 /* XeTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = XeTeX.engine; sourceTree = "<group>"; };
+		40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = XeLaTeX.engine; sourceTree = "<group>"; };
+		40FF5DA706D567C600426CC9 /* XeTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = XeTeX.engine; sourceTree = "<group>"; };
 		668C4E5D01680FEC00000105 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Spanish; path = Spanish.lproj/Credits.rtf; sourceTree = "<group>"; };
 		668C4E600168103E00000105 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; name = Spanish; path = Spanish.lproj/CustomInfo.plist; sourceTree = "<group>"; };
 		668C4E620168103E00000105 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/FindPanel.nib; sourceTree = "<group>"; };
@@ -649,9 +649,9 @@
 		669145AB0203BB4400000103 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Portuguese; path = Portuguese.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		669145AD0203BB4400000103 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Portuguese; path = Portuguese.lproj/MyDocument.nib; sourceTree = "<group>"; };
 		669145AF0203BB4400000103 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Portuguese; path = Portuguese.lproj/Preferences.nib; sourceTree = "<group>"; };
-		66A63DCE0114947700000001 /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
-		66A63DCF0114947700000001 /* epstopdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = epstopdfwrap; sourceTree = "<group>"; };
-		66A63DD00114947700000001 /* ps2pdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = ps2pdfwrap; sourceTree = "<group>"; };
+		66A63DCE0114947700000001 /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = file; path = epstopdf; sourceTree = "<group>"; };
+		66A63DCF0114947700000001 /* epstopdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = file; path = epstopdfwrap; sourceTree = "<group>"; };
+		66A63DD00114947700000001 /* ps2pdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = file; path = ps2pdfwrap; sourceTree = "<group>"; };
 		66DECA060212595500000103 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
 		66DECA0A021259C700000103 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
 		66DECA0C021259C700000103 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
@@ -662,13 +662,13 @@
 		66EF66270147C62B00000001 /* PrintBitmapView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PrintBitmapView.m; sourceTree = "<group>"; };
 		66F0F3A700F412FD00000001 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/Preferences.nib; sourceTree = "<group>"; };
 		F506285400F4F04801000001 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		F50B193D0152A11D01000001 /* contextwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = contextwrap; sourceTree = "<group>"; };
+		F50B193D0152A11D01000001 /* contextwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = file; path = contextwrap; sourceTree = "<group>"; };
 		F510E36D03916F340100009E /* MyTextView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyTextView.h; sourceTree = "<group>"; };
 		F510E36E03916F340100009E /* MyTextView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyTextView.m; sourceTree = "<group>"; };
 		F5241EFB0113660601000001 /* epstopdf1 */ = {isa = PBXFileReference; lastKnownFileType = file; path = epstopdf1; sourceTree = "<group>"; };
 		F5241EFD0113671501000001 /* ps2pdf1 */ = {isa = PBXFileReference; lastKnownFileType = file; path = ps2pdf1; sourceTree = "<group>"; };
-		F5332B17016CD72701DF2474 /* metapostwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = metapostwrap; sourceTree = "<group>"; };
-		F5332B18016CD72701DF2474 /* contextdviwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = contextdviwrap; sourceTree = "<group>"; };
+		F5332B17016CD72701DF2474 /* metapostwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = file; path = metapostwrap; sourceTree = "<group>"; };
+		F5332B18016CD72701DF2474 /* contextdviwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = file; path = contextdviwrap; sourceTree = "<group>"; };
 		F54C1DD400E27C0E01000001 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/Preferences.nib; sourceTree = "<group>"; };
 		F54C1DDA00E27FC801000001 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/Preferences.nib; sourceTree = "<group>"; };
 		F54C1DE000E285B501000001 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/Preferences.nib; sourceTree = "<group>"; };
@@ -796,8 +796,8 @@
 		F5ECC3120214673901DF2474 /* MetaPostAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MetaPostAction.tiff; sourceTree = "<group>"; };
 		F5ECC3130214673901DF2474 /* NextPageAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = NextPageAction.tiff; sourceTree = "<group>"; };
 		F5ECC3140214673901DF2474 /* PreviousPageAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PreviousPageAction.tiff; sourceTree = "<group>"; };
-		F5ECC3150214673901DF2474 /* TeXAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TeXAction.tiff; path = Icons/TeXAction.tiff; sourceTree = "<group>"; };
-		F5ECC3160214673901DF2474 /* texicon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = texicon.tiff; path = Icons/texicon.tiff; sourceTree = "<group>"; };
+		F5ECC3150214673901DF2474 /* TeXAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TeXAction.tiff; sourceTree = "<group>"; };
+		F5ECC3160214673901DF2474 /* texicon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = texicon.tiff; sourceTree = "<group>"; };
 		F5ECC3200214678B01DF2474 /* MyDocumentToolbar.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyDocumentToolbar.h; sourceTree = "<group>"; };
 		F5ECC3210214678B01DF2474 /* MyDocumentToolbar.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyDocumentToolbar.m; sourceTree = "<group>"; };
 		F5ECC3230214678B01DF2474 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = English; path = English.lproj/TeXShop.scriptTerminology; sourceTree = "<group>"; };
@@ -1060,8 +1060,7 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				400477A2057B0F06000B3E9D /* ScriptRunner.app */,
-				40A8847D072CABF5007BFAF6 /* TEXTEDIT.app */,
+				528029E3089D3E1100696FB9 /* AppleScript */,
 				0AC768C10010B19F7F000001 /* FactoryDefaults.plist */,
 				403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */,
 				403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */,
@@ -1072,26 +1071,14 @@
 				409BA5FE03C16CBC0000001E /* KeyEquivalents.plist */,
 				40FEB2920540E7E7006370DB /* Macros_Latex.plist */,
 				40FEB2960540E7FA006370DB /* Macros_Context.plist */,
-				40A43B82056FE6ED00AFDC86 /* TeXShop.scriptSuite */,
 				F5BFF9A1020217CD01DF2474 /* LatexTemplate.tex */,
 				00C86228FF221B217F000001 /* GraphicsTemplate.tex */,
 				40007FA806DC591F004DFAD1 /* More */,
-				66A63DCE0114947700000001 /* epstopdf */,
-				66A63DCF0114947700000001 /* epstopdfwrap */,
-				66A63DD00114947700000001 /* ps2pdfwrap */,
-				F50B193D0152A11D01000001 /* contextwrap */,
-				406A69F4060F8C170028E210 /* detexwrap */,
-				F5332B17016CD72701DF2474 /* metapostwrap */,
-				40008E6A055436A5005D78AB /* mptopdfwrap */,
-				F5332B18016CD72701DF2474 /* contextdviwrap */,
-				40923AD00570A1770089F69B /* altpdflatex */,
-				40B1DDC706EB6E540083A311 /* altpdftex */,
-				40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */,
-				40FF5DA706D567C600426CC9 /* XeTeX.engine */,
+				528029DB089D3DD900696FB9 /* Shellscripts */,
 				4061C574057D983200B3E286 /* bin */,
 				40667DEF057A6E3300855C68 /* Scripts */,
 			);
-			name = Resources;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
@@ -1227,6 +1214,35 @@
 				40BA961006DC2A1500077BCF /* TeXShopHelp */,
 			);
 			name = Japanese.lproj;
+			sourceTree = "<group>";
+		};
+		528029DB089D3DD900696FB9 /* Shellscripts */ = {
+			isa = PBXGroup;
+			children = (
+				66A63DCE0114947700000001 /* epstopdf */,
+				66A63DCF0114947700000001 /* epstopdfwrap */,
+				66A63DD00114947700000001 /* ps2pdfwrap */,
+				F50B193D0152A11D01000001 /* contextwrap */,
+				406A69F4060F8C170028E210 /* detexwrap */,
+				F5332B17016CD72701DF2474 /* metapostwrap */,
+				40008E6A055436A5005D78AB /* mptopdfwrap */,
+				F5332B18016CD72701DF2474 /* contextdviwrap */,
+				40923AD00570A1770089F69B /* altpdflatex */,
+				40B1DDC706EB6E540083A311 /* altpdftex */,
+				40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */,
+				40FF5DA706D567C600426CC9 /* XeTeX.engine */,
+			);
+			path = Shellscripts;
+			sourceTree = "<group>";
+		};
+		528029E3089D3E1100696FB9 /* AppleScript */ = {
+			isa = PBXGroup;
+			children = (
+				400477A2057B0F06000B3E9D /* ScriptRunner.app */,
+				40A8847D072CABF5007BFAF6 /* TEXTEDIT.app */,
+				40A43B82056FE6ED00AFDC86 /* TeXShop.scriptSuite */,
+			);
+			path = AppleScript;
 			sourceTree = "<group>";
 		};
 		5288888E089D06B50095E82D /* Sources */ = {
