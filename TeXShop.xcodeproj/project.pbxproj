@@ -308,7 +308,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		00C86228FF221B217F000001 /* GraphicsTemplate.tex */ = {isa = PBXFileReference; lastKnownFileType = file; path = GraphicsTemplate.tex; sourceTree = "<group>"; };
+		00C86228FF221B217F000001 /* GraphicsTemplate.tex */ = {isa = PBXFileReference; lastKnownFileType = text; path = GraphicsTemplate.tex; sourceTree = "<group>"; };
 		00CFF0E9000ACFC67F000001 /* ConsoleWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ConsoleWindow.h; sourceTree = "<group>"; };
 		00CFF0EB000ACFFC7F000001 /* ConsoleWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ConsoleWindow.m; sourceTree = "<group>"; };
 		00CFF0ED000AD0B87F000001 /* MainWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MainWindow.h; sourceTree = "<group>"; };
@@ -389,7 +389,6 @@
 		4077C62E03C7FB1E00000009 /* OutlineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutlineViewController.h; sourceTree = "<group>"; };
 		4077C62F03C7FB1E00000009 /* OutlineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlineViewController.m; sourceTree = "<group>"; };
 		4077C63603C7FC0900000009 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MacroEditor.nib; sourceTree = "<group>"; };
-		407881960519249A006979EA /* Info-TeXShop__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Info-TeXShop__Upgraded_.plist"; sourceTree = "<group>"; };
 		407881970519249A006979EA /* TeXShop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeXShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		407DE7500409C05300000009 /* GrabHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = GrabHandCursor.tiff; sourceTree = "<group>"; };
 		407DE7520409C06F00000009 /* OpenHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OpenHandCursor.tiff; sourceTree = "<group>"; };
@@ -561,8 +560,6 @@
 		F50B193D0152A11D01000001 /* contextwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = contextwrap; sourceTree = "<group>"; };
 		F510E36D03916F340100009E /* MyTextView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyTextView.h; sourceTree = "<group>"; };
 		F510E36E03916F340100009E /* MyTextView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyTextView.m; sourceTree = "<group>"; };
-		F5241EFB0113660601000001 /* epstopdf1 */ = {isa = PBXFileReference; lastKnownFileType = file; path = epstopdf1; sourceTree = "<group>"; };
-		F5241EFD0113671501000001 /* ps2pdf1 */ = {isa = PBXFileReference; lastKnownFileType = file; path = ps2pdf1; sourceTree = "<group>"; };
 		F5332B17016CD72701DF2474 /* metapostwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = metapostwrap; sourceTree = "<group>"; };
 		F5332B18016CD72701DF2474 /* contextdviwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = contextdviwrap; sourceTree = "<group>"; };
 		F5B8EA8E01FF59A101DF2474 /* Autrecontroller.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Autrecontroller.h; sourceTree = "<group>"; };
@@ -668,7 +665,7 @@
 		F5B8EAF901FF5A1601DF2474 /* s53.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = s53.tiff; sourceTree = "<group>"; };
 		F5B8EAFA01FF5A1601DF2474 /* s54.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = s54.tiff; sourceTree = "<group>"; };
 		F5B8EAFB01FF5A1601DF2474 /* s55.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = s55.tiff; sourceTree = "<group>"; };
-		F5BFF9A1020217CD01DF2474 /* LatexTemplate.tex */ = {isa = PBXFileReference; lastKnownFileType = file; path = LatexTemplate.tex; sourceTree = "<group>"; };
+		F5BFF9A1020217CD01DF2474 /* LatexTemplate.tex */ = {isa = PBXFileReference; lastKnownFileType = text; path = LatexTemplate.tex; sourceTree = "<group>"; };
 		F5ECC30C021466FC01DF2474 /* BibTeXAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BibTeXAction.tiff; sourceTree = "<group>"; };
 		F5ECC30D021466FC01DF2474 /* ConTeXAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ConTeXAction.tiff; sourceTree = "<group>"; };
 		F5ECC3100214673901DF2474 /* LaTeXAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = LaTeXAction.tiff; sourceTree = "<group>"; };
@@ -790,9 +787,7 @@
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				0273C927FF23CC9B80DF2474 /* Graphics */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
-				F52CDF5C0114BBEB01000001 /* Obsolete */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
-				407881960519249A006979EA /* Info-TeXShop__Upgraded_.plist */,
 			);
 			name = CocoaDocApp;
 			sourceTree = "<group>";
@@ -994,15 +989,6 @@
 				529174F8089D430200577613 /* More */,
 			);
 			path = Templates;
-			sourceTree = "<group>";
-		};
-		F52CDF5C0114BBEB01000001 /* Obsolete */ = {
-			isa = PBXGroup;
-			children = (
-				F5241EFD0113671501000001 /* ps2pdf1 */,
-				F5241EFB0113660601000001 /* epstopdf1 */,
-			);
-			name = Obsolete;
 			sourceTree = "<group>";
 		};
 		F5B8EA9501FF5A1601DF2474 /* Panelpicture */ = {
@@ -1730,7 +1716,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "Info-TeXShop__Upgraded_.plist";
+				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
@@ -1754,7 +1740,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "Info-TeXShop__Upgraded_.plist";
+				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
@@ -1775,7 +1761,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "Info-TeXShop__Upgraded_.plist";
+				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
