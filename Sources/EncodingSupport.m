@@ -40,7 +40,7 @@ static id sharedEncodingSupport = nil;
 	{
 		sharedEncodingSupport = [super init];
 		
-                g_shouldFilter = filterNone;
+		g_shouldFilter = filterNone;
 		// initialize yen string
 		unichar yenChar = 0x00a5;
 		yenString = [[NSString stringWithCharacters: &yenChar length:1] retain];

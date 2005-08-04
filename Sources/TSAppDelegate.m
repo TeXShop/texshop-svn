@@ -54,16 +54,18 @@
     
     g_macroType = LatexEngine;
     
-    g_taggedTeXSections = [[NSArray alloc] initWithObjects:@"\\chapter",
+    g_taggedTeXSections = [[NSArray alloc] initWithObjects:
+					@"\\chapter",
 					@"\\section",
 					@"\\subsection",
 					@"\\subsubsection",
 					nil];
 					
-    g_taggedTagSections = [[NSArray alloc] initWithObjects:@"chapter: ",
-					@"section: ",
-					@"subsection: ",
-					@"subsubsection: ",
+    g_taggedTagSections = [[NSArray alloc] initWithObjects:
+					@"Chapter: ",
+					@"Section: ",
+					@"Subsection: ",
+					@"Subsubsection: ",
 					nil];
     // if this is the first time the app is used, register a set of defaults to make sure
     // that the app is useable.
@@ -1149,18 +1151,20 @@ necessary */
 // mitsu 1.29 (O)
 - (void)changeImageCopyType: (id)sender
 {
-	NSMenuItem *item;
-	int imageCopyType = [SUD integerForKey:PdfCopyTypeKey]; // mitsu 1.29b
+	id <NSMenuItem> item;
 	
 	if ([sender isKindOfClass: [NSMenuItem class]])
 	{
+		int imageCopyType;
+		
+		imageCopyType = [SUD integerForKey:PdfCopyTypeKey]; // mitsu 1.29b
 		item = [[sender menu] itemWithTag: imageCopyType];
-		if (item)
-			[item setState: NSOffState];
+		[item setState: NSOffState];
+
 		imageCopyType = [sender tag];
 		item = [[sender menu] itemWithTag: imageCopyType];
-		if (item)
-			[item setState: NSOnState];
+		[item setState: NSOnState];
+
 		// mitsu 1.29b
 		NSPopUpButton *popup = [[TSPreferences sharedInstance] imageCopyTypePopup];
 		if (popup)

@@ -62,7 +62,7 @@ extern NSPanel *pageNumberWindow;
     id	thePanel;
 	
 	if ([myDocument fromKit])
-		 thePanel = [myDocument magnificationKitPanel];	
+		thePanel = [myDocument magnificationKitPanel];	
 	else
 		thePanel = [myDocument magnificationPanel];
     
@@ -84,7 +84,7 @@ extern NSPanel *pageNumberWindow;
 	id	thePanel;
 		 
     if ([myDocument fromKit]) 
-		 thePanel = [myDocument pagenumberKitPanel];
+		thePanel = [myDocument pagenumberKitPanel];
 	else 
 		thePanel = [myDocument pagenumberPanel];
 

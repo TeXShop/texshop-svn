@@ -1029,15 +1029,15 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 	[SUD synchronize];
 
 
-        // re-Set the environment for subtasks
-        [g_environment release];
-        g_environment = [[NSMutableDictionary dictionaryWithDictionary:[[NSProcessInfo processInfo] environment]] retain];
-        path = [NSMutableString stringWithString: [g_environment objectForKey:@"PATH"]];
-        [path appendString:@":"];
-        [path appendString:[SUD stringForKey:TetexBinPathKey]];
-        [path appendString:@":"];
-        [path appendString:[SUD stringForKey:GSBinPathKey]];
-        [g_environment setObject: path forKey: @"PATH"];
+	// re-Set the environment for subtasks
+	[g_environment release];
+	g_environment = [[NSMutableDictionary dictionaryWithDictionary:[[NSProcessInfo processInfo] environment]] retain];
+	path = [NSMutableString stringWithString: [g_environment objectForKey:@"PATH"]];
+	[path appendString:@":"];
+	[path appendString:[SUD stringForKey:TetexBinPathKey]];
+	[path appendString:@":"];
+	[path appendString:[SUD stringForKey:GSBinPathKey]];
+	[g_environment setObject: path forKey: @"PATH"];
 
 	// close the window
 	[_prefsWindow performClose:self];

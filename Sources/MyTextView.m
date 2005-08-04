@@ -747,7 +747,7 @@
 //     #INS# will be removed and the insertion point will be placed there
 //     if there is ":=", the string after it (the first one) will be inserted
 // (2) LaTeX special: if the insertion point is right after "\begin{...}" 
-// where ... conatins no word boundary characters, then "\end{...}" together with 
+// where ... contains no word boundary characters, then "\end{...}" together with 
 // linefeeds is completed, and the insertion point will be placed after "\begin{...}".  
 // these two types can be combined:  if after type (1) completion the situation matches 
 // with type (2) then the next candidate will be type (2).  
@@ -1023,10 +1023,10 @@
 // mitsu 1.29 (P)
 - (void)registerForCommandCompletion: (id)sender
 {
-        NSString		*initialWord, *aWord, *completionPath, *backupPath;
+	NSString		*initialWord, *aWord, *completionPath, *backupPath;
 	NSData 			*myData;
-        int			theTag;
-        NSStringEncoding	theEncoding;
+	int			theTag;
+	NSStringEncoding	theEncoding;
     
 	if (!g_commandCompletionList) return;
 	// get the word(s) to register
