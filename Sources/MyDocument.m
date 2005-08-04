@@ -381,7 +381,8 @@
     float		r, g, b;
     int			defaultcommand;
     NSSize		contentSize;
-    NSColor		*backgroundColor, *whiteColor, *insertionpointColor;
+    NSColor		*backgroundColor, *insertionpointColor;
+	//NSColor	*whiteColor;
     NSDictionary	*myAttributes;
     int                 i;
     BOOL                done;
@@ -1234,7 +1235,7 @@ in other code when an external editor is being used. */
     NSFileManager *fm;
     NSString      *basePath, *path, *title;
     NSArray       *fileList;
-    NSMenuItem	  *newItem;
+    id <NSMenuItem>	  newItem;
     NSMenu 	  *submenu;
     BOOL	   isDirectory;
     unsigned i;
@@ -1281,7 +1282,7 @@ in other code when an external editor is being used. */
     NSFileManager *fm;
     NSArray       *fileList;
     NSString      *path, *title;
-    NSMenuItem	  *newItem;
+    id <NSMenuItem>	  newItem;
     NSMenu 	  *submenu;
     BOOL	   isDirectory;
     unsigned i;
@@ -3249,96 +3250,41 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
 
 - (void) doTag: sender;
 {
-    NSString	*text, *tagString, *title, *mainTitle;
+    NSString	*text, *titleString, *matchString;
     unsigned	start, end, irrelevant;
     NSRange	myRange, nameRange, gotoRange;
     unsigned	length;
-    int		theChar;
-    int		sectionIndex = -1;
     unsigned	lineNumber = 0;
-    unsigned	lineNumber2;
-    BOOL	done;
+    unsigned	destLineNumber;
 
-// Minor Zenitani fix
-//  title = [tags titleOfSelectedItem];
-//  lineNumber2 = [[tags selectedItem] tag];
-
-    title = [sender title];
-    lineNumber2 = [sender tag];
+    titleString = [sender title];
+	matchString = [sender representedObject];
+    destLineNumber = [sender tag];
     
-    /* code by Anton Leuski */
-    if ([SUD boolForKey: TagSectionsKey]) { 
-		unsigned  i;
-		for (i = 0; i < [g_taggedTagSections count]; ++i) {
-			NSString*  tag = [g_taggedTagSections objectAtIndex:i];
-			if ([title hasPrefix:tag]) {
-				sectionIndex = i;
-				myRange.location = [tag length];
-				myRange.length = [title length] - myRange.location;
-				mainTitle = [title substringWithRange: myRange];
-				break;
-			}
-		}
-	}
+	if (!matchString)
+		return;
     
-        
     text = [textView string];
     length = [text length];
     myRange.location = 0;
     myRange.length = 1;
-    done = NO;
 
-    while ((myRange.location < length) && (!done)) {
+	// Search for the line with number 'destLineNumber'.
+    while ((myRange.location < length) && (lineNumber < destLineNumber)) {
         [text getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
         myRange.location = end;
         lineNumber++;
+	}
         
-        if ( lineNumber == lineNumber2 ){
-
-            if (start < length - 3) {
-                theChar = [text characterAtIndex: start];
-                if (theChar == 0x0025) {
-                    theChar = [text characterAtIndex: (start + 1)];
-                    if (theChar == 0x003a) {
-                        nameRange.location = start + 2;
-                        nameRange.length = (end - start - 2);
-                        tagString = [text substringWithRange: nameRange];
-                        if ([title isEqualToString:tagString]) {
-                            done = YES;
-                            gotoRange.location = start;
-                            gotoRange.length = (end - start);
-                            [textView setSelectedRange: gotoRange];
-                            [textView scrollRangeToVisible: gotoRange];
-                            }
-                        }
-                    }
-    
-                /* code by Anton Leuski */
-                else if ((theChar == g_texChar) && (start < length - 8) && (sectionIndex >= 0)) {
-                            
-                    NSString*  tag	= [g_taggedTeXSections objectAtIndex:sectionIndex];
-                    nameRange.location	= start;
-                    nameRange.length	= [tag length];
-                    tagString 		= [text substringWithRange: nameRange];
-    
-                    if ([tagString isEqualToString:tag]) {
-                                    
-                        nameRange.location = start + nameRange.length;
-                        nameRange.length = (end - start - nameRange.length);
-                        tagString = [text substringWithRange: nameRange];
-                                            
-                        if ([mainTitle isEqualToString:tagString]) {
-                            done = YES;
-                            gotoRange.location = start;
-                            gotoRange.length = (end - start);
-                            [textView setSelectedRange: gotoRange];
-                            [textView scrollRangeToVisible: gotoRange];
-                            }
-                        }
-                    
-                    }
-                }
-            }
+	nameRange.location	= start;
+	nameRange.length	= [matchString length];
+	if ((lineNumber == destLineNumber) && (start + nameRange.length < length)) {
+		if (NSOrderedSame == [text compare:matchString options:0 range:nameRange]) {
+			gotoRange.location = start;
+			gotoRange.length = (end - start);
+			[textView setSelectedRange: gotoRange];
+			[textView scrollRangeToVisible: gotoRange];
+		}
 	}
 }
 
@@ -3346,18 +3292,16 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
 - (void) setupTags;
 {
     if ([SUD boolForKey: TagSectionsKey]) {
-        if (tagTimer != nil) 
-            {
-            [tagTimer invalidate];
-            [tagTimer release];
-            tagTimer = nil;
-            }
+		[tagTimer invalidate];
+		[tagTimer release];
+		tagTimer = nil;
+
         tagLocation = 0;
         tagLocationLine = 0;
         [tags removeAllItems];
         [tags addItemWithTitle:NSLocalizedString(@"Tags", @"Tags")];
         tagTimer = [[NSTimer scheduledTimerWithTimeInterval: .02 target:self selector:@selector(fixTags:) userInfo:nil repeats:YES] retain];
-        }
+	}
 }
 
 - (void) doChooseMethod: sender;
@@ -3733,43 +3677,44 @@ BOOL isText1(int c) {
         tagLine = YES;
 
 /* code by Anton Leuski */
- if ([SUD boolForKey: TagSectionsKey]) {
-	
-    unsigned	i;
-    for(i = 0; i < [g_taggedTeXSections count]; ++i) {
-        tagRange = [replacementString rangeOfString:[g_taggedTeXSections objectAtIndex:i]];
-        if (tagRange.length != 0) {
-            tagLine = YES;
-            break;
-            }
-        }
-            
-    if (!tagLine) {
+	 if ([SUD boolForKey: TagSectionsKey]) {
+		
+		unsigned	i;
+		for(i = 0; i < [g_taggedTeXSections count]; ++i) {
+			tagRange = [replacementString rangeOfString:[g_taggedTeXSections objectAtIndex:i]];
+			if (tagRange.length != 0) {
+				tagLine = YES;
+				break;
+				}
+			}
+				
+		if (!tagLine) {
 
-        textString = [textView string];
-        [textString getLineStart:&start end:&end 
-            contentsEnd:&end1 forRange:affectedCharRange];
-        tagRange.location	= start;
-        tagRange.length		= end - start;
+			textString = [textView string];
+			[textString getLineStart:&start end:&end 
+				contentsEnd:&end1 forRange:affectedCharRange];
+			tagRange.location	= start;
+			tagRange.length		= end - start;
 
-        for(i = 0; i < [g_taggedTeXSections count]; ++i) {
-            matchRange = [textString rangeOfString:
-                [g_taggedTeXSections objectAtIndex:i] options:0 range:tagRange];
-            if (matchRange.length != 0) {
-                tagLine = YES;
-                break;
-                }
-            }
+			for(i = 0; i < [g_taggedTeXSections count]; ++i) {
+				matchRange = [textString rangeOfString:
+					[g_taggedTeXSections objectAtIndex:i] options:0 range:tagRange];
+				if (matchRange.length != 0) {
+					tagLine = YES;
+					break;
+					}
+				}
 
-        }
-    }
+			}
+	}
     
-   if (replacementString == nil) 
+	if (replacementString == nil) 
         return YES;
-    else
-        colorEnd = colorStart + [replacementString length];
+	else
+		colorEnd = colorStart + [replacementString length];
     
-    if ([replacementString length] != 1) return YES;
+    if ([replacementString length] != 1)
+		return YES;
     rightpar = [replacementString characterAtIndex:0];
     
 // mitsu 1.29 (T4) compare with "inserText:" in MyTextView.m
@@ -3941,91 +3886,121 @@ BOOL isText1(int c) {
 - (void) fixTags:(NSTimer *)timer;
 //-----------------------------------------------------------------------------
 {   
-    NSString	*text, *tagString;
+    NSString	*text;
     unsigned	start, end, irrelevant;
     NSRange	myRange, nameRange;
     unsigned	length, index;
-    int		theChar;
-    // added by S. Zenitani Jan 25, 2003
     unsigned	lineNumber;
-    NSMenuItem *newItem;
-    // end add
+    id <NSMenuItem> newItem;
+	BOOL enableAutoTagSections;
 
     if (!fileIsTex) return;
-     
+
     text = [textView string];
     length = [text length];
     index = tagLocation + 10000;
     lineNumber = tagLocationLine; // added
     myRange.location = tagLocation;
     myRange.length = 1;
-    
+	
+	enableAutoTagSections = [SUD boolForKey: TagSectionsKey];
+
+	// Iterate over all lines
     while ((myRange.location < length) && (myRange.location < index)) { 
         [text getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
         myRange.location = end;
         lineNumber++;
-        
-        if ((start + 3) < end) {
-            theChar = [text characterAtIndex: start];
-            
-            if (theChar == 0x0025) {
-             
-                theChar = [text characterAtIndex: (start + 1)];
-                if (theChar == 0x003a) {
-                    nameRange.location = start + 2;
-                    nameRange.length = (end - start - 2);
-                    tagString = [text substringWithRange: nameRange];
-                    // [tags addItemWithTitle: tagString];
-                    [tags addItemWithTitle: @""];
-					newItem = [tags lastItem];
-                    [newItem setAction: @selector(doTag:)];
-                    [newItem setTarget: self];
-                    [newItem setTag: lineNumber];
-                    [newItem setTitle: tagString];
-                    }
-                    // If an item with the name title already exists in the menu,
-                    // it will be overwrited by addItemWithTitle. -- S. Zenitani Jan 25, 2003
-                }
-                
-                /* code by Anton Leuski */
-                else if ((theChar == g_texChar) &&  ([SUD boolForKey: TagSectionsKey])) {
+		
+		// Only consider lines which aren't too short...
+        if (end-start > 3) {
+			NSString *line, *titleString;
+			nameRange.location = start;
+			nameRange.length = end - start;
+			line = [text substringWithRange: nameRange];
+			titleString = 0;
+			
+			// Lines starting with '%:' are added to the tags menu.
+			if ([line hasPrefix:@"%:"]) {
+				titleString = [line substringFromIndex:2];
+			}
+			// Scan for lines containing a chapter/section/... command (any listed in g_taggedTeXSections).
+			// To short-circuit the search, we only consider lines that start with a backslash (or yen) symbol.
+			// TODO: Actually, that's kind of overly restrictive. After all, having spaces in front
+			// of a \section command is valid. Might want to remove this limitation...
+			else if (enableAutoTagSections && ([text characterAtIndex: start] == g_texChar)) {
+				unsigned	i;
+				for (i = 0; i < [g_taggedTeXSections count]; ++i) {
+					NSString* tag = [g_taggedTeXSections objectAtIndex:i];
 					
-                    unsigned	i;
-                    for(i = 0; i < [g_taggedTeXSections count]; ++i) {
-                        NSString* tag = [g_taggedTeXSections objectAtIndex:i];
-                        nameRange.location	= start;
-                        nameRange.length	= [tag length];
-                        /* change by Koch to fix tag bug in 1.16 and 1.17 */
-                        if ((start + nameRange.length) < end)
-                            tagString = [text substringWithRange: nameRange];
-                        else
-                            tagString = nil;
-                        if ((tagString != nil) && ([tagString isEqualToString:tag])) {
-                            nameRange.location = start + [tag length];
-                            nameRange.length = (end - start - [tag length]);
-                            tagString = [g_taggedTagSections objectAtIndex:i];
-                            tagString = [tagString stringByAppendingString: 
-								[text substringWithRange: nameRange]];
-                            [tags addItemWithTitle: @""];
-                            newItem = [tags lastItem];
-                            [newItem setAction: @selector(doTag:)];
-                            [newItem setTarget: self];
-                            [newItem setTag: lineNumber];
-                            [newItem setTitle: tagString];
-                            }
-                        }
-					
-                }
-            }
-        }
-        tagLocation = myRange.location;
-        tagLocationLine = lineNumber;
-        if (tagLocation >= length) 
-        {
-            [tagTimer invalidate];
-            [tagTimer release];
-            tagTimer = nil;
-        }
+					if ([line hasPrefix:tag]) {
+						// Extract the text after the 'section' command, then prefix it with a nice header
+						// text taken from g_taggedTagSections.
+						// This tries to only extract the text inside a matching pair of braces '{' and '}'.
+						// To see why, consider this example:
+						//   \section*{Section {\bf headers} are important} \label{a-section-label}
+						
+						int braceCount = 0;
+						unichar c;
+
+						titleString = [line substringFromIndex: [tag length]];
+						tag = [g_taggedTagSections objectAtIndex:i];
+						
+						// Next we scan for braces. Note that a section command could
+						// span more than one line, have embedded comments etc.. We can't
+						// cope with all these cases in a sensible fashion, though. If
+						// the user really wants to shoot himself into the foot, let 'em
+						// do it, just make sure to act nicely and fail gracefully...
+						nameRange.location = 0;
+						nameRange.length = [titleString length];
+						for (i = 0; i < nameRange.length; ++i) {
+							c = [titleString characterAtIndex:i];
+							if (c == '{') {
+								if (braceCount == 0)
+									nameRange.location = i + 1;
+								braceCount++;
+							} else if (c == '}') {
+								braceCount--;
+								if (braceCount == 0)
+									break;
+							}
+						}
+						nameRange.length = i - nameRange.location;
+
+						titleString = [titleString substringWithRange:nameRange];
+						titleString = [tag stringByAppendingString: titleString];
+						break;
+					}
+				}
+			}
+			// TODO: Hierarchical menus would be cool. This could be achieved
+			// by assiging the tags a 'level', maybe based on their position
+			// in the g_taggedTagSections array (and '%:' markers would have 
+			// level = infinity). Then, we keep a stack of items of a given
+			// level, and append new items to a submenu on the last previous
+			// item which had a lower level... So sections would be subitems
+			// of chapters, etc.
+			if (titleString) {
+				// Add new menu item. We do *not* use addItemWithTitle since that would
+				// overwrite any existing item with the same title.
+				[tags addItemWithTitle: @""];
+				newItem = [tags lastItem];
+				[newItem setAction: @selector(doTag:)];
+				[newItem setTarget: self];
+				[newItem setTag: lineNumber];
+				[newItem setTitle: titleString];
+				[newItem setRepresentedObject: line];
+			}
+		}
+	}
+
+	tagLocation = myRange.location;
+	tagLocationLine = lineNumber;
+	if (tagLocation >= length) 
+	{
+		[tagTimer invalidate];
+		[tagTimer release];
+		tagTimer = nil;
+	}
     
 }
 
@@ -6581,9 +6556,6 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
     NSRange		myRange, modifyRange, tempRange, oldRange;
     unsigned		start, end, end1, changeStart, changeEnd;
     int			theChar;
-    //NSUndoManager	*myManager;
-    //NSMutableDictionary	*myDictionary;
-    //NSNumber		*theLocation, *theLength, *theType;
 
     text = [textView string];
     myRange = [textView selectedRange];
