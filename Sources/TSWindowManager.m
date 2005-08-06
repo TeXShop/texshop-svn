@@ -30,9 +30,7 @@ static id _sharedInstance = nil;
 //------------------------------------------------------------------------------
 {
 	if (_sharedInstance == nil)
-	{\
 		_sharedInstance = [[TSWindowManager alloc] init];
-	}
 	return _sharedInstance;
 }
 
@@ -65,11 +63,10 @@ static id _sharedInstance = nil;
     // do not retain the window here!
     _activeDocumentWindow = [note object];
     
-    // added by mitsu --(J+) check mark in "Typeset" menu
+    // Update check mark in "Typeset" menu
     [self checkProgramMenuItem: [[[note object] document] whichEngine] checked: YES];
-// end addition
-
 }
+
 /* This method was added on November 9, 2003, to fix the following bug: in Jaguar (but not Panther)
     when the application does not open empty windows upon activation,  suppose we make the 
     preview window be the active window, and then reach over and close the document window.
@@ -131,6 +128,33 @@ static id _sharedInstance = nil;
     return _activeDocumentWindow;
 }
 
+//-----------------------------------------------------------------------------
+- (void)setPdfWindowWithDocument:(MyDocument *) doc isActive:(BOOL)flag
+//-----------------------------------------------------------------------------
+{
+	// Update check mark in "Typeset" menu
+    if ([doc imageType] == isTeX)
+		[self checkProgramMenuItem: [doc whichEngine] checked: flag];
+
+#ifdef MITSU_PDF
+	// Update menu item Preview=>Display Format/Magnification
+    if ([doc imageType] == isTeX || [doc imageType] == isPDF)
+	{
+		NSMenu *previewMenu = [[[NSApp mainMenu] itemWithTitle:
+				NSLocalizedString(@"Preview", @"Preview")] submenu];
+		NSMenu *menu = [[previewMenu itemWithTitle:
+				NSLocalizedString(@"Display Format", @"Display Format")] submenu];
+		id <NSMenuItem> item = [menu itemWithTag:[[doc pdfView] pageStyle]];
+		[item setState: flag ? NSOnState : NSOffState];
+		menu = [[previewMenu itemWithTitle:
+				NSLocalizedString(@"Magnification", @"Magnification")] submenu];
+		item = [menu itemWithTag:[[doc pdfView] resizeOption]];
+		[item setState: flag ? NSOnState : NSOffState];
+	}
+#endif
+}
+
+
 /*" This method is registered with the NotificationCenter and will be sent whenever a pdf window becomes key. We register this pdf window here so when TSPreferences needs this information when setting the window position it will be available.
 "*/
 //-----------------------------------------------------------------------------
@@ -139,31 +163,8 @@ static id _sharedInstance = nil;
 {    
     // do not retain the window here!
     _activePdfWindow = [note object];
-    
-// added by mitsu --(J+) check mark in "Typeset" menu
-    if ([[[note object] document] imageType] == isTeX)
-		[self checkProgramMenuItem: [[[note object] document] whichEngine] checked: YES];
-// end addition
-
-#ifdef MITSU_PDF
-	// mitsu 1.29b check menu item Preview=>Display Format/Magnification
-	MyDocument *doc = [[note object] document];
-    if ([doc imageType] == isTeX || [doc imageType] == isPDF)
-	{
-		NSMenu *previewMenu = [[[NSApp mainMenu] itemWithTitle:
-				NSLocalizedString(@"Preview", @"Preview")] submenu];
-		NSMenu *menu = [[previewMenu itemWithTitle:
-				NSLocalizedString(@"Display Format", @"Display Format")] submenu];
-		id <NSMenuItem> item = [menu itemWithTag:[[doc pdfView] pageStyle]];
-		[item setState: NSOnState];
-		menu = [[previewMenu itemWithTitle:
-				NSLocalizedString(@"Magnification", @"Magnification")] submenu];
-		item = [menu itemWithTag:[[doc pdfView] resizeOption]];
-		[item setState: NSOnState];
-	}
-	//[[doc pdfView] recacheMarquee]; // cache it for quick drawing
-	// end mitsu 1.29b
-#endif
+	
+	[self setPdfWindowWithDocument:[[note object] document] isActive:YES];
 }
 
 /*" This method is registered with the NotificationCenter and will be called when a document window will be closed. 
@@ -183,7 +184,6 @@ static id _sharedInstance = nil;
     return _activePdfWindow;
 }
 
-// added by mitsu --(J+) check mark in "Typeset" menu
 //-----------------------------------------------------------------------------
 - (void)documentWindowDidResignKey:(NSNotification *)note
 //-----------------------------------------------------------------------------
@@ -194,29 +194,8 @@ static id _sharedInstance = nil;
 //-----------------------------------------------------------------------------
 - (void)pdfWindowDidResignKey:(NSNotification *)note
 //-----------------------------------------------------------------------------
-{    
-    if ([[[note object] document] imageType] == isTeX)
-		[self checkProgramMenuItem: [[[note object] document] whichEngine] checked: NO];
-                
-#ifdef MITSU_PDF
-	// mitsu 1.29b (O) uncheck menu item Preview=>Display Format/Magnification
-	MyDocument *doc = [[note object] document];
-    if ([doc imageType] == isTeX || [doc imageType] == isPDF)
-	{
-		NSMenu *previewMenu = [[[NSApp mainMenu] itemWithTitle:
-				NSLocalizedString(@"Preview", @"Preview")] submenu];
-		NSMenu *menu = [[previewMenu itemWithTitle:
-				NSLocalizedString(@"Display Format", @"Display Format")] submenu];
-		id <NSMenuItem> item = [menu itemWithTag:[[doc pdfView] pageStyle]];
-		[item setState: NSOffState];
-		menu = [[previewMenu itemWithTitle:
-				NSLocalizedString(@"Magnification", @"Magnification")] submenu];
-		item = [menu itemWithTag:[[doc pdfView] resizeOption]];
-		[item setState: NSOffState];
-	}
-	//[[doc pdfView] cleanupMarquee: NO]; // erase marquee?
-	// end mitsu 1.29b
-#endif
+{
+	[self setPdfWindowWithDocument:[[note object] document] isActive:NO];
 }
 
 
@@ -227,9 +206,6 @@ static id _sharedInstance = nil;
     [[[[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")] submenu] 
         itemWithTag:programID] setState: (flag)?NSOnState:NSOffState];
 }
-
-// end addition
-
 
 
 @end
