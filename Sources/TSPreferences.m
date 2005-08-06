@@ -1,9 +1,25 @@
-//
-//  Preferences.m
-//  TeXShop
-//
-//  Created by dirk on Thu Dec 07 2000.
-//
+/* TeXShop - TeX editor for Mac OS 
+ * Copyright (C) 2000-2005 Richard Koch
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * $Id$
+ *
+ * Created by dirk on Thu Dec 07 2000.
+ *
+ */
 
 #import "UseMitsu.h"
 
@@ -55,8 +71,7 @@ static id _sharedInstance = nil;
 - (id)init 
 //------------------------------------------------------------------------------
 {
-    if (_sharedInstance != nil) 
-	{
+    if (_sharedInstance != nil) {
         [super dealloc];
         return _sharedInstance;
     }
@@ -90,34 +105,32 @@ Loads the .nib file if necessary, fills all the controls with the values from th
 - (IBAction)showPreferences:sender
 //------------------------------------------------------------------------------
 {
-	if (_prefsWindow == nil)
-	{		
+	if (_prefsWindow == nil) {
 		// we need to load the nib
-		if ([NSBundle loadNibNamed:@"Preferences" owner:self] == NO)
-		{
+		if ([NSBundle loadNibNamed:@"Preferences" owner:self] == NO) {
 			NSRunAlertPanel(@"Error", @"Could not load Preferences.nib", @"shit happens", nil, nil);
 		}
-
+		
 		// fill in all the values here since the window will be brought up for the first time
 		/* koch: I moved this command two lines below, so it will ALWAYS be called
-                    when showing preferences: [self updateControlsFromUserDefaults:SUD]; */
+		when showing preferences: [self updateControlsFromUserDefaults:SUD]; */
 	}
 	
-        [self updateControlsFromUserDefaults:SUD];
-        /* the next command causes windows to remember their font in case it is changed, and then
-        the change is cancelled */
-        [[NSNotificationCenter defaultCenter] postNotificationName:DocumentFontRememberNotification object:self];
-        [[NSNotificationCenter defaultCenter] postNotificationName:MagnificationRememberNotification object:self];
-        fontTouched = NO; 
-        externalEditorTouched = NO;
-        syntaxColorTouched = NO;
-        oldSyntaxColor = [SUD boolForKey:SyntaxColoringEnabledKey];
-        autoCompleteTouched = NO;
-        oldAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
-        magnificationTouched = NO;
-// added by mitsu --(G) EncodingSupport
-        encodingTouched = NO;
-// end addition
+	[self updateControlsFromUserDefaults:SUD];
+	/* the next command causes windows to remember their font in case it is changed, and then
+	the change is cancelled */
+	[[NSNotificationCenter defaultCenter] postNotificationName:DocumentFontRememberNotification object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:MagnificationRememberNotification object:self];
+	fontTouched = NO; 
+	externalEditorTouched = NO;
+	syntaxColorTouched = NO;
+	oldSyntaxColor = [SUD boolForKey:SyntaxColoringEnabledKey];
+	autoCompleteTouched = NO;
+	oldAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
+	magnificationTouched = NO;
+	// added by mitsu --(G) EncodingSupport
+	encodingTouched = NO;
+	// end addition
 	// prepare undo manager: forget all the old undo information and begin a new group.
 	[_undoManager removeAllActions];
 	[_undoManager beginUndoGrouping];
@@ -147,37 +160,37 @@ Loads the .nib file if necessary, fills all the controls with the values from th
 - (IBAction)setDefaults:sender;
 //------------------------------------------------------------------------------
 {
-
-    	NSString *fileName;
+	
+	NSString *fileName;
 	NSDictionary *factoryDefaults, *oldDefaults;
-
-        oldDefaults = [SUD dictionaryRepresentation];
-        [_undoManager registerUndoWithTarget:self selector:@selector(undoDefaultPrefs:) object:oldDefaults];
-        
+	
+	oldDefaults = [SUD dictionaryRepresentation];
+	[_undoManager registerUndoWithTarget:self selector:@selector(undoDefaultPrefs:) object:oldDefaults];
+	
 	// register defaults
-        switch ([sender tag]) {
-            case 1: fileName = [[NSBundle mainBundle] pathForResource:@"FactoryDefaults" ofType:@"plist"]; break;
-            case 2: fileName = [[NSBundle mainBundle] pathForResource:@"Defaults_pTeX_sjis" ofType:@"plist"]; break;
-            case 3: fileName = [[NSBundle mainBundle] pathForResource:@"Defaults_pTeX_euc" ofType:@"plist"]; break;
+	switch ([sender tag]) {
+		case 1: fileName = [[NSBundle mainBundle] pathForResource:@"FactoryDefaults" ofType:@"plist"]; break;
+		case 2: fileName = [[NSBundle mainBundle] pathForResource:@"Defaults_pTeX_sjis" ofType:@"plist"]; break;
+		case 3: fileName = [[NSBundle mainBundle] pathForResource:@"Defaults_pTeX_euc" ofType:@"plist"]; break;
             /*
-            case 2: fileName = [[NSBundle mainBundle] pathForResource:@"Defaults_pTeX_Inoue" ofType:@"plist"]; break;
-            case 3: fileName = [[NSBundle mainBundle] pathForResource:@"Defaults_pTeX_Kiriki" ofType:@"plist"]; break;
-            case 4: fileName = [[NSBundle mainBundle] pathForResource:@"Defaults_pTeX_Ogawa" ofType:@"plist"]; break;
-            */
-            default: fileName = [[NSBundle mainBundle] pathForResource:@"FactoryDefaults" ofType:@"plist"]; break;
-            }
+			 case 2: fileName = [[NSBundle mainBundle] pathForResource:@"Defaults_pTeX_Inoue" ofType:@"plist"]; break;
+			 case 3: fileName = [[NSBundle mainBundle] pathForResource:@"Defaults_pTeX_Kiriki" ofType:@"plist"]; break;
+			 case 4: fileName = [[NSBundle mainBundle] pathForResource:@"Defaults_pTeX_Ogawa" ofType:@"plist"]; break;
+				 */
+		default: fileName = [[NSBundle mainBundle] pathForResource:@"FactoryDefaults" ofType:@"plist"]; break;
+	}
 	NSParameterAssert(fileName != nil);
 	factoryDefaults = [[NSString stringWithContentsOfFile:fileName] propertyList];
     
 	[SUD setPersistentDomain:factoryDefaults forName:@"TeXShop"];
 	[SUD synchronize]; /* added by Koch Feb 19, 2001 to fix pref bug when no defaults present */
-
-        // also register the default font. _documentFont was set in -init, dump it here to
-        // the user defaults
-        [SUD setObject:[NSArchiver archivedDataWithRootObject:_documentFont] forKey:DocumentFontKey];
+	
+	// also register the default font. _documentFont was set in -init, dump it here to
+	// the user defaults
+	[SUD setObject:[NSArchiver archivedDataWithRootObject:_documentFont] forKey:DocumentFontKey];
 	[SUD synchronize];
-        
-        [self updateControlsFromUserDefaults:SUD];
+	
+	[self updateControlsFromUserDefaults:SUD];
 }
 
 
@@ -234,12 +247,12 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:DocumentWindowPosModeKey] forKey:DocumentWindowPosModeKey];
-
+	
 	[SUD setInteger:[[sender selectedCell] tag] forKey:DocumentWindowPosModeKey];
-         if ([[sender selectedCell] tag] == 0)
-            [_docWindowPosButton setEnabled: YES];
-        else
-            [_docWindowPosButton setEnabled: NO];
+	if ([[sender selectedCell] tag] == 0)
+		[_docWindowPosButton setEnabled: YES];
+	else
+		[_docWindowPosButton setEnabled: NO];
 }
 
 /*" This method is connected to the 'use current pos as default' button on the 'Document' pane.
@@ -251,12 +264,11 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
     NSWindow	*activeWindow;
     
     activeWindow = [[TSWindowManager sharedInstance] activeDocumentWindow];
-
-    if (activeWindow != nil)
-    {
+	
+    if (activeWindow != nil) {
         [[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD stringForKey:DocumentWindowFixedPosKey] forKey:DocumentWindowFixedPosKey];
         [SUD setObject:[activeWindow stringWithSavedFrame] forKey:DocumentWindowFixedPosKey];
-    
+		
         // just in case: the radio button must be checked as well.
         /* koch: the code below is harmless but probably unnecessary since the button can only
             be pressed if the radio button is in the fixed position mode */
@@ -274,10 +286,10 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:UseOgreKitKey] forKey:UseOgreKitKey];
 
-        if ([[sender selectedCell] tag] == 0)
-            [SUD setBool:NO forKey:UseOgreKitKey];
-        else
-            [SUD setBool:YES forKey:UseOgreKitKey];
+	if ([[sender selectedCell] tag] == 0)
+		[SUD setBool:NO forKey:UseOgreKitKey];
+	else
+		[SUD setBool:YES forKey:UseOgreKitKey];
 }
 
 
@@ -319,59 +331,6 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
     tag = [[sender selectedCell] tag];
     value = [[EncodingSupport sharedInstance] encodingForTag: tag];
  
-/*
-    switch ([[sender selectedCell] tag]) {
-        case 0: value = [NSString stringWithString:@"MacOSRoman"];
-                break;
-        
-        case 1: value = [NSString stringWithString:@"IsoLatin"];
-                break;
-                
-        case 2: value = [NSString stringWithString:@"IsoLatin2"];
-                break;
-                
-        case 3: value = [NSString stringWithString:@"MacJapanese"];
-                break;
-                
-        // S. Zenitani Dec 13, 2002:
-        case 4: value = [NSString stringWithString:@"DOSJapanese"];
-                break;
-                
-        case 5: value = [NSString stringWithString:@"EUC_JP"];
-                break;
-                
-        // Mitsuhiro Shishikura Jan 4, 2003:
-        case 6: value = [NSString stringWithString:@"JISJapanese"];
-                break;
-                
-        case 7: value = [NSString stringWithString:@"MacKorean"];
-                break;
-        
-        case 8: value = [NSString stringWithString:@"UTF-8 Unicode"];
-                break;
-                
-        case 9: value = [NSString stringWithString:@"Standard Unicode"];
-                break;
-                
-        case 10: value = [NSString stringWithString:@"Mac Cyrillic"];
-                break;
-                
-        case 11: value = [NSString stringWithString:@"DOS Cyrillic"];
-                break;
-                
-        case 12: value = [NSString stringWithString:@"DOS Russian"];
-                break;
-                
-        case 13: value = [NSString stringWithString:@"Windows Cyrillic"];
-                break;
-                
-        case 14: value = [NSString stringWithString:@"KOI8_R"];
-                break;
-                
-        default: value = [NSString stringWithString:@"MacOSRoman"];
-                break;
-        }
-*/
     [SUD setObject:value forKey:EncodingKey];
     // added by mitsu --(G) EncodingSupport
     [[NSNotificationCenter defaultCenter] postNotificationName:@"EncodingChangedNotification" object:self];
@@ -399,11 +358,10 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
     if (value < 2) {
         value = 2;
         [_tabsTextField setIntValue:2];
-        }
-    else if (value > 50) {
+	} else if (value > 50) {
         value = 50;
         [_tabsTextField setIntValue:50];
-        }
+	}
         
     [SUD setInteger:value forKey:tabsKey];
 }
@@ -506,12 +464,12 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:PdfWindowPosModeKey] forKey:PdfWindowPosModeKey];
 
 	[SUD setInteger:[[sender selectedCell] tag] forKey:PdfWindowPosModeKey];
-        /* koch: button enabled only if appropriate */
-        if ([[sender selectedCell] tag] == 0)
-            [_pdfWindowPosButton setEnabled: YES];
-        else
-            [_pdfWindowPosButton setEnabled: NO];
 
+	/* koch: button enabled only if appropriate */
+	if ([[sender selectedCell] tag] == 0)
+		[_pdfWindowPosButton setEnabled: YES];
+	else
+		[_pdfWindowPosButton setEnabled: NO];
 }
 
 /*" This method is connected to the 'use current pos as default' button.
@@ -524,8 +482,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
     
     activeWindow = [[TSWindowManager sharedInstance] activePdfWindow];
 
-    if (activeWindow != nil)
-    {
+    if (activeWindow != nil) {
         [[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD stringForKey:PdfWindowFixedPosKey] forKey:PdfWindowFixedPosKey];
         [SUD setObject:[activeWindow stringWithSavedFrame] forKey:PdfWindowFixedPosKey];
     
@@ -543,15 +500,15 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 //------------------------------------------------------------------------------
 {
     // NSRunAlertPanel(@"warning", @"not yet implemented", nil, nil, nil);
-
+	
     MyWindow	*activeWindow;
     double	mag, magnification;
     
     activeWindow = (MyWindow *)[[TSWindowManager sharedInstance] activePdfWindow];
-
- // The comment below fixes a bug; magnification didn't take if no pdf window open
- //   if (activeWindow != nil) 
-                                
+	
+	// The comment below fixes a bug; magnification didn't take if no pdf window open
+	//   if (activeWindow != nil) 
+	
     {
         [[_undoManager prepareWithInvocationTarget:SUD] setFloat:[SUD floatForKey:PdfMagnificationKey] 				forKey:PdfMagnificationKey];
         mag = [_magTextField doubleValue];
@@ -559,20 +516,20 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
             mag = 20;
             [_magTextField setDoubleValue:mag];
             [_magTextField display];
-            }
-        else if (mag > 400.0) {
+		}
+		else if (mag > 400.0) {
             mag = 400;
             [_magTextField setDoubleValue:mag];
             [_magTextField display];
-            }
+		}
         magnification = mag / 100.0; 
         [SUD setFloat:magnification forKey:PdfMagnificationKey];
         magnificationTouched = YES;
         // post a notification so all open documents can change their magnification
         [[NSNotificationCenter defaultCenter] postNotificationName:MagnificationChangedNotification object:self];
-
+		
     }
-
+	
 }
 
 
@@ -681,7 +638,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 - (IBAction)colorMapChanged:sender;
 //------------------------------------------------------------------------------
 {
-       	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD integerForKey:PdfColorMapKey] forKey:PdfColorMapKey];
+	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD integerForKey:PdfColorMapKey] forKey:PdfColorMapKey];
 
     [SUD setBool:([sender state]==NSOnState) forKey:PdfColorMapKey];
 }
@@ -859,18 +816,18 @@ A tag of 0 means use TeX, a tag of 1 means use LaTeX.
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:DefaultCommandKey] forKey:DefaultCommandKey];
-
+	
 	// since the default program values map identically to the tags of the NSButtonCells,
 	// we can use the tag directly here.
 	[SUD setInteger:[[sender selectedCell] tag] forKey:DefaultCommandKey];
-        if ([[sender selectedCell] tag] == 3) {
-             [_engineTextField setEnabled: YES];
-             [_engineTextField setEditable: YES];
-             [_engineTextField setSelectable: YES];
-             [_engineTextField selectText:self];
-             }
-        else 
-             [_engineTextField setEnabled: NO];
+	if ([[sender selectedCell] tag] == 3) {
+		[_engineTextField setEnabled: YES];
+		[_engineTextField setEditable: YES];
+		[_engineTextField setSelectable: YES];
+		[_engineTextField selectText:self];
+	}
+	else 
+		[_engineTextField setEnabled: NO];
 }
 
 - (IBAction)setEngine:sender
@@ -918,7 +875,7 @@ person script.
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:MetaPostCommandKey] forKey:MetaPostCommandKey];
 
-        [SUD setInteger:[[sender selectedCell] tag] forKey:MetaPostCommandKey];
+	[SUD setInteger:[[sender selectedCell] tag] forKey:MetaPostCommandKey];
 }
 
 //------------------------------------------------------------------------------
@@ -928,7 +885,7 @@ person script.
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:BibtexCommandKey] forKey:BibtexCommandKey];
 
-        [SUD setInteger:[[sender selectedCell] tag] forKey:BibtexCommandKey];
+	[SUD setInteger:[[sender selectedCell] tag] forKey:BibtexCommandKey];
 }
 
 //------------------------------------------------------------------------------
@@ -938,7 +895,7 @@ person script.
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:DistillerCommandKey] forKey:DistillerCommandKey];
 
-        [SUD setInteger:[[sender selectedCell] tag] forKey:DistillerCommandKey];
+	[SUD setInteger:[[sender selectedCell] tag] forKey:DistillerCommandKey];
 }
 
 // zenitani 1.35 (C)
@@ -983,7 +940,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 
 	// since the default program values map identically to the tags of the NSButtonCells,
 	// we can use the tag directly here.
-        [SUD setBool:[sender state] forKey:SaveRelatedKey];
+	[SUD setBool:[sender state] forKey:SaveRelatedKey];
 }
 
 
@@ -1051,33 +1008,33 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 	
 	// close the window
 	[_prefsWindow performClose:self];
-        /* koch: undo font changes */
-        if (externalEditorTouched)
-            [[NSNotificationCenter defaultCenter] postNotificationName:ExternalEditorNotification object:self];
-        if (fontTouched)
-         [[NSNotificationCenter defaultCenter] postNotificationName:DocumentFontRevertNotification object:self];
-        if (magnificationTouched)
-         [[NSNotificationCenter defaultCenter] postNotificationName:MagnificationRevertNotification object:self];
-        /* below we must reset a preference because it will not be undone in time */
-        if (syntaxColorTouched) {
-            [SUD setBool:oldSyntaxColor forKey:SyntaxColoringEnabledKey];
-            [[NSNotificationCenter defaultCenter] postNotificationName:DocumentSyntaxColorNotification object:self];
-            }
-        if (autoCompleteTouched) {
-            [SUD setBool:oldAutoComplete forKey:AutoCompleteEnabledKey];
-            [[NSNotificationCenter defaultCenter] postNotificationName:DocumentAutoCompleteNotification object:self];
-            }
-// added by mitsu --(G) EncodingSupport
-        if (encodingTouched) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"EncodingChangedNotification" object: self ];
-            }
-// end addition
-
+	/* koch: undo font changes */
+	if (externalEditorTouched)
+		[[NSNotificationCenter defaultCenter] postNotificationName:ExternalEditorNotification object:self];
+	if (fontTouched)
+		[[NSNotificationCenter defaultCenter] postNotificationName:DocumentFontRevertNotification object:self];
+	if (magnificationTouched)
+		[[NSNotificationCenter defaultCenter] postNotificationName:MagnificationRevertNotification object:self];
+	/* below we must reset a preference because it will not be undone in time */
+	if (syntaxColorTouched) {
+		[SUD setBool:oldSyntaxColor forKey:SyntaxColoringEnabledKey];
+		[[NSNotificationCenter defaultCenter] postNotificationName:DocumentSyntaxColorNotification object:self];
+	}
+	if (autoCompleteTouched) {
+		[SUD setBool:oldAutoComplete forKey:AutoCompleteEnabledKey];
+		[[NSNotificationCenter defaultCenter] postNotificationName:DocumentAutoCompleteNotification object:self];
+	}
+	// added by mitsu --(G) EncodingSupport
+	if (encodingTouched) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"EncodingChangedNotification" object: self ];
+	}
+	// end addition
+	
     // The user defaults have changed. Force update of the user interface.
     /* koch: The code below doesn't take because the undo manager doesn't actually
-    undo here. It calls undo during the next event loop. So the code below is called too soon.
-    I called it again when the preference panel is shown. */
-//    [self updateControlsFromUserDefaults:SUD];
+		undo here. It calls undo during the next event loop. So the code below is called too soon.
+		I called it again when the preference panel is shown. */
+	//    [self updateControlsFromUserDefaults:SUD];
 }
 
 //==============================================================================
@@ -1091,8 +1048,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 {
 	// only update the window's controls when the window is not visible. 
 	// If the window is visible the user edits it directly with the mouse.
-	if ([_prefsWindow isVisible] == NO)
-	{
+	if ([_prefsWindow isVisible] == NO) {
 		[self updateControlsFromUserDefaults:[notification object]];
 	}
 }
@@ -1140,7 +1096,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 {
 	NSString *fileName;
 	NSDictionary *factoryDefaults;
-
+	
 	// register defaults
 	fileName = [[NSBundle mainBundle] pathForResource:@"FactoryDefaults" ofType:@"plist"];
 	NSParameterAssert(fileName != nil);
@@ -1148,32 +1104,11 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
     
 	[SUD setPersistentDomain:factoryDefaults forName:@"TeXShop"];
 	[SUD synchronize]; /* added by Koch Feb 19, 2001 to fix pref bug when no defaults present */
-
-        // also register the default font. _documentFont was set in -init, dump it here to
-        // the user defaults
-        [SUD setObject:[NSArchiver archivedDataWithRootObject:_documentFont] forKey:DocumentFontKey];
-	[SUD synchronize];
 	
-        // The code below was replaced by Sarah Childers
-        /*
-	// create the necessary directories
-        NS_DURING
-		// create ~/Library/TeXShop
-		[self createDirectoryAtPath:[TexTemplatePathKey stringByDeletingLastPathComponent]];
-	NS_HANDLER
-	{
-		NSRunAlertPanel(@"Error", [localException reason], @"Couldn't create TeXShop Folder", 	nil, nil);
-		return;
-	}
-	NS_ENDHANDLER
-        [self createTemplates];
-        */
-        
-        // create necessary directories and template files; later moved to TSAppDelegate
-        // [self createTemplates];
-        
-        // end of change
-        
+	// also register the default font. _documentFont was set in -init, dump it here to
+	// the user defaults
+	[SUD setObject:[NSArchiver archivedDataWithRootObject:_documentFont] forKey:DocumentFontKey];
+	[SUD synchronize];
 }
 
 //==============================================================================
@@ -1202,11 +1137,11 @@ This method retrieves the application preferences from the defaults object and s
     [self updateDocumentFontTextField];
     
 	[_sourceWindowPosMatrix selectCellWithTag:[defaults integerForKey:DocumentWindowPosModeKey]];
-        /* koch: */
-        if ([defaults integerForKey:DocumentWindowPosModeKey] == 0)
-            [_docWindowPosButton setEnabled: YES];
-        else
-            [_docWindowPosButton setEnabled: NO];
+	/* koch: */
+	if ([defaults integerForKey:DocumentWindowPosModeKey] == 0)
+		[_docWindowPosButton setEnabled: YES];
+	else
+		[_docWindowPosButton setEnabled: NO];
     [_syntaxColorButton setState:[defaults boolForKey:SyntaxColoringEnabledKey]];
     [_selectActivateButton setState:[defaults boolForKey:AcceptFirstMouseKey]];
     [_parensMatchButton setState:[defaults boolForKey:ParensMatchingEnabledKey]];
@@ -1219,43 +1154,7 @@ This method retrieves the application preferences from the defaults object and s
 	[_ptexUtfOutputButton setState:[defaults boolForKey:ptexUtfOutputEnabledKey]]; // zenitani 1.35 (C)
     
     myTag = [[EncodingSupport sharedInstance] tagForEncodingPreference];
-/*
-    if ([[defaults stringForKey:EncodingKey] isEqualToString:@"MacOSRoman"])
-        myTag = 0;
-    else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"IsoLatin"])
-        myTag = 1;
-    else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"IsoLatin2"])
-        myTag = 2;
-    else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"MacJapanese"])
-        myTag = 3;
-     // S. Zenitani Dec 13, 2002:
-    else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"DOSJapanese"])
-        myTag = 4;
-    else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"EUC_JP"])
-        myTag = 5;
-    else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"JISJapanese"])
-        myTag = 6;
-    else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"MacKorean"])
-        myTag = 7;
-    // --- end
-    else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"UTF-8 Unicode"])
-        myTag = 8;
-    else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"Standard Unicode"])
-        myTag = 9;
-     else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"Mac Cyrillic"])
-        myTag = 10;
-     else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"DOS Cyrillic"])
-        myTag = 11;
-     else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"DOS Russian"])
-        myTag = 12;
-     else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"Windows Cyrillic"])
-        myTag = 13;
-     else if ([[defaults stringForKey:EncodingKey] isEqualToString:@"KOI8_R"])
-        myTag = 14;
-    else
-        myTag = 0;
-*/
-
+	
     [_defaultEncodeMatrix selectItemAtIndex: myTag];
     if ([defaults boolForKey:UseOgreKitKey] == NO)
         [_findMatrix selectCellWithTag:0];
@@ -1265,69 +1164,67 @@ This method retrieves the application preferences from the defaults object and s
     [_scrollButton setState:[defaults boolForKey:NoScrollEnabledKey]];
     
 	[_pdfWindowPosMatrix selectCellWithTag:[defaults integerForKey:PdfWindowPosModeKey]];
-        /* koch: */
-         if ([defaults integerForKey:PdfWindowPosModeKey] == 0)
-            [_pdfWindowPosButton setEnabled: YES];
-        else
-            [_pdfWindowPosButton setEnabled: NO];
-            
-        magnification = [defaults floatForKey:PdfMagnificationKey];
-        mag = round(magnification * 100.0);
-        myNumber = [NSNumber numberWithInt: mag];
-        [_magTextField setStringValue:[myNumber stringValue]];
-  //      [_magTextField setIntValue: mag];
-        
-        
+	/* koch: */
+	if ([defaults integerForKey:PdfWindowPosModeKey] == 0)
+		[_pdfWindowPosButton setEnabled: YES];
+	else
+		[_pdfWindowPosButton setEnabled: NO];
+	
+	magnification = [defaults floatForKey:PdfMagnificationKey];
+	mag = round(magnification * 100.0);
+	myNumber = [NSNumber numberWithInt: mag];
+	[_magTextField setStringValue:[myNumber stringValue]];
+	//      [_magTextField setIntValue: mag];
+	
+	
 #ifdef MITSU_PDF
-
-        myTag = [defaults integerForKey:PdfFirstPageStyleKey];
-        if (!myTag) myTag = PDF_FIRST_RIGHT;
-        [_firstPageMatrix selectCellWithTag:myTag];
-        
-        // mitsu 1.29 (O)
+	
+	myTag = [defaults integerForKey:PdfFirstPageStyleKey];
+	if (!myTag) myTag = PDF_FIRST_RIGHT;
+	[_firstPageMatrix selectCellWithTag:myTag];
+	
+	// mitsu 1.29 (O)
 	int itemIndex;
 	myTag = [defaults integerForKey:PdfPageStyleKey];
 	if (!myTag) myTag = PDF_SINGLE_PAGE_STYLE; // default PdfPageStyleKey
 	itemIndex = [_pageStylePopup indexOfItemWithTag: myTag];
 	if (itemIndex == -1) itemIndex = 2; // default PdfPageStyleKey
     [_pageStylePopup selectItemAtIndex: itemIndex];
-
+	
 	myTag = [defaults integerForKey:PdfKitFitSizeKey];
 	if (!myTag) myTag = NEW_PDF_FIT_TO_WINDOW; // default PdfKitFitSizeKey
 	itemIndex = [_resizeOptionPopup indexOfItemWithTag: myTag];
 	if (itemIndex == -1) itemIndex = 2; // default PdfKitFitSizeKey
     [_resizeOptionPopup selectItemAtIndex: itemIndex];
-
+	
 	myTag = [defaults integerForKey:PdfCopyTypeKey];
 	if (!myTag) myTag = IMAGE_TYPE_JPEG_MEDIUM; // default PdfCopyTypeKey
 	itemIndex = [_imageCopyTypePopup indexOfItemWithTag: myTag];
 	if (itemIndex == -1) itemIndex = 1; // default PdfCopyTypeKey
     [_imageCopyTypePopup selectItemAtIndex: itemIndex];
-
+	
 	myTag = [defaults integerForKey:PdfKitMouseModeKey];
 	if (!myTag) myTag = NEW_MOUSE_MODE_SELECT_TEXT; // default PdfKitMouseModeKey
 	itemIndex = [_mouseModePopup indexOfItemWithTag: myTag];
 	if (itemIndex == -1) itemIndex = 1; // default PdfKitMouseModeKey
     [_mouseModePopup selectItemAtIndex: itemIndex];
-        
+	
     [_colorMapButton setState: [SUD boolForKey:PdfColorMapKey]?NSOnState:NSOffState];
 	NSColor *aColor;
-	if ([SUD stringForKey:PdfFore_RKey])
-	{
+	if ([SUD stringForKey:PdfFore_RKey]) {
 		aColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:PdfFore_RKey] 
-			green: [SUD floatForKey:PdfFore_GKey] blue: [SUD floatForKey:PdfFore_BKey] 
-			alpha: [SUD floatForKey:PdfFore_AKey]];
+										   green: [SUD floatForKey:PdfFore_GKey] blue: [SUD floatForKey:PdfFore_BKey] 
+										   alpha: [SUD floatForKey:PdfFore_AKey]];
 	}
 	else
 		aColor = [NSColor colorWithCalibratedRed:0 green:0 blue:0 alpha:1];
 	[_copyForeColorWell setColor: aColor];
 	[_copyForeColorWell setContinuous: YES];
 	
-	if ([SUD stringForKey:PdfBack_RKey])
-	{
+	if ([SUD stringForKey:PdfBack_RKey]) {
 		aColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:PdfBack_RKey] 
-			green: [SUD floatForKey:PdfBack_GKey] blue: [SUD floatForKey:PdfBack_BKey] 
-			alpha: [SUD floatForKey:PdfBack_AKey]];
+										   green: [SUD floatForKey:PdfBack_GKey] blue: [SUD floatForKey:PdfBack_BKey] 
+										   alpha: [SUD floatForKey:PdfBack_AKey]];
 	}
 	else
 		aColor = [NSColor colorWithCalibratedRed:1 green:1 blue:1 alpha:1];
@@ -1337,53 +1234,53 @@ This method retrieves the application preferences from the defaults object and s
 	myTag = [defaults integerForKey:PdfColorParam1Key];
 	itemIndex = [_colorParam1Popup indexOfItemWithTag: myTag];
 	if (itemIndex == -1) itemIndex = 2; // default index = 2
-        [_colorParam1Popup selectItemAtIndex: itemIndex];
-
-        myTag = [defaults integerForKey:MetaPostCommandKey];
-        [_defaultMetaPostMatrix selectCellWithTag: myTag];
-        
-        myTag = [defaults integerForKey:BibtexCommandKey];
-        [_defaultBibtexMatrix selectCellWithTag: myTag];
-        
-        myTag = [defaults integerForKey:DistillerCommandKey];
-        [_distillerMatrix selectCellWithTag: myTag];
-
+	[_colorParam1Popup selectItemAtIndex: itemIndex];
+	
+	myTag = [defaults integerForKey:MetaPostCommandKey];
+	[_defaultMetaPostMatrix selectCellWithTag: myTag];
+	
+	myTag = [defaults integerForKey:BibtexCommandKey];
+	[_defaultBibtexMatrix selectCellWithTag: myTag];
+	
+	myTag = [defaults integerForKey:DistillerCommandKey];
+	[_distillerMatrix selectCellWithTag: myTag];
+	
     
 	// end mitsu 1.29
 #endif
-        
-        tabSize = [defaults integerForKey: tabsKey];
-        myNumber = [NSNumber numberWithInt: tabSize];
-        [_tabsTextField setStringValue:[myNumber stringValue]];
-        // [_tabsTextField setIntValue: tabSize];
-
-        [_texCommandTextField setStringValue:[defaults stringForKey:TexCommandKey]];
+	
+	tabSize = [defaults integerForKey: tabsKey];
+	myNumber = [NSNumber numberWithInt: tabSize];
+	[_tabsTextField setStringValue:[myNumber stringValue]];
+	// [_tabsTextField setIntValue: tabSize];
+	
+	[_texCommandTextField setStringValue:[defaults stringForKey:TexCommandKey]];
 	[_latexCommandTextField setStringValue:[defaults stringForKey:LatexCommandKey]];
-        [_texGSCommandTextField setStringValue:[defaults stringForKey:TexGSCommandKey]];
+	[_texGSCommandTextField setStringValue:[defaults stringForKey:TexGSCommandKey]];
 	[_latexGSCommandTextField setStringValue:[defaults stringForKey:LatexGSCommandKey]];
-        [_tetexBinPathField setStringValue:[defaults stringForKey:TetexBinPathKey]];
-        [_gsBinPathField setStringValue:[defaults stringForKey:GSBinPathKey]];
-        
-        [_texScriptCommandTextField setStringValue:[defaults stringForKey:TexScriptCommandKey]];
+	[_tetexBinPathField setStringValue:[defaults stringForKey:TetexBinPathKey]];
+	[_gsBinPathField setStringValue:[defaults stringForKey:GSBinPathKey]];
+	
+	[_texScriptCommandTextField setStringValue:[defaults stringForKey:TexScriptCommandKey]];
 	[_latexScriptCommandTextField setStringValue:[defaults stringForKey:LatexScriptCommandKey]];
-        
+	
 	[_defaultCommandMatrix selectCellWithTag:[defaults integerForKey:DefaultCommandKey]];
-        [_engineTextField setStringValue:[defaults stringForKey:DefaultEngineKey]];
-        if ([defaults integerForKey:DefaultCommandKey] == 3) {
-             [_engineTextField setEnabled: YES];
-             [_engineTextField setEditable: YES];
-             [_engineTextField setSelectable: YES];
-             [_engineTextField selectText:self];
-             }
-        else 
-             [_engineTextField setEnabled: NO];
-
-        if ([defaults integerForKey:DefaultCommandKey] == 3)
-            [_engineTextField setEditable: YES];
-        [_defaultScriptMatrix selectCellWithTag:[defaults integerForKey:DefaultScriptKey]];
-		[_syncMatrix selectCellWithTag:[defaults integerForKey:SyncMethodKey]];
-        [_consoleMatrix selectCellWithTag:[defaults integerForKey:ConsoleBehaviorKey]];
-        [_saveRelatedButton setState:[defaults boolForKey:SaveRelatedKey]];
+	[_engineTextField setStringValue:[defaults stringForKey:DefaultEngineKey]];
+	if ([defaults integerForKey:DefaultCommandKey] == 3) {
+		[_engineTextField setEnabled: YES];
+		[_engineTextField setEditable: YES];
+		[_engineTextField setSelectable: YES];
+		[_engineTextField selectText:self];
+	}
+	else 
+		[_engineTextField setEnabled: NO];
+	
+	if ([defaults integerForKey:DefaultCommandKey] == 3)
+		[_engineTextField setEditable: YES];
+	[_defaultScriptMatrix selectCellWithTag:[defaults integerForKey:DefaultScriptKey]];
+	[_syncMatrix selectCellWithTag:[defaults integerForKey:SyncMethodKey]];
+	[_consoleMatrix selectCellWithTag:[defaults integerForKey:ConsoleBehaviorKey]];
+	[_saveRelatedButton setState:[defaults boolForKey:SaveRelatedKey]];
 }
 
 /*" %{This method is not to be called from outside of this class}

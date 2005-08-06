@@ -1,18 +1,25 @@
-/*
-        TextFinder.m
-        Copyright (c) 1995-2000 by Apple Computer, Inc., all rights reserved.
-        Author: Ali Ozer
+/* TeXShop - TeX editor for Mac OS 
+ * Copyright (C) 2000-2005 Richard Koch
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
 
-        You may incorporate this sample code into your applications without
-        restriction, though the sample code has been provided "AS IS" and the
-        responsibility for its operation is 100% yours.  However, what you are
-        not permitted to do is to redistribute the source as "DSC Sample Code"
-        after having made changes. If you're going to re-distribute the source,
-        we require that you make it clear in the source that the code was
-        descended from Apple Sample Code, but that you've made changes.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
 
-        Find and replace functionality with a minimal panel...
-*/
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * $Id$
+ *
+ * This code was derived from Apple Sample code TextEdit
+ *
+ */
 
 #import "TextFinder.h"
 // added by mitsu --(A) g_texChar filtering and (G) EncodingSupport
