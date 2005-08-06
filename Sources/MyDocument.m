@@ -169,17 +169,16 @@
     int			result;
 
     if (myImageType == isTeX) {
-    
-    
-    if (! externalEditor) {
-        theSource = [[self textView] string]; 
-        if ([self checkMasterFile:theSource forTask:RootForPrinting]) 
-            return;
-#ifdef ROOTFILE
-        if ([self checkRootFile_forTask:RootForPrinting]) 
-            return;
-#endif
-        }
+	
+		if (! externalEditor) {
+			theSource = [[self textView] string]; 
+			if ([self checkMasterFile:theSource forTask:RootForPrinting]) 
+				return;
+	#ifdef ROOTFILE
+			if ([self checkRootFile_forTask:RootForPrinting]) 
+				return;
+	#endif
+			}
 
 #ifndef ROOTFILE
         projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
@@ -187,7 +186,7 @@
             NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
             if ([projectRoot isAbsolutePath]) {
                 nameString = [NSString stringWithString:projectRoot];
-                }
+			}
             else {
                 nameString = [[self fileName] stringByDeletingLastPathComponent];
                 nameString = [[nameString stringByAppendingString:@"/"] 
@@ -195,7 +194,7 @@
                 nameString = [nameString stringByStandardizingPath];
             }
             imagePath = [[nameString stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-            }
+		}
         else
 #endif
             imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
@@ -5401,7 +5400,7 @@ void report(NSString *itest)
 // The code below was slightly modified by Martin Heusse to count trailing spaces; see below
 
 /*
-// Code by Nicol‡s Ojeda BŠr 
+// Code by Nicolas Ojeda Bar 
 - (int) textViewCountTabs: (NSTextView *) aTextView
 {
     int startLocation = [aTextView selectedRange].location - 1, tabCount = 0;
@@ -5423,7 +5422,7 @@ void report(NSString *itest)
     return tabCount;
 }
 
-// Code by Nicol‡s Ojeda BŠr
+// Code by Nicolas Ojeda Bar
 - (BOOL) textView: (NSTextView *) aTextView doCommandBySelector: (SEL)
 aSelector
 {
@@ -5442,7 +5441,7 @@ aSelector
 }
 */
 
-// Code by Nicol‡s Ojeda BŠr, modified by Martin Heusse
+// Code by Nicolas Ojeda Bar, modified by Martin Heusse
 - (int) textViewCountTabs: (NSTextView *) aTextView andSpaces: (int *) spaces
 {
     int startLocation = [aTextView selectedRange].location - 1, tabCount = 0;
@@ -5472,7 +5471,7 @@ aSelector
     return tabCount;
 }
 
-// Code by Nicol‡s Ojeda BŠr, slightly modified by Martin Heusse
+// Code by Nicolas Ojeda Bar, slightly modified by Martin Heusse
 - (BOOL) textView: (NSTextView *) aTextView doCommandBySelector: (SEL)
     aSelector
 {
