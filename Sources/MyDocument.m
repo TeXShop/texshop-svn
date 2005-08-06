@@ -13,11 +13,7 @@
 #import "MyDocument.h"
 #import <OgreKit/OgreKit.h> // zenitani 1.35 (A)
 
-#ifdef MITSU_PDF
 #import "MyPDFView.h"
-#else
-#import "MyView.h"
-#endif
 // FIXME / TODO Max Horn: The following should only be #included for 10.4+ builds
 #import "MyPDFKitView.h"
 
@@ -590,7 +586,7 @@ NS_ENDHANDLER
 	NSScrollView *pdfScrollView = [pdfView enclosingScrollView];
 	NSClipView *pdfClipView = [pdfScrollView contentView];
 	NSRect clipFrame = [pdfClipView frame];
-        pdfClipView = [[FlippedClipView alloc] initWithFrame: clipFrame];	// it returns YES for isFlipped
+	pdfClipView = [[FlippedClipView alloc] initWithFrame: clipFrame];	// it returns YES for isFlipped
 	[pdfScrollView setContentView: pdfClipView];
 	[pdfClipView setBackgroundColor: [NSColor windowBackgroundColor]];
 	[pdfClipView setDrawsBackground: YES];
@@ -3318,7 +3314,7 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
 
 - (void) fixTypesetMenu;
 {
-    NSMenuItem 	*aMenu;
+    id <NSMenuItem> 	aMenu;
     int		i;
     
     for (i = 100; i <= 102; i++) {
@@ -3420,13 +3416,13 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
         [text getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
         myRange.location = end;
         i++;
-        }
+	}
     if (i == (line + 1)) {
         myRange.location = start;
         myRange.length = (end - start);
         [textView setSelectedRange: myRange];
         [textView scrollRangeToVisible: myRange];
-        }
+	}
     
 }
 
@@ -4525,7 +4521,7 @@ void report(NSString *itest)
 	pdfCharacterIndex = index;
 }
 
-- (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)textView;
+- (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView;
 {
     int             pdfPage;
     BOOL            found, synclineFound;
@@ -4543,7 +4539,7 @@ void report(NSString *itest)
     
 	int syncMethod = [SUD integerForKey:SyncMethodKey];
 	if ((syncMethod == SEARCHONLY) || (syncMethod == SEARCHFIRST)) {
-		result = [self doNewPreviewSyncWithFilename:fileName andLine:line andCharacterIndex:index andTextView:textView];
+		result = [self doNewPreviewSyncWithFilename:fileName andLine:line andCharacterIndex:index andTextView:aTextView];
 		if (result) return;
 		}
 	if (syncMethod == SEARCHONLY)
@@ -4836,7 +4832,7 @@ void report(NSString *itest)
 }
 
 
-- (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)theTextView;
+- (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView;
 {
 	NSString			*theText, *searchText;
 	unsigned int		theIndex;
@@ -4859,7 +4855,7 @@ void report(NSString *itest)
 	searchWindow = 10;
 	found = NO;
 	
-	theText = [theTextView string];
+	theText = [aTextView string];
 	length = [theText length];
 	
 	theIndex = index;

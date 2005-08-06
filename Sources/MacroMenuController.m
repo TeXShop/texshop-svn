@@ -220,7 +220,7 @@ static id sharedMacroMenuController = nil;
 {
     NSDictionary *dict;
     NSEnumerator *enumerator = [array objectEnumerator];
-    NSMenuItem *newItem;
+    id <NSMenuItem> newItem;
     NSMenu *submenu;
     NSString *nameStr;
     
@@ -263,7 +263,7 @@ static id sharedMacroMenuController = nil;
 - (void)addItemsToPopupButton: (NSPopUpButton *)popupButton
 {
     NSDictionary *dict;
-    NSMenuItem *newItem;
+    id <NSMenuItem> newItem;
     NSMenu *submenu;
     NSString *nameStr;
     

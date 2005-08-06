@@ -17,11 +17,7 @@
 
 #import "MyDocumentToolbar.h"
 
-#ifdef MITSU_PDF
 #import "MyPDFView.h"
-#else
-#import "MyView.h"
-#endif
 #import "MyPDFKitView.h"
 
 // added by mitsu --(H) Macro menu; macroButton
@@ -241,11 +237,7 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 
 - (void)doPreviousPage:(id)sender
 {
-#ifdef MITSU_PDF
     [((MyPDFView*)[self pdfView]) previousPage: sender];
-#else
-    [((MyView*)[self pdfView]) previousPage: sender];
-#endif
 }
 
 - (void)doPreviousPageKK:(id)sender
@@ -259,11 +251,7 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 
 - (void)doNextPage:(id)sender
 {
-#ifdef MITSU_PDF
     [((MyPDFView*)[self pdfView]) nextPage: sender];
-#else
-    [((MyView*)[self pdfView]) nextPage: sender];
-#endif
 }
 
 - (void)doNextPageKK:(id)sender
@@ -483,9 +471,9 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 			[menuFormRep setTitle: [toolbarItem label]];
 				
 		NSMenu* submenu = [[[NSMenu alloc] init] autorelease];
-		NSMenuItem *submenuItem, *tempsubmenuItem;
+		id <NSMenuItem> submenuItem, tempsubmenuItem;
 		NSString *tempString;
-		id *tempTarget;
+		id tempTarget;
 		SEL tempAction;	
 		int i;
 		int j = [[programButtonEE menu] numberOfItems]; 

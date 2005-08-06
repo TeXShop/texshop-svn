@@ -154,7 +154,7 @@ static id _sharedInstance = nil;
 				NSLocalizedString(@"Preview", @"Preview")] submenu];
 		NSMenu *menu = [[previewMenu itemWithTitle:
 				NSLocalizedString(@"Display Format", @"Display Format")] submenu];
-		NSMenuItem *item = [menu itemWithTag:[[doc pdfView] pageStyle]];
+		id <NSMenuItem> item = [menu itemWithTag:[[doc pdfView] pageStyle]];
 		[item setState: NSOnState];
 		menu = [[previewMenu itemWithTitle:
 				NSLocalizedString(@"Magnification", @"Magnification")] submenu];
@@ -207,7 +207,7 @@ static id _sharedInstance = nil;
 				NSLocalizedString(@"Preview", @"Preview")] submenu];
 		NSMenu *menu = [[previewMenu itemWithTitle:
 				NSLocalizedString(@"Display Format", @"Display Format")] submenu];
-		NSMenuItem *item = [menu itemWithTag:[[doc pdfView] pageStyle]];
+		id <NSMenuItem> item = [menu itemWithTag:[[doc pdfView] pageStyle]];
 		[item setState: NSOffState];
 		menu = [[previewMenu itemWithTitle:
 				NSLocalizedString(@"Magnification", @"Magnification")] submenu];

@@ -46,6 +46,7 @@
 
 
 #import "MyPDFKitView.h"
+#import "MyPDFView.h"	// For grabHandCursor
 #import "Globals.h"
 #import "MyDocument.h"
 #import "EncodingSupport.h"
@@ -603,7 +604,7 @@
 							NSLocalizedString(@"Preview", @"Preview")] submenu];
 		NSMenu *menu = [[previewMenu itemWithTitle:
 				NSLocalizedString(@"Display Format", @"Display Format")] submenu];
-		NSMenuItem *item = [menu itemWithTag: pageStyle];
+		id <NSMenuItem> item = [menu itemWithTag: pageStyle];
 		[item setState: NSOffState];
 		// end mitsu 1.29b
 		
@@ -640,8 +641,8 @@
 				NSLocalizedString(@"Preview", @"Preview")] submenu];
 	NSMenu *menu = [[previewMenu itemWithTitle:
 				NSLocalizedString(@"Magnification", @"Magnification")] submenu];
-	NSMenuItem *item =[menu itemWithTag: resizeOption];
-	if (item) [item setState: NSOffState];
+	id <NSMenuItem> item = [menu itemWithTag: resizeOption];
+	[item setState: NSOffState];
 	
 	resizeOption = [sender tag];
 	[self setupMagnificationStyle];
@@ -667,8 +668,8 @@
 */
 	
 	// mitsu: check menu item Preview=>Magnification
-	item =[menu itemWithTag: resizeOption];
-	if (item) [item setState: NSOnState];
+	item = [menu itemWithTag: resizeOption];
+	[item setState: NSOnState];
 	// end mitsu
 }
 
@@ -970,14 +971,14 @@
 	{
 		case NEW_MOUSE_MODE_SCROLL: 
 			[super resetCursorRects];
-			[self addCursorRect:[self visibleRect] cursor:openHandCursor()];
+			[self addCursorRect:[self visibleRect] cursor:[NSCursor openHandCursor]];
 			break;
 		case NEW_MOUSE_MODE_SELECT_TEXT: 
 			[super resetCursorRects];
 			break;
 		case NEW_MOUSE_MODE_SELECT_PDF: 
 			[super resetCursorRects];
-			[self addCursorRect:[self visibleRect] cursor:[NSCursor _crosshairCursor]];
+			[self addCursorRect:[self visibleRect] cursor:[NSCursor crosshairCursor]];
 			if (selRectTimer)
 				[self addCursorRect:mySelectedRect cursor:[NSCursor arrowCursor]];
 			break;
@@ -3038,6 +3039,7 @@ done:
 		else // there is some portion which is not visible
 		{
 			// new routine which creates image by directly calling drawRect
+			// TODO / FIXME: MyPDFKitView currently does *not* implement imageFromRect:!
 			image = [self imageFromRect: mySelectedRect];
 				
 			if (image)
@@ -3330,6 +3332,7 @@ done:
 	}
 	else // quick drag for PDF & EPS
 	{
+		// TODO / FIXME: MyPDFKitView currently does *not* implement imageFromRect:!
 		image = [self imageFromRect: mySelectedRect];
 		if (image)
 		{

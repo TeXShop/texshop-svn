@@ -126,8 +126,8 @@ NSData *getPICTDataFromBitmap(NSBitmapImageRep *bitmap);
 
 NSString *extensionForType(int type); // mitsu 1.29 drag & drop
 
-NSCursor *openHandCursor();
-NSCursor *grabHandCursor();
+extern NSCursor *openHandCursor();
+extern NSCursor *grabHandCursor();
 
 @interface NSCursor (crosshairCursor)
 + (NSCursor *)_crosshairCursor;

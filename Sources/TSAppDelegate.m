@@ -137,14 +137,13 @@
 		imageCopyType = IMAGE_TYPE_JPEG_MEDIUM; // default PdfCopyTypeKey
 	NSMenu *previewMenu = [[[NSApp mainMenu] itemWithTitle:
 							NSLocalizedString(@"Preview", @"Preview")] submenu];
-	NSMenuItem *item = [previewMenu itemWithTitle: 
+	id <NSMenuItem> item = [previewMenu itemWithTitle: 
 							NSLocalizedString(@"Copy Format", @"format")];
 	if (item)
 	{
 		NSMenu *formatMenu = [item submenu];
 		item = [formatMenu itemWithTag: imageCopyType];
-		if (item)
-			[item setState: NSOnState];
+		[item setState: NSOnState];
 	}
         
 	[NSColor setIgnoresAlpha:NO]; // it seesm necessary to call this to activate alpha
@@ -210,7 +209,6 @@ Copies %fileName to %directory. This method takes care that no files are overwri
 - (void)copyFile:(NSString *)fileName toDirectory:(NSString *)directory cutExtension:(BOOL)cutExt
 //------------------------------------------------------------------------------
 {
-	[self copyFile:fileName toDirectory:TexTemplatePathKey];
 	NSFileManager *fileManager;
 	NSString *destFileName;
 	BOOL result;

@@ -15,11 +15,7 @@
 #import "TSAppDelegate.h" // mitsu 1.29 (O)
 #import "MyDocument.h"
 
-#ifdef MITSU_PDF
-#import "MyPDFView.h" // mitsu 1.29 (O)
-#else
-#import "MyView.h"
-#endif
+//#import "MyPDFView.h" // mitsu 1.29 (O)
 
 #define SUD [NSUserDefaults standardUserDefaults]
 
@@ -652,7 +648,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
                                                 
 	NSMenu *formatMenu = [[previewMenu itemWithTitle: 
 						NSLocalizedString(@"Copy Format", @"Copy Format")] submenu];
-	NSMenuItem *item = [formatMenu itemWithTag: [SUD integerForKey:PdfCopyTypeKey]];
+	id <NSMenuItem> item = [formatMenu itemWithTag: [SUD integerForKey:PdfCopyTypeKey]];
 	if (item)
 		[[_undoManager prepareWithInvocationTarget:[NSApp delegate]] changeImageCopyType: item];
 

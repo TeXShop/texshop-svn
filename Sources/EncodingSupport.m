@@ -99,9 +99,9 @@ static id sharedEncodingSupport = nil;
 {
 	NSString *currentEncoding;
 	NSMenu *editMenu;
-	NSMenuItem *item;
+	id <NSMenuItem> item;
 	NSMutableString *menuTitle;
-        MyDocument *theDoc;
+	MyDocument *theDoc;
 	
 	currentEncoding = [SUD stringForKey:EncodingKey];
         

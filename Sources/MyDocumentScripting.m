@@ -369,6 +369,8 @@ TeXShop's undo manager just wasn't informed of the change in the document / sele
     NSDictionary* args = [command evaluatedArguments];
     line = [[args objectForKey:@"LineNumber"] unsignedIntValue];
     [self toLine:line];
+ 
+    return nil;
 }
 
 

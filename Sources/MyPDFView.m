@@ -3989,7 +3989,7 @@ failed. If you change the code below, be sure to test carefully!
 							NSLocalizedString(@"Preview", @"Preview")] submenu];
 		NSMenu *menu = [[previewMenu itemWithTitle:
 				NSLocalizedString(@"Display Format", @"Display Format")] submenu];
-		NSMenuItem *item = [menu itemWithTag: pageStyle];
+		id <NSMenuItem> item = [menu itemWithTag: pageStyle];
 		[item setState: NSOffState];
 		// end mitsu 1.29b
 		
@@ -4031,7 +4031,7 @@ failed. If you change the code below, be sure to test carefully!
 				NSLocalizedString(@"Preview", @"Preview")] submenu];
 	NSMenu *menu = [[previewMenu itemWithTitle:
 				NSLocalizedString(@"Magnification", @"Magnification")] submenu];
-	NSMenuItem *item =[menu itemWithTag: resizeOption];
+	id <NSMenuItem> item = [menu itemWithTag: resizeOption];
 	if (item) [item setState: NSOffState];
 	// end mitsu 1.29b
 	

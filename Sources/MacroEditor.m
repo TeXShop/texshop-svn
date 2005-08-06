@@ -86,7 +86,7 @@ static int savedFilter = filterNone;
 		// set up menu items
 		NSMenu *macroMenu = [[[NSApp mainMenu] itemWithTitle: 
 					NSLocalizedString(@"Macros", @"Macros")] submenu];
-		NSMenuItem *item = [macroMenu itemWithTitle: 
+		id <NSMenuItem> item = [macroMenu itemWithTitle: 
 						NSLocalizedString(@"Open Macro Editor...", @"Open Macro Editor...")];
 		if (item)
 		{
@@ -413,7 +413,7 @@ static int savedFilter = filterNone;
 	// restore menu item
 	NSMenu *macroMenu = [[[NSApp mainMenu] itemWithTitle: 
 				NSLocalizedString(@"Macros", @"Macros")] submenu];
-	NSMenuItem *item = [macroMenu itemWithTitle: 
+	id <NSMenuItem> item = [macroMenu itemWithTitle: 
 					NSLocalizedString(@"Close Macro Editor", @"Close Macro Editor")];
 	if (item)
 	{

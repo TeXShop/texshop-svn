@@ -10,14 +10,10 @@
 #import <AppKit/AppKit.h>
 #import "MyWindow.h"
 #import "MyDocument.h"
-#ifdef MITSU_PDF
 #import "MyPDFView.h"
 #import "MyPDFKitView.h"
 #import "globals.h"
 extern NSPanel *pageNumberWindow;
-#else
-#import "MyView.h"
-#endif
 
 #define SUD [NSUserDefaults standardUserDefaults]
 
@@ -200,16 +196,8 @@ extern NSPanel *pageNumberWindow;
 	if ([myDocument fromKit])
 		[[myDocument pdfKitView] rotateClockwise: sender];
 	else {
-#ifdef MITSU_PDF
-			MyPDFView *theView;
-#else
-			MyView *theView;
-#endif
-    
-			theView = [myDocument pdfView];
-			if (theView != nil)
-				[theView rotateClockwise: sender];
-		}
+		[[myDocument pdfView] rotateClockwise: sender];
+	}
 }
 
 - (void) rotateCounterclockwise: sender;
@@ -217,16 +205,8 @@ extern NSPanel *pageNumberWindow;
 	if ([myDocument fromKit])
 		[[myDocument pdfKitView] rotateCounterclockwise: sender];
 	else {
-#ifdef MITSU_PDF
-			MyPDFView *theView;
-#else
-			MyView *theView;
-#endif
-    
-			theView = [myDocument pdfView];
-			if (theView != nil)
-				[theView rotateCounterclockwise: sender];
-		}
+		[[myDocument pdfView] rotateCounterclockwise: sender];
+	}
 }
 
 ////////////////////// key movement ///////////////////////////////////
@@ -247,81 +227,45 @@ extern NSPanel *pageNumberWindow;
 }
 
 - (void) up: sender;
-{	if (![myDocument fromKit]) {
-#ifdef MITSU_PDF
-    MyPDFView *theView;
-#else
-    MyView *theView;
-#endif
-    
-    theView = [myDocument pdfView];
-    if (theView != nil)
-        [theView up: sender];
+{
+	if (![myDocument fromKit]) {
+        [[myDocument pdfView] up: sender];
 	}
 }
 
 - (void) down: sender;
-{	if (![myDocument fromKit]) {
-#ifdef MITSU_PDF
-    MyPDFView *theView;
-#else
-    MyView *theView;
-#endif
-    
-    theView = [myDocument pdfView];
-    if (theView != nil)
-        [theView down: sender];
+{
+	if (![myDocument fromKit]) {
+        [[myDocument pdfView] down: sender];
 	}
 }
 
 - (void) top: sender;
-{	if (![myDocument fromKit]) {
-#ifdef MITSU_PDF
-    MyPDFView *theView;
-#else
-    MyView *theView;
-#endif
-    
-    theView = [myDocument pdfView];
-    if (theView != nil)
-        [theView top: sender];
+{
+	if (![myDocument fromKit]) {
+        [[myDocument pdfView] top: sender];
 	}
 }
 
 - (void) bottom: sender;
-{	if (![myDocument fromKit]) {
-#ifdef MITSU_PDF
-    MyPDFView *theView;
-#else
-    MyView *theView;
-#endif
-    
-    theView = [myDocument pdfView];
-    if (theView != nil)
-        [theView bottom: sender];
+{
+	if (![myDocument fromKit]) {
+        [[myDocument pdfView] bottom: sender];
 	}
 }
 
 // mitsu 1.29 (O)
 - (void) left: sender;
 {
-if (![myDocument fromKit]) {
-    MyPDFView *theView; 
-    
-    theView = [myDocument pdfView];
-    if (theView != nil)
-        [theView left: sender];
+	if (![myDocument fromKit]) {
+        [[myDocument pdfView] left: sender];
 	}
 }
 
 - (void) right: sender;
 {
-if (![myDocument fromKit]) {
-    MyPDFView *theView; 
-    
-    theView = [myDocument pdfView];
-    if (theView != nil)
-        [theView right: sender];
+	if (![myDocument fromKit]) {
+        [[myDocument pdfView] right: sender];
 	}
 }
 

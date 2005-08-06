@@ -247,8 +247,8 @@
 - (void)showSyncMarks:sender;
 - (BOOL)syncState;
 - (void) flipShowSync: sender;
-- (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)textView;
-- (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)theTextView;
+- (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView;
+- (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView;
 - (void)trashAUXFiles: sender;
 - (void)trashAUX;
 - (void)tryBadEncodingDialog: (NSWindow *)theWindow;
