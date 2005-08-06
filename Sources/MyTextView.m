@@ -43,7 +43,7 @@
             found = YES;
         myRange.location = end;
         line++;
-        }
+	}
     if (!found)
         return;
     [document setPdfSyncLine:line];
@@ -68,23 +68,23 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-		NSMutableDictionary	*mySelectedTextAttributes;
+	NSMutableDictionary	*mySelectedTextAttributes;
 	
-        // koch; Dec 13, 2003
-		
-        if (!([theEvent modifierFlags] & NSAlternateKeyMask) && ([theEvent modifierFlags] & NSCommandKeyMask)) {
-                [self doSync: theEvent];
-                return;
-                }
-		
-        
-		if ([document textSelectionYellow]) {
-			[document setTextSelectionYellow: NO];
-			mySelectedTextAttributes = [NSMutableDictionary dictionaryWithDictionary: [[document textView] selectedTextAttributes]];
-			[mySelectedTextAttributes setObject:[NSColor colorWithCatalogName: @"System" colorName: @"selectedTextBackgroundColor"]  forKey:@"NSBackgroundColor"];
-			[[document textView] setSelectedTextAttributes: mySelectedTextAttributes];
-			}
-        [super mouseDown:theEvent];
+	// koch; Dec 13, 2003
+	
+	if (!([theEvent modifierFlags] & NSAlternateKeyMask) && ([theEvent modifierFlags] & NSCommandKeyMask)) {
+		[self doSync: theEvent];
+		return;
+	}
+	
+	
+	if ([document textSelectionYellow]) {
+		[document setTextSelectionYellow: NO];
+		mySelectedTextAttributes = [NSMutableDictionary dictionaryWithDictionary: [[document textView] selectedTextAttributes]];
+		[mySelectedTextAttributes setObject:[NSColor colorWithCatalogName: @"System" colorName: @"selectedTextBackgroundColor"]  forKey:@"NSBackgroundColor"];
+		[[document textView] setSelectedTextAttributes: mySelectedTextAttributes];
+	}
+	[super mouseDown:theEvent];
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
@@ -101,7 +101,7 @@
     NSPasteboard *pb = [sender draggingPasteboard];
     NSString *type = [pb availableTypeFromArray:
         [NSArray arrayWithObjects: NSStringPboardType, NSFilenamesPboardType, nil] ];
-    if( type && [(MyDocument *)[[[self window] windowController] document] fileIsTex] ) {
+    if( type && [document fileIsTex] ) {
         if( [type isEqualToString:NSStringPboardType] ||
             [type isEqualToString:NSFilenamesPboardType] ){
             NSPoint location = [self convertPoint:[sender draggingLocation] fromView:nil];
@@ -147,68 +147,21 @@
 }
 
 
-/*
-- (void) concludeDragOperation : (id <NSDraggingInfo>) sender {
-    NSPasteboard *pb = [ sender draggingPasteboard ];
-    NSString *type = [ pb availableTypeFromArray:
-        [NSArray arrayWithObjects: NSStringPboardType, NSFilenamesPboardType, nil]];
-    if ((type) && ([type isEqualToString:NSFilenamesPboardType])) {
-         NSArray *ar = [pb propertyListForType:NSFilenamesPboardType];
-            unsigned cnt = [ar count];
-            if( cnt == 0 ) return;
-            NSString *thisFile = [[[[self window] windowController] document] fileName];
-            unsigned i;
-            for( i=0; i<cnt; i++ ){
-                // The below code will soon be modified.
-                // A user will be able to customize these strings by .plist file.
-                NSString *fPath = [ar objectAtIndex:i];
-                NSString *bPath = [[fPath lastPathComponent] stringByDeletingPathExtension];
-                NSString *fExt  = [[fPath pathExtension] lowercaseString];
-                NSString *rPath = [[TSPreferences sharedInstance] relativePath: fPath fromFile: thisFile ];
-                if( [fExt isEqualToString: @"cls"] ){
-                    [ self insertText:
-                        [NSString stringWithFormat: @"%cdocumentclass{%@}\n", g_texChar, bPath ]];
-                }else if( [fExt isEqualToString: @"sty"] ){
-                    [ self insertText:
-                        [NSString stringWithFormat: @"%cusepackage{%@}\n", g_texChar, bPath ]];
-                }else if( [fExt isEqualToString: @"bib"] ){
-                    [ self insertText:
-                        [NSString stringWithFormat: @"%cbibliography{%@}\n", g_texChar, bPath ]];
-                }else if( [fExt isEqualToString: @"bst"] ){
-                    [ self insertText:
-                        [NSString stringWithFormat: @"%cbibliographystyle{%@}\n", g_texChar, bPath ]];
-                }else if( ([fExt isEqualToString: @"pdf"] ) ||
-                    ([fExt isEqualToString: @"jpeg"]) || ([fExt isEqualToString: @"jpg"]) ||
-                    ([fExt isEqualToString: @"tiff"]) || ([fExt isEqualToString: @"tif"]) ||
-                    ([fExt isEqualToString: @"eps"] ) || ([fExt isEqualToString: @"ps"] ) ){
-                    [ self insertText:
-                        [NSString stringWithFormat: @"%cincludegraphics[]{%@}\n", g_texChar, rPath ]];
-                }else{
-                    [ self insertText:
-                        [NSString stringWithFormat: @"%cinput{%@}\n", g_texChar, rPath ]];
-                    }
-                }
-            [ self display ];
-            }
-        else  [super concludeDragOperation:sender];
-    }
-// end addition
-*/
-
-
 // zenitani 1.33 begin
 - (void) concludeDragOperation : (id <NSDraggingInfo>) sender {
 
     NSPasteboard *pb = [ sender draggingPasteboard ];
     NSString *type = [ pb availableTypeFromArray:
         [NSArray arrayWithObjects: NSStringPboardType, NSFilenamesPboardType, nil]];
-    if ((type) && ([type isEqualToString:NSFilenamesPboardType])) {
+
+    if ([type isEqualToString:NSFilenamesPboardType]) {
         NSArray *ar = [pb propertyListForType:NSFilenamesPboardType];
         unsigned cnt = [ar count];
-        if( cnt == 0 ) return;
-        NSString *thisFile = [[[[self window] windowController] document] fileName];
+        if (cnt == 0)
+			return;
+        NSString *thisFile = [document fileName];
         unsigned i;
-        for( i=0; i<cnt; i++ ){
+        for (i = 0; i < cnt; i++) {
             // NSString *filePath = [ar objectAtIndex:i];
             NSString *tempPath = [ar objectAtIndex:i];
             NSString *filePath = [self resolveAlias:tempPath];
@@ -220,17 +173,14 @@
             NSMutableString *tmpString;
 
             // zenitani 1.33(2) begin
+			// If the dropped file is a PDF, pass it on to readSourceFromEquationEditorPDF.
             NSDragOperation sourceDragMask = [sender draggingSourceOperationMask];
-            if( [fileExt isEqualToString: @"pdf"] &&
+            if ([fileExt isEqualToString: @"pdf"] &&
                 ((sourceDragMask & NSDragOperationLink) || (sourceDragMask & NSDragOperationGeneric)) ){
                 insertString = [self readSourceFromEquationEditorPDF: filePath];
-                if( insertString != nil ){
-                    // [self insertText:insertString];
-                    // [[self undoManager] setActionName: NSLocalizedString(@"Drag && Drop", @"Drag && Drop")];
-                    // 1.33(fix) for undo
-                    [[[[self window] windowController] document] insertSpecial: insertString
+                if (insertString != nil) {
+                    [document insertSpecial: insertString
                                                         undoKey: NSLocalizedString(@"Drag && Drop", @"Drag && Drop")];
-                    // end 1.33(fix)
                     return;
                 }
             }
@@ -270,14 +220,14 @@
             [tmpString replaceOccurrencesOfString: @"%n" withString: baseName options: 0 range: NSMakeRange(0, [tmpString length])];
             [tmpString replaceOccurrencesOfString: @"%e" withString: fileExt options: 0 range: NSMakeRange(0, [tmpString length])];
             [tmpString replaceOccurrencesOfString: @"%r" withString: relPath options: 0 range: NSMakeRange(0, [tmpString length])];
-            [[[[self window] windowController] document] insertSpecial: tmpString
+            [document insertSpecial: tmpString
 						undoKey: NSLocalizedString(@"Drag && Drop", @"Drag && Drop")];
 //            [[MacroMenuController sharedInstance] doMacro: tmpString];
 //            [self insertText:tmpString];
             return;
         }
-        [ self display ];
-    }else{
+        [self display];
+    } else {
         [super concludeDragOperation:sender];
     }
 }
@@ -398,184 +348,95 @@
     NSString	*textString;
     int		length, i, j;
     BOOL	done;
-    int		leftpar, rightpar, count, uchar;
+    int		leftpar, rightpar, nestingLevel, uchar;
 	
+	textString = [self string];
+    if (textString == nil)
+		return replacementRange;
+
     replacementRange = [super selectionRangeForProposedRange: proposedSelRange granularity: granularity];
 
-	textString = [self string]; // moved up here reitter 12/2004
-
-	// reitter 12/2004: extend word selection to cover an initial backslash (TeX command)
+	// Extend word selection to cover an initial backslash (TeX command)
 	if (granularity == NSSelectByWord)
 	{
-		if (replacementRange.location>1 && [textString characterAtIndex: replacementRange.location-1] == '\\')
+		if (replacementRange.location >= 1 && [textString characterAtIndex: replacementRange.location-1] == '\\')
 		{
 			replacementRange.location--;
-			replacementRange.length = replacementRange.length+1;
+			replacementRange.length++;
 			return replacementRange;
 		}
 	}
 	
-	if ((proposedSelRange.length != 0) || (granularity != 2))
+	if ((proposedSelRange.length != 0) || (granularity != NSSelectByParagraph))
         return replacementRange;
 
-    if (textString == nil) return replacementRange;
     length = [textString length];
     i = proposedSelRange.location;
-    if (i >= length) return replacementRange;
-    rightpar = [textString characterAtIndex: i];
+    if (i >= length)
+		return replacementRange;
+    uchar = [textString characterAtIndex: i];
 
-	// the following extends the selection to the end of a parenthesis
-    if ((rightpar == 0x007D) || (rightpar == 0x0029) || (rightpar == 0x005D)) {
-           j = i;
-            if (rightpar == 0x007D)
-                leftpar = 0x007B;
-            else if (rightpar == 0x0029)
-                leftpar = 0x0028;
-            else
-                leftpar = 0x005B;
-            count = 1;
-            done = NO;
-            while ((i > 0) && (! done)) {
-                i--;
-                uchar = [textString characterAtIndex:i];
-                if (uchar == rightpar)
-                    count++;
-                else if (uchar == leftpar)
-                    count--;
-                if (count == 0) {
-                    done = YES;
-                    replacementRange.location = i;
-                    replacementRange.length = j - i + 1;
-                    return replacementRange;
-                    }
-                }
-            return replacementRange;
-            }
-
-    else if ((rightpar == 0x007B) || (rightpar == 0x0028) || (rightpar == 0x005B)) {
-            j = i;
-            leftpar = rightpar;
-            if (leftpar == 0x007B)
-                rightpar = 0x007D;
-            else if (leftpar == 0x0028)
-                rightpar = 0x0029;
-            else
-                rightpar = 0x005D;
-            count = 1;
-            done = NO;
-            while ((i < (length - 1)) && (! done)) {
-                i++;
-                uchar = [textString characterAtIndex:i];
-                if (uchar == leftpar)
-                    count++;
-                else if (uchar == rightpar)
-                    count--;
-                if (count == 0) {
-                    done = YES;
-                    replacementRange.location = j;
-                    replacementRange.length = i - j + 1;
-                    return replacementRange;
-                    }
-                }
-            return replacementRange;
-            }
-
-    else return replacementRange;
-
-/*
-    NSRange	replacementRange;
-    NSString	*textString;
-    int		length, i, j;
-    BOOL	done;
-    int		leftpar, rightpar, count, uchar;
-
-    replacementRange = [super selectionRangeForProposedRange: proposedSelRange granularity: granularity];
-    if ((proposedSelRange.length != 0) || (granularity != 2)) 
-        return replacementRange;
-    textString = [self string];
-    if (textString == nil) return replacementRange;
-    length = [textString length];
-    i = proposedSelRange.location;
-    if (i >= length) return replacementRange;
-    rightpar = [textString characterAtIndex: i];
-    
-    if ((rightpar == 0x007D) || (rightpar == 0x0029) || (rightpar == 0x005D)) {
-           j = i;
-            if (rightpar == 0x007D) 
-                leftpar = 0x007B;
-            else if (rightpar == 0x0029) 
-                leftpar = 0x0028;
-            else 
-                leftpar = 0x005B;
-            count = 1;
-            done = NO;
-            while ((i > 0) && (! done)) {
-                i--;
-                uchar = [textString characterAtIndex:i];
-                if (uchar == rightpar)
-                    count++;
-                else if (uchar == leftpar)
-                    count--;
-                if (count == 0) {
-                    done = YES;
-                    replacementRange.location = i;
-                    replacementRange.length = j - i + 1;
-                    return replacementRange;
-                    }
-                }
-            return replacementRange;
-            }
-            
-    else if ((rightpar == 0x007B) || (rightpar == 0x0028) || (rightpar == 0x005B)) {
-            j = i;
-            leftpar = rightpar;
-            if (leftpar == 0x007B) 
-                rightpar = 0x007D;
-            else if (leftpar == 0x0028) 
-                rightpar = 0x0029;
-            else 
-                rightpar = 0x005D;
-            count = 1;
-            done = NO;
-            while ((i < (length - 1)) && (! done)) {
-                i++;
-                uchar = [textString characterAtIndex:i];
-                if (uchar == leftpar)
-                    count++;
-                else if (uchar == rightpar)
-                    count--;
-                if (count == 0) {
-                    done = YES;
-                    replacementRange.location = j;
-                    replacementRange.length = i - j + 1;
-                    return replacementRange;
-                    }
-                }
-            return replacementRange;
-            }
-
-    else return replacementRange;
-*/
+	// If the users double clicks an opening or closing parenthesis / bracket / brace,
+	// then the following code will extend the selection to the matching opposite
+	// parenthesis / bracket / brace.
+    if ((uchar == '}') || (uchar == ')') || (uchar == ']')) {
+		j = i;
+		rightpar = uchar;
+		if (rightpar == '}')
+			leftpar = '{';
+		else if (rightpar == ')')
+			leftpar = '(';
+		else
+			leftpar = '[';
+		nestingLevel = 1;
+		done = NO;
+		// Try searching to the left to find a match...
+		while ((i > 0) && (! done)) {
+			i--;
+			uchar = [textString characterAtIndex:i];
+			if (uchar == rightpar)
+				nestingLevel++;
+			else if (uchar == leftpar)
+				nestingLevel--;
+			if (nestingLevel == 0) {
+				done = YES;
+				replacementRange.location = i;
+				replacementRange.length = j - i + 1;
+			}
+		}
+	}
+    else if ((uchar == '{') || (uchar == '(') || (uchar == '[')) {
+		j = i;
+		leftpar = uchar;
+		if (leftpar == '{')
+			rightpar = '}';
+		else if (leftpar == '(')
+			rightpar = ')';
+		else
+			rightpar = ']';
+		nestingLevel = 1;
+		done = NO;
+		while ((i < (length - 1)) && (! done)) {
+			i++;
+			uchar = [textString characterAtIndex:i];
+			if (uchar == leftpar)
+				nestingLevel++;
+			else if (uchar == rightpar)
+				nestingLevel--;
+			if (nestingLevel == 0) {
+				done = YES;
+				replacementRange.location = j;
+				replacementRange.length = i - j + 1;
+			}
+		}
+	}
+	
+	return replacementRange;
 }
 
 // added by mitsu --(A) g_texChar filtering
 - (void)insertText:(id)aString
 {
-// old code was: 
-/*
-	if (g_shouldFilter == filterMacJ)
-	{
-		aString = filterBackslashToYen(aString);
-	}
-	else if (g_shouldFilter == filterNSSJIS)
-	{
-		aString = filterYenToBackslash(aString);
-	}
-	[super insertText: aString];*/
-// 
-
-
-// mitsu 1.29 (T4)
 	NSString *newString = aString;
 
 #define AUTOCOMPLETE_IN_INSERTTEXT
@@ -583,10 +444,9 @@
 	// AutoCompletion
     // Code added by Greg Landweber for auto-completions of '^', '_', etc.
     // First, avoid completing \^, \_, \"
-	if ([(NSString *)aString length]==1 && 
-		document && [(MyDocument *)document isDoAutoCompleteEnabled]) 
+	if ([aString length] == 1 &&  [document isDoAutoCompleteEnabled]) 
 	{
-        if ( [aString characterAtIndex:0] >= 128 ||
+        if ([aString characterAtIndex:0] >= 128 ||
             [self selectedRange].location == 0 ||
             [[self string] characterAtIndex:[self selectedRange].location - 1 ] != g_texChar ) 
 		{
@@ -596,10 +456,8 @@
 			{
 #define ALLOW_UNDO_AUTOCOMPLETION
 #ifdef ALLOW_UNDO_AUTOCOMPLETION
-				[(MyDocument *)document insertSpecialNonStandard:completionString 
+				[document insertSpecialNonStandard:completionString 
 						undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
-				//[self insertSpecialNonStandard:completionString 
-				//		undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
 				return;
 #else
 				newString = completionString;
@@ -619,16 +477,16 @@
 	{
 		newString = filterYenToBackslash(newString);
 	}
-        
-        // zenitani 1.35 (A) -- normalizing newline character for regular expression
-        long MacVersion;
-        if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
-            if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030)) 
-            newString = [OGRegularExpression replaceNewlineCharactersInString:newString 
-                        withCharacter:OgreLfNewlineCharacter];
-            }
-        
-        
+	
+	// zenitani 1.35 (A) -- normalizing newline character for regular expression
+	long MacVersion;
+	if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
+		if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030)) 
+			newString = [OGRegularExpression replaceNewlineCharactersInString:newString 
+					withCharacter:OgreLfNewlineCharacter];
+	}
+	
+	
 	[super insertText: newString];
 	
 }
@@ -638,24 +496,24 @@
 	NSMutableString *newString;
 	
 	BOOL returnValue = [super writeSelectionToPasteboard:pboard type:type];
-	if ((g_shouldFilter == filterMacJ) && returnValue && 
-			[SUD boolForKey:@"ConvertToBackslash"] && [type isEqualToString: NSStringPboardType])
-	{
-		newString = filterYenToBackslash([pboard stringForType: NSStringPboardType]);
-		returnValue = [pboard setString: newString forType: NSStringPboardType];
-	}
-	else if ((g_shouldFilter == filterNSSJIS) && returnValue && 
-			[SUD boolForKey:@"ConvertToYen"] && [type isEqualToString: NSStringPboardType])
-	{
-		newString = filterBackslashToYen([pboard stringForType: NSStringPboardType]);
-		returnValue = [pboard setString: newString forType: NSStringPboardType];
+	if (returnValue && [type isEqualToString: NSStringPboardType]) {
+		if ((g_shouldFilter == filterMacJ) && [SUD boolForKey:@"ConvertToBackslash"])
+		{
+			newString = filterYenToBackslash([pboard stringForType: NSStringPboardType]);
+			returnValue = [pboard setString: newString forType: NSStringPboardType];
+		}
+		else if ((g_shouldFilter == filterNSSJIS) && [SUD boolForKey:@"ConvertToYen"])
+		{
+			newString = filterBackslashToYen([pboard stringForType: NSStringPboardType]);
+			returnValue = [pboard setString: newString forType: NSStringPboardType];
+		}
 	}
 	return returnValue;
 }
 
 - (BOOL)readSelectionFromPasteboard:(NSPasteboard *)pboard type:(NSString *)type
 {
-	if(g_shouldFilter && [type isEqualToString: NSStringPboardType])
+	if (g_shouldFilter && [type isEqualToString: NSStringPboardType])
 	{
 		NSString *string = [pboard stringForType: NSStringPboardType];
 		if (string)
@@ -667,13 +525,13 @@
 			else if (g_shouldFilter == filterNSSJIS)
 				string = filterYenToBackslash(string);
                                 
-                        // zenitani 1.35 (A) -- normalizing newline character for regular expression
-                        long MacVersion;
-                        if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
-                        if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030)) 
-                            string = [OGRegularExpression replaceNewlineCharactersInString:string 
-                                    withCharacter:OgreLfNewlineCharacter];
-                            }
+			// zenitani 1.35 (A) -- normalizing newline character for regular expression
+			long MacVersion;
+			if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
+			if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030)) 
+				string = [OGRegularExpression replaceNewlineCharactersInString:string 
+						withCharacter:OgreLfNewlineCharacter];
+			}
 		
 			// Replace the text--imitate what happens in ordinary editing
 			NSRange	selectedRange = [self selectedRange];
@@ -683,9 +541,6 @@
 				[self didChangeText];
 			}
 			// by returning YES, "Undo Paste" menu item will be set up by system
-		// original was:
-		//	[self insertText: string];
-		// end mitsu 1.29
 			return YES; 
 		}
 		else
@@ -701,8 +556,8 @@
 - (id)initWithFrame:(NSRect)frameRect
 {
 	self = [super initWithFrame: frameRect];
-        [ self registerForDraggedTypes:
-            [NSArray arrayWithObjects: NSStringPboardType, NSFilenamesPboardType, nil] ];
+	[ self registerForDraggedTypes:
+			[NSArray arrayWithObjects: NSStringPboardType, NSFilenamesPboardType, nil] ];
 	document = nil; 
     return self;
 }
@@ -711,23 +566,6 @@
 {
 	document = doc;
 }
-
-/*
-- (void)rightMouseDown: (NSEvent *)theEvent
-{
-    [super rightMouseDown:theEvent];
-  //  [[document textWindow] rightMouseDown:theEvent];
-    [[self nextResponder] rightMouseDown:theEvent];
-}
-
-
-- (void)rightMouseUp: (NSEvent *)theEvent
-{
-  //  [super rightMouseDown:theEvent];
-  //  [[document textWindow] rightMouseUp:theEvent];
-    [[self nextResponder] rightMouseDown:theEvent];
-}
-*/
 
 // Command Completion!!
 
@@ -1020,7 +858,6 @@
 	[super keyDown: theEvent];
 }
 
-// mitsu 1.29 (P)
 - (void)registerForCommandCompletion: (id)sender
 {
 	NSString		*initialWord, *aWord, *completionPath, *backupPath;
@@ -1028,10 +865,12 @@
 	int			theTag;
 	NSStringEncoding	theEncoding;
     
-	if (!g_commandCompletionList) return;
+	if (!g_commandCompletionList)
+		return;
+
 	// get the word(s) to register
 	initialWord = [[self string] substringWithRange: [self selectedRange]];
-        aWord = [initialWord stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
+	aWord = [initialWord stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
 	//if (g_shouldFilter == filterMacJ)// we now use current encoding, so this isn't necessary
 	//	aWord = filterYenToBackslash(aWord);
 	// add to the list-- it will be ideal if one can check redundancy
@@ -1053,43 +892,16 @@
 	// save the new list to file
 	//myData = [g_commandCompletionList dataUsingEncoding: NSUTF8StringEncoding]; // not used
         
-        // theTag = [[EncodingSupport sharedInstance] tagForEncodingPreference];
-        theTag = [[EncodingSupport sharedInstance] tagForEncoding: @"UTF-8 Unicode"];
-		theEncoding = [[EncodingSupport sharedInstance] stringEncodingForTag: theTag];
-        myData = [g_commandCompletionList dataUsingEncoding: theEncoding allowLossyConversion:YES];
-        
-        /*
-	if([[SUD stringForKey:EncodingKey] isEqualToString:@"MacOSRoman"])
-		myData = [g_commandCompletionList dataUsingEncoding: NSMacOSRomanStringEncoding allowLossyConversion:YES];
-	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"IsoLatin"])
-		myData = [g_commandCompletionList dataUsingEncoding: NSISOLatin1StringEncoding allowLossyConversion:YES];
-	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"IsoLatin2"])
-		myData = [g_commandCompletionList dataUsingEncoding: NSISOLatin2StringEncoding allowLossyConversion:YES];
-	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"MacJapanese"]) 
-		myData = [g_commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacJapanese) allowLossyConversion:YES];
-	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"DOSJapanese"]) 
-		myData = [g_commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese) allowLossyConversion:YES];
-	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"EUC_JP"]) 
-		myData = [g_commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP) allowLossyConversion:YES];
-	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"JISJapanese"]) 
-		myData = [g_commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP) allowLossyConversion:YES];
-	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"MacKorean"]) 
-		myData = [g_commandCompletionList dataUsingEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacKorean) allowLossyConversion:YES];
-	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"UTF-8 Unicode"]) 
-		myData = [g_commandCompletionList dataUsingEncoding: NSUTF8StringEncoding allowLossyConversion:YES];
-	else if([[SUD stringForKey:EncodingKey] isEqualToString:@"Standard Unicode"])
-		myData = [g_commandCompletionList dataUsingEncoding: NSUnicodeStringEncoding allowLossyConversion:YES];
-	else 
-		myData = [g_commandCompletionList dataUsingEncoding: NSMacOSRomanStringEncoding allowLossyConversion:YES];
-*/
-	
-	if (myData)
-	{
-		NS_DURING
-			[myData writeToFile:completionPath atomically:YES];
-		NS_HANDLER
-		NS_ENDHANDLER
-	}
+	// theTag = [[EncodingSupport sharedInstance] tagForEncodingPreference];
+	theTag = [[EncodingSupport sharedInstance] tagForEncoding: @"UTF-8 Unicode"];
+	theEncoding = [[EncodingSupport sharedInstance] stringEncodingForTag: theTag];
+	myData = [g_commandCompletionList dataUsingEncoding: theEncoding allowLossyConversion:YES];
+
+	NS_DURING
+		[myData writeToFile:completionPath atomically:YES];
+	NS_HANDLER
+	NS_ENDHANDLER
+
 	[g_commandCompletionList insertString: @"\n" atIndex: 0];
 }
 
@@ -1102,7 +914,4 @@
 	return [super validateMenuItem: anItem];
 }
 
-// end mitsu 1.29
- 
-        
 @end
