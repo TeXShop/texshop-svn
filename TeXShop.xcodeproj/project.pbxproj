@@ -40,7 +40,6 @@
 		407880650519249A006979EA /* MainWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CFF0ED000AD0B87F000001 /* MainWindow.h */; };
 		407880660519249A006979EA /* MyWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CFF0F1000AD1547F000001 /* MyWindow.h */; };
 		407880670519249A006979EA /* PrintView.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CFF0F5000AD1F27F000001 /* PrintView.h */; };
-		407880680519249A006979EA /* MyView.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CFF0F9000AD2807F000001 /* MyView.h */; };
 		4078806A0519249A006979EA /* TSPreferences.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AC768C30010B1D17F000001 /* TSPreferences.h */; };
 		4078806B0519249A006979EA /* TSAppDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E7EAC1001D35FA7F000001 /* TSAppDelegate.h */; };
 		4078806C0519249A006979EA /* TSWindowManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E5E439003E251B7F000001 /* TSWindowManager.h */; };
@@ -199,8 +198,6 @@
 		4078816E0519249A006979EA /* split.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 40B275F603EF6F9D00000009 /* split.tiff */; };
 		4078816F0519249A006979EA /* CommandCompletion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 406842980405965F00000009 /* CommandCompletion.txt */; };
 		407881700519249A006979EA /* Select.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 40160CAB0409574C00000009 /* Select.tiff */; };
-		407881710519249A006979EA /* GrabHandCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 407DE7500409C05300000009 /* GrabHandCursor.tiff */; };
-		407881720519249A006979EA /* OpenHandCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 407DE7520409C06F00000009 /* OpenHandCursor.tiff */; };
 		407881730519249A006979EA /* MagGlass.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 407DE7540409C08300000009 /* MagGlass.tiff */; };
 		407881740519249A006979EA /* MagGlassL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 407DE7560409C09600000009 /* MagGlassL.tiff */; };
 		407881750519249A006979EA /* split1.png in Resources */ = {isa = PBXBuildFile; fileRef = 40BA4A4704B54E5500000B3B /* split1.png */; };
@@ -210,7 +207,6 @@
 		4078817D0519249A006979EA /* MainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CFF0EE000AD0B87F000001 /* MainWindow.m */; settings = {ATTRIBUTES = (); }; };
 		4078817E0519249A006979EA /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CFF0F2000AD1547F000001 /* MyWindow.m */; settings = {ATTRIBUTES = (); }; };
 		4078817F0519249A006979EA /* PrintView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CFF0F6000AD1F27F000001 /* PrintView.m */; settings = {ATTRIBUTES = (); }; };
-		407881800519249A006979EA /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CFF0FA000AD2807F000001 /* MyView.m */; settings = {ATTRIBUTES = (); }; };
 		407881810519249A006979EA /* TSPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AC768C40010B1D17F000001 /* TSPreferences.m */; settings = {ATTRIBUTES = (); }; };
 		407881820519249A006979EA /* globals.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AC768C80010B25E7F000001 /* globals.m */; settings = {ATTRIBUTES = (); }; };
 		407881830519249A006979EA /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E7EAC2001D35FA7F000001 /* TSAppDelegate.m */; settings = {ATTRIBUTES = (); }; };
@@ -317,8 +313,6 @@
 		00CFF0F2000AD1547F000001 /* MyWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyWindow.m; sourceTree = "<group>"; };
 		00CFF0F5000AD1F27F000001 /* PrintView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PrintView.h; sourceTree = "<group>"; };
 		00CFF0F6000AD1F27F000001 /* PrintView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PrintView.m; sourceTree = "<group>"; };
-		00CFF0F9000AD2807F000001 /* MyView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyView.h; sourceTree = "<group>"; };
-		00CFF0FA000AD2807F000001 /* MyView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyView.m; sourceTree = "<group>"; };
 		00E3D4B8FF24EF1F80DF2474 /* Icons.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icons.icns; sourceTree = "<group>"; };
 		00E5E439003E251B7F000001 /* TSWindowManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TSWindowManager.h; sourceTree = "<group>"; };
 		00E5E43A003E251B7F000001 /* TSWindowManager.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TSWindowManager.m; sourceTree = "<group>"; };
@@ -388,8 +382,6 @@
 		4077C62F03C7FB1E00000009 /* OutlineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlineViewController.m; sourceTree = "<group>"; };
 		4077C63603C7FC0900000009 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MacroEditor.nib; sourceTree = "<group>"; };
 		407881970519249A006979EA /* TeXShop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeXShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		407DE7500409C05300000009 /* GrabHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = GrabHandCursor.tiff; sourceTree = "<group>"; };
-		407DE7520409C06F00000009 /* OpenHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OpenHandCursor.tiff; sourceTree = "<group>"; };
 		407DE7540409C08300000009 /* MagGlass.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagGlass.tiff; sourceTree = "<group>"; };
 		407DE7560409C09600000009 /* MagGlassL.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagGlassL.tiff; sourceTree = "<group>"; };
 		40839127060963C800266FAB /* TextFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFinder.h; sourceTree = "<group>"; };
@@ -718,8 +710,6 @@
 				F5ECC3160214673901DF2474 /* texicon.tiff */,
 				40B275F603EF6F9D00000009 /* split.tiff */,
 				40BA4A4704B54E5500000B3B /* split1.png */,
-				407DE7500409C05300000009 /* GrabHandCursor.tiff */,
-				407DE7520409C06F00000009 /* OpenHandCursor.tiff */,
 				407DE7540409C08300000009 /* MagGlass.tiff */,
 				407DE7560409C09600000009 /* MagGlassL.tiff */,
 				F5B8EA9501FF5A1601DF2474 /* Panelpicture */,
@@ -804,38 +794,14 @@
 				00CFF0EB000ACFFC7F000001 /* ConsoleWindow.m */,
 				40AA2B8103C79AF800000009 /* EncodingSupport.h */,
 				40AA2B8203C79AF800000009 /* EncodingSupport.m */,
-				00CFF0ED000AD0B87F000001 /* MainWindow.h */,
-				00CFF0EE000AD0B87F000001 /* MainWindow.m */,
-				00CFF0F1000AD1547F000001 /* MyWindow.h */,
-				00CFF0F2000AD1547F000001 /* MyWindow.m */,
-				2A37F4AEFDCFA73011CA2CEA /* MyDocument.h */,
-				2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */,
-				40EB71E50400BE1000000009 /* MyDocumentController.h */,
-				40EB71E60400BE1000000009 /* MyDocumentController.m */,
-				4068429A0405969B00000009 /* MyPDFView.h */,
-				4068429B0405969B00000009 /* MyPDFView.m */,
-				40CD913407E4CE6C00DE6448 /* MyPDFKitView.h */,
-				40CD913507E4CE6C00DE6448 /* MyPDFKitView.m */,
 				40839127060963C800266FAB /* TextFinder.h */,
 				40839128060963C800266FAB /* TextFinder.m */,
-				00CFF0F9000AD2807F000001 /* MyView.h */,
-				00CFF0FA000AD2807F000001 /* MyView.m */,
-				00CFF0F5000AD1F27F000001 /* PrintView.h */,
-				00CFF0F6000AD1F27F000001 /* PrintView.m */,
-				66EF66260147C62B00000001 /* PrintBitmapView.h */,
-				66EF66270147C62B00000001 /* PrintBitmapView.m */,
 				00E7EAC1001D35FA7F000001 /* TSAppDelegate.h */,
 				00E7EAC2001D35FA7F000001 /* TSAppDelegate.m */,
-				40B7DEA9057139E2002872F2 /* MyDocumentScripting.h */,
-				40B7DEAA057139E2002872F2 /* MyDocumentScripting.m */,
 				0AC768C30010B1D17F000001 /* TSPreferences.h */,
 				0AC768C40010B1D17F000001 /* TSPreferences.m */,
 				00E5E439003E251B7F000001 /* TSWindowManager.h */,
 				00E5E43A003E251B7F000001 /* TSWindowManager.m */,
-				F5ECC3200214678B01DF2474 /* MyDocumentToolbar.h */,
-				F5ECC3210214678B01DF2474 /* MyDocumentToolbar.m */,
-				F510E36D03916F340100009E /* MyTextView.h */,
-				F510E36E03916F340100009E /* MyTextView.m */,
 			);
 			name = classes;
 			sourceTree = "<group>";
@@ -913,7 +879,7 @@
 			path = Scripts;
 			sourceTree = "<group>";
 		};
-		4077C67503C7FEB000000009 /* MacroClasses */ = {
+		4077C67503C7FEB000000009 /* Macro Classes */ = {
 			isa = PBXGroup;
 			children = (
 				4077C62203C7FAE800000009 /* MacroEditor.h */,
@@ -925,10 +891,10 @@
 				4077C62E03C7FB1E00000009 /* OutlineViewController.h */,
 				4077C62F03C7FB1E00000009 /* OutlineViewController.m */,
 			);
-			name = MacroClasses;
+			name = "Macro Classes";
 			sourceTree = "<group>";
 		};
-		40D1F2C706040B4500087115 /* MatrixClasses */ = {
+		40D1F2C706040B4500087115 /* Matrix Classes */ = {
 			isa = PBXGroup;
 			children = (
 				4096186205824CF2000D94FD /* Matrixcontroller.h */,
@@ -936,7 +902,7 @@
 				40D1F2BD06040B1700087115 /* MatrixTableView.h */,
 				40D1F2BE06040B1700087115 /* MatrixTableView.m */,
 			);
-			name = MatrixClasses;
+			name = "Matrix Classes";
 			sourceTree = "<group>";
 		};
 		528029DB089D3DD900696FB9 /* Shellscripts */ = {
@@ -972,8 +938,9 @@
 			isa = PBXGroup;
 			children = (
 				2A37F4ABFDCFA73011CA2CEA /* classes */,
-				40D1F2C706040B4500087115 /* MatrixClasses */,
-				4077C67503C7FEB000000009 /* MacroClasses */,
+				52F59A6A08A4E6A000D66FBB /* Document Classes */,
+				40D1F2C706040B4500087115 /* Matrix Classes */,
+				4077C67503C7FEB000000009 /* Macro Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 			);
 			path = Sources;
@@ -989,6 +956,51 @@
 				529174F8089D430200577613 /* More */,
 			);
 			path = Templates;
+			sourceTree = "<group>";
+		};
+		52F59A6A08A4E6A000D66FBB /* Document Classes */ = {
+			isa = PBXGroup;
+			children = (
+				2A37F4AEFDCFA73011CA2CEA /* MyDocument.h */,
+				2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */,
+				40B7DEA9057139E2002872F2 /* MyDocumentScripting.h */,
+				40B7DEAA057139E2002872F2 /* MyDocumentScripting.m */,
+				F5ECC3200214678B01DF2474 /* MyDocumentToolbar.h */,
+				F5ECC3210214678B01DF2474 /* MyDocumentToolbar.m */,
+				40EB71E50400BE1000000009 /* MyDocumentController.h */,
+				40EB71E60400BE1000000009 /* MyDocumentController.m */,
+				00CFF0F5000AD1F27F000001 /* PrintView.h */,
+				00CFF0F6000AD1F27F000001 /* PrintView.m */,
+				66EF66260147C62B00000001 /* PrintBitmapView.h */,
+				66EF66270147C62B00000001 /* PrintBitmapView.m */,
+				52F59AB708A4EA4F00D66FBB /* Text */,
+				52F59AB608A4EA3900D66FBB /* PDF */,
+			);
+			name = "Document Classes";
+			sourceTree = "<group>";
+		};
+		52F59AB608A4EA3900D66FBB /* PDF */ = {
+			isa = PBXGroup;
+			children = (
+				4068429A0405969B00000009 /* MyPDFView.h */,
+				4068429B0405969B00000009 /* MyPDFView.m */,
+				40CD913407E4CE6C00DE6448 /* MyPDFKitView.h */,
+				40CD913507E4CE6C00DE6448 /* MyPDFKitView.m */,
+				00CFF0F1000AD1547F000001 /* MyWindow.h */,
+				00CFF0F2000AD1547F000001 /* MyWindow.m */,
+			);
+			name = PDF;
+			sourceTree = "<group>";
+		};
+		52F59AB708A4EA4F00D66FBB /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				00CFF0ED000AD0B87F000001 /* MainWindow.h */,
+				00CFF0EE000AD0B87F000001 /* MainWindow.m */,
+				F510E36D03916F340100009E /* MyTextView.h */,
+				F510E36E03916F340100009E /* MyTextView.m */,
+			);
+			name = Text;
 			sourceTree = "<group>";
 		};
 		F5B8EA9501FF5A1601DF2474 /* Panelpicture */ = {
@@ -1111,7 +1123,6 @@
 				407880650519249A006979EA /* MainWindow.h in Headers */,
 				407880660519249A006979EA /* MyWindow.h in Headers */,
 				407880670519249A006979EA /* PrintView.h in Headers */,
-				407880680519249A006979EA /* MyView.h in Headers */,
 				4078806A0519249A006979EA /* TSPreferences.h in Headers */,
 				4078806B0519249A006979EA /* TSAppDelegate.h in Headers */,
 				4078806C0519249A006979EA /* TSWindowManager.h in Headers */,
@@ -1359,8 +1370,6 @@
 				4078816E0519249A006979EA /* split.tiff in Resources */,
 				4078816F0519249A006979EA /* CommandCompletion.txt in Resources */,
 				407881700519249A006979EA /* Select.tiff in Resources */,
-				407881710519249A006979EA /* GrabHandCursor.tiff in Resources */,
-				407881720519249A006979EA /* OpenHandCursor.tiff in Resources */,
 				407881730519249A006979EA /* MagGlass.tiff in Resources */,
 				407881740519249A006979EA /* MagGlassL.tiff in Resources */,
 				407881750519249A006979EA /* split1.png in Resources */,
@@ -1434,7 +1443,6 @@
 				4078817D0519249A006979EA /* MainWindow.m in Sources */,
 				4078817E0519249A006979EA /* MyWindow.m in Sources */,
 				4078817F0519249A006979EA /* PrintView.m in Sources */,
-				407881800519249A006979EA /* MyView.m in Sources */,
 				407881810519249A006979EA /* TSPreferences.m in Sources */,
 				407881820519249A006979EA /* globals.m in Sources */,
 				407881830519249A006979EA /* TSAppDelegate.m in Sources */,
