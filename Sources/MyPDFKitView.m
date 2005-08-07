@@ -1211,8 +1211,9 @@
 				[[NSCursor arrowCursor] set];
 				break;
 		}
-		else 
-			[super mouseMoved: theEvent];
+	}
+	else {
+		[super mouseMoved: theEvent];
 	}
 }
 
