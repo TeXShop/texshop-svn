@@ -25,12 +25,14 @@
 
 #define NUMBEROFERRORS	20
 
-#define	isTeX		0
-#define isOther		1
-#define isPDF		2
-#define isEPS		3
-#define isJPG		4
-#define isTIFF		5
+enum {
+	isTeX		= 0,
+	isOther		= 1,
+	isPDF		= 2,
+	isEPS		= 3,
+	isJPG		= 4,
+	isTIFF		= 5
+};
 
 @class MyPDFKitView;
 

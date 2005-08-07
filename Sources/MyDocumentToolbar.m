@@ -166,36 +166,36 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 - (void) setupToolbar 
 {
 	[typesetButton retain];
-        [typesetButton removeFromSuperview];
-        [programButton retain];
-        [programButton removeFromSuperview];
-        [typesetButtonEE retain];
-        [typesetButtonEE removeFromSuperview];
-        [programButtonEE retain];
-        [programButtonEE removeFromSuperview];
-        [tags retain];
+	[typesetButton removeFromSuperview];
+	[programButton retain];
+	[programButton removeFromSuperview];
+	[typesetButtonEE retain];
+	[typesetButtonEE removeFromSuperview];
+	[programButtonEE retain];
+	[programButtonEE removeFromSuperview];
+	[tags retain];
 	[tags removeFromSuperview];
 	[popupButton retain];
 	[popupButton removeFromSuperview];
-        [autoCompleteButton retain];
-        [autoCompleteButton removeFromSuperview];
-// added by mitsu --(H) Macro menu; macroButton
+	[autoCompleteButton retain];
+	[autoCompleteButton removeFromSuperview];
+	// added by mitsu --(H) Macro menu; macroButton
 	[macroButton retain];
 	[macroButton removeFromSuperview];
-        [macroButtonEE retain];
-        [macroButtonEE removeFromSuperview];
-// end addition
+	[macroButtonEE retain];
+	[macroButtonEE removeFromSuperview];
+	// end addition
 	[[self textWindow] setToolbar: [self makeToolbar: kSourceToolbarIdentifier]];
-
-
-        [previousButton retain];
-        [previousButton removeFromSuperview];
-        [nextButton retain];
-        [nextButton removeFromSuperview];
-		[previousButtonKK retain];
-        [previousButtonKK removeFromSuperview];
-        [nextButtonKK retain];
-        [nextButtonKK removeFromSuperview];
+	
+	
+	[previousButton retain];
+	[previousButton removeFromSuperview];
+	[nextButton retain];
+	[nextButton removeFromSuperview];
+	[previousButtonKK retain];
+	[previousButtonKK removeFromSuperview];
+	[nextButtonKK retain];
+	[nextButtonKK removeFromSuperview];
 	[gotopageOutlet retain];
 	[gotopageOutlet removeFromSuperview];
 	[magnificationOutlet retain];
@@ -210,35 +210,16 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 	[mouseModeMatrixKK retain];
 	[mouseModeMatrixKK removeFromSuperview];
 #endif
-        [syncBox retain];
-        [syncBox removeFromSuperview];
-		[backforthKK retain];
-		[backforthKK removeFromSuperview];
-		[drawerKK retain];
-		[drawerKK removeFromSuperview];
-		
+	[syncBox retain];
+	[syncBox removeFromSuperview];
+	[backforthKK retain];
+	[backforthKK removeFromSuperview];
+	[drawerKK retain];
+	[drawerKK removeFromSuperview];
+	
 	[[self pdfWindow] setToolbar: [self makeToolbar: kPDFToolbarIdentifier]];
 	[[self pdfKitWindow] setToolbar: [self makeToolbar: kPDFKitToolbarIdentifier]];
 }
-
-/* This is all done automatically by MyDocument. I've left it temporarily
-    for amusement. Koch.
-- (void)dealloc
-{
-        [typesetButton release];
-        [programButton release];
-        [typesetButtonEE release];
-        [programButtonEE release];
-        [tags release];
-        [popupButton release];
-        [previousButton release];
-        [nextButton release];
-        [gotopageOutlet release];
-        [magnificationOutlet release];
-        
-        [super dealloc];
-}
-*/
 
 // -----------------------------------------------------------------------------
 //
@@ -246,12 +227,12 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 
 - (void)doPreviousPage:(id)sender
 {
-    [((MyPDFView*)[self pdfView]) previousPage: sender];
+    [[self pdfView] previousPage: sender];
 }
 
 - (void)doPreviousPageKK:(id)sender
 {
-    [((MyPDFKitView*)[self pdfKitView]) previousPage: sender];
+    [[self pdfKitView] previousPage: sender];
 }
 
 // -----------------------------------------------------------------------------
@@ -260,17 +241,17 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 
 - (void)doNextPage:(id)sender
 {
-    [((MyPDFView*)[self pdfView]) nextPage: sender];
+    [[self pdfView] nextPage: sender];
 }
 
 - (void)doNextPageKK:(id)sender
 {
-    [((MyPDFKitView*)[self pdfKitView]) nextPage: sender];
+    [[self pdfKitView] nextPage: sender];
 }
 
 - (void)toggleTheDrawer:(id)sender
 {
-    [((MyPDFKitView*)[self pdfKitView]) toggleDrawer: sender];
+    [[self pdfKitView] toggleDrawer: sender];
 }
 
 
@@ -1111,27 +1092,33 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
     // Optional method   self message is sent to us since we are the target of some toolbar item actions 
     // (for example:  of the save items action) 
     BOOL 		enable 		= NO;
-	NSString*	toolbarID	= [[toolbarItem toolbar] identifier];
+	NSString	*toolbarID	= [[toolbarItem toolbar] identifier];
+	NSString	*itemID		= [toolbarItem itemIdentifier];
 	
-	enable =  [super validateMenuItem: toolbarItem];
+	// FIXME: The following line of code is broken in two ways. First off, it shouldn't
+	// invoke validateMenuItem on 'super' but rather it should use 'self'.
+	// Secondly, even if one fixes that, this doesn't help (even if you fix the 
+	// resulting crash), because other methods are use -- e.g. doLatexTemp: instead
+	// of doLatex:. 
+	// It might be possible to reunify the two methods again, but for the time being,
+	// I disable it.  (Max Horn, Aug 07 2005)
+	//enable =  [self validateMenuItem: toolbarItem];
 	
 	if (fileIsTex) {
 
-		if ([[toolbarItem itemIdentifier] isEqual: kSaveDocToolbarItemIdentifier]) {
+		if ([itemID isEqual: kSaveDocToolbarItemIdentifier]) {
 		// We will return YES (ie  the button is enabled) only when the document is dirty and needs saving 
 			enable = [self isDocumentEdited];
-		} else if ([[toolbarItem itemIdentifier] isEqual: NSToolbarPrintItemIdentifier]) {
+		} else if ([itemID isEqual: NSToolbarPrintItemIdentifier]) {
 			enable = YES;
 		}	
-
-		return enable;
 	}
-	
-	if ([[toolbarItem itemIdentifier] isEqual: kSaveDocToolbarItemIdentifier]) {
+	else if ([itemID isEqual: kSaveDocToolbarItemIdentifier]) {
 
 		enable = (myImageType == isOther);
 		
-	} else if ([[toolbarItem itemIdentifier] isEqual: NSToolbarPrintItemIdentifier]) {
+	}
+	else if ([itemID isEqual: NSToolbarPrintItemIdentifier]) {
 
 		if ([toolbarID isEqual:kSourceToolbarIdentifier]) {
 			enable = (myImageType == isOther);
@@ -1142,16 +1129,20 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		}
 
 	}
-        
-        else if (([[toolbarItem itemIdentifier] isEqual: kPreviousPageButtonTID]) ||
-                ([[toolbarItem itemIdentifier] isEqual: kPreviousPageTID]) ||
-                ([[toolbarItem itemIdentifier] isEqual: kNextPageButtonTID]) ||
-                ([[toolbarItem itemIdentifier] isEqual: kNextPageTID]) ||
-				([[toolbarItem itemIdentifier] isEqual: kPreviousPageButtonKKTID]) ||
-                ([[toolbarItem itemIdentifier] isEqual: kPreviousPageKKTID]) ||
-                ([[toolbarItem itemIdentifier] isEqual: kNextPageButtonKKTID]) ||
-                ([[toolbarItem itemIdentifier] isEqual: kNextPageKKTID])) 
+	else if (([itemID isEqual: kPreviousPageButtonTID]) ||
+			([itemID isEqual: kPreviousPageTID]) ||
+			([itemID isEqual: kPreviousPageButtonKKTID]) ||
+			([itemID isEqual: kPreviousPageKKTID])) {
+						// TODO: Check whether we are on the first page
+                        enable = (myImageType == isPDF);
+	}
+	else if	(([itemID isEqual: kNextPageButtonTID]) ||
+			([itemID isEqual: kNextPageTID]) ||
+			([itemID isEqual: kNextPageButtonKKTID]) ||
+			([itemID isEqual: kNextPageKKTID])) {
+						// TODO: Check whether we are on the last page
                         enable = (myImageType == isPDF);  
+	}
 
     return enable;
 }

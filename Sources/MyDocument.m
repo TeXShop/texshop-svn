@@ -3480,8 +3480,8 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
     return fileIsTex;
 }
 
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem {
-
+- (BOOL)validateMenuItem:(NSMenuItem *)anItem
+{
     if (!fileIsTex) {
 		if ([anItem action] == @selector(saveDocument:) || 
 			[anItem action] == @selector(printSource:))
@@ -3499,20 +3499,19 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
 					(myImageType == isTIFF));
 		if ([anItem action] == @selector(setProjectFile:))
 			return NO;
-                        
+		
 	}
-        
-        // forsplit        
-        if ([anItem action] == @selector(splitWindow:)) {
-            if (windowIsSplit)
-                [anItem setState:NSOnState];
-            else
-                [anItem setState:NSOffState];
-            return YES;
-            }
-        // end forsplit
-
 	
+	// forsplit        
+	if ([anItem action] == @selector(splitWindow:)) {
+		if (windowIsSplit)
+			[anItem setState:NSOnState];
+		else
+			[anItem setState:NSOffState];
+		return YES;
+	}
+	// end forsplit
+
 	return [super validateMenuItem: anItem];
 }
 
@@ -3520,7 +3519,7 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
 
 - (void)textDidChange:(NSNotification *)aNotification;
 {
-  [self fixColor :colorStart :colorEnd];
+	[self fixColor :colorStart :colorEnd];
     if (tagLine) 
         [self setupTags];
     colorStart = 0;

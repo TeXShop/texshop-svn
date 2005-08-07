@@ -2647,7 +2647,7 @@ failed. If you change the code below, be sure to test carefully!
 			[self addCursorRect:[self visibleRect] cursor:openHandCursor()];
 			break;
 		case MOUSE_MODE_SELECT: 
-			[self addCursorRect:[self visibleRect] cursor:[NSCursor _crosshairCursor]];
+			[self addCursorRect:[self visibleRect] cursor:[NSCursor crosshairCursor]];
 			if (selRectTimer)
 				[self addCursorRect:selectedRect cursor:[NSCursor arrowCursor]];
 			break;
@@ -3061,7 +3061,7 @@ failed. If you change the code below, be sure to test carefully!
     visibleRect = [self visibleRect];
     keepGoing = YES;
 
-	[grabHandCursor() set];
+	[[NSCursor closedHandCursor] set];
 	
     while (keepGoing)
     {
@@ -4334,33 +4334,3 @@ NSString *extensionForType(int type)
 	}
 }
 // end mitsu 1.29
-
-#pragma mark =====cursors=====
-// create and hold cursors
-NSCursor *openHandCursor()
-{
-    static NSCursor	*openHandCursor = nil;
-    if (openHandCursor == nil)
-    {
-        NSImage	*image = [NSImage imageNamed: @"OpenHandCursor"];
-		if (image)
-			openHandCursor = [[NSCursor alloc] initWithImage: image
-				hotSpot: NSMakePoint (8, 8)];
-    }
-    return openHandCursor;
-}
-
-NSCursor *grabHandCursor()
-{
-    static NSCursor	*grabHandCursor = nil;
-    if (grabHandCursor == nil)
-    {
-        NSImage	*image = [NSImage imageNamed: @"GrabHandCursor"]; 
-		if (image)
-			grabHandCursor = [[NSCursor alloc] initWithImage: image
-				hotSpot: NSMakePoint (8, 8)]; 
-    }
-    return grabHandCursor;
-}
-
-

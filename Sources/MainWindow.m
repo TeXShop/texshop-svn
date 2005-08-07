@@ -58,35 +58,19 @@
 
 - (void)makeKeyAndOrderFront:(id)sender;
 {
-   if (
-   (! [myDocument externalEditor]) &&
-    (([myDocument imageType] == isTeX) || ([myDocument imageType] == isOther))
-    )
+	if (
+		(! [myDocument externalEditor]) &&
+		(([myDocument imageType] == isTeX) || ([myDocument imageType] == isOther))
+		)
         [super makeKeyAndOrderFront: sender];
     [myDocument tryBadEncodingDialog:self];
 }
 
-/*
-- (void)sendEvent:(NSEvent *)theEvent
-{
-    
-    if (([theEvent type] == NSKeyDown) && ([theEvent modifierFlags] & NSControlKeyMask))
-    if ([[theEvent charactersIgnoringModifiers] isEqualToString:@"1"]) {
-            if (([myDocument imageType] == isTeX) && ([myDocument myTeXRep] != nil))
-                [[myDocument pdfWindow] makeKeyAndOrderFront: self];
-            return;
-            }
-    [super sendEvent: theEvent];
-}
-*/
-
 - (void)associatedWindow:(id)sender;
 {
-//  if (([myDocument imageType] == isTeX) && ([myDocument myTeXRep] != nil))
-//                [[myDocument pdfWindow] makeKeyAndOrderFront: self];
     if ([myDocument imageType] == isTeX) {
         [myDocument bringPdfWindowFront];
-        }
+	}
 }
 
 - (void) doChooseMethod: sender;
@@ -102,7 +86,7 @@
     result = [super makeFirstResponder:aResponder];
     if (result && [[aResponder className] isEqualTo:@"MyTextView"]) {
         [myDocument setTextView:aResponder];
-        }
+	}
     return result;
 }
 // end forsplit
@@ -120,8 +104,8 @@
         while (anObject = [enumerator nextObject]) {
             if ([anObject getCallingWindow] == self)
                 [anObject setCallingWindow: nil];
-            }
-        }
+		}
+	}
     [super close];
 }
 

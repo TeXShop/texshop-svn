@@ -311,110 +311,107 @@ extern NSPanel *pageNumberWindow;
 
 - (void)sendEvent:(NSEvent *)theEvent
 {
-if (![myDocument fromKit]) {
-
-    unichar	theChar;
-    
-    if ([theEvent type] == NSKeyDown) {
- 
-    /*   
-        if (([theEvent modifierFlags] & NSControlKeyMask) &&
-         ([myDocument imageType] == isTeX) &&
-         ([[theEvent charactersIgnoringModifiers] isEqualToString:@"1"])) {
-         
-            [[myDocument textWindow] makeKeyAndOrderFront: self];
-            return;
-            }
-    */
-    
-        theChar = [[theEvent characters] characterAtIndex:0];
-        
-        switch (theChar) {
-        
-            case NSUpArrowFunctionKey: [self up:self]; return;
-            
-            case NSDownArrowFunctionKey: [self down:self]; return;
-            
-#ifdef MITSU_PDF
-
-            case NSLeftArrowFunctionKey: [self left: self]; return;// mitsu 1.29 (O) changed from previousPage
-            
-            case NSRightArrowFunctionKey: [self right: self]; return;// mitsu 1.29 (O) changed from nextPage
-
-#else
-            
-            case NSLeftArrowFunctionKey: [self previousPage: self]; return;
-            
-            case NSRightArrowFunctionKey: [self nextPage: self]; return;
-            
-#endif
-            
-            case NSPageUpFunctionKey: [self top:self]; return;
-            
-            case NSPageDownFunctionKey: [self bottom:self]; return;
-            
-            case NSHomeFunctionKey: [self firstPage: self]; return;
-            
-            case NSEndFunctionKey: [self lastPage: self]; return;
-            
-             case ' ':
-                if (([theEvent modifierFlags] & NSShiftKeyMask) == 0)
-                    [self nextPage: self];
-                else
-                    [self previousPage: self];
-                return;
-
-
-            
-            }
-       }
-
-       
-#ifdef MITSU_PDF
-
-	else if ([theEvent type] == NSFlagsChanged) // mitsu 1.29 (S2)
-	{
-		[[myDocument pdfView] flagsChanged: theEvent];
-		return;
-	}
-	else if ([theEvent type] == NSLeftMouseDown) // mitsu 1.29 (O) resize PDF view
-	{
-		// check if mouse was in vertical scroller's knob
-		MyPDFView *pdfView = [myDocument pdfView];
-		NSScroller *scroller = [[pdfView enclosingScrollView] verticalScroller];
-		if (([scroller testPart: [theEvent locationInWindow]] == NSScrollerKnob) && 
-			([myDocument imageType] == isTeX || [myDocument imageType] == isPDF) && 
-			([pdfView pageStyle] == PDF_MULTI_PAGE_STYLE || 
-				[pdfView pageStyle] == PDF_DOUBLE_MULTI_PAGE_STYLE) && 
-			([pdfView rotationAmount] == 0 || [pdfView rotationAmount] == 180))
-		{
-			// create a small window displaying page number
-			NSRect aRect = [scroller rectForPart: NSScrollerKnob];
-			aRect = [scroller convertRect: aRect toView: nil]; // use rect not point
-			aRect.origin = [self convertBaseToScreen: aRect.origin];
-			aRect.origin.x -= PAGE_WINDOW_H_OFFSET;
-			aRect.origin.y += aRect.size.height/2 + PAGE_WINDOW_V_OFFSET;
-			aRect.size.width = PAGE_WINDOW_WIDTH;
-			aRect.size.height = PAGE_WINDOW_HEIGHT;
-			pageNumberWindow = [[NSPanel alloc] initWithContentRect: aRect 
-					styleMask: NSBorderlessWindowMask | NSUtilityWindowMask 
-					backing: NSBackingStoreBuffered //NSBackingStoreRetained 
-					defer: NO];
-                        [pageNumberWindow setHasShadow: PAGE_WINDOW_HAS_SHADOW];
-			[pageNumberWindow orderFront: nil];
-			[pageNumberWindow setFloatingPanel: YES];
-			[[myDocument pdfView] updateCurrentPage]; // darw page number
+	if (![myDocument fromKit]) {
+		
+		unichar	theChar;
+		
+		if ([theEvent type] == NSKeyDown) {
 			
-			[super sendEvent: theEvent]; // let the scroller handle the situation
+			/*   
+			if (([theEvent modifierFlags] & NSControlKeyMask) &&
+				([myDocument imageType] == isTeX) &&
+				([[theEvent charactersIgnoringModifiers] isEqualToString:@"1"])) {
+				
+				[[myDocument textWindow] makeKeyAndOrderFront: self];
+				return;
+            }
+			*/
+			
+			theChar = [[theEvent characters] characterAtIndex:0];
+			
+			switch (theChar) {
+				
+#ifdef MITSU_PDF
+					
+				case NSUpArrowFunctionKey: [self up:self]; return;
+					
+				case NSDownArrowFunctionKey: [self down:self]; return;
+					
+				case NSLeftArrowFunctionKey: [self left: self]; return;// mitsu 1.29 (O) changed from previousPage
+					
+				case NSRightArrowFunctionKey: [self right: self]; return;// mitsu 1.29 (O) changed from nextPage
 
-			[pageNumberWindow close];
-			pageNumberWindow = nil;
+				case NSPageUpFunctionKey: [self top:self]; return;
+					
+				case NSPageDownFunctionKey: [self bottom:self]; return;
+					
+#else
+					
+				case NSLeftArrowFunctionKey: [self previousPage: self]; return;
+					
+				case NSRightArrowFunctionKey: [self nextPage: self]; return;
+					
+#endif
+					
+				case NSHomeFunctionKey: [self firstPage: self]; return;
+					
+				case NSEndFunctionKey: [self lastPage: self]; return;
+				
+				case ' ':
+					if (([theEvent modifierFlags] & NSShiftKeyMask) == 0)
+						[self nextPage: self];
+					else
+						[self previousPage: self];
+					return;
+            }
+		}
+		
+		
+#ifdef MITSU_PDF
+		
+		else if ([theEvent type] == NSFlagsChanged) // mitsu 1.29 (S2)
+		{
+			[[myDocument pdfView] flagsChanged: theEvent];
 			return;
 		}
-	}
+		else if ([theEvent type] == NSLeftMouseDown) // mitsu 1.29 (O) resize PDF view
+		{
+			// check if mouse was in vertical scroller's knob
+			MyPDFView *pdfView = [myDocument pdfView];
+			NSScroller *scroller = [[pdfView enclosingScrollView] verticalScroller];
+			if (([scroller testPart: [theEvent locationInWindow]] == NSScrollerKnob) && 
+				([myDocument imageType] == isTeX || [myDocument imageType] == isPDF) && 
+				([pdfView pageStyle] == PDF_MULTI_PAGE_STYLE || 
+				 [pdfView pageStyle] == PDF_DOUBLE_MULTI_PAGE_STYLE) && 
+				([pdfView rotationAmount] == 0 || [pdfView rotationAmount] == 180))
+			{
+				// create a small window displaying page number
+				NSRect aRect = [scroller rectForPart: NSScrollerKnob];
+				aRect = [scroller convertRect: aRect toView: nil]; // use rect not point
+				aRect.origin = [self convertBaseToScreen: aRect.origin];
+				aRect.origin.x -= PAGE_WINDOW_H_OFFSET;
+				aRect.origin.y += aRect.size.height/2 + PAGE_WINDOW_V_OFFSET;
+				aRect.size.width = PAGE_WINDOW_WIDTH;
+				aRect.size.height = PAGE_WINDOW_HEIGHT;
+				pageNumberWindow = [[NSPanel alloc] initWithContentRect: aRect 
+															  styleMask: NSBorderlessWindowMask | NSUtilityWindowMask 
+																backing: NSBackingStoreBuffered //NSBackingStoreRetained 
+																  defer: NO];
+				[pageNumberWindow setHasShadow: PAGE_WINDOW_HAS_SHADOW];
+				[pageNumberWindow orderFront: nil];
+				[pageNumberWindow setFloatingPanel: YES];
+				[[myDocument pdfView] updateCurrentPage]; // darw page number
+				
+				[super sendEvent: theEvent]; // let the scroller handle the situation
+				
+				[pageNumberWindow close];
+				pageNumberWindow = nil;
+				return;
+			}
+		}
         
 #endif
-}        
+	}        
     [super sendEvent: theEvent];
 }
 
@@ -449,9 +446,8 @@ if (![myDocument fromKit]) {
 			[anItem action] == @selector(doIndex:) ||
 			[anItem action] == @selector(doMetapost:) ||
 			[anItem action] == @selector(doContext:) ||
-                        [anItem action] == @selector(doMetaFont:) ||
-                        [anItem action] == @selector(doTypeset:)
-                        )
+			[anItem action] == @selector(doMetaFont:) ||
+			[anItem action] == @selector(doTypeset:))
 			return NO;
 		if ([anItem action] == @selector(printDocument:))
 			return (([myDocument imageType] == isPDF) ||

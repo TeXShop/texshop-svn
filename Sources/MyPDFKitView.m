@@ -22,7 +22,6 @@
  */
 
 #import "MyPDFKitView.h"
-#import "MyPDFView.h"	// For grabHandCursor
 #import "Globals.h"
 #import "MyDocument.h"
 #import "EncodingSupport.h"
@@ -892,7 +891,7 @@
 	visibleRect = [[self documentView] visibleRect];
     keepGoing = YES;
 
-	[grabHandCursor() set];
+	[[NSCursor closedHandCursor] set];
 	
     while (keepGoing)
     {
@@ -1006,85 +1005,85 @@
 	switch (rotation)
 	{
 		case 90:
-		transform = [NSAffineTransform transform];
-		[transform translateXBy: 0 yBy: boxRect.size.width];
-		[transform rotateByDegrees: 270];
-		[transform concat];
-		break;
-		
+			transform = [NSAffineTransform transform];
+			[transform translateXBy: 0 yBy: boxRect.size.width];
+			[transform rotateByDegrees: 360 - rotation];
+			[transform concat];
+			break;
+			
 		case 180:
-		transform = [NSAffineTransform transform];
-		[transform translateXBy: boxRect.size.width yBy: boxRect.size.height];
-		[transform rotateByDegrees: 360 - rotation];
-		[transform concat];
-
-		break;
-		
+			transform = [NSAffineTransform transform];
+			[transform translateXBy: boxRect.size.width yBy: boxRect.size.height];
+			[transform rotateByDegrees: 360 - rotation];
+			[transform concat];
+			
+			break;
+			
 		case 270:
-		transform = [NSAffineTransform transform];
-		[transform translateXBy: boxRect.size.height yBy: 0];
-		[transform rotateByDegrees: 90];
-		[transform concat];
-		break;
+			transform = [NSAffineTransform transform];
+			[transform translateXBy: boxRect.size.height yBy: 0];
+			[transform rotateByDegrees: 360 - rotation];
+			[transform concat];
+			break;
 	}
-
-		// the following draws the background for dataWithPDFInsideRect etc.
+	
+	// the following draws the background for dataWithPDFInsideRect etc.
 	if (![NSGraphicsContext currentContextDrawingToScreen])
-		{
+	{
 		// set a break point here to check the consistency of dataWithPDFInsideRect
 		//NSLog(@"In drawRect aRect: %@", NSStringFromRect(aRect));
 		NSColor *backColor;
 		if ([SUD boolForKey:PdfColorMapKey] && [SUD stringForKey:PdfBack_RKey])
-			{
+		{
 			backColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:PdfBack_RKey] 
-				green: [SUD floatForKey:PdfBack_GKey] blue: [SUD floatForKey:PdfBack_BKey] 
-				alpha: [SUD floatForKey:PdfBack_AKey]];
+												  green: [SUD floatForKey:PdfBack_GKey] blue: [SUD floatForKey:PdfBack_BKey] 
+												  alpha: [SUD floatForKey:PdfBack_AKey]];
 			[backColor set];
 			NSRectFill(boxRect);
-			}
-			
+		}
+		
 		else {
-
+			
 			backColor = [NSColor colorWithCalibratedRed: 1 green: 1 blue: 1 alpha: 0];
 			[backColor set];
 			NSRectFill(boxRect);
 			// NSDrawWindowBackground(boxRect);
-			}
 		}
+	}
 	
 	else
-
-
-	NSDrawWindowBackground(boxRect);
+		
+		
+		NSDrawWindowBackground(boxRect);
 	
 	[NSGraphicsContext restoreGraphicsState];
 	[page drawWithBox:[self displayBox]];
 	
 	// Set up transform to handle rotated page.
 	
-switch (rotation)
+	switch (rotation)
 	{
 		case 90:
-		transform = [NSAffineTransform transform];
-		[transform translateXBy: 0 yBy: boxRect.size.width];
-		[transform rotateByDegrees: 270];
-		[transform concat];
-		break;
-		
+			transform = [NSAffineTransform transform];
+			[transform translateXBy: 0 yBy: boxRect.size.width];
+			[transform rotateByDegrees: 360 - rotation];
+			[transform concat];
+			break;
+			
 		case 180:
-		transform = [NSAffineTransform transform];
-		[transform translateXBy: boxRect.size.width yBy: boxRect.size.height];
-		[transform rotateByDegrees: 360 - rotation];
-		[transform concat];
-
-		break;
-		
+			transform = [NSAffineTransform transform];
+			[transform translateXBy: boxRect.size.width yBy: boxRect.size.height];
+			[transform rotateByDegrees: 360 - rotation];
+			[transform concat];
+			
+			break;
+			
 		case 270:
-		transform = [NSAffineTransform transform];
-		[transform translateXBy: boxRect.size.height yBy: 0];
-		[transform rotateByDegrees: 90];
-		[transform concat];
-		break;
+			transform = [NSAffineTransform transform];
+			[transform translateXBy: boxRect.size.height yBy: 0];
+			[transform rotateByDegrees: 360 - rotation];
+			[transform concat];
+			break;
 	}
 	
 	p.x = 0; p.y = 0;
@@ -1097,7 +1096,7 @@ switch (rotation)
 		NSColor *myColor = [NSColor redColor];
 		[myColor set];
 		[myPath stroke];
-		}
+	}
 	
 }
 
@@ -1105,34 +1104,34 @@ switch (rotation)
 
 - (void) mouseDown: (NSEvent *) theEvent
 {
-
-		// koch; Dec 5, 2003
-		
-        if (!([theEvent modifierFlags] & NSAlternateKeyMask) && ([theEvent modifierFlags] & NSCommandKeyMask)) {
-                currentMouseMode = mouseMode;
-                [[self window] invalidateCursorRectsForView: self];
-                [self doSync: theEvent];
-                return;
-                }
-		
-		if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
-				[self cleanupMarquee: YES];
-				downOverLink = YES;
-				[super mouseDown: theEvent];
-				return;
+	
+	// koch; Dec 5, 2003
+	
+	if (!([theEvent modifierFlags] & NSAlternateKeyMask) && ([theEvent modifierFlags] & NSCommandKeyMask)) {
+		currentMouseMode = mouseMode;
+		[[self window] invalidateCursorRectsForView: self];
+		[self doSync: theEvent];
+		return;
+	}
+	
+	if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
+		[self cleanupMarquee: YES];
+		downOverLink = YES;
+		[super mouseDown: theEvent];
+		return;
 				}
-	              
-
-//	[[self window] makeFirstResponder: [self window]]; // mitsu 1.29b
-        [[self window] makeFirstResponder: self];
-
+	
+	
+	//	[[self window] makeFirstResponder: [self window]]; // mitsu 1.29b
+	[[self window] makeFirstResponder: self];
+	
 	if ([theEvent clickCount] >= 2)
 	{
 		currentMouseMode = NEW_MOUSE_MODE_MAG_GLASS;
 		[[self window] invalidateCursorRectsForView: self];
-                #ifndef SELECTION_SHOUND_PERSIST
-                [self cleanupMarquee: YES];
-                #endif
+#ifndef SELECTION_SHOUND_PERSIST
+		[self cleanupMarquee: YES];
+#endif
 		[self doMagnifyingGlass: theEvent level:
 			((mouseMode==NEW_MOUSE_MODE_MAG_GLASS_L)?1:((mouseMode==NEW_MOUSE_MODE_MAG_GLASS)?0:(-1)))];
 	}
@@ -1141,26 +1140,26 @@ switch (rotation)
 		switch (currentMouseMode)
 		{
 			case NEW_MOUSE_MODE_SCROLL:
-                                #ifndef SELECTION_SHOUND_PERSIST
-                                // [self cleanupMarquee: YES];
-                                #endif
+#ifndef SELECTION_SHOUND_PERSIST
+				// [self cleanupMarquee: YES];
+#endif
 				[self scrollByDragging: theEvent];
 				break;
 			case NEW_MOUSE_MODE_MAG_GLASS: 
-                                #ifndef SELECTION_SHOUND_PERSIST
-                                [self cleanupMarquee: YES];
-                                #endif
+#ifndef SELECTION_SHOUND_PERSIST
+				[self cleanupMarquee: YES];
+#endif
 				[self doMagnifyingGlass: theEvent level: 0];
 				break;
 			case NEW_MOUSE_MODE_MAG_GLASS_L: 
-                                #ifndef SELECTION_SHOUND_PERSIST
-                                [self cleanupMarquee: YES];
-                                #endif
+#ifndef SELECTION_SHOUND_PERSIST
+				[self cleanupMarquee: YES];
+#endif
 				[self doMagnifyingGlass: theEvent level: 1];
 				break;
 			case NEW_MOUSE_MODE_SELECT_PDF: 
 				if(selRectTimer && [self mouse: [self convertPoint: 
-					[theEvent locationInWindow] fromView: nil] inRect: [self convertRect:selectedRect fromView: [self documentView]]])
+							  [theEvent locationInWindow] fromView: nil] inRect: [self convertRect:selectedRect fromView: [self documentView]]])
 				{
 					// mitsu 1.29 drag & drop
 					// Koch: I commented out the moveSelection choice since it seems to be broken due to sync
@@ -1168,21 +1167,21 @@ switch (rotation)
 					//					(mouseMode == NEW_MOUSE_MODE_SELECT_PDF))
 					//	[self moveSelection: theEvent];
 					// else
-						[self startDragging: theEvent]; 
+					[self startDragging: theEvent]; 
 					// end mitsu 1.29
 				}
 				else
 					[self selectARect: theEvent];
 				break;
 			case NEW_MOUSE_MODE_SELECT_TEXT:
-				 #ifndef SELECTION_SHOUND_PERSIST
-                                [self cleanupMarquee: YES];
-                                #endif
+#ifndef SELECTION_SHOUND_PERSIST
+				[self cleanupMarquee: YES];
+#endif
 				[super mouseDown: theEvent];
 				break;
 		}
 	}
-
+	
 }
 		
 // ----------------------------------------------------------------------------------------------------------- mouseMoved
@@ -1191,92 +1190,30 @@ switch (rotation)
 {
 	if (mouseMode == NEW_MOUSE_MODE_SELECT_TEXT) {
 		[super mouseMoved: theEvent];
-		return;
-		}
-		
-	if (downOverLink) {
-		[super mouseMoved: theEvent];
-		return;
-		}
-
-	if (([self areaOfInterestForMouse: theEvent] & kPDFLinkArea) != 0)
-			[[NSCursor pointingHandCursor] set];
-	else if (([self areaOfInterestForMouse: theEvent] & kPDFPageArea) != 0)
-			switch (mouseMode) {
-				case NEW_MOUSE_MODE_SCROLL:
-							[[NSCursor openHandCursor] set];
-							break;
-							
-				case NEW_MOUSE_MODE_SELECT_PDF:
-							[[NSCursor _crosshairCursor] set];
-							break;
-				case NEW_MOUSE_MODE_MAG_GLASS:
-				case NEW_MOUSE_MODE_MAG_GLASS_L: 
-							[[NSCursor arrowCursor] set];
-							break;
-				}
-	else 
-		[super mouseMoved: theEvent];
-		
-	/*
-	
-	switch (mouseMode) {
-	
-		case NEW_MOUSE_MODE_SCROLL:				break;
-	
-		case NEW_MOUSE_MODE_SELECT_TEXT:		[super mouseMoved: theEvent];
-												break;
-												
-		case NEW_MOUSE_MODE_MAG_GLASS:			break;
-		
-		case NEW_MOUSE_MODE_MAG_GLASS_L:		break;
-		
-		case NEW_MOUSE_MODE_SELECT_PDF:			break;
-		
-		}
-	*/
-
-
-/*
-	NSPoint		cursorLocation;
-	PDFPage		*page;
-	int			edgeHit = -1;
-	
-	if ([(MyPDFDocument *)_controller mode] == kViewPDFMode)
-	{
-		[super mouseMoved: theEvent];
-		return;
 	}
-	
-	// Convert to view space.
-	cursorLocation = [self convertPoint: [theEvent locationInWindow] fromView: NULL];
-	
-	// Over a page?
-	page = [self pageForPoint: cursorLocation nearest: NO];
-	if (page)
-	{
-		// Convert to page space.
-		cursorLocation = [self convertPoint: cursorLocation toPage: page];
-		edgeHit = [self edgeHitTest: cursorLocation];
+	else if (downOverLink) {
+		[super mouseMoved: theEvent];
 	}
-	
-	switch (edgeHit)
-	{
-		case 0:
-		case 1:
-		[[NSCursor resizeLeftRightCursor] set];
-		break;
-		
-		case 2:
-		case 3:
-		[[NSCursor resizeUpDownCursor] set];
-		break;
-		
-		default:
-		[[NSCursor arrowCursor] set];
-		break;
+	else if (([self areaOfInterestForMouse: theEvent] & kPDFLinkArea) != 0) {
+		[[NSCursor pointingHandCursor] set];
 	}
-*/
+	else if (([self areaOfInterestForMouse: theEvent] & kPDFPageArea) != 0) {
+		switch (mouseMode) {
+			case NEW_MOUSE_MODE_SCROLL:
+				[[NSCursor openHandCursor] set];
+				break;
+				
+			case NEW_MOUSE_MODE_SELECT_PDF:
+				[[NSCursor crosshairCursor] set];
+				break;
+			case NEW_MOUSE_MODE_MAG_GLASS:
+			case NEW_MOUSE_MODE_MAG_GLASS_L: 
+				[[NSCursor arrowCursor] set];
+				break;
+		}
+		else 
+			[super mouseMoved: theEvent];
+	}
 }
 
 
@@ -1288,7 +1225,7 @@ switch (rotation)
 	if (downOverLink) {
 		[super mouseDragged: theEvent];
 		return;
-		}
+	}
 
 	switch (mouseMode) {
 	
@@ -1303,7 +1240,7 @@ switch (rotation)
 		
 		case NEW_MOUSE_MODE_SELECT_PDF:			break;
 		
-		}
+	}
 
 /*
 	if ([(MyPDFDocument *)_controller mode] == kViewPDFMode)
@@ -1381,7 +1318,7 @@ switch (rotation)
 		if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) 
 				[super mouseUp: theEvent];
 		return;
-		}
+	}
 	
 
 	switch (mouseMode) {
@@ -1397,7 +1334,7 @@ switch (rotation)
 		
 		case NEW_MOUSE_MODE_SELECT_PDF:			break;
 		
-		}
+	}
 
 /*
 	if ([(MyPDFDocument *)_controller mode] == kViewPDFMode)
@@ -4942,16 +4879,16 @@ done:
 	theKey = [theEvent characters];
 	
 	if (([theKey characterAtIndex:0] == NSLeftArrowFunctionKey) && ([theEvent modifierFlags] & NSCommandKeyMask))
-		{
+	{
 		[self previousPage:self];
 		return;
-		}
-		
+	}
+	
 	if (([theKey characterAtIndex:0] == NSRightArrowFunctionKey) && ([theEvent modifierFlags] & NSCommandKeyMask))
-		{
+	{
 		[self nextPage:self];
 		return;
-		}
+	}
 	
 	if ((([theKey characterAtIndex:0] == NSLeftArrowFunctionKey) || ([theKey characterAtIndex:0] == NSRightArrowFunctionKey)) 
 		&& (! [[[[self documentView] enclosingScrollView] horizontalScroller] isEnabled])
@@ -4961,7 +4898,7 @@ done:
 		else
 			[self nextPage:self];
 		return;
-		}
+	}
 	else 
 		[super keyDown:theEvent];
 }
