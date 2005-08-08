@@ -149,12 +149,12 @@ static id _sharedInstance = nil;
 //-----------------------------------------------------------------------------
 {
 	// Update check mark in "Typeset" menu
-    if ([doc imageType] == isTeX)
+    if ([doc documentType] == isTeX)
 		[self checkProgramMenuItem: [doc whichEngine] checked: flag];
 
 #ifdef MITSU_PDF
 	// Update menu item Preview=>Display Format/Magnification
-    if ([doc imageType] == isTeX || [doc imageType] == isPDF)
+    if ([doc documentType] == isTeX || [doc documentType] == isPDF)
 	{
 		NSMenu *previewMenu = [[[NSApp mainMenu] itemWithTitle:
 				NSLocalizedString(@"Preview", @"Preview")] submenu];
