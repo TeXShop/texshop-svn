@@ -45,9 +45,11 @@ static NSColor *sStripeColor = nil;
 -(void) reloadData{
     [super reloadData];
     int i;
-    for (i=0; i< [self numberOfColumns];i++){
-	if (i>=[[[self dataSource] theMatrix] actCols]) [[[self tableColumns] objectAtIndex:i] setDataCell:[[InactiveTextFieldCell alloc] init]];
-	else [[[self tableColumns] objectAtIndex:i] setDataCell:[[ActiveTextFieldCell alloc] init]];
+    for (i=0; i < [self numberOfColumns]; i++) {
+		if (i>=[[[self dataSource] theMatrix] actCols])
+			[[[self tableColumns] objectAtIndex:i] setDataCell:[[InactiveTextFieldCell alloc] init]];
+		else
+			[[[self tableColumns] objectAtIndex:i] setDataCell:[[ActiveTextFieldCell alloc] init]];
     }
 }
 

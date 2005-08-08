@@ -187,7 +187,7 @@
     id			aRep;
     int			result;
 
-    if (myImageType == isTeX) {
+    if (_documentType == isTeX) {
 	
 		if (! externalEditor) {
 			theSource = [[self textView] string]; 
@@ -218,22 +218,22 @@
 #endif
             imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
     }
-    else if (myImageType == isPDF)
+    else if (_documentType == isPDF)
         imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-    else if ((myImageType == isJPG) || (myImageType == isTIFF))
+    else if ((_documentType == isJPG) || (_documentType == isTIFF))
         imagePath = [self fileName];
     else
         imagePath = [self fileName];
 
     aRep = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
-        if ((myImageType == isTeX) || (myImageType == isPDF))
+        if ((_documentType == isTeX) || (_documentType == isPDF))
             aRep = [NSPDFImageRep imageRepWithContentsOfFile: imagePath];
-        else if (myImageType == isJPG || myImageType == isTIFF)
+        else if (_documentType == isJPG || _documentType == isTIFF)
             aRep = [NSImageRep imageRepWithContentsOfFile: imagePath];
         if (aRep == nil)
 			return;
-        if ((myImageType == isJPG) || (myImageType == isTIFF)) 
+        if ((_documentType == isJPG) || (_documentType == isTIFF)) 
             printView = [[PrintBitmapView alloc] initWithBitmapRep: aRep];
         else
             printView = [[PrintView alloc] initWithRep: aRep];
@@ -242,7 +242,7 @@
         [printOperation runOperation];
         [printView release];
 	}
-    else if (myImageType == isTeX)
+    else if (_documentType == isTeX)
         result = [NSApp runModalForWindow: printRequestPanel];
 }
 
@@ -561,7 +561,7 @@ NS_ENDHANDLER
     whichScript = [SUD integerForKey:DefaultScriptKey];
     [self fixTypesetMenu];
     
-    myImageType = isTeX;
+    _documentType = isTeX;
     fileExtension = [[self fileName] pathExtension];
     
     if (([fileExtension isEqualToString: @"jpg"]) || 
@@ -591,7 +591,7 @@ NS_ENDHANDLER
         [self setFileType: fileExtension];
         [typesetButton setEnabled: NO];
         [typesetButtonEE setEnabled: NO];
-        myImageType = isOther;
+        _documentType = isOther;
         fileIsTex = NO;
     }
             
@@ -618,7 +618,7 @@ NS_ENDHANDLER
 	// end mitsu 1.29
 #endif
 
-    [pdfView setImageType: myImageType];
+    [pdfView setImageType: _documentType];
         
     if (! fileIsTex)
         {
@@ -638,7 +638,7 @@ NS_ENDHANDLER
 			[pdfKitWindow setTitle: [[self fileName] lastPathComponent]]; 
             // [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4; 
             // supposed to allow command click of window title to lead to file, but doesn't
-            myImageType = isPDF;
+            _documentType = isPDF;
             }
         else if (([fileExtension isEqualToString: @"jpg"]) || 
                 ([fileExtension isEqualToString: @"jpeg"]) ||
@@ -647,7 +647,7 @@ NS_ENDHANDLER
             texRep = [[NSBitmapImageRep imageRepWithContentsOfFile: imagePath] retain];
              [pdfWindow setTitle: [[self fileName] lastPathComponent]]; 
              // [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4
-            myImageType = isJPG;
+            _documentType = isJPG;
             [previousButton setEnabled:NO];
             [nextButton setEnabled:NO];
             }
@@ -657,7 +657,7 @@ NS_ENDHANDLER
             texRep = [[NSBitmapImageRep imageRepWithContentsOfFile: imagePath] retain];
             [pdfWindow setTitle: [[self fileName] lastPathComponent]]; 
             // [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4
-            myImageType = isTIFF;
+            _documentType = isTIFF;
             [previousButton setEnabled:NO];
             [nextButton setEnabled:NO];
              }
@@ -665,21 +665,21 @@ NS_ENDHANDLER
                 ([fileExtension isEqualToString: @"ps"]) ||
                 ([fileExtension isEqualToString:@"eps"]))
             {
-                myImageType = isPDF;
-                [pdfView setImageType: myImageType];
+                _documentType = isPDF;
+                [pdfView setImageType: _documentType];
                 // [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4
                 [self convertDocument];
                 return;
             }
 			
-		if ((imageFound) && (myImageType == isPDF)) {
+		if ((imageFound) && (_documentType == isPDF)) {
 		
 			PDFfromKit = YES;
 			[myPDFKitView showWithPath: imagePath];
 			[pdfKitWindow setRepresentedFilename: imagePath];
 			[pdfKitWindow setTitle: [imagePath lastPathComponent]];
 			[pdfKitWindow makeKeyAndOrderFront: self];
-			if ((myImageType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
+			if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
                     pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] 
                     target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
                 }
@@ -688,10 +688,10 @@ NS_ENDHANDLER
             
         if (imageFound) {
 				// pdf part here is irrelevant after pdfkit use above
-                [pdfView setImageType: myImageType];
+                [pdfView setImageType: _documentType];
                 [pdfView setImageRep: texRep]; // this releases old one!
 #ifndef MITSU_PDF
-                if (myImageType == isPDF) {
+                if (_documentType == isPDF) {
                     topLeftRect = [texRep bounds];
                     topLeftPoint.x = topLeftRect.origin.x;
                     topLeftPoint.y = topLeftRect.origin.y + topLeftRect.size.height - 1;
@@ -702,12 +702,12 @@ NS_ENDHANDLER
                 if (texRep != nil) 
                     [pdfView display];
 #ifndef MITSU_PDF
-                if ((myImageType == isJPG) || (myImageType == isTIFF))
+                if ((_documentType == isJPG) || (_documentType == isTIFF))
                 [pdfView resetMagnification];
 #endif
                 [pdfWindow makeKeyAndOrderFront: self];
                 
-                if ((myImageType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
+                if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
                     pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] 
                     target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
                 }
@@ -3465,9 +3465,9 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
 }
 
 
-- (int) imageType;
+- (int) documentType;
 {
-    return myImageType;
+    return _documentType;
 }
 
 - (NSPDFImageRep *) myTeXRep;
@@ -3485,7 +3485,7 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
     if (!fileIsTex) {
 		if ([anItem action] == @selector(saveDocument:) || 
 			[anItem action] == @selector(printSource:))
-			return (myImageType == isOther);
+			return (_documentType == isOther);
 		if ([anItem action] == @selector(doTex:) ||
 			[anItem action] == @selector(doLatex:) ||
 			[anItem action] == @selector(doBibtex:) ||
@@ -3494,9 +3494,9 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
 			[anItem action] == @selector(doContext:))
 			return NO;
 		if ([anItem action] == @selector(printDocument:))
-			return ((myImageType == isPDF) ||
-					(myImageType == isJPG) ||
-					(myImageType == isTIFF));
+			return ((_documentType == isPDF) ||
+					(_documentType == isJPG) ||
+					(_documentType == isTIFF));
 		if ([anItem action] == @selector(setProjectFile:))
 			return NO;
 		
@@ -3639,7 +3639,7 @@ BOOL isText1(int c) {
     NSMutableAttributedString 	*myAttribString;
     NSDictionary		*myAttributes;
     NSColor			*previousColor;
-   
+	
     fastColor = NO;
     if (affectedCharRange.length == 0)
         fastColor = YES;
@@ -3649,7 +3649,7 @@ BOOL isText1(int c) {
             fastColor = YES;
         if (aChar == 0x005c) {
             fastColor = YES;
-            myAttribString = [[[NSMutableAttributedString alloc] initWithAttributedString:[textView 					attributedSubstringFromRange: affectedCharRange]] autorelease];
+            myAttribString = [[[NSMutableAttributedString alloc] initWithAttributedString:[textView attributedSubstringFromRange: affectedCharRange]] autorelease];
             myAttributes = [myAttribString attributesAtIndex: 0 effectiveRange: NULL];
             // mitsu 1.29 parhaps this (and several others below) can be replaced by
             // myAttributes = [[textView textStorage] attributesAtIndex: 
@@ -3658,8 +3658,8 @@ BOOL isText1(int c) {
             previousColor = [myAttributes objectForKey:NSForegroundColorAttributeName];
             if (previousColor != commentColor) 
                 fastColorBackTeX = YES;
-            }
-        }
+		}
+	}
     
     colorStart = affectedCharRange.location;
     colorEnd = colorStart;
@@ -3668,14 +3668,14 @@ BOOL isText1(int c) {
     tagRange = [replacementString rangeOfString:@"%:"];
     if (tagRange.length != 0)
         tagLine = YES;
-        
+	
     // added by S. Zenitani -- "\n" increments tagLocationLine
     tagRange = [replacementString rangeOfString:@"\n"];
     if (tagRange.length != 0)
         tagLine = YES;
     // end
-
-        
+	
+	
     textString = [textView string];
     [textString getLineStart:&start end:&end contentsEnd:&end1 forRange:affectedCharRange];
     tagRange.location = start;
@@ -3683,14 +3683,14 @@ BOOL isText1(int c) {
     matchRange = [textString rangeOfString:@"%:" options:0 range:tagRange];
     if (matchRange.length != 0)
         tagLine = YES;
-
+	
     // for tagLocationLine (2) Zenitani
     matchRange = [textString rangeOfString:@"\n" options:0 range:tagRange];
     if (matchRange.length != 0)
         tagLine = YES;
-
-/* code by Anton Leuski */
-	 if ([SUD boolForKey: TagSectionsKey]) {
+	
+	/* code by Anton Leuski */
+	if ([SUD boolForKey: TagSectionsKey]) {
 		
 		unsigned	i;
 		for(i = 0; i < [g_taggedTeXSections count]; ++i) {
@@ -3698,27 +3698,27 @@ BOOL isText1(int c) {
 			if (tagRange.length != 0) {
 				tagLine = YES;
 				break;
-				}
 			}
-				
+		}
+		
 		if (!tagLine) {
-
+			
 			textString = [textView string];
 			[textString getLineStart:&start end:&end 
-				contentsEnd:&end1 forRange:affectedCharRange];
+						 contentsEnd:&end1 forRange:affectedCharRange];
 			tagRange.location	= start;
 			tagRange.length		= end - start;
-
+			
 			for(i = 0; i < [g_taggedTeXSections count]; ++i) {
 				matchRange = [textString rangeOfString:
 					[g_taggedTeXSections objectAtIndex:i] options:0 range:tagRange];
 				if (matchRange.length != 0) {
 					tagLine = YES;
 					break;
-					}
 				}
-
 			}
+			
+		}
 	}
     
 	if (replacementString == nil) 
@@ -3730,52 +3730,52 @@ BOOL isText1(int c) {
 		return YES;
     rightpar = [replacementString characterAtIndex:0];
     
-// mitsu 1.29 (T4) compare with "inserText:" in MyTextView.m
+	// mitsu 1.29 (T4) compare with "inserText:" in MyTextView.m
 #define AUTOCOMPLETE_IN_INSERTTEXT
 #ifndef AUTOCOMPLETE_IN_INSERTTEXT
-// end mitsu 1.29
-
+	// end mitsu 1.29
+	
     
     // Code added by Greg Landweber for auto-completions of '^', '_', etc.
     // Should provide a preference setting for users to turn it off!
     // First, avoid completing \^, \_, \"
-   //  if ([SUD boolForKey:AutoCompleteEnabledKey]) {
-        if (doAutoComplete) {
+	//  if ([SUD boolForKey:AutoCompleteEnabledKey]) {
+	if (doAutoComplete) {
         if ( rightpar >= 128 ||
-            [textView selectedRange].location == 0 ||
-            [textString characterAtIndex:[textView selectedRange].location - 1 ] != g_texChar ) {
-        
-                NSString *completionString = [g_autocompletionDictionary objectForKey:replacementString];
-                if ( completionString && (g_shouldFilter != filterMacJ || [replacementString
+			 [textView selectedRange].location == 0 ||
+			 [textString characterAtIndex:[textView selectedRange].location - 1 ] != g_texChar ) {
+			
+			NSString *completionString = [g_autocompletionDictionary objectForKey:replacementString];
+			if ( completionString && (g_shouldFilter != filterMacJ || [replacementString
                     characterAtIndex:0]!=g_texChar)) {
-                    // should really send this as a notification, instead of calling it directly,
-                    // or should separate out the code that actually performs the completion
-                    // from the code that responds to the notification sent by the LaTeX panel.
-                    // mitsu 1.29 (T4)
-                    [self insertSpecialNonStandard:completionString 
-                                undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
-                    //[textView insertSpecialNonStandard:completionString 
-                    //			undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
-                    // original was
-                    //    [self doCompletion:[NSNotification notificationWithName:@"" object:completionString]];
-                    // end mitsu 1.29
-                    return NO;
-                }
-            }
-        }
-   
+				// should really send this as a notification, instead of calling it directly,
+				// or should separate out the code that actually performs the completion
+				// from the code that responds to the notification sent by the LaTeX panel.
+				// mitsu 1.29 (T4)
+				[self insertSpecialNonStandard:completionString 
+									   undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
+				//[textView insertSpecialNonStandard:completionString 
+				//			undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
+				// original was
+				//    [self doCompletion:[NSNotification notificationWithName:@"" object:completionString]];
+				// end mitsu 1.29
+				return NO;
+			}
+		}
+	}
+	
     // End of code added by Greg Landweber
-// mitsu 1.29 (T4)
+	// mitsu 1.29 (T4)
 #endif
-// end mitsu 1.29
-
-
+	// end mitsu 1.29
+	
+	
     if (rightpar == 0x000a)
         returnline = YES;
-        
+	
     if (! [SUD boolForKey:ParensMatchingEnabledKey]) return YES;
     if ((rightpar != 0x007D) &&  (rightpar != 0x0029) &&  (rightpar != 0x005D)) return YES;
-
+	
     if (rightpar == 0x007D) 
         leftpar = 0x007B;
     else if (rightpar == 0x0029) 
@@ -3801,18 +3801,18 @@ BOOL isText1(int c) {
             matchRange.location = i;
             matchRange.length = 1;
             /* koch: here 'affinity' and 'stillSelecting' are necessary,
-            else the wrong range is selected. */
+				else the wrong range is selected. */
             [textView setSelectedRange: matchRange 
-                affinity: NSSelectByCharacter stillSelecting: YES];
+							  affinity: NSSelectByCharacter stillSelecting: YES];
             [textView display];
             myDate = [NSDate date];
             /* Koch: Jan 26, 2001: changed -0.15 to -0.075 to speed things up */
             while ([myDate timeIntervalSinceNow] > - 0.075);
             [textView setSelectedRange: affectedCharRange];
-            }
-        }
+		}
+	}
     return YES;
-}
+	}
 
 
 - (NSRange)textView:(NSTextView *)aTextView willChangeSelectionFromCharacterRange:(NSRange)oldSelectedCharRange toCharacterRange:(NSRange)newSelectedCharRange

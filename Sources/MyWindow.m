@@ -291,7 +291,7 @@ extern NSPanel *pageNumberWindow;
 {
     if ([myDocument externalEditor])
         [myDocument close];
-    else if (([myDocument imageType] != isTeX) && ([myDocument imageType] != isOther)) {
+    else if (([myDocument documentType] != isTeX) && ([myDocument documentType] != isOther)) {
         [myDocument close];
         }
     else
@@ -300,7 +300,7 @@ extern NSPanel *pageNumberWindow;
 
 - (void)associatedWindow:(id)sender;
 {
-    if ([myDocument imageType] == isTeX) {
+    if ([myDocument documentType] == isTeX) {
         if ([myDocument getCallingWindow] == nil)
             [[myDocument textWindow] makeKeyAndOrderFront: self];
         else
@@ -319,7 +319,7 @@ extern NSPanel *pageNumberWindow;
 			
 			/*   
 			if (([theEvent modifierFlags] & NSControlKeyMask) &&
-				([myDocument imageType] == isTeX) &&
+				([myDocument documentType] == isTeX) &&
 				([[theEvent charactersIgnoringModifiers] isEqualToString:@"1"])) {
 				
 				[[myDocument textWindow] makeKeyAndOrderFront: self];
@@ -380,7 +380,7 @@ extern NSPanel *pageNumberWindow;
 			MyPDFView *pdfView = [myDocument pdfView];
 			NSScroller *scroller = [[pdfView enclosingScrollView] verticalScroller];
 			if (([scroller testPart: [theEvent locationInWindow]] == NSScrollerKnob) && 
-				([myDocument imageType] == isTeX || [myDocument imageType] == isPDF) && 
+				([myDocument documentType] == isTeX || [myDocument documentType] == isPDF) && 
 				([pdfView pageStyle] == PDF_MULTI_PAGE_STYLE || 
 				 [pdfView pageStyle] == PDF_DOUBLE_MULTI_PAGE_STYLE) && 
 				([pdfView rotationAmount] == 0 || [pdfView rotationAmount] == 180))
@@ -427,19 +427,19 @@ extern NSPanel *pageNumberWindow;
 #else
     if ([anItem action] == @selector(rotateClockwise:) || 
     	[anItem action] == @selector(rotateCounterclockwise:))
-        return (([myDocument imageType] == isTeX) || ([myDocument imageType] == isPDF));
+        return (([myDocument documentType] == isTeX) || ([myDocument documentType] == isPDF));
 #endif
 
     if ([anItem action] == @selector(doError:) || 
     	[anItem action] == @selector(printSource:))
-        return ((![myDocument externalEditor]) && ([myDocument imageType] == isTeX));
+        return ((![myDocument externalEditor]) && ([myDocument documentType] == isTeX));
 
     if ([anItem action] == @selector(setProjectFile:))
-        return ([myDocument imageType] == isTeX);
+        return ([myDocument documentType] == isTeX);
 
-    if ([myDocument imageType] != isTeX) {
+    if ([myDocument documentType] != isTeX) {
 		if ([anItem action] == @selector(saveDocument:))
-			return ([myDocument imageType] == isOther);
+			return ([myDocument documentType] == isOther);
 		if ([anItem action] == @selector(doTex:) ||
 			[anItem action] == @selector(doLatex:) ||
 			[anItem action] == @selector(doBibtex:) ||
@@ -450,16 +450,16 @@ extern NSPanel *pageNumberWindow;
 			[anItem action] == @selector(doTypeset:))
 			return NO;
 		if ([anItem action] == @selector(printDocument:))
-			return (([myDocument imageType] == isPDF) ||
-					([myDocument imageType] == isJPG) ||
-					([myDocument imageType] == isTIFF));
+			return (([myDocument documentType] == isPDF) ||
+					([myDocument documentType] == isJPG) ||
+					([myDocument documentType] == isTIFF));
 	}
         
 #ifdef MITSU_PDF
 
     	// mitsu 1.29 (O)
     if ([anItem action] == @selector(changePageStyle:)) // @selector(changePDFViewSize:)) 
-        return (([myDocument imageType] == isTeX) || ([myDocument imageType] == isPDF));
+        return (([myDocument documentType] == isTeX) || ([myDocument documentType] == isPDF));
 
     if ([anItem action] == @selector(copy:) || [anItem action] == @selector(saveSelectionToFile:))
         return ([[myDocument pdfView] hasSelection]);

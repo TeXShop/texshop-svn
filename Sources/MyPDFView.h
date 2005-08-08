@@ -35,7 +35,7 @@
     id			totalPage1;
     id			myScale1;
     id			myStepper1;
-    int			imageType;
+    int			documentType;
     double		oldMagnification;
     //double		oldWidth, oldHeight; // mitsu 1.29 (O) not used
     BOOL		fixScroll;

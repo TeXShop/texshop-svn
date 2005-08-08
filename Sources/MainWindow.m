@@ -60,7 +60,7 @@
 {
 	if (
 		(! [myDocument externalEditor]) &&
-		(([myDocument imageType] == isTeX) || ([myDocument imageType] == isOther))
+		(([myDocument documentType] == isTeX) || ([myDocument documentType] == isOther))
 		)
         [super makeKeyAndOrderFront: sender];
     [myDocument tryBadEncodingDialog:self];
@@ -68,7 +68,7 @@
 
 - (void)associatedWindow:(id)sender;
 {
-    if ([myDocument imageType] == isTeX) {
+    if ([myDocument documentType] == isTeX) {
         [myDocument bringPdfWindowFront];
 	}
 }

@@ -1102,7 +1102,8 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 	// of doLatex:. 
 	// It might be possible to reunify the two methods again, but for the time being,
 	// I disable it.  (Max Horn, Aug 07 2005)
-	//enable =  [self validateMenuItem: toolbarItem];
+	enable =  [super validateMenuItem: toolbarItem];
+	NSLog(@"enable = %d", enable);
 	
 	if (fileIsTex) {
 
@@ -1115,17 +1116,17 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 	}
 	else if ([itemID isEqual: kSaveDocToolbarItemIdentifier]) {
 
-		enable = (myImageType == isOther);
+		enable = (_documentType == isOther);
 		
 	}
 	else if ([itemID isEqual: NSToolbarPrintItemIdentifier]) {
 
 		if ([toolbarID isEqual:kSourceToolbarIdentifier]) {
-			enable = (myImageType == isOther);
+			enable = (_documentType == isOther);
 		} else if ([toolbarID isEqual:kPDFToolbarIdentifier]) {
-			enable = ((myImageType == isPDF) || (myImageType == isJPG) || (myImageType == isTIFF));
+			enable = ((_documentType == isPDF) || (_documentType == isJPG) || (_documentType == isTIFF));
 		} else if ([toolbarID isEqual:kPDFKitToolbarIdentifier]) {
-			enable = ((myImageType == isPDF) || (myImageType == isJPG) || (myImageType == isTIFF));
+			enable = ((_documentType == isPDF) || (_documentType == isJPG) || (_documentType == isTIFF));
 		}
 
 	}
@@ -1134,14 +1135,14 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 			([itemID isEqual: kPreviousPageButtonKKTID]) ||
 			([itemID isEqual: kPreviousPageKKTID])) {
 						// TODO: Check whether we are on the first page
-                        enable = (myImageType == isPDF);
+                        enable = (_documentType == isPDF);
 	}
 	else if	(([itemID isEqual: kNextPageButtonTID]) ||
 			([itemID isEqual: kNextPageTID]) ||
 			([itemID isEqual: kNextPageButtonKKTID]) ||
 			([itemID isEqual: kNextPageKKTID])) {
 						// TODO: Check whether we are on the last page
-                        enable = (myImageType == isPDF);  
+                        enable = (_documentType == isPDF);  
 	}
 
     return enable;

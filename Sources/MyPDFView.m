@@ -284,7 +284,7 @@ NSData *draggedData;
 
 - (void) setImageType: (int)theType;
 {
-    imageType = theType;
+    documentType = theType;
 }
 
 - (void) setDocument: (id) theDocument;
@@ -312,11 +312,11 @@ scroller position.
 // mitsu 1.29 (O) completely changed
     [self renewGState];
 
-	if ((imageType == isTeX) || (imageType == isPDF)) 
+	if ((documentType == isTeX) || (documentType == isPDF)) 
 	{
 		[self setupForPDFRep:theRep style:pageStyle];
 	}
-	else // imageType == isTIFF or isJPG or isEPS
+	else // documentType == isTIFF or isJPG or isEPS
 	{
 		if (theRep != nil)
 		{
@@ -389,7 +389,7 @@ scroller position.
             pagenumber = 1;
         myRep = theRep;
         
-        if ((imageType == isTeX) || (imageType == isPDF)) {
+        if ((documentType == isTeX) || (documentType == isPDF)) {
          
 //            myBounds = [theRep bounds];
 // mitsu change; the file dvipdfmx for Japanese users creates pdf files with nonzero origin, but the origin must
@@ -776,7 +776,7 @@ failed. If you change the code below, be sure to test carefully!
 	[myStepper setIntValue: magPercent];
         [myStepper1 setIntValue: magPercent];
 	
-	if (((imageType == isTeX) || (imageType == isPDF)) && 
+	if (((documentType == isTeX) || (documentType == isPDF)) && 
 		((pageStyle == PDF_MULTI_PAGE_STYLE) || (pageStyle == PDF_DOUBLE_MULTI_PAGE_STYLE))) 
 		[self updateCurrentPage];
 
@@ -976,7 +976,7 @@ failed. If you change the code below, be sure to test carefully!
 		}
 	}
 	
-	if ((imageType == isTeX) || (imageType == isPDF)) 
+	if ((documentType == isTeX) || (documentType == isPDF)) 
 	{
 		if (pageStyle == PDF_SINGLE_PAGE_STYLE)
 		{
@@ -1033,7 +1033,7 @@ failed. If you change the code below, be sure to test carefully!
 			}
 		}
 	}
-	else if ((imageType == isTIFF) || (imageType == isJPG) || (imageType == isEPS)) 
+	else if ((documentType == isTIFF) || (documentType == isJPG) || (documentType == isEPS)) 
 	{
 		pageRect = NSMakeRect(0,0,totalWidth,totalHeight);
 		if ([NSGraphicsContext currentContextDrawingToScreen])
@@ -1171,7 +1171,7 @@ failed. If you change the code below, be sure to test carefully!
     int		pagenumber;
     NSRect	myBounds, myVisible, newVisible;
 
-    if (!myRep || (imageType == isTIFF) || (imageType == isJPG) || (imageType == isEPS)) return;
+    if (!myRep || (documentType == isTIFF) || (documentType == isJPG) || (documentType == isEPS)) return;
         
 	if (pageStyle == PDF_SINGLE_PAGE_STYLE)
 	{
@@ -1256,7 +1256,7 @@ failed. If you change the code below, be sure to test carefully!
 {	
     int		pagenumber;
 
-    if (!myRep || (imageType == isTIFF) || (imageType == isJPG) || (imageType == isEPS)) return;
+    if (!myRep || (documentType == isTIFF) || (documentType == isJPG) || (documentType == isEPS)) return;
 	
 	if (pageStyle == PDF_SINGLE_PAGE_STYLE)
 	{
@@ -1280,7 +1280,7 @@ failed. If you change the code below, be sure to test carefully!
 {	
     NSRect	myBounds, myVisible, newVisible;
 	// mitsu 1.29 (O)  commented out--this should work with TIFF etc. 
-    //if ((imageType == isTIFF) || (imageType == isJPG) || (imageType == isEPS)) return;        
+    //if ((documentType == isTIFF) || (documentType == isJPG) || (documentType == isEPS)) return;        
     if (!myRep) return;
 	
 	myBounds = [self bounds];
@@ -1299,7 +1299,7 @@ failed. If you change the code below, be sure to test carefully!
     NSRect	myBounds, myVisible, newVisible;
 
 	// mitsu 1.29 (O)  commented out--this should work with TIFF etc. 
-    //if ((imageType == isTIFF) || (imageType == isJPG) || (imageType == isEPS)) return;
+    //if ((documentType == isTIFF) || (documentType == isJPG) || (documentType == isEPS)) return;
     if (!myRep) return;
 	
 	myBounds = [self bounds];
@@ -1317,7 +1317,7 @@ failed. If you change the code below, be sure to test carefully!
     int		pagenumber;
     NSRect	myBounds, myVisible, newVisible;
 
-    if (!myRep || (imageType == isTIFF) || (imageType == isJPG) || (imageType == isEPS)) return;
+    if (!myRep || (documentType == isTIFF) || (documentType == isJPG) || (documentType == isEPS)) return;
         
 	if (pageStyle == PDF_SINGLE_PAGE_STYLE)
 	{
@@ -1388,7 +1388,7 @@ failed. If you change the code below, be sure to test carefully!
 {	
     int		pagenumber;
 
-    if (!myRep || (imageType == isTIFF) || (imageType == isJPG) || (imageType == isEPS)) return;
+    if (!myRep || (documentType == isTIFF) || (documentType == isJPG) || (documentType == isEPS)) return;
         
 	if (pageStyle == PDF_SINGLE_PAGE_STYLE)
 	{
@@ -1412,7 +1412,7 @@ failed. If you change the code below, be sure to test carefully!
 {	
     NSRect	myBounds, myVisible, newVisible;
 	// mitsu 1.29 (O)  commented out--this should work with TIFF etc. 
-	//if ((imageType == isTIFF) || (imageType == isJPG) || (imageType == isEPS)) return;
+	//if ((documentType == isTIFF) || (documentType == isJPG) || (documentType == isEPS)) return;
     if (!myRep) return;
 	            
 	myBounds = [self bounds];
@@ -1429,7 +1429,7 @@ failed. If you change the code below, be sure to test carefully!
 {	
     NSRect	myBounds, myVisible, newVisible;
 	// mitsu 1.29 (O)  commented out--this should work with TIFF etc. 
-    //if ((imageType == isTIFF) || (imageType == isJPG) || (imageType == isEPS)) return;
+    //if ((documentType == isTIFF) || (documentType == isJPG) || (documentType == isEPS)) return;
     if (!myRep) return;
 	            
 	myBounds = [self bounds];
@@ -1446,7 +1446,7 @@ failed. If you change the code below, be sure to test carefully!
 
 	if (!myRep) return;
 	
-    if ((imageType == isTeX) || (imageType == isPDF))
+    if ((documentType == isTeX) || (documentType == isPDF))
 	{
 		if (pageStyle == PDF_SINGLE_PAGE_STYLE)
 		{
@@ -1507,7 +1507,7 @@ failed. If you change the code below, be sure to test carefully!
 
 	if (!myRep) return;
 	
-    if ((imageType == isTeX) || (imageType == isPDF))
+    if ((documentType == isTeX) || (documentType == isPDF))
 	{
 		if (pageStyle == PDF_SINGLE_PAGE_STYLE)
 		{
@@ -1568,7 +1568,7 @@ failed. If you change the code below, be sure to test carefully!
         int		pagenumber;
 	NSRect		myBounds, myVisible, newVisible;
 
-	if ((imageType == isTIFF) || (imageType == isJPG) || (imageType == isEPS)) 
+	if ((documentType == isTIFF) || (documentType == isJPG) || (documentType == isEPS)) 
 	{
 		[currentPage setIntValue: 1];
                 [currentPage1 setIntValue: 1];
@@ -1685,7 +1685,7 @@ failed. If you change the code below, be sure to test carefully!
 // receive notification from clip view when pdfView is scrolled
 - (void)wasScrolled: (NSNotification *)aNotification
 { 
-        if (((imageType == isTeX) || (imageType == isPDF)) && 
+        if (((documentType == isTeX) || (documentType == isPDF)) && 
 		((pageStyle == PDF_MULTI_PAGE_STYLE) || (pageStyle ==
                         PDF_DOUBLE_MULTI_PAGE_STYLE)
 			|| (pageStyle == PDF_TWO_PAGE_STYLE))) 
@@ -2644,7 +2644,7 @@ failed. If you change the code below, be sure to test carefully!
 	switch (currentMouseMode)
 	{
 		case MOUSE_MODE_SCROLL: 
-			[self addCursorRect:[self visibleRect] cursor:openHandCursor()];
+			[self addCursorRect:[self visibleRect] cursor:[NSCursor openHandCursor]];
 			break;
 		case MOUSE_MODE_SELECT: 
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor crosshairCursor]];
@@ -3996,7 +3996,7 @@ failed. If you change the code below, be sure to test carefully!
 // -- tags should be correctly set
 - (void)changePageStyle: (id)sender
 {
-	if (!(imageType == isTeX || imageType == isPDF)) return;
+	if (!(documentType == isTeX || documentType == isPDF)) return;
 	
 	if ([sender tag] != pageStyle)
 	{
