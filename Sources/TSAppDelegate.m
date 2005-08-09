@@ -28,9 +28,9 @@
 #import "TSPreferences.h"
 #import "globals.h"
 #import "TSWindowManager.h"
-#import "MacroMenuController.h"
-#import "MyDocumentController.h"
-#import "EncodingSupport.h"
+#import "TSMacroMenuController.h"
+#import "TSDocumentController.h"
+#import "TSEncodingSupport.h"
 #import "OgreKit/OgreTextFinder.h"
 #import "TextFinder.h"
 
@@ -110,7 +110,7 @@
     // NSLog(newEditPath);
     [g_environment setObject: newEditPath forKey:@"TEXEDIT"];
 
-// Set up ~/Library/TeXShop; must come before dealing with EncodingSupport and MacoMenuController below    
+// Set up ~/Library/TeXShop; must come before dealing with TSEncodingSupport and MacoMenuController below    
     [self configureTemplates]; // this call must come first because it creates the TeXShop folder if it does not yet exist
     [self configureScripts];
     [self configureBin];
@@ -123,7 +123,7 @@
     [self prepareConfiguration: CommandCompletionPathKey]; // mitsu 1.29 (P)
     
 // Finish configuration of various pieces
-    [[MacroMenuController sharedInstance] loadMacros];
+    [[TSMacroMenuController sharedInstance] loadMacros];
     [self finishAutoCompletionConfigure];
     [self finishMenuKeyEquivalentsConfigure];
     [self configureExternalEditor];
@@ -133,10 +133,10 @@
     else
         g_texChar = 0x005c;	// backslash
 
-// added by mitsu --(H) Macro menu and (G) EncodingSupport
-    [[EncodingSupport sharedInstance] setupForEncoding];        // this must come after
-    [[MacroMenuController sharedInstance] setupMainMacroMenu];
-    [[MyDocumentController sharedDocumentController] initializeEncoding];  // so when first document is created, it has correct default
+// added by mitsu --(H) Macro menu and (G) TSEncodingSupport
+    [[TSEncodingSupport sharedInstance] setupForEncoding];        // this must come after
+    [[TSMacroMenuController sharedInstance] setupMainMacroMenu];
+    [[TSDocumentController sharedDocumentController] initializeEncoding];  // so when first document is created, it has correct default
 // end addition
 
     [self finishCommandCompletionConfigure]; // mitsu 1.29 (P) need to call after setupForEncoding
@@ -979,12 +979,12 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	if (!myData)
 		return;
     
-       int i = [[EncodingSupport sharedInstance] tagForEncoding:@"UTF-8 Unicode"];
-       NSStringEncoding myEncoding = [[EncodingSupport sharedInstance] stringEncodingForTag: i];
+       int i = [[TSEncodingSupport sharedInstance] tagForEncoding:@"UTF-8 Unicode"];
+       NSStringEncoding myEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: i];
        g_commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding: myEncoding];
        if (! g_commandCompletionList) {
-            i = [[EncodingSupport sharedInstance] tagForEncodingPreference];
-            myEncoding = [[EncodingSupport sharedInstance] stringEncodingForTag: i];
+            i = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
+            myEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: i];
             g_commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding: myEncoding];
             }
 		
@@ -1064,11 +1064,11 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 - (IBAction)displayLatexPanel:(id)sender
 {
     if ([[sender title] isEqualToString:NSLocalizedString(@"LaTeX Panel...", @"LaTeX Panel...")]) {
-        [[Autrecontroller sharedInstance] showWindow:self];
+        [[TSLaTeXPanelController sharedInstance] showWindow:self];
         [sender setTitle:NSLocalizedString(@"Close LaTeX Panel", @"Close LaTeX Panel")];
         }
     else {
-        [[Autrecontroller sharedInstance] hideWindow:self];
+        [[TSLaTeXPanelController sharedInstance] hideWindow:self];
         [sender setTitle:NSLocalizedString(@"LaTeX Panel...", @"LaTeX Panel...")];
         }
 }
@@ -1077,11 +1077,11 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 - (IBAction)displayMatrixPanel:(id)sender
 {
     if ([[sender title] isEqualToString:NSLocalizedString(@"Matrix Panel...", @"Matrix Panel...")]) {
-        [[Matrixcontroller sharedInstance] showWindow:self];
+        [[TSMatrixPanelController sharedInstance] showWindow:self];
         [sender setTitle:NSLocalizedString(@"Close Matrix Panel", @"Close Matrix Panel")];
     }
     else {
-        [[Matrixcontroller sharedInstance] hideWindow:self];
+        [[TSMatrixPanelController sharedInstance] hideWindow:self];
         [sender setTitle:NSLocalizedString(@"Matrix Panel...", @"Matrix Panel...")];
     }
 }

@@ -3,6 +3,10 @@
         {CLASS = DictTreeNode; LANGUAGE = ObjC; SUPERCLASS = NSMutableDictionary; }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = ImageAndTextCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
+        {CLASS = MyTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
+        {CLASS = NSArray; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSMutableArray; LANGUAGE = ObjC; SUPERCLASS = NSArray; }, 
+        {CLASS = NSOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
             ACTIONS = {
                 cancelPressed = id; 
@@ -15,7 +19,7 @@
                 savePressed = id; 
                 textDidChange = id; 
             }; 
-            CLASS = MacroEditor; 
+            CLASS = TSMacroEditor; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 cancelButton = NSButton; 
@@ -38,11 +42,6 @@
             }; 
             SUPERCLASS = NSObject; 
         }, 
-        {CLASS = MyOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
-        {CLASS = MyTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
-        {CLASS = NSArray; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {CLASS = NSMutableArray; LANGUAGE = ObjC; SUPERCLASS = NSArray; }, 
-        {CLASS = NSOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
             ACTIONS = {
                 addNewItem = id; 
@@ -52,11 +51,12 @@
                 duplicateSelection = id; 
                 sortData = id; 
             }; 
-            CLASS = OutlineViewController; 
+            CLASS = TSMacroOutlineController; 
             LANGUAGE = ObjC; 
             OUTLETS = {outlineView = id; }; 
             SUPERCLASS = NSObject; 
-        }
+        }, 
+        {CLASS = TSMacroOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }
     ); 
     IBVersion = 1; 
 }

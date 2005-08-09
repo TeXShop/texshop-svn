@@ -22,8 +22,8 @@
  */
 
 #import "TextFinder.h"
-// added by mitsu --(A) g_texChar filtering and (G) EncodingSupport
-#import "EncodingSupport.h"
+// added by mitsu --(A) g_texChar filtering and (G) TSEncodingSupport
+#import "TSEncodingSupport.h"
 // end addition
 
 NSString *FindStringChangedNotification = @"Find Selection Changed Notification";
@@ -95,8 +95,8 @@ static id sharedFindObject = nil;
         }
 	if (self == sharedFindObject) [[findTextField window] setFrameAutosaveName:@"Find"];
 // added by mitsu --(A) g_texChar filtering
-		[findTextField setDelegate: [EncodingSupport sharedInstance]];
-		[replaceTextField setDelegate: [EncodingSupport sharedInstance]];
+		[findTextField setDelegate: [TSEncodingSupport sharedInstance]];
+		[replaceTextField setDelegate: [TSEncodingSupport sharedInstance]];
 // end addition
 
     }

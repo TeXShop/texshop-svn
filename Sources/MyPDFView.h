@@ -17,13 +17,13 @@
  *
  * $Id$
  *
- * Originally part of MyDocument. Broken out by dirk on Tue Jan 09 2001.
+ * Originally part of TSDocument. Broken out by dirk on Tue Jan 09 2001.
  *
  */
 
 #import <AppKit/NSView.h>
 
-@class MyDocument;
+@class TSDocument;
 
 @interface MyPDFView : NSView 
 {
@@ -40,7 +40,7 @@
     //double		oldWidth, oldHeight; // mitsu 1.29 (O) not used
     BOOL		fixScroll;
     NSPDFImageRep	*myRep;
-    MyDocument		*myDocument;
+    TSDocument		*myDocument;
     int			rotationAmount;  // will be 0, 90, -90, 180
     double		theMagSize;
     //BOOL		largeMagnify; // for magnifying glass // mitsu 1.29 (O) not used

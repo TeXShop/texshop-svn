@@ -23,8 +23,8 @@
 
 #import "MyPDFKitView.h"
 #import "Globals.h"
-#import "MyDocument.h"
-#import "EncodingSupport.h"
+#import "TSDocument.h"
+#import "TSEncodingSupport.h"
 
 #define PAGE_SPACE_H	10
 #define PAGE_SPACE_V	10
@@ -3463,7 +3463,7 @@ done:
 	NSRange					foundRange;
 	unsigned int			foundlength;
 	NSRange					correctedFoundRange;
-	MyDocument				*newDocument;
+	TSDocument				*newDocument;
 	NSTextView				*myTextView;
 	NSWindow				*myTextWindow;
 	NSDictionary			*mySelectedAttributes;
@@ -3504,7 +3504,7 @@ done:
 		for (i = 0; i < numberOfFiles; i++) {
 			
 			tag = [myDocument encoding];
-			theEncoding = [[EncodingSupport sharedInstance] stringEncodingForTag: tag];
+			theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
 			myData = [NSData dataWithContentsOfFile:[sourceFiles objectAtIndex:i]];
     
 			// data in source
@@ -3531,8 +3531,8 @@ done:
 					if (newEncodingRange.length > 0) {
 						encodingString = [[testString substringWithRange: newEncodingRange] 
 							stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-						theTag = [[EncodingSupport sharedInstance] tagForEncoding:encodingString];
-						theEncoding = [[EncodingSupport sharedInstance] stringEncodingForTag: theTag];
+						theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
+						theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
 						}
 					}
 				else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
@@ -3544,8 +3544,8 @@ done:
 						if (newEncodingRange.length > 0) {
 							encodingString = [[testString substringWithRange: newEncodingRange] 
 								stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-							theTag = [[EncodingSupport sharedInstance] tagForEncoding:encodingString];
-							theEncoding = [[EncodingSupport sharedInstance] stringEncodingForTag: theTag];
+							theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
+							theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
 							}
 						}
 					}
@@ -3557,8 +3557,8 @@ done:
     
 			aString = [[[NSString alloc] initWithData:myData encoding:theEncoding] autorelease];
 			if (! aString) {
-				tag = [[EncodingSupport sharedInstance] tagForEncoding: @"MacOSRoman"];
-				theEncoding = [[EncodingSupport sharedInstance] stringEncodingForTag: tag];
+				tag = [[TSEncodingSupport sharedInstance] tagForEncoding: @"MacOSRoman"];
+				theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
 				aString = [[[NSString alloc] initWithData:myData encoding:theEncoding] autorelease];
 				}
 
@@ -3747,7 +3747,7 @@ done:
         BOOL            found, done;
         unsigned        theStart, theEnd, theContentsEnd;
         NSString        *newFileName, *theExtension;
-        MyDocument      *newDocument;
+        TSDocument      *newDocument;
         unsigned        start, end, irrelevant;
 		BOOL			result;
 	

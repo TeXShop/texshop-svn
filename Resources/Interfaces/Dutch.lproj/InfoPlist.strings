@@ -13,6 +13,6 @@ NSTypes = (
         NSUnixExtensions = ("tex", "TEX", "txt", "TXT");
         NSDOSExtensions = ("tex");
         NSRole = Editor;
-        NSDocumentClass = Document;
+        NSDocumentClass = TSDocument;
       }
     );

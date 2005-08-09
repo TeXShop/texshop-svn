@@ -17,13 +17,13 @@
  *
  * $Id$
  *
- * Originally part of MyDocument. Broken out by dirk on Tue Jan 09 2001.
+ * Originally part of TSDocument. Broken out by dirk on Tue Jan 09 2001.
  *
  */
 
 #import <AppKit/AppKit.h>
 #import "MyPDFView.h"
-#import "MyDocument.h"
+#import "TSDocument.h"
 #import "globals.h"
 #import <Carbon/Carbon.h>
 
@@ -1838,7 +1838,7 @@ failed. If you change the code below, be sure to test carefully!
         BOOL            found, done;
         unsigned        theStart, theEnd, theContentsEnd;
         NSString        *newFileName, *theExtension;
-        MyDocument      *newDocument;
+        TSDocument      *newDocument;
         unsigned        start, end, irrelevant;
     
     includeFileName = nil;

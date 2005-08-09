@@ -13,12 +13,6 @@
             SUPERCLASS = NSTableColumn; 
         }, 
         {
-            CLASS = MatrixTableView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {myController = id; }; 
-            SUPERCLASS = NSTableView; 
-        }, 
-        {
             ACTIONS = {
                 brselChange = id; 
                 envselChange = id; 
@@ -26,7 +20,7 @@
                 resetMatrix = id; 
                 resizeMatrix = id; 
             }; 
-            CLASS = Matrixcontroller; 
+            CLASS = TSMatrixPanelController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 borderbutton = id; 
@@ -46,6 +40,12 @@
                 vtf = id; 
             }; 
             SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = TSMatrixTableView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {myController = id; }; 
+            SUPERCLASS = NSTableView; 
         }
     ); 
     IBVersion = 1; 

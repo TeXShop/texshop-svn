@@ -25,11 +25,11 @@
 
 #import "TSPreferences.h"
 #import "TSWindowManager.h"
-#import "EncodingSupport.h"
+#import "TSEncodingSupport.h"
 #import "globals.h"
-#import "MyWindow.h"
+#import "TSPreviewWindow.h"
 #import "TSAppDelegate.h" // mitsu 1.29 (O)
-#import "MyDocument.h"
+#import "TSDocument.h"
 
 //#import "MyPDFView.h" // mitsu 1.29 (O)
 
@@ -128,7 +128,7 @@ Loads the .nib file if necessary, fills all the controls with the values from th
 	autoCompleteTouched = NO;
 	oldAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
 	magnificationTouched = NO;
-	// added by mitsu --(G) EncodingSupport
+	// added by mitsu --(G) TSEncodingSupport
 	encodingTouched = NO;
 	// end addition
 	// prepare undo manager: forget all the old undo information and begin a new group.
@@ -329,10 +329,10 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
     [[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD stringForKey:EncodingKey] forKey:EncodingKey];
 
     tag = [[sender selectedCell] tag];
-    value = [[EncodingSupport sharedInstance] encodingForTag: tag];
+    value = [[TSEncodingSupport sharedInstance] encodingForTag: tag];
  
     [SUD setObject:value forKey:EncodingKey];
-    // added by mitsu --(G) EncodingSupport
+    // added by mitsu --(G) TSEncodingSupport
     [[NSNotificationCenter defaultCenter] postNotificationName:@"EncodingChangedNotification" object:self];
     encodingTouched = YES;
     NSWindow	*activeWindow = [[TSWindowManager sharedInstance] activeDocumentWindow];
@@ -501,10 +501,10 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 {
     // NSRunAlertPanel(@"warning", @"not yet implemented", nil, nil, nil);
 	
-    MyWindow	*activeWindow;
+    TSPreviewWindow	*activeWindow;
     double	mag, magnification;
     
-    activeWindow = (MyWindow *)[[TSWindowManager sharedInstance] activePdfWindow];
+    activeWindow = (TSPreviewWindow *)[[TSWindowManager sharedInstance] activePdfWindow];
 	
 	// The comment below fixes a bug; magnification didn't take if no pdf window open
 	//   if (activeWindow != nil) 
@@ -1024,7 +1024,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 		[SUD setBool:oldAutoComplete forKey:AutoCompleteEnabledKey];
 		[[NSNotificationCenter defaultCenter] postNotificationName:DocumentAutoCompleteNotification object:self];
 	}
-	// added by mitsu --(G) EncodingSupport
+	// added by mitsu --(G) TSEncodingSupport
 	if (encodingTouched) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"EncodingChangedNotification" object: self ];
 	}
@@ -1153,7 +1153,7 @@ This method retrieves the application preferences from the defaults object and s
     [_externalEditorButton setState:[defaults boolForKey:UseExternalEditorKey]];
 	[_ptexUtfOutputButton setState:[defaults boolForKey:ptexUtfOutputEnabledKey]]; // zenitani 1.35 (C)
     
-    myTag = [[EncodingSupport sharedInstance] tagForEncodingPreference];
+    myTag = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
 	
     [_defaultEncodeMatrix selectItemAtIndex: myTag];
     if ([defaults boolForKey:UseOgreKitKey] == NO)

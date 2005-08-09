@@ -26,7 +26,7 @@
 #import "TSWindowManager.h"
 #import "globals.h"
 // added by mitsu --(J+) Check mark in "Typeset" menu
-#import "MyDocument.h"
+#import "TSDocument.h"
 // end addition
 #ifdef MITSU_PDF
 #import "MyPDFView.h"
@@ -101,7 +101,7 @@ static id _sharedInstance = nil;
         pdf close
         document active
         
-    The fix is to add the following new call, used only by the close method of MyDocument.
+    The fix is to add the following new call, used only by the close method of TSDocument.
     Experiments show that this call and the various notifications are made in the following order
     in Panther
     
@@ -145,7 +145,7 @@ static id _sharedInstance = nil;
 }
 
 //-----------------------------------------------------------------------------
-- (void)setPdfWindowWithDocument:(MyDocument *) doc isActive:(BOOL)flag
+- (void)setPdfWindowWithDocument:(TSDocument *) doc isActive:(BOOL)flag
 //-----------------------------------------------------------------------------
 {
 	// Update check mark in "Typeset" menu

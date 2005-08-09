@@ -80,7 +80,7 @@
         BOOL			oldAutoComplete;
         BOOL			magnificationTouched;
         BOOL			externalEditorTouched;
-// added by mitsu --(G) EncodingSupport
+// added by mitsu --(G) TSEncodingSupport
         BOOL			encodingTouched;
 // end addition
 

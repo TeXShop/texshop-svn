@@ -4,7 +4,7 @@
 <dict>
 	<key>Classes</key>
 	<dict>
-		<key>MyDocument</key>
+		<key>TSDocument</key>
 		<dict>
 			<key>Attributes</key>
 			<dict>

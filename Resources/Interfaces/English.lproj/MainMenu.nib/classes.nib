@@ -47,24 +47,6 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {openMacroEditor = id; }; 
-            CLASS = MacroEditor; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {
-            CLASS = MacroMenuController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {macroMenu = id; }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {
-            CLASS = MyDocumentController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {encodingMenu = id; encodingView = id; }; 
-            SUPERCLASS = NSDocumentController; 
-        }, 
-        {
             ACTIONS = {orderFrontStandardAboutPanel = id; }; 
             CLASS = NSApplication; 
             LANGUAGE = ObjC; 
@@ -76,7 +58,6 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
         }, 
-        {CLASS = STEController; LANGUAGE = ObjC; SUPERCLASS = NSDocumentController; }, 
         {
             ACTIONS = {
                 checkForUpdate = id; 
@@ -86,6 +67,24 @@
             }; 
             CLASS = TSAppDelegate; 
             LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = TSDocumentController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {encodingMenu = id; encodingView = id; }; 
+            SUPERCLASS = NSDocumentController; 
+        }, 
+        {
+            ACTIONS = {openMacroEditor = id; }; 
+            CLASS = TSMacroEditor; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = TSMacroMenuController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {macroMenu = id; }; 
             SUPERCLASS = NSObject; 
         }, 
         {

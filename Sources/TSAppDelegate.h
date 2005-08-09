@@ -24,12 +24,12 @@
 #import "UseMitsu.h"
 
 #import <Foundation/Foundation.h>
-#import "Autrecontroller.h"
-#import "Matrixcontroller.h"
+#import "TSLaTeXPanelController.h"
+#import "TSMatrixPanelController.h"
 #import "OgreKit/OgreTextFinder.h"
-// added by mitsu --(H) Macro menu and (G) EncodingSupport
-// #import "MacroMenuController.h"
-#import "EncodingSupport.h"
+// added by mitsu --(H) Macro menu and (G) TSEncodingSupport
+// #import "TSMacroMenuController.h"
+#import "TSEncodingSupport.h"
 // end addition
 
 @interface TSAppDelegate : NSObject 

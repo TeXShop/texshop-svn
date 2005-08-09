@@ -1,5 +1,6 @@
 {
     IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {
                 hideWindow = id; 
@@ -12,7 +13,7 @@
                 putsymbols = id; 
                 puttypeface = id; 
             }; 
-            CLASS = Autrecontroller; 
+            CLASS = TSLaTeXPanelController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 custombuttonmatrix = id; 
@@ -25,8 +26,7 @@
                 typefacebuttonmatrix = id; 
             }; 
             SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+        }
     ); 
     IBVersion = 1; 
 }
