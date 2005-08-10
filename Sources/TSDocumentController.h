@@ -27,7 +27,7 @@
 {
     id	encodingView;
     id	encodingMenu;
-    int	encoding;
+    int	_encoding;
 }    
 - (IBAction)openDocument:(id)sender;
 - (void)initializeEncoding;

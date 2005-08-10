@@ -65,8 +65,8 @@ enum DocumentType {
 	id			pagenumberKitPanel;
     id			magnificationPanel;
 	id			magnificationKitPanel;
-    id                  statisticsPanel;
-    id                  statisticsForm;
+    id			statisticsPanel;
+    id			statisticsForm;
     id			openSaveBox;
     id			openSaveView;
     id			linePanel;
@@ -102,8 +102,8 @@ enum DocumentType {
     NSTask		*bibTask;
     NSTask		*indexTask;
     NSTask		*metaFontTask;
-    NSTask              *detexTask;
-    NSPipe              *detexPipe;
+    NSTask		*detexTask;
+    NSPipe		*detexPipe;
     NSFileHandle        *detexHandle;
     NSDate		*startDate;
     NSPDFImageRep	*texRep;
@@ -115,13 +115,13 @@ enum DocumentType {
     int			errorNumber;
     int			whichError;
     int			theScript;		/*" script currently executing; 100, 101, 102 "*/
-    unsigned		colorStart, colorEnd;
+    unsigned	colorStart, colorEnd;
     BOOL		fastColor, fastColorBackTeX;
     NSTimer		*syntaxColoringTimer;	/*" Timer that repeatedly handles syntax coloring "*/
-    unsigned		colorLocation;
+    unsigned	colorLocation;
     NSTimer		*tagTimer;		/*" Timer that repeatedly handles tag updates "*/
-    unsigned		tagLocation;
-    unsigned		tagLocationLine;
+    unsigned	tagLocation;
+    unsigned	tagLocationLine;
     BOOL		makeError;
     BOOL		returnline;
     SEL			tempSEL;
@@ -177,9 +177,7 @@ enum DocumentType {
 - (void) setTextView: (id)aView;
 // endforsplit
 - (id) magnificationPanel;
-- (id) magnificationKitPanel;
 - (id) pagenumberPanel;
-- (id) pagenumberKitPanel;
 - (void) quitMagnificationPanel: sender;
 - (void) quitPagenumberPanel: sender;
 - (void) showStatistics: sender;
@@ -215,7 +213,6 @@ enum DocumentType {
 - (void) doLine: sender;
 - (void) doTag: sender;
 - (void) chooseProgram: sender;
-- (void) chooseProgramEE: sender;
 - (void) chooseProgramFF: sender;
 - (void) saveFinished: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo;
 - (BOOL) startTask: (NSTask*) task running: (NSString*) leafname withArgs: (NSMutableArray*) args inDirectoryContaining: (NSString*) sourcePath withEngine: (int)theEngine;

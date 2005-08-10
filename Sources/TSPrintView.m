@@ -62,8 +62,8 @@
     
     myRect = [self bounds];
 	if ([_imageRep isKindOfClass:[NSPDFImageRep class]]) {
-		NSPrintInfo *pi = [[NSPrintOperation currentOperation] printInfo];
-		float scale = [[[pi dictionary] objectForKey:NSPrintScalingFactor]
+		NSPrintInfo *printInfo = [[NSPrintOperation currentOperation] printInfo];
+		float scale = [[[printInfo dictionary] objectForKey:NSPrintScalingFactor]
 						floatValue];
 		myRect.size.height = myRect.size.height * scale;
 		myRect.size.width = myRect.size.width * scale;
@@ -106,8 +106,8 @@
 	aRect.origin.y = 0;
     aRect.size = [pdfRep bounds].size;
     
-    NSPrintInfo *pi = [[NSPrintOperation currentOperation] printInfo];
-    float scale = [[[pi dictionary] objectForKey:NSPrintScalingFactor]
+    NSPrintInfo *printInfo = [[NSPrintOperation currentOperation] printInfo];
+    float scale = [[[printInfo dictionary] objectForKey:NSPrintScalingFactor]
                     floatValue];
     aRect.size.height = aRect.size.height * scale;
     aRect.size.width = aRect.size.width * scale;

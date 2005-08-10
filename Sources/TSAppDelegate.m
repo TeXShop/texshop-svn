@@ -196,8 +196,7 @@
 								stringByDeletingLastPathComponent];
 	NSEnumerator *enumerator = [[fileManager directoryContentsAtPath: folderPath] 
 								objectEnumerator];
-	while (filename = [enumerator nextObject]) 
-	{
+	while ((filename = [enumerator nextObject])) {
 		if ([filename characterAtIndex: 0] != '.') 
 			[fileManager removeFileAtPath:[folderPath stringByAppendingPathComponent: 
 								filename] handler: nil];
@@ -344,8 +343,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
         // fill in our templates
             templates = [NSBundle pathsForResourcesOfType:@".tex" inDirectory:[[NSBundle mainBundle] resourcePath]];
             templateEnum = [templates objectEnumerator];
-            while (fileName = [templateEnum nextObject])
-            {
+            while ((fileName = [templateEnum nextObject])) {
 				[self copyToTemplateDirectory:fileName ];
             }
             
@@ -366,8 +364,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
             templates = [NSBundle pathsForResourcesOfType:@"tex" 
                 inDirectory:[[[NSBundle mainBundle] resourcePath] stringByAppendingString: @"/More"]];
             templateEnum = [templates objectEnumerator];
-            while (fileName = [templateEnum nextObject])
-            {
+            while ((fileName = [templateEnum nextObject])) {
 				[self copyToMoreDirectory:fileName ];
             }
 
@@ -465,8 +462,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 		// fill in our binaries
 		binaries = [NSBundle pathsForResourcesOfType:@"bxx" inDirectory:[[NSBundle mainBundle] resourcePath]];
 		binaryEnum = [binaries objectEnumerator];
-		while (fileName = [binaryEnum nextObject])
-		{
+		while ((fileName = [binaryEnum nextObject])) {
 			[self copyToBinaryDirectory:fileName ];
 		}
 		
@@ -506,8 +502,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 		// fill in our binaries
 		engines = [NSBundle pathsForResourcesOfType:@"engine" inDirectory:[[NSBundle mainBundle] resourcePath]];
 		enginesEnum = [engines objectEnumerator];
-		while (fileName = [enginesEnum nextObject])
-		{
+		while ((fileName = [enginesEnum nextObject])) {
 			[self copyToEngineDirectory:fileName ];
 		}
 		

@@ -22,6 +22,7 @@
  */
 
 #import "MyPDFKitView.h"
+#import "MyPDFView.h"
 #import "Globals.h"
 #import "TSDocument.h"
 #import "TSEncodingSupport.h"
@@ -467,8 +468,8 @@
     magSize = [self magnification];
     [self setScaleFactor: magSize];
 	if (sender == myScale1) {
-		[NSApp endSheet: [myDocument magnificationKitPanel]];
-		}
+		[NSApp endSheet: [myDocument magnificationPanel]];
+	}
 
 /*	
 	// mitsu 1.29b 
@@ -560,7 +561,7 @@
 	[self goToKitPageNumber: thePage];
 	
 	if (sender == currentPage1) 
-		[NSApp endSheet:[myDocument pagenumberKitPanel]];
+		[NSApp endSheet:[myDocument pagenumberPanel]];
 
 }
 
@@ -2907,7 +2908,7 @@ done:
 	NSImage *image = nil;
 	NSBitmapImageFileType fileType;
 	NSDictionary *dict;
-	NSColor *backColor, *oldBackColor;
+	NSColor *foreColor, *backColor, *oldBackColor;
 	
 	mySelectedRect = [self convertRect: selectedRect fromView: [self documentView]];
 	visRect = [self visibleRect];
@@ -2968,7 +2969,6 @@ done:
 		// color mapping
 		if (bitmap && [SUD boolForKey:PdfColorMapKey])
 		{
-			NSColor *foreColor, *backColor;
 			if ([SUD stringForKey:PdfFore_RKey])
 			{
 				foreColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:PdfFore_RKey] 

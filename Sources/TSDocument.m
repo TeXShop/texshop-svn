@@ -33,7 +33,6 @@
 #import <OgreKit/OgreKit.h> // zenitani 1.35 (A)
 
 #import "MyPDFView.h"
-// FIXME / TODO Max Horn: The following should only be #included for 10.4+ builds
 #import "MyPDFKitView.h"
 
 #import "TSPrintView.h"
@@ -127,7 +126,7 @@
         [pdfRefreshTimer invalidate];
         [pdfRefreshTimer release];
         pdfRefreshTimer = nil;
-        }
+	}
 
     [commentColor release];
     [commandColor release];
@@ -148,14 +147,10 @@
     [magnificationOutlet release];
     [macroButton release]; // mitsu 1.29 -- I for got this
     [macroButtonEE release];
-    
-#ifdef MITSU_PDF
     [mouseModeMatrix release]; // mitsu 1.29 (O)
-#endif
     
-/* others */
-    if (pdfDate != nil)
-        [pdfDate release];
+	[pdfDate release];
+
     [super dealloc];
 }
 
@@ -264,8 +259,8 @@
             [detexPipe release];
         detexTask = nil;
         detexPipe = nil;
-        }
-        
+	}
+	
     detexTask = [[NSTask alloc] init];
     [detexTask setCurrentDirectoryPath: [myFileName stringByDeletingLastPathComponent]];
     [detexTask setEnvironment: g_environment];
@@ -282,16 +277,16 @@
         [detexTask setLaunchPath:enginePath];
         [detexTask setArguments:args];
         [detexTask launch];
-        }
+	}
     else {
         if (detexPipe) {
             [detexPipe release];
             detexPipe = nil;
-            }
+		}
         [detexTask release];
         detexTask = nil;
-        }
-
+	}
+	
 }
 
 - (void) saveForStatistics: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo;
@@ -314,7 +309,7 @@
     NSArray         *fileList;
     BOOL            isDirectory;
     unsigned        i;
-
+	
     fm       = [ NSFileManager defaultManager ];
     basePath = [ EnginePathKey stringByStandardizingPath ];
     fileList = [ fm directoryContentsAtPath: basePath ];
@@ -326,36 +321,36 @@
                 title = [title stringByDeletingPathExtension];
                 [programButton addItemWithTitle: title];
                 [programButtonEE addItemWithTitle: title];
-                }
+			}
         }
     }
 }
 
 - (void)installStringIntoTextEdit
 {
-        // zenitani 1.35 (A) -- normalizing newline character for regular expression
-        long			MacVersion;
-		unsigned		length;
-
-        if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
-            if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030)) 
-            aString = [OGRegularExpression replaceNewlineCharactersInString:aString 
-                    withCharacter:OgreLfNewlineCharacter];
-            }
+	// zenitani 1.35 (A) -- normalizing newline character for regular expression
+	long			MacVersion;
+	unsigned		length;
 	
-        [textView setString: aString];
-        length = [aString length];
-        [self setupTags];
-        
-        if (([SUD boolForKey:SyntaxColoringEnabledKey]) && (fileIsTex)) 
-        {
-            colorLocation = 0;
-            [self fixColor2:0 :length];
-           // syntaxColoringTimer = [[NSTimer scheduledTimerWithTimeInterval: COLORTIME target:self selector:@selector(fixColor1:) userInfo:nil repeats:YES] retain];
-        }
-
-        // [aString release];  // mitsu 1.29 memory leak fix; aString is autoreleased
-        aString = nil;
+	if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
+		if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030)) 
+            aString = [OGRegularExpression replaceNewlineCharactersInString:aString 
+															  withCharacter:OgreLfNewlineCharacter];
+	}
+	
+	[textView setString: aString];
+	length = [aString length];
+	[self setupTags];
+	
+	if (([SUD boolForKey:SyntaxColoringEnabledKey]) && (fileIsTex)) 
+	{
+		colorLocation = 0;
+		[self fixColor2:0 :length];
+		// syntaxColoringTimer = [[NSTimer scheduledTimerWithTimeInterval: COLORTIME target:self selector:@selector(fixColor1:) userInfo:nil repeats:YES] retain];
+	}
+	
+	// [aString release];  // mitsu 1.29 memory leak fix; aString is autoreleased
+	aString = nil;
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
@@ -371,7 +366,7 @@
 
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController
-{    
+{
     BOOL                spellExists;
     NSString		*imagePath;
 #ifndef ROOTFILE
@@ -394,55 +389,55 @@
     NSColor		*backgroundColor, *insertionpointColor;
 	//NSColor	*whiteColor;
     NSDictionary	*myAttributes;
-    int                 i;
+		int                 i;
     BOOL                done;
     NSString            *defaultCommand;
     
     [super windowControllerDidLoadNib:aController];
 	
     
-// the code below exists because the spell checker sometimes did not exist
-// in Panther developer releases; it is probably not necessary for
-// the final release
-NS_DURING
-    NSSpellChecker *myChecker = [NSSpellChecker sharedSpellChecker];
-	spellExists = (myChecker != 0);
-NS_HANDLER
-    spellExists = NO;
-NS_ENDHANDLER
-
+	// the code below exists because the spell checker sometimes did not exist
+	// in Panther developer releases; it is probably not necessary for
+	// the final release
+	NS_DURING
+		NSSpellChecker *myChecker = [NSSpellChecker sharedSpellChecker];
+		spellExists = (myChecker != 0);
+	NS_HANDLER
+		spellExists = NO;
+	NS_ENDHANDLER
+	
     
-/*
-    // Added by Greg Landweber to load the autocompletion dictionary
-    // This code is modified from the code to load the LaTeX panel
-    NSString	*autocompletionPath;
-    
-    autocompletionPath = [AutoCompletionPathKey stringByStandardizingPath];
-    autocompletionPath = [autocompletionPath stringByAppendingPathComponent:@"autocompletion"];
-    autocompletionPath = [autocompletionPath stringByAppendingPathExtension:@"plist"];
-    if ([[NSFileManager defaultManager] fileExistsAtPath: autocompletionPath]) 
-	g_autocompletionDictionary=[NSDictionary dictionaryWithContentsOfFile:autocompletionPath];
-    else
-	g_autocompletionDictionary=[NSDictionary dictionaryWithContentsOfFile:
-	 [[NSBundle mainBundle] pathForResource:@"autocompletion" ofType:@"plist"]];
-    [g_autocompletionDictionary retain];
-    // end of code added by Greg Landweber
-*/
+	/*
+	 // Added by Greg Landweber to load the autocompletion dictionary
+	 // This code is modified from the code to load the LaTeX panel
+	 NSString	*autocompletionPath;
+	 
+	 autocompletionPath = [AutoCompletionPathKey stringByStandardizingPath];
+	 autocompletionPath = [autocompletionPath stringByAppendingPathComponent:@"autocompletion"];
+	 autocompletionPath = [autocompletionPath stringByAppendingPathExtension:@"plist"];
+	 if ([[NSFileManager defaultManager] fileExistsAtPath: autocompletionPath]) 
+	 g_autocompletionDictionary=[NSDictionary dictionaryWithContentsOfFile:autocompletionPath];
+	 else
+	 g_autocompletionDictionary=[NSDictionary dictionaryWithContentsOfFile:
+		 [[NSBundle mainBundle] pathForResource:@"autocompletion" ofType:@"plist"]];
+	 [g_autocompletionDictionary retain];
+	 // end of code added by Greg Landweber
+	 */
     backgroundColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:background_RKey]
-    green:  [SUD floatForKey:background_GKey]
-    blue: [SUD floatForKey:background_BKey] 
-    alpha:1.0];
+												green:  [SUD floatForKey:background_GKey]
+												 blue: [SUD floatForKey:background_BKey] 
+												alpha:1.0];
     
     insertionpointColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:insertionpoint_RKey]
-    green:  [SUD floatForKey:insertionpoint_GKey]
-    blue: [SUD floatForKey:insertionpoint_BKey] 
-    alpha:1.0];
+													green:  [SUD floatForKey:insertionpoint_GKey]
+													 blue: [SUD floatForKey:insertionpoint_BKey] 
+													alpha:1.0];
     
     //whiteColor = [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0];
     
-/*    
-    // New
-    contentSize = [scrollView contentSize];
+	/*    
+		// New
+		contentSize = [scrollView contentSize];
     textView = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
     [textView setAutoresizingMask: NSViewWidthSizable];
     [[textView textContainer] setWidthTracksTextView:YES];
@@ -454,11 +449,11 @@ NS_ENDHANDLER
     [textView setBackgroundColor: backgroundColor];
     [scrollView setDocumentView:textView];
     [textView release];
-*/
+	*/
     /* End of New */
     
-        /* New forsplit */
-        
+	/* New forsplit */
+	
     
     contentSize = [scrollView contentSize];
     textView1 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
@@ -478,8 +473,8 @@ NS_ENDHANDLER
     [textView1 release];
     textView = textView1;
     /* End of New */
-// forsplit
-
+	// forsplit
+	
     contentSize = [scrollView2 contentSize];
     textView2 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
     [textView2 setAutoresizingMask: NSViewWidthSizable];
@@ -498,7 +493,7 @@ NS_ENDHANDLER
     [textView2 setAcceptsGlyphInfo: YES]; // suggested by Itoh 1.35 (A) 
     [textView2 setDocument: self]; // mitsu 1.29 (T2-4) added 
     [textView2 release];
-
+	
     textStorage = [textView1 textStorage];
     
     NSLayoutManager *layoutManager = [textView2 layoutManager];
@@ -512,8 +507,8 @@ NS_ENDHANDLER
     [scrollView2 retain];
     [scrollView2 removeFromSuperview];
     windowIsSplit = NO;
-//  endforsplit
-
+	//  endforsplit
+	
     
     externalEditor = [[[NSApplication sharedApplication] delegate] forPreview];
     theFileName = [self fileName];
@@ -523,7 +518,7 @@ NS_ENDHANDLER
     
     if ([SUD boolForKey:ShowSyncMarksKey])
         [syncBox setState:1];
-        
+	
     r = [SUD floatForKey:commandredKey];
     g = [SUD floatForKey:commandgreenKey];
     b = [SUD floatForKey:commandblueKey];
@@ -536,24 +531,24 @@ NS_ENDHANDLER
     g = [SUD floatForKey:markergreenKey];
     b = [SUD floatForKey:markerblueKey];
     markerColor = [[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] retain];
-
+	
 	doAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
 	[self fixAutoMenu];
-
-
-/* when opening an empty document, must open the source editor */         
+	
+	
+	/* when opening an empty document, must open the source editor */         
     if ((theFileName == nil) && (externalEditor))
         externalEditor = NO;
- 
+	
     [self registerForNotifications];    
 	[self setupFromPreferencesUsingWindowController:aController];
-
+	
     [pdfView setDocument: self]; /* This was commented out!! Don't do it; needed by Ghostscript; Dick */
     [textView setDelegate: self];
-// the next line caused jpg and tiff files to fail, so we do it later
- //   [pdfView resetMagnification]; 
+	// the next line caused jpg and tiff files to fail, so we do it later
+	//   [pdfView resetMagnification]; 
     
-   
+	
     whichScript = [SUD integerForKey:DefaultScriptKey];
     [self fixTypesetMenu];
     
@@ -565,23 +560,23 @@ NS_ENDHANDLER
         ([fileExtension isEqualToString: @"JPG"]) ||
         ([fileExtension isEqualToString: @"tif"]) ||
         ([fileExtension isEqualToString: @"tiff"]))
-            ;
+		;
 #ifndef MITSU_PDF
     else
         [pdfView resetMagnification];
 #endif
-        
+	
     if (( ! [fileExtension isEqualToString: @"tex"]) && ( ! [fileExtension isEqualToString: @"TEX"])
-     && ( ! [fileExtension isEqualToString: @"dtx"]) && ( ! [fileExtension isEqualToString: @"ins"])
-     && ( ! [fileExtension isEqualToString: @"sty"]) && ( ! [fileExtension isEqualToString: @"cls"])
-// added by mitsu --(N) support for .def, .fd, .ltx. .clo
-     && ( ! [fileExtension isEqualToString: @"def"]) && ( ! [fileExtension isEqualToString: @"fd"])
-     && ( ! [fileExtension isEqualToString: @"ltx"]) && ( ! [fileExtension isEqualToString: @"clo"])
-// end addition
+		&& ( ! [fileExtension isEqualToString: @"dtx"]) && ( ! [fileExtension isEqualToString: @"ins"])
+		&& ( ! [fileExtension isEqualToString: @"sty"]) && ( ! [fileExtension isEqualToString: @"cls"])
+		// added by mitsu --(N) support for .def, .fd, .ltx. .clo
+		&& ( ! [fileExtension isEqualToString: @"def"]) && ( ! [fileExtension isEqualToString: @"fd"])
+		&& ( ! [fileExtension isEqualToString: @"ltx"]) && ( ! [fileExtension isEqualToString: @"clo"])
+		// end addition
         && ( ! [fileExtension isEqualToString: @""]) && ( ! [fileExtension isEqualToString: @"mp"]) 
         && ( ! [fileExtension isEqualToString: @"mf"]) 
         && ( ! [fileExtension isEqualToString: @"bib"]) 
-		 && ( ! [fileExtension isEqualToString: @"ly"]) 
+		&& ( ! [fileExtension isEqualToString: @"ly"]) 
         && ([[NSFileManager defaultManager] fileExistsAtPath: [self fileName]]))
     {
         [self setFileType: fileExtension];
@@ -590,9 +585,9 @@ NS_ENDHANDLER
         _documentType = isOther;
         fileIsTex = NO;
     }
-            
-/* handle images */
-
+	
+	/* handle images */
+	
 #ifdef MITSU_PDF
 	// mitsu 1.29 (S4)-- flipped clip view
 	// the following code allows the window to be anchored at top left when scrolled
@@ -607,17 +602,17 @@ NS_ENDHANDLER
 	[pdfClipView release];
 	[pdfScrollView setDocumentView: pdfView];
 	[pdfView release];
-        [pdfView setAutoresizingMask: NSViewNotSizable];
+	[pdfView setAutoresizingMask: NSViewNotSizable];
 	// notofication for scroll
 	[[NSNotificationCenter defaultCenter] addObserver:pdfView selector:@selector(wasScrolled:) 
-				name:NSViewBoundsDidChangeNotification object:[pdfView superview]];
+												 name:NSViewBoundsDidChangeNotification object:[pdfView superview]];
 	// end mitsu 1.29
 #endif
-
+	
     [pdfView setImageType: _documentType];
-        
+	
     if (! fileIsTex)
-        {
+	{
         imageFound = NO;
         imagePath = [self fileName];
         
@@ -627,28 +622,28 @@ NS_ENDHANDLER
             if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
                 myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
                 pdfDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
-                }
-                
+			}
+			
             // texRep = [[NSPDFImageRep imageRepWithContentsOfFile: imagePath] retain];
             // [pdfWindow setTitle: [[self fileName] lastPathComponent]];
 			[pdfKitWindow setTitle: [[self fileName] lastPathComponent]]; 
             // [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4; 
             // supposed to allow command click of window title to lead to file, but doesn't
             _documentType = isPDF;
-            }
+		}
         else if (([fileExtension isEqualToString: @"jpg"]) || 
-                ([fileExtension isEqualToString: @"jpeg"]) ||
-                ([fileExtension isEqualToString: @"JPG"])) {
+				 ([fileExtension isEqualToString: @"jpeg"]) ||
+				 ([fileExtension isEqualToString: @"JPG"])) {
             imageFound = YES;
             texRep = [[NSBitmapImageRep imageRepWithContentsOfFile: imagePath] retain];
-             [pdfWindow setTitle: [[self fileName] lastPathComponent]]; 
-             // [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4
+			[pdfWindow setTitle: [[self fileName] lastPathComponent]]; 
+			// [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4
             _documentType = isJPG;
             [previousButton setEnabled:NO];
             [nextButton setEnabled:NO];
-            }
+		}
         else if (([fileExtension isEqualToString: @"tiff"]) ||
-                ([fileExtension isEqualToString: @"tif"])) {
+				 ([fileExtension isEqualToString: @"tif"])) {
             imageFound = YES;
             texRep = [[NSBitmapImageRep imageRepWithContentsOfFile: imagePath] retain];
             [pdfWindow setTitle: [[self fileName] lastPathComponent]]; 
@@ -656,72 +651,72 @@ NS_ENDHANDLER
             _documentType = isTIFF;
             [previousButton setEnabled:NO];
             [nextButton setEnabled:NO];
-             }
+		}
         else if (([fileExtension isEqualToString: @"dvi"]) || 
-                ([fileExtension isEqualToString: @"ps"]) ||
-                ([fileExtension isEqualToString:@"eps"]))
-            {
-                _documentType = isPDF;
-                [pdfView setImageType: _documentType];
-                // [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4
-                [self convertDocument];
-                return;
-            }
-			
-		if ((imageFound) && (_documentType == isPDF)) {
+				 ([fileExtension isEqualToString: @"ps"]) ||
+				 ([fileExtension isEqualToString:@"eps"]))
+		{
+			_documentType = isPDF;
+			[pdfView setImageType: _documentType];
+			// [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4
+			[self convertDocument];
+			return;
+		}
 		
+		if ((imageFound) && (_documentType == isPDF)) {
+			
 			PDFfromKit = YES;
 			[myPDFKitView showWithPath: imagePath];
 			[pdfKitWindow setRepresentedFilename: imagePath];
 			[pdfKitWindow setTitle: [imagePath lastPathComponent]];
 			[pdfKitWindow makeKeyAndOrderFront: self];
 			if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
-                    pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] 
-                    target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
-                }
-			return;
+				pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] 
+																	target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
 			}
-            
+			return;
+		}
+		
         if (imageFound) {
-				// pdf part here is irrelevant after pdfkit use above
-                [pdfView setImageType: _documentType];
-                [pdfView setImageRep: texRep]; // this releases old one!
+			// pdf part here is irrelevant after pdfkit use above
+			[pdfView setImageType: _documentType];
+			[pdfView setImageRep: texRep]; // this releases old one!
 #ifndef MITSU_PDF
-                if (_documentType == isPDF) {
-                    topLeftRect = [texRep bounds];
-                    topLeftPoint.x = topLeftRect.origin.x;
-                    topLeftPoint.y = topLeftRect.origin.y + topLeftRect.size.height - 1;
-                    [pdfView scrollPoint: topLeftPoint];
-                    }
+			if (_documentType == isPDF) {
+				topLeftRect = [texRep bounds];
+				topLeftPoint.x = topLeftRect.origin.x;
+				topLeftPoint.y = topLeftRect.origin.y + topLeftRect.size.height - 1;
+				[pdfView scrollPoint: topLeftPoint];
+			}
 #endif
-
-                if (texRep != nil) 
-                    [pdfView display];
+			
+			if (texRep != nil) 
+				[pdfView display];
 #ifndef MITSU_PDF
-                if ((_documentType == isJPG) || (_documentType == isTIFF))
+			if ((_documentType == isJPG) || (_documentType == isTIFF))
                 [pdfView resetMagnification];
 #endif
-                [pdfWindow makeKeyAndOrderFront: self];
-                
-                if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
-                    pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] 
-                    target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
-                }
-                return;
-                }
-        }
- /* end of images */
- if (externalEditor) {
-    [self setHasUndoManager: NO];  // so reporting no changes does not lead to error messages
-    texTask = nil;
-    bibTask = nil;
-    indexTask = nil;
-    metaFontTask = nil;
-    detexTask = nil;   
-    detexPipe = nil;
-
+			[pdfWindow makeKeyAndOrderFront: self];
+			
+			if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
+				pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] 
+																	target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
+			}
+			return;
+		}
+	}
+	/* end of images */
+	if (externalEditor) {
+		[self setHasUndoManager: NO];  // so reporting no changes does not lead to error messages
+		texTask = nil;
+		bibTask = nil;
+		indexTask = nil;
+		metaFontTask = nil;
+		detexTask = nil;   
+		detexPipe = nil;
+		
     }
-  else if (aString != nil) 
+	else if (aString != nil) 
     {
         [self installStringIntoTextEdit];
         
@@ -733,72 +728,72 @@ NS_ENDHANDLER
         detexPipe = nil;
     }
     
-  if (! externalEditor) {
-    myRange.location = 0;
-    myRange.length = 0;
-    [textView setSelectedRange: myRange];
-    if (spellExists)
-        [textView setContinuousSpellCheckingEnabled:[SUD boolForKey:SpellCheckEnabledKey]];
-    [textWindow setInitialFirstResponder: textView];
-    [textWindow makeFirstResponder: textView];
+	if (! externalEditor) {
+		myRange.location = 0;
+		myRange.length = 0;
+		[textView setSelectedRange: myRange];
+		if (spellExists)
+			[textView setContinuousSpellCheckingEnabled:[SUD boolForKey:SpellCheckEnabledKey]];
+		[textWindow setInitialFirstResponder: textView];
+		[textWindow makeFirstResponder: textView];
     }
     
     if (!fileIsTex) 
         return;
-        
-// changed by mitsu --(J) Typeset command and (J++) Program popup button indicating Program name
+	
+	// changed by mitsu --(J) Typeset command and (J++) Program popup button indicating Program name
     defaultcommand = [SUD integerForKey:DefaultCommandKey];
     switch (defaultcommand) {
         case DefaultCommandTeX: [programButton selectItemWithTitle: @"Plain TeX"]; 
-                                [programButtonEE selectItemWithTitle: @"Plain TeX"];
-                                whichEngine = TexEngine;	// just remember the default command
-                                break;
+			[programButtonEE selectItemWithTitle: @"Plain TeX"];
+			whichEngine = TexEngine;	// just remember the default command
+			break;
         case DefaultCommandLaTeX:   [programButton selectItemWithTitle: @"LaTeX"]; 
-                                    [programButtonEE selectItemWithTitle: @"LaTeX"];
-                                    whichEngine = LatexEngine;	// just remember the default command
-                                    break;
+			[programButtonEE selectItemWithTitle: @"LaTeX"];
+			whichEngine = LatexEngine;	// just remember the default command
+			break;
         case DefaultCommandConTEXt: [programButton selectItemWithTitle: @"ConTeXt"]; 
-                                    [programButtonEE selectItemWithTitle: @"ConTeXt"];
-                                    whichEngine = ContextEngine;	// just remember the default command
-                                    break;
+			[programButtonEE selectItemWithTitle: @"ConTeXt"];
+			whichEngine = ContextEngine;	// just remember the default command
+			break;
         case DefaultCommandUser:    i = UserEngine;
-                                    done = NO;
-                                    defaultCommand = [[SUD stringForKey: DefaultEngineKey] lowercaseString];
-                                    while ((i <= [programButton numberOfItems]) && (! done)) {
-                                        i++;
-                                        if ([[[[programButton itemAtIndex: (i - 2)] title] lowercaseString] isEqualToString: defaultCommand]) {
-                                            done = YES;
-                                            [programButton selectItemAtIndex: (i - 2)];
-                                            [programButtonEE selectItemAtIndex: (i - 2)];
-                                            whichEngine = i - 1;
-                                            }
-                                        }
-                                    if (! done) {
-                                        [programButton selectItemWithTitle: @"LaTeX"]; 
-                                        [programButtonEE selectItemWithTitle: @"LaTeX"];
-                                        whichEngine = LatexEngine;	// just remember the default command
-                                        }
-                                    break;
-        }
+			done = NO;
+			defaultCommand = [[SUD stringForKey: DefaultEngineKey] lowercaseString];
+			while ((i <= [programButton numberOfItems]) && (! done)) {
+				i++;
+				if ([[[[programButton itemAtIndex: (i - 2)] title] lowercaseString] isEqualToString: defaultCommand]) {
+					done = YES;
+					[programButton selectItemAtIndex: (i - 2)];
+					[programButtonEE selectItemAtIndex: (i - 2)];
+					whichEngine = i - 1;
+				}
+			}
+				if (! done) {
+					[programButton selectItemWithTitle: @"LaTeX"]; 
+					[programButtonEE selectItemWithTitle: @"LaTeX"];
+					whichEngine = LatexEngine;	// just remember the default command
+				}
+				break;
+	}
     [self fixMacroMenu];
     
-// end change
-
-/* old code       
-    defaultcommand = [SUD integerForKey:DefaultCommandKey];
+	// end change
+	
+	/* old code       
+		defaultcommand = [SUD integerForKey:DefaultCommandKey];
     switch (defaultcommand) {
         case DefaultCommandTeX: [typesetButton setTitle: @"TeX"]; 
-                                [typesetButtonEE setTitle: @"TeX"];
-                                break;
+			[typesetButtonEE setTitle: @"TeX"];
+			break;
         case DefaultCommandLaTeX:   [typesetButton setTitle: @"LaTeX"]; 
-                                    [typesetButtonEE setTitle: @"LaTeX"];
-                                    break;
+			[typesetButtonEE setTitle: @"LaTeX"];
+			break;
         case DefaultCommandConTEXt: [typesetButton setTitle: @"ConTeXt"]; 
-                                    [typesetButtonEE setTitle: @"ConTeXt"];
-                                    break;
-        }
+			[typesetButtonEE setTitle: @"ConTeXt"];
+			break;
+	}
     */
-
+	
     
 #ifndef ROOTFILE    
     projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
@@ -814,91 +809,91 @@ NS_ENDHANDLER
             nameString = [nameString stringByStandardizingPath];
         }
         imagePath = [[nameString stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-        }
+	}
     else
 #endif
-
+		
 #ifdef ROOTFILE
-    theSource = [[self textView] string];
+		theSource = [[self textView] string];
     if ([self checkMasterFile: theSource forTask:RootForOpening])
         return;
     if ([self checkRootFile_forTask: RootForOpening])
         return;
 #endif
-        imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+	imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
     if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
-	
+		
 		PDFfromKit = YES;
 		myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
         pdfDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
-
+		
 		[myPDFKitView showWithPath: imagePath];
 		[pdfKitWindow setRepresentedFilename: imagePath];
 		[pdfKitWindow setTitle: [imagePath lastPathComponent]];
-
-	
-	
-	
-	
-	
-/*    
-        myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
+		
+		
+		
+		
+		
+		
+		/*    
+			myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
         pdfDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
-
+		
         texRep = [[NSPDFImageRep imageRepWithContentsOfFile: imagePath] retain]; 
-
-            // [pdfWindow setTitle: 
-            //        [[[[self fileName] lastPathComponent] 
-            //        stringByDeletingPathExtension] stringByAppendingString:@".pdf"]]; 
-            [pdfWindow setTitle: [imagePath lastPathComponent]];
-            // [pdfWindow setRepresentedFilename: [[[[self fileName] lastPathComponent] 
-            //        stringByDeletingPathExtension] stringByAppendingString:@".pdf"]]; //mitsu July4
-            [pdfView setImageRep: texRep]; // this releases old one!
+		
+		// [pdfWindow setTitle: 
+		//        [[[[self fileName] lastPathComponent] 
+		//        stringByDeletingPathExtension] stringByAppendingString:@".pdf"]]; 
+		[pdfWindow setTitle: [imagePath lastPathComponent]];
+		// [pdfWindow setRepresentedFilename: [[[[self fileName] lastPathComponent] 
+		//        stringByDeletingPathExtension] stringByAppendingString:@".pdf"]]; //mitsu July4
+		[pdfView setImageRep: texRep]; // this releases old one!
 #ifndef MITSU_PDF
-            topLeftRect = [texRep bounds];
-            topLeftPoint.x = topLeftRect.origin.x;
-            topLeftPoint.y = topLeftRect.origin.y + topLeftRect.size.height - 1;
-            [pdfView scrollPoint: topLeftPoint];
-            [pdfView display];
+		topLeftRect = [texRep bounds];
+		topLeftPoint.x = topLeftRect.origin.x;
+		topLeftPoint.y = topLeftRect.origin.y + topLeftRect.size.height - 1;
+		[pdfView scrollPoint: topLeftPoint];
+		[pdfView display];
 #endif
-            [pdfWindow makeKeyAndOrderFront: self];
-*/			
-			
-			
-			
-            
-        }
+		[pdfWindow makeKeyAndOrderFront: self];
+		*/			
+		
+		
+		
+		
+	}
     else if (externalEditor) {
-	
-			PDFfromKit = YES;
-			[pdfKitWindow setTitle: [imagePath lastPathComponent]];
-			[pdfKitWindow makeKeyAndOrderFront: self];
-	
-	
-           // [pdfWindow setTitle: [imagePath lastPathComponent]];
-           // [pdfWindow makeKeyAndOrderFront: self];
-        }
-// added by mitsu --(A) g_texChar filtering
+		
+		PDFfromKit = YES;
+		[pdfKitWindow setTitle: [imagePath lastPathComponent]];
+		[pdfKitWindow makeKeyAndOrderFront: self];
+		
+		
+		// [pdfWindow setTitle: [imagePath lastPathComponent]];
+		// [pdfWindow makeKeyAndOrderFront: self];
+	}
+	// added by mitsu --(A) g_texChar filtering
 	[texCommand setDelegate: [TSEncodingSupport sharedInstance]];
-// end addition
-
+	// end addition
+	
     if (externalEditor && ([SUD boolForKey: PdfRefreshKey] == YES)) {
-    
-         pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] target:self selector:@selector(refreshPDFWindow:) userInfo:nil repeats:YES] retain];
-         
-        }
-        
+		
+		pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] target:self selector:@selector(refreshPDFWindow:) userInfo:nil repeats:YES] retain];
+		
+	}
+	
     if (externalEditor && [SUD boolForKey: ExternalEditorTypesetAtStartKey]) {
-    
+		
         NSString *texName = [self fileName];
         if (texName && [[NSFileManager defaultManager] fileExistsAtPath:texName]) {
-                myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: texName traverseLink:NO];
-                NSDate *texDate = [myAttributes objectForKey:NSFileModificationDate];
-                if ((pdfDate == nil) || ([texDate compare:pdfDate] == NSOrderedDescending)) 
-                    [self doTypeset:self];
-                }
-        }
-
+			myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: texName traverseLink:NO];
+			NSDate *texDate = [myAttributes objectForKey:NSFileModificationDate];
+			if ((pdfDate == nil) || ([texDate compare:pdfDate] == NSOrderedDescending)) 
+				[self doTypeset:self];
+		}
+	}
+	
 }
 
 - (void)tryBadEncodingDialog: (NSWindow *)theWindow
@@ -920,21 +915,21 @@ NS_ENDHANDLER
 {
 	if ([self fileName] == nil) // file is a new one
 	{
-                NSString *displayString = [super displayName];
-                if (displayString == nil) // these two lines fix a Panther problem
-                    return displayString;
-                else {
-                    NSMutableString *newString = [NSMutableString stringWithString: displayString];
-                    [newString replaceOccurrencesOfString: @" " withString: @"-"
-						options: 0 range: NSMakeRange(0, [newString length])];
-                    // mitsu 1.29 (V)
-                    if ([[[[[NSBundle mainBundle] pathForResource:@"MainMenu" ofType:@"nib"] 
+		NSString *displayString = [super displayName];
+		if (displayString == nil) // these two lines fix a Panther problem
+			return displayString;
+		else {
+			NSMutableString *newString = [NSMutableString stringWithString: displayString];
+			[newString replaceOccurrencesOfString: @" " withString: @"-"
+										  options: 0 range: NSMakeRange(0, [newString length])];
+			// mitsu 1.29 (V)
+			if ([[[[[NSBundle mainBundle] pathForResource:@"MainMenu" ofType:@"nib"] 
 				stringByDeletingLastPathComponent] lastPathComponent] 
 				isEqualToString: @"Japanese.lproj"] && [newString length]==5)
 				[newString appendString: @"-1"];
-                    // end mitsu 1.29
-                    return newString;
-                    }
+			// end mitsu 1.29
+			return newString;
+		}
 	}
 	return [super displayName];
 }
@@ -945,7 +940,7 @@ NS_ENDHANDLER
 - (void) setTextView: (id)aView
 {
     NSRange		theRange;
-//  NSLayoutManager	*layoutManager;
+	//  NSLayoutManager	*layoutManager;
     
     textView = aView;
     if (textView == textView1) {
@@ -956,21 +951,21 @@ NS_ENDHANDLER
         // to catch up. Strangely, in splitscreen mode, this only affected the top half.
         // The bottom half scrolled immediately, and typing in the bottom screen scrolled
         // both halves immediately. Explain that.
-     //   layoutManager = [textView1 layoutManager];
-     //   [textStorage removeLayoutManager:layoutManager];
-     //   [textStorage addLayoutManager:layoutManager];
+		//   layoutManager = [textView1 layoutManager];
+		//   [textStorage removeLayoutManager:layoutManager];
+		//   [textStorage addLayoutManager:layoutManager];
         theRange = [textView2 selectedRange];
         theRange.length = 0;
         [textView2 setSelectedRange: theRange];
-        }
+	}
     else {
-     //   layoutManager = [textView2 layoutManager];
-    //    [textStorage removeLayoutManager:layoutManager];
-    //    [textStorage addLayoutManager:layoutManager];
+		//   layoutManager = [textView2 layoutManager];
+		//    [textStorage removeLayoutManager:layoutManager];
+		//    [textStorage addLayoutManager:layoutManager];
         theRange = [textView1 selectedRange];
         theRange.length = 0;
         [textView1 setSelectedRange: theRange];
-        }
+	}
 }
 
 // The next three methods implement the encoding button in the save panel
@@ -991,41 +986,12 @@ NS_ENDHANDLER
     [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
 
-/*
--(void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo
- {
-    if ((didSave) && (encoding != tempencoding))
-        NSRunAlertPanel(nil, nil, nil, NSLocalizedString(@"Cancel", @"Cancel"), 
-                    textWindow, self, @selector(encodingSheetEnd:returnCode:contextInfo:), NULL, nil, 
-                    NSLocalizedString(@"The file encoding changed; characters can be lost if the wrong encoding is used.",
-            @"The file encoding changed; characters can be lost if the wrong encoding is used."));
- }
- 
- -(void)encodingSheetEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
-{
-   switch(returnCode) {
-   
-    case NSAlertDefaultReturn:
-        encodingChangeOK = YES;
-        break;
-        
-    case NSAlertAlternateReturn: // cancel
-        encodingChangeOK = NO;
-        break;
-        
-    case NSAlertOtherReturn:
-        encodingChangeOK = NO;
-        break;
-    }
-}
 
-*/
- 
 - (void)saveToFile:(NSString *)fileName saveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo
 {
-        if (fileName != nil)
-            encoding = tempencoding;
-        [super saveToFile: fileName saveOperation: saveOperation delegate: delegate didSaveSelector: didSaveSelector contextInfo: contextInfo];
+	if (fileName != nil)
+		encoding = tempencoding;
+	[super saveToFile: fileName saveOperation: saveOperation delegate: delegate didSaveSelector: didSaveSelector contextInfo: contextInfo];
 }
 
 
@@ -1038,7 +1004,7 @@ NS_ENDHANDLER
     [openSaveView retain];
     NSEnumerator *enumerator = [[accessoryView subviews] objectEnumerator];
     id	anObject;
-    while (anObject = [enumerator nextObject])
+    while ((anObject = [enumerator nextObject]))
         [openSaveView addSubview: anObject];
     [savePanel setAccessoryView: openSaveView];
     return YES;
@@ -1241,6 +1207,8 @@ in other code when an external editor is being used. */
     [popupButton addItemsWithTitles:[[TSPreferences sharedInstance] allTemplateNames]];
 */
 
+	// FIXME/TODO: Unify the following code snippet with makeMenuFromDirectory:
+
     // new template menu (by S. Zenitani, Jan 31, 2003)
     NSFileManager *fm;
     NSString      *basePath, *path, *title;
@@ -1255,29 +1223,26 @@ in other code when an external editor is being used. */
     basePath = [ TexTemplatePathKey stringByStandardizingPath ];
     fileList = [ fm directoryContentsAtPath: basePath ];
 
-    for( i=0; i<[fileList count]; i++ ) {
+    for (i = 0; i < [fileList count]; i++) {
         title = [ fileList objectAtIndex: i ];
         path  = [ basePath stringByAppendingPathComponent: title ];
-        if( [fm fileExistsAtPath:path isDirectory: &isDirectory] ){
-            if( isDirectory ){
+        if ([fm fileExistsAtPath:path isDirectory: &isDirectory]) {
+            if (isDirectory ){
                 [popupButton addItemWithTitle: @""];
                 newItem = [popupButton lastItem];
                 [newItem setTitle: title];
                 submenu = [[[NSMenu alloc] init] autorelease];
                 [self makeMenuFromDirectory: submenu basePath: path
-                    action: @selector(doTemplate:) level: lv];
+									 action: @selector(doTemplate:) level: lv];
                 [newItem setSubmenu: submenu];
-            }else if ( [ [[title pathExtension] lowercaseString] isEqualToString: @"tex"] ) {
+            } else if ([ [[title pathExtension] lowercaseString] isEqualToString: @"tex"]) {
                 title = [title stringByDeletingPathExtension];
                 [popupButton addItemWithTitle: @""];
                 newItem = [popupButton lastItem];
                 [newItem setTitle: title];
-                // begin addition
                 [newItem setAction: @selector(doTemplate:)];
-		[newItem setTarget: self];
+				[newItem setTarget: self];
                 [newItem setRepresentedObject: path];
-                // end addition
-
             }
         }
     }
@@ -1301,19 +1266,19 @@ in other code when an external editor is being used. */
     fm       = [ NSFileManager defaultManager ];
     fileList = [ fm directoryContentsAtPath: basePath ];
 
-    for( i=0; i<[fileList count]; i++ ) {
+    for (i = 0; i < [fileList count]; i++) {
         title = [ fileList objectAtIndex: i ];
         path  = [ basePath stringByAppendingPathComponent: title ];
-        if( [fm fileExistsAtPath:path isDirectory: &isDirectory] ){
-            if( isDirectory ){
-                newItem=[menu addItemWithTitle: title action: nil keyEquivalent: @""];
-                if( level > 0 ){
+        if ([fm fileExistsAtPath:path isDirectory: &isDirectory]) {
+            if (isDirectory) {
+                newItem = [menu addItemWithTitle: title action: nil keyEquivalent: @""];
+                if (level > 0) {
                     submenu = [[[NSMenu alloc] init] autorelease];
                     [self makeMenuFromDirectory: submenu basePath: path
-                            action: action level: level];
+										 action: action level: level];
                     [newItem setSubmenu: submenu];
                 }
-            }else if ([[[title pathExtension] lowercaseString] isEqualToString: @"tex"]) {
+            } else if ([[[title pathExtension] lowercaseString] isEqualToString: @"tex"]) {
                 title = [title stringByDeletingPathExtension];
                 newItem = [menu addItemWithTitle: title action: action keyEquivalent: @""];
                 [newItem setTarget: self];
@@ -1374,13 +1339,13 @@ in other code when an external editor is being used. */
 preference change is cancelled. "*/
 {
 	NSFont 	*font;
-        
+	
 	if (previousFontData != nil)
 	{
 		font = [NSUnarchiver unarchiveObjectWithData:previousFontData];
 		[textView setFont:font];
 	}
-        [self fixUpTabs];
+	[self fixUpTabs];
 }
 
     
@@ -1403,18 +1368,18 @@ preference change is cancelled. "*/
         [pdfRefreshTimer invalidate];
         [pdfRefreshTimer release];
         pdfRefreshTimer = nil;
-        }
+	}
     [pdfWindow close];
     /* The next line fixes a crash bug in Jaguar; see closeActiveDocument for
     a description. */
-   [[TSWindowManager sharedInstance] closeActiveDocument];
-    	
+	[[TSWindowManager sharedInstance] closeActiveDocument];
+	
     // mitsu 1.29 (P)
     if (!fileIsTex && [[self fileName] isEqualToString: 
-            [CommandCompletionPathKey stringByStandardizingPath]])
+		[CommandCompletionPathKey stringByStandardizingPath]])
         g_canRegisterCommandCompletion = YES;
     // end mitsu 1.29
-
+	
     [super close];
 }
 
@@ -1630,15 +1595,15 @@ preference change is cancelled. "*/
 {
     BOOL		result;
     NSUndoManager	*myManager;
-
+	
     result = [super writeToFile:fileName ofType:docType];
     if (result) {
-//      [[textView undoManager] removeAllActions];
-         myManager = [self undoManager];
+		//[[textView undoManager] removeAllActions];
+		myManager = [self undoManager];
         [myManager registerUndoWithTarget:self selector:@selector(doNothing:) object: nil];
         [myManager setActionName:NSLocalizedString(@"Save Spot", @"Save Spot")];
         [[textWindow undoManager] undo];
-        }
+	}
     return result;
 }
 
@@ -1649,31 +1614,26 @@ preference change is cancelled. "*/
 
 - (id) magnificationPanel;
 {
-    return magnificationPanel;
+	if ([self fromKit])
+		return magnificationKitPanel;
+	else
+		return magnificationPanel;
 }
 
 - (id) pagenumberPanel;
 {
-    return pagenumberPanel;
+	if ([self fromKit])
+		return pagenumberKitPanel;
+	else
+		return pagenumberPanel;
 }
-
-- (id) magnificationKitPanel;
-{
-    return magnificationKitPanel;
-}
-
-- (id) pagenumberKitPanel;
-{
-    return pagenumberKitPanel;
-}
-
 
 - (void) quitMagnificationPanel: sender;
 {
     [NSApp endSheet: magnificationPanel returnCode: 0];
 }
 
-- (void)quitPagenumberPanel: sender;
+- (void) quitPagenumberPanel: sender;
 {
     [NSApp endSheet: pagenumberPanel returnCode: 0];
 }
@@ -1819,66 +1779,66 @@ preference change is cancelled. "*/
     
     if (! fileIsTex)
         return;
-        
+	
     useTempEngine = YES;
     tempEngine = type;
     
     typesetContinuously = continuous;
     /* The lines of code below kill previously running tasks. This is
-    necessary because otherwise the source file will be open when the
-    system tries to save a new version. If the source file is open,
-    NSDocument makes a backup in /tmp which is never removed. */
+		necessary because otherwise the source file will be open when the
+		system tries to save a new version. If the source file is open,
+		NSDocument makes a backup in /tmp which is never removed. */
     
     if (texTask != nil) {
-                if (theScript == 101) {
-                    kill( -[texTask processIdentifier], SIGTERM);
-                    }
-                else
-                    [texTask terminate];
-                myDate = [NSDate date];
-                while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [texTask release];
-                texTask = nil;
-            }
-            
+		if (theScript == 101) {
+			kill( -[texTask processIdentifier], SIGTERM);
+		}
+		else
+			[texTask terminate];
+		myDate = [NSDate date];
+		while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		[texTask release];
+		texTask = nil;
+	}
+	
     if (bibTask != nil) {
-                [bibTask terminate];
-                myDate = [NSDate date];
-                while (([bibTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [bibTask release];
-                bibTask = nil;
-            }
-            
+		[bibTask terminate];
+		myDate = [NSDate date];
+		while (([bibTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		[bibTask release];
+		bibTask = nil;
+	}
+	
     if (indexTask != nil) {
-                [indexTask terminate];
-                myDate = [NSDate date];
-                while (([indexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [indexTask release];
-                indexTask = nil;
-            }
-            
+		[indexTask terminate];
+		myDate = [NSDate date];
+		while (([indexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		[indexTask release];
+		indexTask = nil;
+	}
+	
     if (metaFontTask != nil) {
-                [metaFontTask terminate];
-                myDate = [NSDate date];
-                while (([metaFontTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [metaFontTask release];
-                metaFontTask = nil;
-            }
-        
+		[metaFontTask terminate];
+		myDate = [NSDate date];
+		while (([metaFontTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		[metaFontTask release];
+		metaFontTask = nil;
+	}
+	
     errorNumber = 0;
     whichError = 0;
     makeError = error;
     
     if (! externalEditor)
         [self checkFileLinksA];
-
+	
     if ((externalEditor) || (! [self isDocumentEdited])) {
         [self saveFinished: self didSave:YES contextInfo:nil];
-        }
+	}
     else {
         saveFinished = @selector(saveFinished:didSave:contextInfo:);
         [self saveDocumentWithDelegate: self didSaveSelector: saveFinished contextInfo: nil];
-        }
+	}
 }
 
     
@@ -1894,70 +1854,70 @@ preference change is cancelled. "*/
     
     typesetContinuously = continuous;
     /* The lines of code below kill previously running tasks. This is
-    necessary because otherwise the source file will be open when the
-    system tries to save a new version. If the source file is open,
-    NSDocument makes a backup in /tmp which is never removed. */
+		necessary because otherwise the source file will be open when the
+		system tries to save a new version. If the source file is open,
+		NSDocument makes a backup in /tmp which is never removed. */
     
     if (texTask != nil) {
-                if (theScript == 101) {
-                    kill( -[texTask processIdentifier], SIGTERM);
-                    }
-                else
-                    [texTask terminate];
-                myDate = [NSDate date];
-                while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [texTask release];
-                texTask = nil;
-            }
-            
+		if (theScript == 101) {
+			kill( -[texTask processIdentifier], SIGTERM);
+		}
+		else
+			[texTask terminate];
+		myDate = [NSDate date];
+		while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		[texTask release];
+		texTask = nil;
+	}
+	
     if (bibTask != nil) {
-                [bibTask terminate];
-                myDate = [NSDate date];
-                while (([bibTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [bibTask release];
-                bibTask = nil;
-            }
-            
+		[bibTask terminate];
+		myDate = [NSDate date];
+		while (([bibTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		[bibTask release];
+		bibTask = nil;
+	}
+	
     if (indexTask != nil) {
-                [indexTask terminate];
-                myDate = [NSDate date];
-                while (([indexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [indexTask release];
-                indexTask = nil;
-            }
-            
+		[indexTask terminate];
+		myDate = [NSDate date];
+		while (([indexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		[indexTask release];
+		indexTask = nil;
+	}
+	
     if (metaFontTask != nil) {
-                [metaFontTask terminate];
-                myDate = [NSDate date];
-                while (([metaFontTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-                [metaFontTask release];
-                metaFontTask = nil;
-            }
-            
+		[metaFontTask terminate];
+		myDate = [NSDate date];
+		while (([metaFontTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		[metaFontTask release];
+		metaFontTask = nil;
+	}
+	
     errorNumber = 0;
     whichError = 0;
     makeError = error;
     
-   //  whichEngine = type;
-
-// added by mitsu --(J+) check mark in "Typeset" menu
+	//  whichEngine = type;
+	
+	// added by mitsu --(J+) check mark in "Typeset" menu
 	[[TSWindowManager sharedInstance] checkProgramMenuItem: whichEngine checked: NO];
-        whichEngine = type;
+	whichEngine = type;
 	[[TSWindowManager sharedInstance] checkProgramMenuItem: whichEngine checked: YES];
-        [self fixMacroMenu];
-// end addition
-
+	[self fixMacroMenu];
+	// end addition
+	
     if (! externalEditor)
         [self checkFileLinksA];
-
-
+	
+	
     if ((externalEditor) || (! [self isDocumentEdited])) {
         [self saveFinished: self didSave:YES contextInfo:nil];
-        }
+	}
     else {
         saveFinished = @selector(saveFinished:didSave:contextInfo:);
         [self saveDocumentWithDelegate: self didSaveSelector: saveFinished contextInfo: nil];
-        }
+	}
 }
 
 
@@ -1969,7 +1929,7 @@ preference change is cancelled. "*/
     BOOL		programFound, inMiddle;
     NSString		*theEngine;
     NSRange		aRange;
-
+	
     if (myEngine != nil) {
         myList = [myEngine componentsSeparatedByString:@" "];
         programFound = NO;
@@ -1982,7 +1942,7 @@ preference change is cancelled. "*/
                 if (! programFound) {
                     theEngine = myString;
                     programFound = YES;
-                    }
+				}
                 else if (inMiddle) {
                     middleString = [middleString stringByAppendingString:@" "];
                     middleString = [middleString stringByAppendingString:myString];
@@ -1993,8 +1953,8 @@ preference change is cancelled. "*/
                         middleString = [middleString substringWithRange: aRange];
                         [args addObject: middleString];
                         inMiddle = NO;
-                        }
-                    }
+					}
+				}
                 else if ([myString characterAtIndex:0] == '"') {
                     pos = [myString length] - 1;
                     if ([myString characterAtIndex:pos] == '"') {
@@ -2002,21 +1962,21 @@ preference change is cancelled. "*/
                         aRange.length = [myString length] - 2;
                         myString = [myString substringWithRange: aRange];
                         [args addObject: myString];
-                        }
+					}
                     else {
                         middleString = [NSString stringWithString: myString];
                         inMiddle = YES;
-                        }
-                    }
+					}
+				}
                 else {
                     [args addObject: myString];
-                    } 
-                }
+				} 
+			}
             i = i + 1;
-            }
+		}
         if (! programFound)
             theEngine = nil;
-        }
+	}
     
     return (theEngine);
 }
@@ -2041,44 +2001,44 @@ preference change is cancelled. "*/
     
     myFileName = [self fileName];
     if ([myFileName length] > 0) {
-	
+		
 		fileManager = [NSFileManager defaultManager];
 		directoryPath = [myFileName stringByDeletingLastPathComponent];
 		writeable = [fileManager isWritableFileAtPath: directoryPath];
 		if (! writeable) {
 			// put converted file in folder named TempOutputKey; create that folder now
 			if (!([fileManager fileExistsAtPath: TempOutputKey]))
-				{
+			{
 				// create the necessary directories
 				NS_DURING
-				result = [fileManager createDirectoryAtPath:TempOutputKey attributes:nil];
+					result = [fileManager createDirectoryAtPath:TempOutputKey attributes:nil];
 				NS_HANDLER
-				result = NO;
-				reason = [localException reason];
+					result = NO;
+					reason = [localException reason];
 				NS_ENDHANDLER
 				if (!result) {
 					NSRunAlertPanel(@"Error", reason, @"Couldn't Create Temp Folder", nil, nil);
 					return;
-					}
 				}
-                          if (! [[myFileName pathExtension] isEqualToString:@"dvi"]) { 
-                            tempDestinationString = [[TempOutputKey stringByAppendingString:@"/"] 
-                                stringByAppendingString: [myFileName lastPathComponent]];
-                            if ([fileManager fileExistsAtPath: tempDestinationString])
-                                [fileManager removeFileAtPath:tempDestinationString handler: nil];
-                            [fileManager copyPath:myFileName toPath:tempDestinationString handler:nil];
-                            }
 			}
-            
+			if (! [[myFileName pathExtension] isEqualToString:@"dvi"]) { 
+				tempDestinationString = [[TempOutputKey stringByAppendingString:@"/"] 
+                                stringByAppendingString: [myFileName lastPathComponent]];
+				if ([fileManager fileExistsAtPath: tempDestinationString])
+					[fileManager removeFileAtPath:tempDestinationString handler: nil];
+				[fileManager copyPath:myFileName toPath:tempDestinationString handler:nil];
+			}
+		}
+		
         imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-
+		
         if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
             myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
             startDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
-            }
+		}
         else
             startDate = nil;
-    
+		
         args = [NSMutableArray array];
         sourcePath = myFileName;
         
@@ -2095,7 +2055,7 @@ preference change is cancelled. "*/
                 argumentString = [[NSString stringWithString:@" --tex-path "] 
                     stringByAppendingString: [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath]];
                 enginePath = [enginePath stringByAppendingString: argumentString];
-                }
+			}
             else
                 enginePath = [[SUD stringForKey:LatexGSCommandKey] stringByExpandingTildeInPath];
             if (([SUD integerForKey:DistillerCommandKey] == 1) && (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_2))
@@ -2103,11 +2063,11 @@ preference change is cancelled. "*/
  			if (! writeable) {
 				argumentString = [[NSString stringWithString:@" --outdir "] stringByAppendingString: TempOutputKey];
 				enginePath = [enginePath stringByAppendingString: argumentString];
-				}
-             enginePath = [self separate:enginePath into: args];
+			}
+			enginePath = [self separate:enginePath into: args];
             if ([SUD boolForKey:SavePSEnabledKey])
             	[args addObject: [NSString stringWithString:@"--keep-psfile"]];
-            }    
+		}    
         else if ([[myFileName pathExtension] isEqualToString:@"ps"]) {
             enginePath = [[NSBundle mainBundle] pathForResource:@"ps2pdfwrap" ofType:nil];
             if (([SUD integerForKey:DistillerCommandKey] == 1) && (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_2))
@@ -2116,7 +2076,7 @@ preference change is cancelled. "*/
                 [args addObject: [NSString stringWithString:@"Ghostscript"]];
             gsPath = [[SUD stringForKey:GSBinPathKey] stringByExpandingTildeInPath];
             [args addObject: gsPath];
-            }
+		}
         else if  ([[myFileName pathExtension] isEqualToString:@"eps"]) {
             enginePath = [[NSBundle mainBundle] pathForResource:@"epstopdfwrap" ofType:nil];
             if (([SUD integerForKey:DistillerCommandKey] == 1) && (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_2))
@@ -2129,45 +2089,45 @@ preference change is cancelled. "*/
             epstopdfPath = [tetexBinPath stringByAppendingString:@"epstopdf"];
             [args addObject: epstopdfPath];
             // [args addObject: [[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil]];
-            }
-
-            if ((! writeable) && ([[myFileName pathExtension] isEqualToString:@"dvi"])) 
-                {
-                /*
-                NSString *fixedPathString = [NSString stringWithString:@""];
-                NSArray *myArray = [[myFileName stringByStandardizingPath] componentsSeparatedByString:@"/"];
-                NSEnumerator *myEnumerator = [myArray objectEnumerator];
-                id anObject;
-                int i = 0;
-                int j = [myArray count];
-                
-                while (anObject = [myEnumerator nextObject]) {
-                     i++;
-                    if ((i > 1) && (i < j))
-                        fixedPathString =[[[fixedPathString stringByAppendingString: @"/'"] stringByAppendingString:anObject] 
+		}
+		
+		if ((! writeable) && ([[myFileName pathExtension] isEqualToString:@"dvi"])) 
+		{
+			/*
+			 NSString *fixedPathString = [NSString stringWithString:@""];
+			 NSArray *myArray = [[myFileName stringByStandardizingPath] componentsSeparatedByString:@"/"];
+			 NSEnumerator *myEnumerator = [myArray objectEnumerator];
+			 id anObject;
+			 int i = 0;
+			 int j = [myArray count];
+			 
+			 while (anObject = [myEnumerator nextObject]) {
+				 i++;
+				 if ((i > 1) && (i < j))
+					 fixedPathString =[[[fixedPathString stringByAppendingString: @"/'"] stringByAppendingString:anObject] 
                                         stringByAppendingString:@"'"];
-                    if (i == j)
-                        fixedPathString = [[fixedPathString stringByAppendingString: @"/"] stringByAppendingString:anObject]; 
-                    }
-                [args addObject: fixedPathString];
-                */
-                [args addObject: [myFileName  stringByStandardizingPath]]; // this seems to be required when the directory isn't writable
-                }
-            else
-                [args addObject: [sourcePath lastPathComponent]]; //this allows spaces in folder names
-
+				 if (i == j)
+					 fixedPathString = [[fixedPathString stringByAppendingString: @"/"] stringByAppendingString:anObject]; 
+			 }
+			 [args addObject: fixedPathString];
+			 */
+			[args addObject: [myFileName  stringByStandardizingPath]]; // this seems to be required when the directory isn't writable
+		}
+		else
+			[args addObject: [sourcePath lastPathComponent]]; //this allows spaces in folder names
+		
         if (enginePath != nil) {
             if ([enginePath characterAtIndex:0] != '/') {
                 tetexBinPath = [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"];
                 enginePath = [tetexBinPath stringByAppendingString:enginePath];
-                }
-            }
+			}
+		}
         inputPipe = [[NSPipe pipe] retain];
         [texTask setStandardInput: inputPipe];
         if ((enginePath != nil) && ([[NSFileManager defaultManager] fileExistsAtPath: enginePath])) {
-                [texTask setLaunchPath:enginePath];
-                [texTask setArguments:args];
-                [texTask launch];
+			[texTask setLaunchPath:enginePath];
+			[texTask setArguments:args];
+			[texTask launch];
         }
         else {
             [inputPipe release];
@@ -2212,181 +2172,179 @@ preference change is cancelled. "*/
     else {    
         myData = [NSData dataWithContentsOfFile:[self fileName]];
         theSource = [[[NSString alloc] initWithData:myData encoding:NSMacOSRomanStringEncoding] autorelease];
-        }
+	}
     
-{
     if ([self checkMasterFile:theSource forTask:RootForTexing]) {
         useTempEngine = NO;
         return;
-        }
+	}
 #ifdef ROOTFILE
     if ([self checkRootFile_forTask:RootForTexing]) {
         useTempEngine = NO;
         return;
-        }
+	}
 #endif
-
+	
 #ifdef NAIRN
     if (! externalEditor)
         [self checkFileLinks:theSource];
 #endif
 
 
-// New Stuff
-        length = [theSource length];
-        done = NO;
-        linesTested = 0;
-        myRange.location = 0;
-        myRange.length = 1;
-
-        while ((myRange.location < length) && (!done) && (linesTested < 20)) {
-            [theSource getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
-            myRange.location = end;
-            myRange.length = 1;
-            linesTested++;
-            
-            theRange.location = start; theRange.length = (end - start);
-            testString = [theSource substringWithRange: theRange];
-            
-            programRange = [testString rangeOfString:@"%!TEX TS-program ="];
-            if (programRange.location != NSNotFound) {
-                newProgramRange.location = programRange.location + 18;
-                newProgramRange.length = [testString length] - newProgramRange.location;
-                if (newProgramRange.length > 0) {
-                    programString = [[testString substringWithRange: newProgramRange] 
+	// New Stuff
+	length = [theSource length];
+	done = NO;
+	linesTested = 0;
+	myRange.location = 0;
+	myRange.length = 1;
+	
+	while ((myRange.location < length) && (!done) && (linesTested < 20)) {
+		[theSource getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+		myRange.location = end;
+		myRange.length = 1;
+		linesTested++;
+		
+		theRange.location = start; theRange.length = (end - start);
+		testString = [theSource substringWithRange: theRange];
+		
+		programRange = [testString rangeOfString:@"%!TEX TS-program ="];
+		if (programRange.location != NSNotFound) {
+			newProgramRange.location = programRange.location + 18;
+			newProgramRange.length = [testString length] - newProgramRange.location;
+			if (newProgramRange.length > 0) {
+				programString = [[testString substringWithRange: newProgramRange] 
                         stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                    programString = [programString lowercaseString];
-                    if ([programString isEqualToString:@"pdftex"]) {
-                        withLatex = NO;
-                        theScript = 100;
-                        done = YES;
-                        }
-                    else if ([programString isEqualToString:@"pdflatex"]) {
-                        withLatex = YES;
-                        theScript = 100;
-                        done = YES;
-                        }
-                    else if ([programString isEqualToString:@"tex"]) {
-                        withLatex = NO;
-                        theScript = 101;
-                        done = YES;
-                        }
-                    else if ([programString isEqualToString:@"latex"]) {
-                        withLatex = YES;
-                        theScript = 101;
-                        done = YES;
-                        }
-                    else if ([programString isEqualToString:@"personaltex"]) {
-                        withLatex = NO;
-                        theScript = 102;
-                        done = YES;
-                        }
-                    else if ([programString isEqualToString:@"personallatex"]) {
-                        withLatex = YES;
-                        theScript = 102;
-                        done = YES;
-                        }
-                    else {
-                        i = UserEngine;
-                        j = [programButton numberOfItems];
-                        while ((i <= j) && (! done)) {
-                            i++;
-                             if ([[[[programButton itemAtIndex: (i - 2)] title] lowercaseString] isEqualToString:programString]) {
-                                done = YES;
-                                useTempEngine = YES;
-                                tempEngine = i - 1;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+				programString = [programString lowercaseString];
+				if ([programString isEqualToString:@"pdftex"]) {
+					withLatex = NO;
+					theScript = 100;
+					done = YES;
+				}
+				else if ([programString isEqualToString:@"pdflatex"]) {
+					withLatex = YES;
+					theScript = 100;
+					done = YES;
+				}
+				else if ([programString isEqualToString:@"tex"]) {
+					withLatex = NO;
+					theScript = 101;
+					done = YES;
+				}
+				else if ([programString isEqualToString:@"latex"]) {
+					withLatex = YES;
+					theScript = 101;
+					done = YES;
+				}
+				else if ([programString isEqualToString:@"personaltex"]) {
+					withLatex = NO;
+					theScript = 102;
+					done = YES;
+				}
+				else if ([programString isEqualToString:@"personallatex"]) {
+					withLatex = YES;
+					theScript = 102;
+					done = YES;
+				}
+				else {
+					i = UserEngine;
+					j = [programButton numberOfItems];
+					while ((i <= j) && (! done)) {
+						i++;
+						if ([[[[programButton itemAtIndex: (i - 2)] title] lowercaseString] isEqualToString:programString]) {
+							done = YES;
+							useTempEngine = YES;
+							tempEngine = i - 1;
+						}
+					}
+				}
+			}
+		}
+	}
 
-// Old Stuff
-if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
-    myRange.length = 1;
-    myRange.location = 0;
-    [theSource getLineStart:&mystart end: &myend contentsEnd: nil forRange:myRange];
-    if (myend > (mystart + 2)) {
-        myRange.location = 0;
-        myRange.length = myend - mystart - 1;
-        theKey = [theSource substringWithRange:myRange];
-        myList = [theKey componentsSeparatedByString:@" "];
-        if ((theKey) && ([myList count] > 0)) 
-            theKey = [myList objectAtIndex:0];
+	// Old Stuff
+	if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
+		myRange.length = 1;
+		myRange.location = 0;
+		[theSource getLineStart:&mystart end: &myend contentsEnd: nil forRange:myRange];
+		if (myend > (mystart + 2)) {
+			myRange.location = 0;
+			myRange.length = myend - mystart - 1;
+			theKey = [theSource substringWithRange:myRange];
+			myList = [theKey componentsSeparatedByString:@" "];
+			if ((theKey) && ([myList count] > 0)) 
+				theKey = [myList objectAtIndex:0];
         }
-    else
-        theKey = nil;
+		else
+			theKey = nil;
         
-    if ((theKey) && ([theKey isEqualToString:@"%&pdftex"])) {
-        withLatex = NO;
-        theScript = 100;
+		if ((theKey) && ([theKey isEqualToString:@"%&pdftex"])) {
+			withLatex = NO;
+			theScript = 100;
         }
-    else if ((theKey) && ([theKey isEqualToString:@"%&pdflatex"])) {
-        withLatex = YES;
-        theScript = 100;
+		else if ((theKey) && ([theKey isEqualToString:@"%&pdflatex"])) {
+			withLatex = YES;
+			theScript = 100;
         }
-    else if ((theKey) && ([theKey isEqualToString:@"%&tex"])) {
-        withLatex = NO;
-        theScript = 101;
+		else if ((theKey) && ([theKey isEqualToString:@"%&tex"])) {
+			withLatex = NO;
+			theScript = 101;
         }
-    else if ((theKey) && ([theKey isEqualToString:@"%&latex"])) {
-        withLatex = YES;
-        theScript = 101;
+		else if ((theKey) && ([theKey isEqualToString:@"%&latex"])) {
+			withLatex = YES;
+			theScript = 101;
         }
-    else if ((theKey) && ([theKey isEqualToString:@"%&personaltex"])) {
-        withLatex = NO;
-        theScript = 102;
+		else if ((theKey) && ([theKey isEqualToString:@"%&personaltex"])) {
+			withLatex = NO;
+			theScript = 102;
         }
-    else if ((theKey) && ([theKey isEqualToString:@"%&personallatex"])) {
-        withLatex = YES;
-        theScript = 102;
+		else if ((theKey) && ([theKey isEqualToString:@"%&personallatex"])) {
+			withLatex = YES;
+			theScript = 102;
         }
-    else if (theKey) {
-        int length = [theKey length];
-        NSRange theRange;
-        theRange.location = 0;
-        theRange.length = 10;
-        if ((length > 10) && ([[theKey substringWithRange:theRange] isEqualToString:@"%&program="])) {
-            theRange.location = 10;
-            theRange.length = length - 10;
-            NSString *programName = [theKey substringWithRange: theRange];
-            NSString *lowerprogramName = [programName lowercaseString];
-            
-            if ([lowerprogramName isEqualToString:@"pdftex"]) {
-                withLatex = NO;
-                theScript = 100;
+		else if (theKey) {
+			length = [theKey length];
+			theRange.location = 0;
+			theRange.length = 10;
+			if ((length > 10) && ([[theKey substringWithRange:theRange] isEqualToString:@"%&program="])) {
+				theRange.location = 10;
+				theRange.length = length - 10;
+				NSString *programName = [theKey substringWithRange: theRange];
+				NSString *lowerprogramName = [programName lowercaseString];
+				
+				if ([lowerprogramName isEqualToString:@"pdftex"]) {
+					withLatex = NO;
+					theScript = 100;
                 }
-            else if ([lowerprogramName isEqualToString:@"pdflatex"]) {
-                withLatex = YES;
-                theScript = 100;
+				else if ([lowerprogramName isEqualToString:@"pdflatex"]) {
+					withLatex = YES;
+					theScript = 100;
                 }
-            else if ([lowerprogramName isEqualToString:@"tex"]) {
-                withLatex = NO;
-                theScript = 101;
+				else if ([lowerprogramName isEqualToString:@"tex"]) {
+					withLatex = NO;
+					theScript = 101;
                 }
-            else if ([lowerprogramName isEqualToString:@"latex"]) {
-                withLatex = YES;
-                theScript = 101;
+				else if ([lowerprogramName isEqualToString:@"latex"]) {
+					withLatex = YES;
+					theScript = 101;
                 }
-            else if ([lowerprogramName isEqualToString:@"personaltex"]) {
-                withLatex = NO;
-                theScript = 102;
+				else if ([lowerprogramName isEqualToString:@"personaltex"]) {
+					withLatex = NO;
+					theScript = 102;
                 }
-            else if ([lowerprogramName isEqualToString:@"personallatex"]) {
-                withLatex = YES;
-                theScript = 102;
+				else if ([lowerprogramName isEqualToString:@"personallatex"]) {
+					withLatex = YES;
+					theScript = 102;
                 }
-            else {
-                i = UserEngine;
-                j = [programButton numberOfItems];
-                done = NO;
-                while ((i <= j) && (! done)) {
-                    i++;
-                    if ([[[[programButton itemAtIndex: (i - 2)] title] lowercaseString] isEqualToString:[programName lowercaseString]]) {
-                        done = YES;
-                        useTempEngine = YES;
-                        tempEngine = i - 1;
+				else {
+					i = UserEngine;
+					j = [programButton numberOfItems];
+					done = NO;
+					while ((i <= j) && (! done)) {
+						i++;
+						if ([[[[programButton itemAtIndex: (i - 2)] title] lowercaseString] isEqualToString:[programName lowercaseString]]) {
+							done = YES;
+							useTempEngine = YES;
+							tempEngine = i - 1;
                         }
                     }
                 }
@@ -2394,28 +2352,27 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
         }
     }
         
-// End Old Stuff
-    }
+	// End Old Stuff
     
     if ((! warningGiven) && ((whichEngineLocal == TexEngine) || (whichEngineLocal == LatexEngine)) && (theScript == 100) && ([SUD boolForKey:WarnForShellEscapeKey])) {
         if (withLatex)
             myEngine = [[SUD stringForKey:LatexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
         else
             myEngine = [[SUD stringForKey:TexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
-             
+		
         // search for --shell-escape
         aRange = [myEngine rangeOfString:@"--shell-escape"];
         if (aRange.location == NSNotFound) 
             warningGiven = YES;
         else {
             NSBeginCriticalAlertSheet(nil, nil, NSLocalizedString(@"Omit Shell Escape", @"Omit Shell Escape"), NSLocalizedString(@"Cancel", @"Cancel"), 
-                    textWindow, self, @selector(sheetDidEnd:returnCode:contextInfo:), NULL, nil, 
-                    NSLocalizedString(@"Warning: Using Shell Escape", @"Warning: Using Shell Escape"));
+									  textWindow, self, @selector(sheetDidEnd:returnCode:contextInfo:), NULL, nil, 
+									  NSLocalizedString(@"Warning: Using Shell Escape", @"Warning: Using Shell Escape"));
             useTempEngine = NO;
             return;
-            }
-        }
-        
+		}
+	}
+	
     [self completeSaveFinished];
 }
 
@@ -3090,25 +3047,17 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
 
 }
 
-- (void) chooseProgramEE: sender;
-{
-    [self chooseProgram: sender];
-}
-
 - (void) chooseProgramFF: sender;
 {
 	int i = [sender tag];
 	[programButton selectItemAtIndex: i];
     [programButtonEE selectItemAtIndex: i];
 	
-	// added by mitsu --(J) Typeset command
+	// Deselect the previous typeset command, and select the new one.
 	[[TSWindowManager sharedInstance] checkProgramMenuItem: whichEngine checked: NO];
 	whichEngine = i + 1;  // remember it
 	[[TSWindowManager sharedInstance] checkProgramMenuItem: whichEngine checked: YES];
-        [self fixMacroMenu];
-// end addition
-
-
+	[self fixMacroMenu];
 }
 
 
@@ -3116,59 +3065,17 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
 {
     id		theItem;
     int		which;
- 
     
     theItem = [sender selectedItem];
     which = [sender indexOfItem: theItem] + 1;
     [programButton selectItemAtIndex: (which - 1)];
     [programButtonEE selectItemAtIndex: (which - 1)];
  
- // added by mitsu --(J) Typeset command
+	// Deselect the previous typeset command, and select the new one.
 	[[TSWindowManager sharedInstance] checkProgramMenuItem: whichEngine checked: NO];
 	whichEngine = which;  // remember it
 	[[TSWindowManager sharedInstance] checkProgramMenuItem: whichEngine checked: YES];
-        [self fixMacroMenu];
-// end addition
-
-    /*   
-    switch (which) {
-    
-        case 0:
-            [typesetButton setTitle: @"TeX"];
-            [typesetButtonEE setTitle: @"TeX"];
-            break;
-        
-        case 1:
-            [typesetButton setTitle: @"LaTeX"];
-            [typesetButtonEE setTitle: @"LaTeX"];
-            break;
-
-        case 2:
-            [typesetButton setTitle: @"BibTeX"];
-            [typesetButtonEE setTitle: @"BibTeX"];
-            break;
-            
-        case 3:
-            [typesetButton setTitle: @"Index"];
-            [typesetButtonEE setTitle: @"Index"];
-            break;
-            
-        case 4:
-            [typesetButton setTitle: @"MetaPost"];
-            [typesetButtonEE setTitle: @"MetaPost"];
-            break;
-            
-        case 5:
-            [typesetButton setTitle: @"ConTeXt"];
-            [typesetButtonEE setTitle: @"ConTeXt"];
-            break;
-            
-        case 6:
-            [typesetButton setTitle: @"MetaFont"];
-            [typesetButtonEE setTitle: @"MetaFont"];
-            break;
-        }
-    */
+	[self fixMacroMenu];
 }
 
 - (void) okProject: sender;
@@ -3211,50 +3118,50 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
 
 - (void) setProjectFile: sender;
 {
-     int		result;
-     NSString		*project, *nameString; //, *anotherString;
-     
-     if (! [self fileName]) {
+	int		result;
+	NSString		*project, *nameString; //, *anotherString;
+	
+	if (! [self fileName]) {
         result = [NSApp runModalForWindow: requestWindow];
-        }
-     else {
-     
+	}
+	else {
+		
         myPrefResult = 2;
         project = [[[self fileName] stringByDeletingPathExtension]
             stringByAppendingString: @".texshop"];
         if ([[NSFileManager defaultManager] fileExistsAtPath: project]) {
             nameString = [NSString stringWithContentsOfFile: project];
             [projectName setStringValue: nameString];
-            }
+		}
         else
             [projectName setStringValue: [[self fileName] lastPathComponent]];
         [projectName selectText: self];
         result = [NSApp runModalForWindow: projectPanel];
         if (result == 0) {
             nameString = [projectName stringValue];
-//            if ([nameString isAbsolutePath])
-                [nameString writeToFile: project atomically: YES];
-//           else {
-//                anotherString = [[self fileName] stringByDeletingLastPathComponent];
-//                anotherString = [[anotherString stringByAppendingString:@"/"] 
-//                        stringByAppendingString: nameString];
-//                nameString = [anotherString stringByStandardizingPath];
-//                [nameString writeToFile: project atomically: YES];
-//                } 
-            }
+			//            if ([nameString isAbsolutePath])
+			[nameString writeToFile: project atomically: YES];
+			//           else {
+			//                anotherString = [[self fileName] stringByDeletingLastPathComponent];
+			//                anotherString = [[anotherString stringByAppendingString:@"/"] 
+			//                        stringByAppendingString: nameString];
+			//                nameString = [anotherString stringByStandardizingPath];
+			//                [nameString writeToFile: project atomically: YES];
+			//                } 
+		}
     }
 }
 
 - (void) doLine: sender;
 {
     int		result, line;
-
+	
     myPrefResult = 2;
     result = [NSApp runModalForWindow: linePanel];
     if (result == 0) {
         line = [lineBox intValue];
         [self toLine: line];
-        }
+	}
 }
 
 
@@ -3374,14 +3281,14 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
     doError = NO;
     
     if (rootDocument != nil) {
-        wlist=[NSApp orderedDocuments];
-        en=[wlist objectEnumerator];
-        while(obj=[en nextObject]) {
+        wlist = [NSApp orderedDocuments];
+        en = [wlist objectEnumerator];
+        while ((obj = [en nextObject])) {
             if (obj == rootDocument)
                 myRoot = rootDocument;
-            }
-        }
-        
+		}
+	}
+	
     if (rootDocument == nil) {
         if (errorNumber > 0) {
             doError = YES;
@@ -3391,8 +3298,8 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
             whichError++;
             if (whichError >= errorNumber)
                 whichError = 0;
-            }
-        }
+		}
+	}
     else {
         myErrorNumber = [rootDocument totalErrors];
         if (myErrorNumber > 0) {
@@ -3403,14 +3310,14 @@ if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
             whichError++;
             if (whichError >= myErrorNumber)
                 whichError = 0;
-            }
-        }
+		}
+	}
     
     
     if ((!externalEditor) && (fileIsTex) && (doError)) {
-            [textWindow makeKeyAndOrderFront: self];
-            [self toLine: myErrorLine];
-            }
+		[textWindow makeKeyAndOrderFront: self];
+		[self toLine: myErrorLine];
+	}
 }
 
 - (void) toLine: (int) line;
@@ -3570,51 +3477,51 @@ BOOL isText1(int c) {
         
     // NSLog(@"begin");
     while (location < final) {
-            theChar = [textString characterAtIndex: location];
-            
-             if ((theChar == 0x007b) || (theChar == 0x007d) || (theChar == 0x0024)) {
-                colorRange.location = location;
-                colorRange.length = 1;
-                [textView setTextColor: markerColor range: colorRange];
-                colorRange.location = colorRange.location + colorRange.length - 1;
-                colorRange.length = 0;
-                [textView setTextColor: regularColor range: colorRange];
-                location++;
-                }
-                
-             else if (theChar == 0x0025) {
-                colorRange.location = location;
-                colorRange.length = 0;
-                [textString getLineStart:NULL end:NULL contentsEnd:&end forRange:colorRange];
-                colorRange.length = (end - location);
-                [textView setTextColor: commentColor range: colorRange];
-                colorRange.location = colorRange.location + colorRange.length - 1;
-                colorRange.length = 0;
-                [textView setTextColor: regularColor range: colorRange];
-                location = end;
-                }
-                
-             else if (theChar == g_texChar) {
-                colorRange.location = location;
-                colorRange.length = 1;
-                location++;
-                if ((location < final) && ([textString characterAtIndex: location] == 0x0025)) {
-                    colorRange.length = location - colorRange.location;
-                    location++;
-                    }
-                else while ((location < final) && (isText1([textString characterAtIndex: location]))) {
-                    location++;
-                    colorRange.length = location - colorRange.location;
-                    }
+		theChar = [textString characterAtIndex: location];
+		
+		if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
+			colorRange.location = location;
+			colorRange.length = 1;
+			[textView setTextColor: markerColor range: colorRange];
+			colorRange.location = colorRange.location + colorRange.length - 1;
+			colorRange.length = 0;
+			[textView setTextColor: regularColor range: colorRange];
+			location++;
+		}
+		
+		else if (theChar == '%') {
+			colorRange.location = location;
+			colorRange.length = 0;
+			[textString getLineStart:NULL end:NULL contentsEnd:&end forRange:colorRange];
+			colorRange.length = (end - location);
+			[textView setTextColor: commentColor range: colorRange];
+			colorRange.location = colorRange.location + colorRange.length - 1;
+			colorRange.length = 0;
+			[textView setTextColor: regularColor range: colorRange];
+			location = end;
+		}
+		
+		else if (theChar == g_texChar) {
+			colorRange.location = location;
+			colorRange.length = 1;
+			location++;
+			if ((location < final) && ([textString characterAtIndex: location] == '%')) {
+				colorRange.length = location - colorRange.location;
+				location++;
+			}
+			else while ((location < final) && (isText1([textString characterAtIndex: location]))) {
+				location++;
+				colorRange.length = location - colorRange.location;
+			}
                 [textView setTextColor: commandColor range: colorRange];
-                colorRange.location = location;
-                colorRange.length = 0;
-                [textView setTextColor: regularColor range: colorRange];
-                }
-
-            else
-                location++;
-            }
+			colorRange.location = location;
+			colorRange.length = 0;
+			[textView setTextColor: regularColor range: colorRange];
+		}
+		
+		else
+			location++;
+	}
             
         // [[textView textStorage] endEditing];
         [textStorage endEditing];
@@ -3641,7 +3548,7 @@ BOOL isText1(int c) {
         fastColor = YES;
     else if (affectedCharRange.length == 1) {
         aChar = [[textView string] characterAtIndex: affectedCharRange.location];
-        if (/* (aChar >= 0x0020) && */ (aChar != 165) && (aChar != 0x005c) && (aChar != 0x0025))
+        if (/* (aChar >= ' ') && */ (aChar != 165) && (aChar != 0x005c) && (aChar != '%'))
             fastColor = YES;
         if (aChar == 0x005c) {
             fastColor = YES;
@@ -3688,7 +3595,6 @@ BOOL isText1(int c) {
 	/* code by Anton Leuski */
 	if ([SUD boolForKey: TagSectionsKey]) {
 		
-		unsigned	i;
 		for(i = 0; i < [g_taggedTeXSections count]; ++i) {
 			tagRange = [replacementString rangeOfString:[g_taggedTeXSections objectAtIndex:i]];
 			if (tagRange.length != 0) {
@@ -3770,14 +3676,14 @@ BOOL isText1(int c) {
         returnline = YES;
 	
     if (! [SUD boolForKey:ParensMatchingEnabledKey]) return YES;
-    if ((rightpar != 0x007D) &&  (rightpar != 0x0029) &&  (rightpar != 0x005D)) return YES;
+    if ((rightpar != '}') &&  (rightpar != ')') &&  (rightpar != ']')) return YES;
 	
-    if (rightpar == 0x007D) 
-        leftpar = 0x007B;
-    else if (rightpar == 0x0029) 
-        leftpar = 0x0028;
+    if (rightpar == '}') 
+        leftpar = '{';
+    else if (rightpar == ')') 
+        leftpar = '(';
     else 
-        leftpar = 0x005B;
+        leftpar = '[';
     
     textString = [textView string];    
     i = affectedCharRange.location;
@@ -3829,14 +3735,14 @@ BOOL isText1(int c) {
     if (i >= length) return newSelectedCharRange;
     rightpar = [textString characterAtIndex: i];
     
-    if ((rightpar == 0x007D) || (rightpar == 0x0029) || (rightpar == 0x005D)) {
+    if ((rightpar == '}') || (rightpar == ')') || (rightpar == ']')) {
            j = i;
-            if (rightpar == 0x007D) 
-                leftpar = 0x007B;
-            else if (rightpar == 0x0029) 
-                leftpar = 0x0028;
+            if (rightpar == '}') 
+                leftpar = '{';
+            else if (rightpar == ')') 
+                leftpar = '(';
             else 
-                leftpar = 0x005B;
+                leftpar = '[';
             count = 1;
             done = NO;
             while ((i > 0) && (! done)) {
@@ -3856,15 +3762,15 @@ BOOL isText1(int c) {
             return newSelectedCharRange;
             }
             
-    else if ((rightpar == 0x007B) || (rightpar == 0x0028) || (rightpar == 0x005B)) {
+    else if ((rightpar == '{') || (rightpar == '(') || (rightpar == '[')) {
             j = i;
             leftpar = rightpar;
-            if (leftpar == 0x007B) 
-                rightpar = 0x007D;
-            else if (leftpar == 0x0028) 
-                rightpar = 0x0029;
+            if (leftpar == '{') 
+                rightpar = '}';
+            else if (leftpar == '(') 
+                rightpar = ')';
             else 
-                rightpar = 0x005D;
+                rightpar = ']';
             count = 1;
             done = NO;
             while ((i < (length - 1)) && (! done)) {
@@ -4172,7 +4078,7 @@ void report(NSString *itest)
             fastColor = NO;
             return;
             }
-        if ((theChar == 0x007b) || (theChar == 0x007d) || (theChar == 0x0024)) {
+        if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
             if (previousColor == commentColor)
                 [textView setTextColor: commentColor range: colorRange];
             else if (previousColor == commandColor) {
@@ -4199,7 +4105,7 @@ void report(NSString *itest)
             fastColor = NO;
             return;
             }
-        if (theChar == 0x0020) {
+        if (theChar == ' ') {
             if (previousColor == commentColor)
                 [textView setTextColor: commentColor range: colorRange];
             else if (previousColor == markerColor)
@@ -4228,7 +4134,7 @@ void report(NSString *itest)
             fastColor = NO;
             return;
             }
-        if (theChar == 0x0025) {
+        if (theChar == '%') {
             [textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
             lineRange.location = colorRange.location;
             lineRange.length = end - colorRange.location;
@@ -4262,9 +4168,9 @@ void report(NSString *itest)
             return;
             }
             
-        if ((theChar != g_texChar) && (theChar != 0x007b) && (theChar != 0x007d) && (theChar != 0x0024) &&
-            (theChar != 0x0025) && (theChar != 0x0020) && (previousChar != 0x007d) && (previousChar != 0x007b)
-            && (previousChar != 0x0024) ) {
+        if ((theChar != g_texChar) && (theChar != '{') && (theChar != '}') && (theChar != '$') &&
+            (theChar != '%') && (theChar != ' ') && (previousChar != '}') && (previousChar != '{')
+            && (previousChar != '$') ) {
                 if ((previousColor == commandColor) && (! isText1(theChar))) {
                     [textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
                     wordRange.location = colorRange.location;
@@ -4301,7 +4207,7 @@ void report(NSString *itest)
 
                     [textView setTextColor: regularColor range: wordRange];
                     }
-                else if (previousChar >= 0x0020)
+                else if (previousChar >= ' ')
                     [textView setTextColor: previousColor range: colorRange];
                 else
                     [textView setTextColor: regularColor range: colorRange];
@@ -4342,7 +4248,7 @@ void report(NSString *itest)
 		itest = location; if ((itest < 0) || (itest >= length)) {report(@"bug11"); return;}
 		theChar = [textString characterAtIndex: location];
 		
-		if ((theChar == 0x007b) || (theChar == 0x007d) || (theChar == 0x0024)) {
+		if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
 			colorRange.location = location;
 			colorRange.length = 1;
 			[textView setTextColor: markerColor range: colorRange];
@@ -4352,7 +4258,7 @@ void report(NSString *itest)
 			location++;
 		}
 		
-		else if (theChar == 0x0025) {
+		else if (theChar == '%') {
 			colorRange.location = location;
 			colorRange.length = 0;
 			[textString getLineStart:NULL end:NULL contentsEnd:&end forRange:colorRange];
@@ -4985,10 +4891,8 @@ void report(NSString *itest)
     
     [outputText setSelectable: YES];
 
-    if (([aNotification object] == bibTask) || ([aNotification object] == indexTask) || ([aNotification object] == metaFontTask)) 
-    {
-        if (inputPipe == [[aNotification object] standardInput]) 
-        {
+    if (([aNotification object] == bibTask) || ([aNotification object] == indexTask) || ([aNotification object] == metaFontTask)) {
+        if (inputPipe == [[aNotification object] standardInput]) {
             [outputPipe release];
             [writeHandle closeFile];
             [inputPipe release];
@@ -4997,17 +4901,17 @@ void report(NSString *itest)
                 [bibTask terminate];
                 [bibTask release];
                 bibTask = nil;
-                }
+			}
             else if ([aNotification object] == indexTask) {
                 [indexTask terminate];
                 [indexTask release];
                 indexTask = nil;
-                }
+			}
             else if ([aNotification object] == metaFontTask) {
                 [metaFontTask terminate];
                 [metaFontTask release];
                 metaFontTask = nil;
-                }
+			}
         }
     }
     
@@ -5016,12 +4920,10 @@ void report(NSString *itest)
     if ([aNotification object] != texTask)
         return;
 
-    if (inputPipe == [[aNotification object] standardInput]) 
-    {
+    if (inputPipe == [[aNotification object] standardInput]) {
         status = [[aNotification object] terminationStatus];
     
-        if ((status == 0) || (status == 1))  
-        {
+        if ((status == 0) || (status == 1))  {
 #ifndef ROOTFILE
             projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
             if ([[NSFileManager defaultManager] fileExistsAtPath: projectPath]) 
@@ -5060,48 +4962,47 @@ void report(NSString *itest)
 					
 					
 					/*
-                    texRep = [[NSPDFImageRep imageRepWithContentsOfFile: imagePath] retain]; 
-                    if (texRep) 
-                    {
-                        // [pdfWindow setTitle:[[[[self fileName] lastPathComponent] stringByDeletingPathExtension] 					stringByAppendingPathExtension:@"pdf"]]; 
-                        [pdfWindow setTitle: [imagePath lastPathComponent]];
-                        [pdfView setImageRep: texRep];
+					 texRep = [[NSPDFImageRep imageRepWithContentsOfFile: imagePath] retain]; 
+					 if (texRep) 
+					 {
+						 // [pdfWindow setTitle:[[[[self fileName] lastPathComponent] stringByDeletingPathExtension] 					stringByAppendingPathExtension:@"pdf"]]; 
+						 [pdfWindow setTitle: [imagePath lastPathComponent]];
+						 [pdfView setImageRep: texRep];
 #ifndef MITSU_PDF
-                        if (startDate == nil) 
-                        {
-                            topLeftRect = [texRep bounds];
-                            topLeftPoint.x = topLeftRect.origin.x;
-                            topLeftPoint.y = topLeftRect.origin.y + topLeftRect.size.height - 1;
-                            [pdfView scrollPoint: topLeftPoint];
-                        }
+						 if (startDate == nil) 
+						 {
+							 topLeftRect = [texRep bounds];
+							 topLeftPoint.x = topLeftRect.origin.x;
+							 topLeftPoint.y = topLeftRect.origin.y + topLeftRect.size.height - 1;
+							 [pdfView scrollPoint: topLeftPoint];
+						 }
 #endif
-                        
-                        [pdfView setNeedsDisplay:YES];
-                        [pdfWindow makeKeyAndOrderFront: self];
-                    }
-					*/
-                 }
+						 
+						 [pdfView setNeedsDisplay:YES];
+						 [pdfWindow makeKeyAndOrderFront: self];
+					 }
+					 */
+				}
             }
             
-            if (! alreadyFound)
-                { // see if there is a temporary file
+            if (! alreadyFound)  { // see if there is a temporary file
                 alternatePath = [[TempOutputKey stringByAppendingString:@"/"] stringByAppendingString:[imagePath lastPathComponent]];
                 if ([[NSFileManager defaultManager] fileExistsAtPath: alternatePath]) {
-                     texRep = [[NSPDFImageRep imageRepWithContentsOfFile: alternatePath] retain];
-                     [[NSFileManager defaultManager] removeFileAtPath: alternatePath handler:nil]; 
-                     if (texRep) 
-                        {
+					texRep = [[NSPDFImageRep imageRepWithContentsOfFile: alternatePath] retain];
+					[[NSFileManager defaultManager] removeFileAtPath: alternatePath handler:nil]; 
+					if (texRep) 
+					{
                         [pdfWindow setTitle: [imagePath lastPathComponent]];
                         [pdfView setImageRep: texRep];
                         [pdfView setNeedsDisplay:YES];
                         [pdfWindow makeKeyAndOrderFront: self];
-                        }
-                    }
+					}
+				}
                 
             }
             [texTask terminate];
             [texTask release];
-          }
+		}
             
         [outputPipe release];
         [writeHandle closeFile];
@@ -5117,25 +5018,25 @@ void report(NSString *itest)
     NSDate              *newDate;
     NSDictionary        *myAttributes;
     BOOL                front;
-
-
-        imagePath = [self fileName];
-        
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath] && [[NSFileManager defaultManager] isReadableFileAtPath: imagePath]) {
-            myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
-            newDate = [myAttributes objectForKey:NSFileModificationDate];
-            if ((pdfDate == nil) || ([newDate compare:pdfDate] == NSOrderedDescending) || tryAgain) {
+	
+	
+	imagePath = [self fileName];
+	
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath] && [[NSFileManager defaultManager] isReadableFileAtPath: imagePath]) {
+		myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
+		newDate = [myAttributes objectForKey:NSFileModificationDate];
+		if ((pdfDate == nil) || ([newDate compare:pdfDate] == NSOrderedDescending) || tryAgain) {
             
-                tryAgain = NO;
-                if (pdfDate != nil) [pdfDate release];
-                [newDate retain];
-                pdfDate = newDate;
-                
-                front = [SUD boolForKey: BringPdfFrontOnAutomaticUpdateKey];
-                [self refreshPDFAndBringFront: front];
-                }
-            }
+			tryAgain = NO;
+			if (pdfDate != nil) [pdfDate release];
+			[newDate retain];
+			pdfDate = newDate;
+			
+			front = [SUD boolForKey: BringPdfFrontOnAutomaticUpdateKey];
+			[self refreshPDFAndBringFront: front];
+		}
+	}
 }
 
 
@@ -5190,60 +5091,46 @@ void report(NSString *itest)
 // rewritten to use this code
 - (void)refreshPDFAndBringFront:(BOOL)front; 
 {
-     NSPDFImageRep	*tempRep;
-     NSString		*imagePath;
+	NSPDFImageRep	*tempRep;
+	NSString		*imagePath;
 #ifndef ROOTFILE
     NSString		*projectPath, *nameString;
 #endif
-
-
+	
+	
 #ifndef ROOTFILE
     projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
     if ([[NSFileManager defaultManager] fileExistsAtPath: projectPath]) {
         NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
         if ([projectRoot isAbsolutePath]) {
             nameString = [NSString stringWithString:projectRoot];
-            }
+		}
         else {
             nameString = [[self fileName] stringByDeletingLastPathComponent];
             nameString = [[nameString stringByAppendingString:@"/"] 
                 stringByAppendingString: [NSString stringWithContentsOfFile: projectPath]];
             nameString = [nameString stringByStandardizingPath];
-            }
+		}
         imagePath = [[nameString stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-        }
+	}
     else
 #endif
         imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-
+	
     if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
-    tempRep = [NSPDFImageRep imageRepWithContentsOfFile: imagePath];
-    if ((tempRep == nil) || ([tempRep pageCount] == 0))
-        tryAgain = YES;
-    else {
-			/*
-            texRep = tempRep;
-            [texRep retain];
-            [pdfWindow setTitle: [imagePath lastPathComponent]];
-            [pdfView setImageRep: texRep];
-            [pdfView setNeedsDisplay:YES];
-            if (front) {
-                [pdfWindow makeKeyAndOrderFront: self];
-                }
-			*/
+		tempRep = [NSPDFImageRep imageRepWithContentsOfFile: imagePath];
+		if ((tempRep == nil) || ([tempRep pageCount] == 0))
+			tryAgain = YES;
+		else {
 			PDFfromKit = YES;
 			[myPDFKitView reShowWithPath: imagePath];
 			[pdfKitWindow setRepresentedFilename: imagePath];
 			[pdfKitWindow setTitle: [imagePath lastPathComponent]];
 			if (front) {
 				[pdfKitWindow makeKeyAndOrderFront: self];
-				}
-            }
-		
-		
-        }
-		
-
+			}
+		}
+	}
 }
 
 // the next routine is used by applescript
@@ -5688,7 +5575,7 @@ aSelector
       [autoCompleteButton setState: doAutoComplete];
       NSEnumerator* enumerator = [[[textWindow toolbar] items] objectEnumerator];
       id anObject;
-      while (anObject = [enumerator nextObject]) {
+      while ((anObject = [enumerator nextObject])) {
         if ([[anObject itemIdentifier] isEqual: @"AutoComplete"]) {
             if (doAutoComplete)
 //                [[[[anObject menuFormRepresentation] submenu] itemAtIndex:0] setTitle: NSLocalizedString(@"Turn off", @"Turn off")];
@@ -5859,8 +5746,8 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
         return NO;
     
     // load home path and jobname
-    home=[[self fileName] stringByDeletingLastPathComponent];
-    jobname=[[[self fileName] lastPathComponent] stringByDeletingPathExtension];
+    home = [[self fileName] stringByDeletingLastPathComponent];
+    jobname = [[[self fileName] lastPathComponent] stringByDeletingPathExtension];
     
     // see if there is a parent document
     length = [theSource length];
@@ -5874,7 +5761,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
         myRange.location = end;
         myRange.length = 1;
         linesTested++;
-            
+		
         theRange.location = start; theRange.length = (end - start);
         testString = [theSource substringWithRange: theRange];
         sourcedocRange = [testString rangeOfString:@"%!TEX root ="];
@@ -5882,135 +5769,126 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
             newSourceDocRange.location = sourcedocRange.location + 12;
             newSourceDocRange.length = [testString length] - newSourceDocRange.location;
             if (newSourceDocRange.length > 0) {
-                    done = YES;
-                    sourcedocString = [[testString substringWithRange: newSourceDocRange] 
+				done = YES;
+				sourcedocString = [[testString substringWithRange: newSourceDocRange] 
                         stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                    }
-                }
-            }
+			}
+		}
+	}
     
     
     if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
         
-    aRange=[theSource rangeOfString:@"%SourceDoc "];
-    if(aRange.location!=NSNotFound) {
-    	bRange=[theSource lineRangeForRange:aRange];
-        if(bRange.length>12 && aRange.location==bRange.location) {
-            done = YES;
-            sourcedocString = [theSource substringWithRange:NSMakeRange(bRange.location+11,bRange.length-12)];
+		aRange=[theSource rangeOfString:@"%SourceDoc "];
+		if(aRange.location!=NSNotFound) {
+			bRange=[theSource lineRangeForRange:aRange];
+			if(bRange.length>12 && aRange.location==bRange.location) {
+				done = YES;
+				sourcedocString = [theSource substringWithRange:NSMakeRange(bRange.location+11,bRange.length-12)];
             }
         }
     }
             
-   if (done) { 
-    
-//    aRange=[theSource rangeOfString:@"%SourceDoc "];
-//    if(aRange.location!=NSNotFound)
-//    {	bRange=[theSource lineRangeForRange:aRange];
-//        if(bRange.length>12 && aRange.location==bRange.location) {
-           saveName=[self
-                decodeFile:sourcedocString
-                homePath:home job:jobname];
-            
-            // is the document open?
-            wlist=[NSApp orderedDocuments];
-            en=[wlist objectEnumerator];
-            while(obj=[en nextObject])
-            {	if([[obj windowNibName] isEqualToString:@"TSDocument"])
-                {   if([[obj fileName] isEqualToString:saveName]) {
-                    if (obj == self)
-                        return NO;
-                    rootDocument = obj;
-                    if (task == RootForPrinting) 
-                        [obj printDocument:nil];
-                    else if (task == RootForPdfSync) {
-                        [obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
-                        }
-                    else if (task == RootForSwitchWindow) {
-                        [obj setCallingWindow: textWindow];
-                        [obj bringPdfWindowFront];
-                        }
-                    else if (task == RootForTexing)
-                        {	if (useTempEngine) 
-                                    theEngine = tempEngine;
-                                 else
-                                    theEngine = whichEngine;
-                                if (whichEngine >= UserEngine)
-                                    [obj doUser:whichEngine];
-                                else 
-                                switch(theEngine) {
-                                case TexEngine: [obj doTex:nil]; break;
-                                case LatexEngine: [obj doLatex:nil]; break;
-                                case ContextEngine: [obj doContext:nil]; break;
-                                case MetapostEngine: [obj doMetapost:nil]; break;
-                                case BibtexEngine: [obj doBibtex:nil]; break;
-                                case IndexEngine: [obj doIndex:nil]; break;
-                                case MetafontEngine: [obj doMetaFont:nil]; break;
-                               default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
-                                    nil,nil,nil,[textView window],nil,nil,nil,nil,
-                                    @"Path Name: %@",saveName);
-                                 }
-                            }
-                    else if (task == RootForOpening) {
-                        ;
-                        }
-                    else if (task == RootForTrashAUX) {
-                        [obj trashAUX];
-                        }
-                    return YES;
-                    }
-                }
-            }
-            
-            // document not found, open document and typeset
-            dc=[NSDocumentController sharedDocumentController];
-            obj=[dc openDocumentWithContentsOfFile:saveName display:YES];
-            if(obj) {
-                if (obj == self)
-                    return NO;
-            	if (task == RootForPrinting)
-                    [obj printDocument:nil];
-                else if (task == RootForPdfSync) {
-                    [obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
-                    }
-                else if (task == RootForTexing){
-                        if (useTempEngine)
-                            theEngine = tempEngine;
-                        else
-                            theEngine = whichEngine;
-                        if (whichEngine >= UserEngine)
-                                    [obj doUser:whichEngine];
-                                else
-                        switch(theEngine) {
-                            case TexEngine: [obj doTex:nil]; break;
-                            case LatexEngine: [obj doLatex:nil]; break;
-                            case ContextEngine: [obj doContext:nil]; break;
-                            case MetapostEngine: [obj doMetapost:nil]; break;
-                            case BibtexEngine: [obj doBibtex:nil]; break;
-                            case IndexEngine: [obj doIndex:nil]; break;
-                            case MetafontEngine: [obj doMetaFont:nil]; break;
-                            default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
-                                nil,nil,nil,[textView window],nil,nil,nil,nil,
-                                @"Path Name: %@",saveName);
-                            }
-                        }
-                else if (task == RootForOpening) {
-                    [[obj textWindow] miniaturize:self];
-                    }
-                else if (task == RootForTrashAUX) {
-                    [obj trashAUX];
-                    }
-                return YES;
-                }
-                    
-            else
-            {	NSBeginAlertSheet(NSLocalizedString(@"The source LaTeX document cannot be found.", @"The source LaTeX document cannot be found."),
-                    nil,nil,nil,nil,nil,nil,nil,nil,
-                    @"Path Name: %@",saveName);
-            }
-            return YES;
-        }
-    
+   if (done) {
+
+	   saveName = [self
+			decodeFile:sourcedocString
+			homePath:home job:jobname];
+		
+		// is the document open?
+		wlist = [NSApp orderedDocuments];
+		en = [wlist objectEnumerator];
+		while ((obj = [en nextObject])) {
+			// TODO: Consider using [obj isMemberOfClass:[TSDocument class]] here
+			if ([[obj windowNibName] isEqualToString:@"TSDocument"]) {
+				if([[obj fileName] isEqualToString:saveName]) {
+					if (obj == self)
+						return NO;
+					rootDocument = obj;
+					if (task == RootForPrinting) 
+						[obj printDocument:nil];
+					else if (task == RootForPdfSync) {
+						[obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
+					}
+					else if (task == RootForSwitchWindow) {
+						[obj setCallingWindow: textWindow];
+						[obj bringPdfWindowFront];
+					}
+					else if (task == RootForTexing) {	
+						theEngine = useTempEngine ? tempEngine : whichEngine;
+						if (whichEngine >= UserEngine)
+							[obj doUser:whichEngine];
+						else 
+							switch(theEngine) {
+								case TexEngine: [obj doTex:nil]; break;
+								case LatexEngine: [obj doLatex:nil]; break;
+								case ContextEngine: [obj doContext:nil]; break;
+								case MetapostEngine: [obj doMetapost:nil]; break;
+								case BibtexEngine: [obj doBibtex:nil]; break;
+								case IndexEngine: [obj doIndex:nil]; break;
+								case MetafontEngine: [obj doMetaFont:nil]; break;
+								default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
+														   nil,nil,nil,[textView window],nil,nil,nil,nil,
+														   @"Path Name: %@",saveName);
+							}
+					}
+					else if (task == RootForOpening) {
+						;
+					}
+					else if (task == RootForTrashAUX) {
+						[obj trashAUX];
+					}
+					return YES;
+				}
+			}
+		}
+		
+		// document not found, open document and typeset
+		dc = [NSDocumentController sharedDocumentController];
+		obj = [dc openDocumentWithContentsOfFile:saveName display:YES];
+		if (obj) {
+			if (obj == self)
+				return NO;
+			if (task == RootForPrinting)
+				[obj printDocument:nil];
+			else if (task == RootForPdfSync) {
+				[obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
+			}
+			else if (task == RootForTexing) {
+				theEngine = useTempEngine ? tempEngine : whichEngine;
+				if (whichEngine >= UserEngine)
+					[obj doUser:whichEngine];
+				else {
+					switch(theEngine) {
+						case TexEngine: [obj doTex:nil]; break;
+						case LatexEngine: [obj doLatex:nil]; break;
+						case ContextEngine: [obj doContext:nil]; break;
+						case MetapostEngine: [obj doMetapost:nil]; break;
+						case BibtexEngine: [obj doBibtex:nil]; break;
+						case IndexEngine: [obj doIndex:nil]; break;
+						case MetafontEngine: [obj doMetaFont:nil]; break;
+						default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
+							nil,nil,nil,[textView window],nil,nil,nil,nil,
+							@"Path Name: %@",saveName);
+					}
+				}
+			}
+			else if (task == RootForOpening) {
+				[[obj textWindow] miniaturize:self];
+			}
+			else if (task == RootForTrashAUX) {
+				[obj trashAUX];
+			}
+			return YES;
+		}
+		else {
+			NSBeginAlertSheet(NSLocalizedString(@"The source LaTeX document cannot be found.", @"The source LaTeX document cannot be found."),
+				nil,nil,nil,nil,nil,nil,nil,nil,
+				@"Path Name: %@",saveName);
+		}
+		return YES;
+	}
+
     return NO;
 }
 
@@ -6018,126 +5896,121 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 - (BOOL) checkRootFile_forTask:(int)task
 //-----------------------------------------------------------------------------
 {
-    NSString			*projectPath, *nameString;
-    NSArray 			*wlist;
-    NSEnumerator 		*en;
-    id 				obj;
-    NSDocumentController 	*dc;
-    int                         theEngine;
-
-
-
-    projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
-    if (![[NSFileManager defaultManager] fileExistsAtPath: projectPath]) 
-        return NO;
-    
-    NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
-    projectRoot = [projectRoot stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if ([projectRoot length] == 0)
-        return NO;
-    if ([projectRoot isAbsolutePath]) 
-        nameString = [NSString stringWithString:projectRoot];
-    else {
-        nameString = [[self fileName] stringByDeletingLastPathComponent];
-        nameString = [[nameString stringByAppendingString:@"/"] 
-        stringByAppendingString: [NSString stringWithContentsOfFile: projectPath]];
-        nameString = [nameString stringByStandardizingPath];
-        }
-        
+	NSString			*projectPath, *nameString;
+	NSArray 			*wlist;
+	NSEnumerator 		*en;
+	id 				obj;
+	NSDocumentController 	*dc;
+	int                         theEngine;
+	
+	projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
+	if (![[NSFileManager defaultManager] fileExistsAtPath: projectPath]) 
+		return NO;
+	
+	NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
+	projectRoot = [projectRoot stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	if ([projectRoot length] == 0)
+		return NO;
+	if ([projectRoot isAbsolutePath]) {
+		nameString = [NSString stringWithString:projectRoot];
+	} else {
+		nameString = [[self fileName] stringByDeletingLastPathComponent];
+		nameString = [[nameString stringByAppendingString:@"/"] 
+		stringByAppendingString: [NSString stringWithContentsOfFile: projectPath]];
+		nameString = [nameString stringByStandardizingPath];
+	}
+	
     // is the document open?
-    wlist=[NSApp orderedDocuments];
-    en=[wlist objectEnumerator];
-    while(obj=[en nextObject]) {
-        if([[obj windowNibName] isEqualToString:@"TSDocument"]) {
-            if([[obj fileName] isEqualToString:nameString]) {
-                if (obj == self)
-                    return NO;
-                rootDocument = obj;
-                if (task == RootForPrinting) {
-                    [obj printDocument:nil];
-                    }
-                else if (task == RootForPdfSync) {
-                    [obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
-                    }
-                else if (task == RootForSwitchWindow) {
-                    [obj setCallingWindow: textWindow];
-                    [obj bringPdfWindowFront];
-                    }
-                else if (task == RootForTexing) {
-                    if (useTempEngine)
-                        theEngine = tempEngine;
-                    else
-                        theEngine = whichEngine;
+    wlist = [NSApp orderedDocuments];
+    en = [wlist objectEnumerator];
+    while ((obj = [en nextObject])) {
+		// TODO: Consider using [obj isMemberOfClass:[TSDocument class]] here
+        if ([[obj windowNibName] isEqualToString:@"TSDocument"]) {
+			if ([[obj fileName] isEqualToString:nameString]) {
+				if (obj == self)
+					return NO;
+				rootDocument = obj;
+				if (task == RootForPrinting) {
+					[obj printDocument:nil];
+				}
+				else if (task == RootForPdfSync) {
+					[obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
+				}
+				else if (task == RootForSwitchWindow) {
+					[obj setCallingWindow: textWindow];
+					[obj bringPdfWindowFront];
+				}
+				else if (task == RootForTexing) {
+					theEngine = useTempEngine ? tempEngine : whichEngine;
                     if (whichEngine >= UserEngine)
                         [obj doUser:whichEngine];
-                    else
-                    switch(theEngine) {
-                        case TexEngine: [obj doTex:nil]; break;
-                        case LatexEngine: [obj doLatex:nil]; break;
-                        case ContextEngine: [obj doContext:nil]; break;
-                        case MetapostEngine: [obj doMetapost:nil]; break;
-                        case BibtexEngine: [obj doBibtex:nil]; break;
-                        case IndexEngine: [obj doIndex:nil]; break;
-                        case MetafontEngine: [obj doMetaFont:nil]; break;
-                        default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
-                            nil,nil,nil,[textView window],nil,nil,nil,nil,
-                            @"Path Name: %@",nameString);
-                        }
-                    }
+                    else {
+						switch (theEngine) {
+							case TexEngine: [obj doTex:nil]; break;
+							case LatexEngine: [obj doLatex:nil]; break;
+							case ContextEngine: [obj doContext:nil]; break;
+							case MetapostEngine: [obj doMetapost:nil]; break;
+							case BibtexEngine: [obj doBibtex:nil]; break;
+							case IndexEngine: [obj doIndex:nil]; break;
+							case MetafontEngine: [obj doMetaFont:nil]; break;
+							default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
+								nil,nil,nil,[textView window],nil,nil,nil,nil,
+								@"Path Name: %@",nameString);
+						}
+					}
+				}
                 else if (task == RootForOpening) {
                     ;
-                    }
+				}
                 else if (task == RootForTrashAUX) {
                     [obj trashAUX];
-                    }
+				}
                 return YES;
-                }
+			}
         }
     }
         
     // document not found, open document and typeset
-    dc=[NSDocumentController sharedDocumentController];
-    obj=[dc openDocumentWithContentsOfFile:nameString display:YES];
-    if(obj) {
-        if (obj == self)
-            return NO;
-        if (task == RootForPrinting) {
-            [obj printDocument:nil];
-            }
-        else if (task == RootForPdfSync) {
-            [obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
-            }
-        else if (task == RootForTexing) {
-            if (useTempEngine)
-                theEngine = tempEngine;
-            else
-                theEngine = whichEngine;
-            if (whichEngine >= UserEngine)
-                [obj doUser:whichEngine];
-            else
-            switch(theEngine) {
-                case TexEngine: [obj doTex:nil]; break;
-                case LatexEngine: [obj doLatex:nil]; break;
-                case ContextEngine: [obj doContext:nil]; break;
-                case MetapostEngine: [obj doMetapost:nil]; break;
-                case BibtexEngine: [obj doBibtex:nil]; break;
-                case IndexEngine: [obj doIndex:nil]; break;
-                case MetafontEngine: [obj doMetaFont:nil]; break;
-                default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
-                    nil,nil,nil,[textView window],nil,nil,nil,nil,
-                    @"Path Name: %@",nameString);
-                }
-            }
-        else if (task == RootForOpening) {
-            [[obj textWindow] miniaturize:self];
-            }
-        return YES;
-        }
-    else
-        {	NSBeginAlertSheet(NSLocalizedString(@"The source LaTeX document cannot be found.", @"The source LaTeX document cannot be found."),
-                nil,nil,nil,nil,nil,nil,nil,nil,
-                @"Path Name: %@",nameString);
-        }
+    dc = [NSDocumentController sharedDocumentController];
+    obj = [dc openDocumentWithContentsOfFile:nameString display:YES];
+	if(obj) {
+		if (obj == self)
+			return NO;
+		if (task == RootForPrinting) {
+			[obj printDocument:nil];
+		}
+		else if (task == RootForPdfSync) {
+			[obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
+		}
+		else if (task == RootForTexing) {
+			theEngine = useTempEngine ? tempEngine : whichEngine;
+			if (whichEngine >= UserEngine)
+				[obj doUser:whichEngine];
+			else {
+				switch(theEngine) {
+					case TexEngine: [obj doTex:nil]; break;
+					case LatexEngine: [obj doLatex:nil]; break;
+					case ContextEngine: [obj doContext:nil]; break;
+					case MetapostEngine: [obj doMetapost:nil]; break;
+					case BibtexEngine: [obj doBibtex:nil]; break;
+					case IndexEngine: [obj doIndex:nil]; break;
+					case MetafontEngine: [obj doMetaFont:nil]; break;
+					default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
+						nil,nil,nil,[textView window],nil,nil,nil,nil,
+						@"Path Name: %@",nameString);
+				}
+			}
+		}
+		else if (task == RootForOpening) {
+			[[obj textWindow] miniaturize:self];
+		}
+		return YES;
+	}
+	else {
+		NSBeginAlertSheet(NSLocalizedString(@"The source LaTeX document cannot be found.", @"The source LaTeX document cannot be found."),
+			nil,nil,nil,nil,nil,nil,nil,nil,
+			@"Path Name: %@",nameString);
+	}
     return YES;
 }
 
@@ -6158,19 +6031,18 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
         theRoot = rootDocument;
     else
         theRoot = self;
-
-    wlist=[NSApp orderedDocuments];
-    en=[wlist objectEnumerator];
-    while(obj=[en nextObject]) {
+	
+    wlist = [NSApp orderedDocuments];
+    en = [wlist objectEnumerator];
+    while ((obj = [en nextObject])) {
         
         if (([[obj windowNibName] isEqualToString:@"TSDocument"]) && 
-        (obj != self) && 
-        (([obj rootDocument] == theRoot) || (obj == rootDocument)) && 
-        ([obj isDocumentEdited])) { 
-                [obj saveDocument:self];
-                }
-        }
-
+			(obj != self) && 
+			(([obj rootDocument] == theRoot) || (obj == rootDocument)) && 
+			([obj isDocumentEdited])) { 
+			[obj saveDocument:self];
+		}
+	}
 }
 
 
@@ -6189,53 +6061,52 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
         return;
     
     // load home path and jobname
-    home=[[self fileName] stringByDeletingLastPathComponent];
-    jobname=[[[self fileName] lastPathComponent] stringByDeletingPathExtension];
+    home = [[self fileName] stringByDeletingLastPathComponent];
+    jobname = [[[self fileName] lastPathComponent] stringByDeletingPathExtension];
     
     // create list of linked files from \input commands
-    aRange=NSMakeRange(0,[theSource length]);
-    slist=[[NSMutableArray alloc] init];
+    aRange = NSMakeRange(0, [theSource length]);
+    slist = [[NSMutableArray alloc] init];
     searchString = [NSString stringWithString:@"\\input"];
     if (g_shouldFilter == filterMacJ)
-                searchString = filterBackslashToYen(searchString);
-    while(YES)
-    {	aRange=[theSource rangeOfString:searchString options:NSLiteralSearch range:aRange];
-        if(aRange.location==NSNotFound) break;
-        bRange=[theSource lineRangeForRange:aRange];
-        saveName=[self readInputArg:[theSource substringWithRange:bRange]
-                        atIndex:aRange.location-bRange.location+6
-                        homePath:home job:jobname];
+		searchString = filterBackslashToYen(searchString);
+    while (YES) {
+		aRange = [theSource rangeOfString:searchString options:NSLiteralSearch range:aRange];
+        if (aRange.location == NSNotFound)
+			break;
+        bRange = [theSource lineRangeForRange:aRange];
+        saveName = [self readInputArg:[theSource substringWithRange:bRange]
+							  atIndex:aRange.location-bRange.location+6
+							 homePath:home job:jobname];
         saveName = [saveName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         if(saveName) 
             [slist addObject:saveName];
-        aRange.location+=6;
-        aRange.length=[theSource length]-aRange.location;
+        aRange.location += 6;
+        aRange.length = [theSource length] - aRange.location;
     }
-    numFiles=[slist count];
+    numFiles = [slist count];
     
-    if(numFiles==0)
-    {	
+    if (numFiles==0) {	
         [slist release];
         return;
     }
     
     // compare file list to current MyDocuments
-    wlist=[NSApp orderedDocuments];
-    en=[wlist objectEnumerator];
+    wlist = [NSApp orderedDocuments];
+    en   =[wlist objectEnumerator];
     
-    while(obj=[en nextObject])
-    {	if([[obj windowNibName] isEqualToString:@"TSDocument"])
-        {   saveName=[obj fileName];
-            for(i=0;i<numFiles;i++)
-            {   
-            if([saveName isEqualToString:[slist objectAtIndex:i]])
-                {  if([obj isDocumentEdited]) 
-                       [obj saveDocument:self];
-                    break;
-                }
-            }
-        }
-    }
+	while ((obj = [en nextObject])) {
+		if ([[obj windowNibName] isEqualToString:@"TSDocument"]) {
+			saveName = [obj fileName];
+			for (i = 0; i < numFiles; i++) {   
+				if ([saveName isEqualToString:[slist objectAtIndex:i]]) {
+					if ([obj isDocumentEdited]) 
+						[obj saveDocument:self];
+					break;
+				}
+			}
+		}
+	}
     
     // release file list
     [slist release];
@@ -6586,7 +6457,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
             theChar = [text characterAtIndex: start];
         switch ([sender tag]) {
         
-            case Mcomment:	// if ((end1 == start)  || (theChar != 0x0025) ) {
+            case Mcomment:	// if ((end1 == start)  || (theChar != '%') ) {
                                     tempRange.location = start;
                                     tempRange.length = 0;
                                     [textView replaceCharactersInRange:tempRange withString:@"%"];
@@ -6596,7 +6467,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
                                 //    }
                                 break;
                                             
-            case Muncomment:	if ((end1 != start) && (theChar == 0x0025)) {
+            case Muncomment:	if ((end1 != start) && (theChar == '%')) {
                                     tempRange.location = start;
                                     tempRange.length = 1;
                                     [textView replaceCharactersInRange:tempRange withString:@""];
@@ -6607,7 +6478,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
                                 break;
             
             // Originally this was a space; Greg Landweber correctly suggested a tab!
-            case Mindent: 	if (0 == 0) // (end1 == start) || (theChar != 0x0025))  
+            case Mindent: 	if (0 == 0) // (end1 == start) || (theChar != '%'))  
 							{
                                     tempRange.location = start;
                                     tempRange.length = 0;
@@ -6731,7 +6602,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
     
     
     
-    while (anObject = [enumerator nextObject]) {
+    while ((anObject = [enumerator nextObject])) {
         doMove = YES;
         if (! aggressiveTrash) { 
             objectFileName = [anObject stringByDeletingPathExtension];
@@ -6745,7 +6616,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 
         otherExtensions = [SUD stringArrayForKey: OtherTrashExtensionsKey];
         arrayEnumerator = [otherExtensions objectEnumerator];
-        while (stringObject = [arrayEnumerator nextObject]) {
+        while ((stringObject = [arrayEnumerator nextObject])) {
            if ([extension isEqualToString:stringObject]) 
              isOneOfOther = YES;
             }
@@ -6784,7 +6655,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
         if (aggressiveTrash) {
             
             enumerator = [pathsToBeMoved objectEnumerator];
-            while (anObject = [enumerator nextObject]) {
+            while ((anObject = [enumerator nextObject])) {
                 path1 = [path stringByAppendingPathComponent: anObject];
                 path2 = [path1 stringByDeletingLastPathComponent];
                 [fileToBeMoved replaceObjectAtIndex:0 withObject: [anObject lastPathComponent]];
@@ -6823,11 +6694,11 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 {
 	switch ([sender selectedSegment]) {
 		case 0:	[[self pdfKitView] goBack:sender];
-				break;
-				
+			break;
+			
 		case 1: [[self pdfKitView] goForward:sender];
-				break;
-		}
+			break;
+	}
 }
 
 - (void)doForward:(id)sender

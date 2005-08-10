@@ -84,6 +84,7 @@
     BOOL	result;
     
     result = [super makeFirstResponder:aResponder];
+	// FIXME: This is kind of ugly...
     if (result && [[aResponder className] isEqualTo:@"TSTextView"]) {
         [myDocument setTextView:aResponder];
 	}
@@ -101,7 +102,7 @@
     if (myDocuments != nil) {
         NSEnumerator *enumerator = [myDocuments objectEnumerator];
         id anObject;
-        while (anObject = [enumerator nextObject]) {
+        while ((anObject = [enumerator nextObject])) {
             if ([anObject getCallingWindow] == self)
                 [anObject setCallingWindow: nil];
 		}

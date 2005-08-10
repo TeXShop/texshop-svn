@@ -415,8 +415,7 @@
 	{
 		NSEnumerator *enumerator = [children objectEnumerator];
 		id node;
-		while (node = [enumerator nextObject])
-		{
+		while ((node = [enumerator nextObject])) {
 			[node examine];
 			//[node release];
 		}
@@ -438,8 +437,7 @@
 	{
 		NSEnumerator *enumerator = [nodeChildren objectEnumerator];
 		TSMacroTreeNode *srcChild, *newChild;
-		while (srcChild = (TSMacroTreeNode *)[enumerator nextObject]) 
-		{
+		while ((srcChild = (TSMacroTreeNode *)[enumerator nextObject])) {
 			newChild = [srcChild duplicateNode];
 			if (newChild)
 				[newNode addChild: newChild];
@@ -455,8 +453,7 @@
 	tempArray = [TSMacroTreeNode minimumNodeCoverFromNodesInArray: srcNodeArray];
 	NSEnumerator *enumerator = [tempArray objectEnumerator];
 	TSMacroTreeNode *node;
-	while (node = [enumerator nextObject])
-	{
+	while ((node = [enumerator nextObject])) {
 		[newArray addObject: [node duplicateNode]];
 	}
 	return newArray;
@@ -492,8 +489,7 @@
 	if (srcChildren && [srcChildren isKindOfClass:[NSArray class]])
 	{
 		NSEnumerator *enumerator = [srcChildren objectEnumerator];
-		while (srcChild = (NSDictionary *)[enumerator nextObject]) 
-		{
+		while ((srcChild = (NSDictionary *)[enumerator nextObject])) {
 			child = [TSMacroTreeNode nodeFromDictionary: srcChild];
 			if (child)
 			[node addChild: child];
@@ -531,8 +527,7 @@
 	if (dictArray)
 	{
 		enumerator = [dictArray objectEnumerator];
-		while (obj = [enumerator nextObject])
-		{
+		while ((obj = [enumerator nextObject])) {
 			if ([obj isKindOfClass: [NSDictionary class]])
 			{
 				node = [TSMacroTreeNode nodeFromDictionary: obj];
@@ -544,8 +539,7 @@
 	else if ([propertyList isKindOfClass: [NSDictionary class]])	// LaTeX Panel style dictionary
 	{
 		keyEnum = [propertyList keyEnumerator];
-		while (theKey = [keyEnum nextObject])
-		{
+		while ((theKey = [keyEnum nextObject])) {
 			if ([theKey isKindOfClass: [NSString class]] &&
 				(dictArray = [propertyList objectForKey: theKey]) && 
 				[dictArray isKindOfClass: [NSArray class]])
@@ -595,8 +589,7 @@
 	if (array)
 	{
 		enumerator = [array objectEnumerator];
-		while (obj = [enumerator nextObject])
-		{
+		while ((obj = [enumerator nextObject])) {
 			if ([obj isKindOfClass: [NSDictionary class]])
 			{
 				node = [TSMacroTreeNode nodeFromDictionary: obj];
@@ -608,8 +601,7 @@
 	else if ([propertyList isKindOfClass: [NSDictionary class]])	// LaTeX Panel style dictionary
 	{
 		keyEnum = [propertyList keyEnumerator];
-		while (theKey = [keyEnum nextObject])
-		{
+		while ((theKey = [keyEnum nextObject])) {
 			if ([theKey isKindOfClass: [NSString class]] &&
 				(array = [propertyList objectForKey: theKey]) && 
 				[array isKindOfClass: [NSArray class]])
@@ -617,10 +609,8 @@
 				submenu = [TSMacroTreeNode submenuNodeWithName: theKey];
 				[self addChild: submenu];
 				enumerator = [array objectEnumerator];
-				while (obj = [enumerator nextObject])
-				{
-					if ([obj isKindOfClass: [NSString class]])
-					{
+				while ((obj = [enumerator nextObject])) {
+					if ([obj isKindOfClass: [NSString class]]) {
 						NSMutableString *nameStr = [NSMutableString stringWithString: 
 							[(NSString *)obj substringToIndex: 
 									([(NSString *)obj length]<50)?[(NSString *)obj length]:50]];
@@ -651,8 +641,7 @@
 		NSMutableArray *array = [NSMutableArray array];
 		NSEnumerator *enumerator = [nodeChildren objectEnumerator];
 		TSMacroTreeNode *child;
-		while (child = (TSMacroTreeNode *)[enumerator nextObject])
-		{
+		while ((child = (TSMacroTreeNode *)[enumerator nextObject])) {
 			NSMutableDictionary *newdict = [child makeDictionary];
 			[array addObject: newdict];
 		}

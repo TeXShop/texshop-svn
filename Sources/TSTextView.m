@@ -51,8 +51,8 @@
     // find the line number
     screenPosition = [NSEvent  mouseLocation];
     theIndex = [self characterIndexForPoint: screenPosition];
-	[document setCharacterIndex: theIndex];
-    text = [[document textView] string];
+	[_document setCharacterIndex: theIndex];
+    text = [[_document textView] string];
     stringlength = [text length];
     myRange.location = 0;
     myRange.length = 1;
@@ -67,7 +67,7 @@
 	}
     if (!found)
         return;
-    [document setPdfSyncLine:line];
+    [_document setPdfSyncLine:line];
         
     // see if there is a root file; if so, call the root file's doPreviewSync
     // code with the filename of this file and this line number
@@ -76,15 +76,15 @@
     // otherwise call this document's doPreviewSync with nil for filename and
     // this line number
     
-     theSource = [[document textView] string];
+     theSource = [[_document textView] string];
      if (theSource == nil)
         return;
-     if ([document checkMasterFile:theSource forTask:RootForPdfSync]) 
+     if ([_document checkMasterFile:theSource forTask:RootForPdfSync]) 
             return;
-     if ([document checkRootFile_forTask:RootForPdfSync]) 
+     if ([_document checkRootFile_forTask:RootForPdfSync]) 
             return;
             
-     [document doPreviewSyncWithFilename:nil andLine:line andCharacterIndex: theIndex andTextView: [document textView]];
+     [_document doPreviewSyncWithFilename:nil andLine:line andCharacterIndex: theIndex andTextView: [_document textView]];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
@@ -99,11 +99,11 @@
 	}
 	
 	
-	if ([document textSelectionYellow]) {
-		[document setTextSelectionYellow: NO];
-		mySelectedTextAttributes = [NSMutableDictionary dictionaryWithDictionary: [[document textView] selectedTextAttributes]];
+	if ([_document textSelectionYellow]) {
+		[_document setTextSelectionYellow: NO];
+		mySelectedTextAttributes = [NSMutableDictionary dictionaryWithDictionary: [[_document textView] selectedTextAttributes]];
 		[mySelectedTextAttributes setObject:[NSColor colorWithCatalogName: @"System" colorName: @"selectedTextBackgroundColor"]  forKey:@"NSBackgroundColor"];
-		[[document textView] setSelectedTextAttributes: mySelectedTextAttributes];
+		[[_document textView] setSelectedTextAttributes: mySelectedTextAttributes];
 	}
 	[super mouseDown:theEvent];
 }
@@ -122,7 +122,7 @@
     NSPasteboard *pb = [sender draggingPasteboard];
     NSString *type = [pb availableTypeFromArray:
         [NSArray arrayWithObjects: NSStringPboardType, NSFilenamesPboardType, nil] ];
-    if( type && [document fileIsTex] ) {
+    if( type && [_document fileIsTex] ) {
         if( [type isEqualToString:NSStringPboardType] ||
             [type isEqualToString:NSFilenamesPboardType] ){
             NSPoint location = [self convertPoint:[sender draggingLocation] fromView:nil];
@@ -180,7 +180,7 @@
         unsigned cnt = [ar count];
         if (cnt == 0)
 			return;
-        NSString *thisFile = [document fileName];
+        NSString *thisFile = [_document fileName];
         unsigned i;
         for (i = 0; i < cnt; i++) {
             // NSString *filePath = [ar objectAtIndex:i];
@@ -200,7 +200,7 @@
                 ((sourceDragMask & NSDragOperationLink) || (sourceDragMask & NSDragOperationGeneric)) ){
                 insertString = [self readSourceFromEquationEditorPDF: filePath];
                 if (insertString != nil) {
-                    [document insertSpecial: insertString
+                    [_document insertSpecial: insertString
                                                         undoKey: NSLocalizedString(@"Drag && Drop", @"Drag && Drop")];
                     return;
                 }
@@ -241,7 +241,7 @@
             [tmpString replaceOccurrencesOfString: @"%n" withString: baseName options: 0 range: NSMakeRange(0, [tmpString length])];
             [tmpString replaceOccurrencesOfString: @"%e" withString: fileExt options: 0 range: NSMakeRange(0, [tmpString length])];
             [tmpString replaceOccurrencesOfString: @"%r" withString: relPath options: 0 range: NSMakeRange(0, [tmpString length])];
-            [document insertSpecial: tmpString
+            [_document insertSpecial: tmpString
 						undoKey: NSLocalizedString(@"Drag && Drop", @"Drag && Drop")];
 //            [[TSMacroMenuController sharedInstance] doMacro: tmpString];
 //            [self insertText:tmpString];
@@ -294,21 +294,20 @@
     array1 = [macroDict objectForKey: SUBMENU_KEY];
     enum1 = [array1 objectEnumerator];
 
-    while (dict1 = (NSDictionary *)[enum1 nextObject])
-    {
+    while ((dict1 = (NSDictionary *)[enum1 nextObject])) {
         nameStr = [dict1 objectForKey: NAME_KEY];
         if( [nameStr isEqualToString: @"Drag & Drop"] ){
             array2 = [dict1 objectForKey: SUBMENU_KEY];
             if( array2 )
             {
                 enum2 = [array2 objectEnumerator];
-                while( dict2 = (NSDictionary *)[enum2 nextObject] )
-                {
+                while ((dict2 = (NSDictionary *)[enum2 nextObject])) {
                     nameStr = [dict2 objectForKey: NAME_KEY];
                     if( [nameStr isEqualToString: targetStr] )
                     {
                         contentStr = [dict2 objectForKey: CONTENT_KEY];
-                        if( contentStr )    return contentStr;
+                        if (contentStr)
+						    return contentStr;
                     }
                 }
             }
@@ -465,7 +464,7 @@
 	// AutoCompletion
     // Code added by Greg Landweber for auto-completions of '^', '_', etc.
     // First, avoid completing \^, \_, \"
-	if ([aString length] == 1 &&  [document isDoAutoCompleteEnabled]) 
+	if ([aString length] == 1 &&  [_document isDoAutoCompleteEnabled]) 
 	{
         if ([aString characterAtIndex:0] >= 128 ||
             [self selectedRange].location == 0 ||
@@ -477,7 +476,7 @@
 			{
 #define ALLOW_UNDO_AUTOCOMPLETION
 #ifdef ALLOW_UNDO_AUTOCOMPLETION
-				[document insertSpecialNonStandard:completionString 
+				[_document insertSpecialNonStandard:completionString 
 						undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
 				return;
 #else
@@ -579,13 +578,13 @@
 	self = [super initWithFrame: frameRect];
 	[ self registerForDraggedTypes:
 			[NSArray arrayWithObjects: NSStringPboardType, NSFilenamesPboardType, nil] ];
-	document = nil; 
+	_document = nil; 
     return self;
 }
 
 - (void)setDocument: (TSDocument *)doc
 {
-	document = doc;
+	_document = doc;
 }
 
 // Command Completion!!
@@ -831,20 +830,20 @@
 			
 			[self replaceCharactersInRange:replaceRange withString: newString];
 			// register undo
-			if (document)
-				[(TSDocument *)document registerUndoWithString:originalString location:replaceLocation 
+			if (_document)
+				[_document registerUndoWithString:originalString location:replaceLocation 
 					length:[newString length] 
 					key:NSLocalizedString(@"Completion", @"Completion")];
 			//[self registerUndoWithString:originalString location:replaceLocation 
 			//		length:[newString length] 
 			//		key:NSLocalizedString(@"Completion", @"Completion")];
 			// clean up
-			if (document)
+			if (_document)
 			{
 				from = replaceLocation;
 				to = from + [newString length];
-				[(TSDocument *)document fixColor:from :to];
-				[(TSDocument *)document setupTags];
+				[_document fixColor:from :to];
+				[_document setupTags];
 			}
 			currentString = [newString retain];
 			wasCompleted = YES;

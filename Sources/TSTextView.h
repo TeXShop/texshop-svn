@@ -24,17 +24,15 @@
 
 @interface TSTextView : NSTextView
 {
-    TSDocument		*document; 
+    TSDocument		*_document; 
 }
 
 - (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity;
 
-// mitsu 1.29 (T2-4) added
 - (void)setDocument: (TSDocument *)doc;
 - (void)registerForCommandCompletion: (id)sender;
-// end mitsu 1.29
-- (NSString *)getDragnDropMacroString: (NSString *)fileExt; // zenitani 1.33
-- (NSString *)readSourceFromEquationEditorPDF: (NSString *)filePath; // zenitani 1.33(2)
+- (NSString *)getDragnDropMacroString: (NSString *)fileExt;
+- (NSString *)readSourceFromEquationEditorPDF: (NSString *)filePath;
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent;
 - (NSString *)resolveAlias: (NSString *)path;
 @end

@@ -204,8 +204,7 @@ static id sharedMacroMenuController = nil;
 	
 	// set dummy actions to submenu items so that they can be disabled
 	NSEnumerator *enumerator = [[macroMenu itemArray] objectEnumerator];
-	while (newItem = (NSMenuItem *)[enumerator nextObject])
-	{
+	while ((newItem = (NSMenuItem *)[enumerator nextObject])) {
 		if ([newItem hasSubmenu])
 		{
 			[newItem setTarget: self];
@@ -240,8 +239,7 @@ static id sharedMacroMenuController = nil;
     NSMenu *submenu;
     NSString *nameStr;
     
-    while (dict = (NSDictionary *)[enumerator nextObject])
-    {
+    while ((dict = (NSDictionary *)[enumerator nextObject])) {
         nameStr = [dict objectForKey: NAME_KEY];
 		NSArray *childlenArray = [dict objectForKey: SUBMENU_KEY];
 		if (childlenArray)	// submenu item
@@ -290,8 +288,7 @@ static id sharedMacroMenuController = nil;
 	
 	NSArray *array = [macroDict objectForKey: SUBMENU_KEY];
     NSEnumerator *enumerator = [array objectEnumerator];
-    while (dict = (NSDictionary *)[enumerator nextObject])
-    {
+    while ((dict = (NSDictionary *)[enumerator nextObject])) {
         nameStr = [dict objectForKey: NAME_KEY];
 		NSArray *childlenArray = [dict objectForKey: SUBMENU_KEY];
 		if (childlenArray)	// submenu item
@@ -651,8 +648,7 @@ static id sharedMacroMenuController = nil;
 	NSArray *menuitems = [menu itemArray];
 	NSEnumerator *enumerator = [menuitems objectEnumerator];
 	NSMenuItem *item;
-	while (item = (NSMenuItem *)[enumerator nextObject])
-	{
+	while ((item = (NSMenuItem *)[enumerator nextObject])) {
 		if (![[item keyEquivalent] isEqualToString: @""])
 		{
 			NSString *keyEquiv = [item keyEquivalent];
@@ -679,8 +675,7 @@ static id sharedMacroMenuController = nil;
 	NSEnumerator *enumerator = [keyEquivalents objectEnumerator];
 	NSArray *item;
 	keyEquiv = [keyEquiv lowercaseString];
-	while (item = (NSArray *)[enumerator nextObject])
-	{
+	while ((item = (NSArray *)[enumerator nextObject])) {
 		if ([[item objectAtIndex: 0] isEqualToString: keyEquiv] 
 					&& [[item objectAtIndex: 1] unsignedIntValue] == modifier)
 		{

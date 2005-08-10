@@ -37,14 +37,6 @@
 - (void) doTextPage: sender;      // for toolbar in text mode
 - (void) magnificationDidEnd:(NSWindow *)sheet returnCode: (int)returnCode contextInfo: (void *)contextInfo;
 - (void) pagenumberDidEnd:(NSWindow *)sheet returnCode: (int)returnCode contextInfo: (void *)contextInfo;
-- (void) printDocument: sender;
-- (void) printSource: sender;
-- (void) doTypeset: sender;
-- (void) doTex: sender;
-- (void) doLatex: sender;
-- (void) doBibtex: sender;
-- (void) doMetaFont: sender;
-- (void) doIndex: sender;
 - (void) previousPage: sender;
 - (void) nextPage: sender;
 

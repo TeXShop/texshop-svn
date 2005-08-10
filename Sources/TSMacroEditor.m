@@ -544,8 +544,7 @@ static int savedFilter = filterNone;
 		NSMutableArray *array = [NSMutableArray array];
 		NSEnumerator *enumerator = [nodes objectEnumerator];
 		TSMacroTreeNode *child;
-		while (child = [enumerator nextObject])
-		{
+		while ((child = [enumerator nextObject])) {
 			[array addObject: [child makeDictionary]];
 		}
 		propertyList = [NSDictionary dictionaryWithObjectsAndKeys: 

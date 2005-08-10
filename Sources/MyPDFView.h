@@ -140,7 +140,7 @@
 NSBitmapImageRep *transformColor(NSBitmapImageRep *srcBitmap, NSColor *foreColor, NSColor *backColor, int param1);
 NSData *getPICTDataFromBitmap(NSBitmapImageRep *bitmap);
 
-NSString *extensionForType(int type); // mitsu 1.29 drag & drop
+extern NSString *extensionForType(int type); // mitsu 1.29 drag & drop
 
 
 #define PAGE_SPACE_H	10

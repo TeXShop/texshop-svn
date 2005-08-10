@@ -30,24 +30,30 @@
 
 - (void)initializeEncoding  // the idea is that this is called after preferences is set up
 {
-    encoding = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
+	// We use the _encoding field to store the encoding to be used for the
+	// next openend file. Normally, this is just the default encoding, and
+	// we use that as the initial value of _encoding. However, in the open
+	// dialog, the user can choose a custom encoding; if that happens, then
+	// the value of _encoding is modified (see runModalOpenPanel below).
+	// This happens before openDocument: is called.
+    _encoding = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
 }
 
 - (int) encoding
 {
-    return encoding;
+    return _encoding;
 }
 
 - (IBAction)newDocument:(id)sender{
     
-    encoding = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
+    _encoding = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
     [super newDocument: sender];
 }
 
 - (IBAction)openDocument:(id)sender{
     
     [super openDocument: sender];
-    encoding = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
+    _encoding = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
 }
 
 
@@ -56,14 +62,16 @@
     int		result;
     int		theCode;
     
+	// TODO: Consider creating the view/menu on the fly, based on the list of available
+	// encodings from TSEncodingSupport.
     theCode = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
     [openPanel setAccessoryView: encodingView ];
     [encodingView retain];
     [encodingMenu selectItemAtIndex: theCode];
     result = [super runModalOpenPanel: openPanel forTypes: extensions];
     if (result == YES) {
-        encoding = [[encodingMenu selectedCell] tag];
-        }
+        _encoding = [[encodingMenu selectedCell] tag];
+	}
     return result;
 }
 

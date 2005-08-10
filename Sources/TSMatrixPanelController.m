@@ -345,150 +345,160 @@ static id _sharedInstance = nil;
 
 -(IBAction)insertMatrix:(id)sender
 {
-    
-    int hsize,vsize,i,j,
-    brstyleop=[[brselop selectedCell] tag],
-    brstylecl=[[brselcl selectedCell] tag],
-    environment=[[envsel selectedCell] tag],
-    tablenv=[chbfig state]==NSOnState,
-    drawborder=[borderbutton state]==NSOnState,
-    drawgrid=[gridbutton state]==NSOnState;
-    hsize =(int) [myMatrix actCols];
-    vsize =(int) [myMatrix actRows];
-    NSMutableString *insertion=[NSMutableString stringWithCapacity:200];
-    
-    if (environment==0) {
-	if ((brstyleop==4)&&(brstylecl==4)) {
-	}else {
-	    [insertion appendString:[arrayMatrix objectAtIndex:6]];
-	    if (brstyleop==0) {
-		[insertion appendString:[arrayMatrix objectAtIndex:8]];
-	    } else if (brstyleop==1) {
-		[insertion appendString:[arrayMatrix objectAtIndex:10]];
-	    } else if (brstyleop==2) {
-		[insertion appendString:[arrayMatrix objectAtIndex:12]];
-	    } else if (brstyleop==3) {
+	
+	int hsize,vsize,i,j,
+	brstyleop=[[brselop selectedCell] tag],
+	brstylecl=[[brselcl selectedCell] tag],
+	environment=[[envsel selectedCell] tag],
+	tablenv=[chbfig state]==NSOnState,
+	drawborder=[borderbutton state]==NSOnState,
+	drawgrid=[gridbutton state]==NSOnState;
+	hsize =(int) [myMatrix actCols];
+	vsize =(int) [myMatrix actRows];
+	NSMutableString *insertion=[NSMutableString stringWithCapacity:200];
+	
+	if (environment==0) {
+		if ((brstyleop==4)&&(brstylecl==4)) {
+		}else {
+			[insertion appendString:[arrayMatrix objectAtIndex:6]];
+			if (brstyleop==0) {
+				[insertion appendString:[arrayMatrix objectAtIndex:8]];
+			} else if (brstyleop==1) {
+				[insertion appendString:[arrayMatrix objectAtIndex:10]];
+			} else if (brstyleop==2) {
+				[insertion appendString:[arrayMatrix objectAtIndex:12]];
+			} else if (brstyleop==3) {
+				[insertion appendString:[arrayMatrix objectAtIndex:14]];
+			} else if (brstyleop==5) {
+				//if ((brstylecl!=5)&&(brstylecl!=4))
+				[insertion appendString:[arrayMatrix objectAtIndex:15]];
+				[insertion appendString:[brtfop stringValue]];
+			} else if (brstyleop==4) {
+				[insertion appendString:[arrayMatrix objectAtIndex:15]];
+			} else if (brstylecl==6) {
+				[insertion appendString:[arrayMatrix objectAtIndex:16]];
+			}
+			
+		}
+	}
+	
+	if (environment==0) {
+		[insertion appendString:[arrayMatrix objectAtIndex:0]];
+	} else {
+		if (tablenv) {
+			[insertion appendString:[arrayMatrix objectAtIndex:20]];
+		}
+		[insertion appendString:[arrayMatrix objectAtIndex:17]];
+	}
+	
+	if (drawborder)
 		[insertion appendString:[arrayMatrix objectAtIndex:14]];
-	    } else if (brstyleop==5) {
-		//if ((brstylecl!=5)&&(brstylecl!=4))
-		[insertion appendString:[arrayMatrix objectAtIndex:15]];
-		[insertion appendString:[brtfop stringValue]];
-	    } else if (brstyleop==4) {
-		[insertion appendString:[arrayMatrix objectAtIndex:15]];
-	    } else if (brstylecl==6) {
-		[insertion appendString:[arrayMatrix objectAtIndex:16]];
-	    }
-	    
+	
+	for (i = 0; i < hsize; i++)  {
+		[insertion appendString:[arrayMatrix objectAtIndex:1]];
+		if ((drawgrid) && (i<hsize-1)) 
+			[insertion appendString:[arrayMatrix objectAtIndex:14]];
 	}
-    }
-    
-    if (environment==0) {
-	[insertion appendString:[arrayMatrix objectAtIndex:0]];
-    } else {
-	if (tablenv) { [insertion appendString:[arrayMatrix objectAtIndex:20]];}
-	[insertion appendString:[arrayMatrix objectAtIndex:17]];
-    }
-    
-    if (drawborder) [insertion appendString:[arrayMatrix objectAtIndex:14]];
-    
-    for (i=0;i<hsize;i++)  {
-	[insertion appendString:[arrayMatrix objectAtIndex:1]];
-	if ((drawgrid)&&(i<hsize-1)) 	[insertion appendString:[arrayMatrix objectAtIndex:14]];
-    }
-    if (drawborder) [insertion appendString:[arrayMatrix objectAtIndex:14]];
+	if (drawborder)
+		[insertion appendString:[arrayMatrix objectAtIndex:14]];
 
-    [insertion appendString:[arrayMatrix objectAtIndex:2]];
-    if (drawborder) [insertion appendString:[arrayMatrix objectAtIndex:19]];
+	[insertion appendString:[arrayMatrix objectAtIndex:2]];
+	if (drawborder)
+		[insertion appendString:[arrayMatrix objectAtIndex:19]];
 
-    for (j=0;j<vsize;j++) {
-        for (i=0;i<hsize;i++) {
-            [insertion appendString:[myMatrix objectInRow:j inCol:[[[[matrixtable tableColumns] objectAtIndex:i] identifier] intValue] ]];
-            if (i<hsize-1) [insertion appendString:[arrayMatrix objectAtIndex:3]];
-        }
-        if (j<vsize-1) {
-	    [insertion appendString:[arrayMatrix objectAtIndex:4]];
-	    if (drawgrid) [insertion appendString:[arrayMatrix objectAtIndex:19]];
+	for ( j = 0; j < vsize; j++) {
+		for (i = 0; i < hsize; i++) {
+			[insertion appendString:[myMatrix objectInRow:j inCol:[[[[matrixtable tableColumns] objectAtIndex:i] identifier] intValue] ]];
+			if (i < hsize-1)
+				[insertion appendString:[arrayMatrix objectAtIndex:3]];
+		}
+		if (j < vsize-1) {
+			[insertion appendString:[arrayMatrix objectAtIndex:4]];
+			if (drawgrid)
+				[insertion appendString:[arrayMatrix objectAtIndex:19]];
+		}
+		
 	}
-
-    }
-    if (drawborder) {
-	[insertion appendString:[arrayMatrix objectAtIndex:4]];
-	[insertion appendString:[arrayMatrix objectAtIndex:19]];
-    }
-    
-    if (environment==0) {
-	[insertion appendString:[arrayMatrix objectAtIndex:5]];
-    } else {
-	[insertion appendString:[arrayMatrix objectAtIndex:18]];
-	if (tablenv) { [insertion appendString:[arrayMatrix objectAtIndex:21]];}
-
-    }
-    
-    if (environment==0) if ((brstyleop==4)&&(brstylecl==4)) {
-    }else{
-        [insertion appendString:[arrayMatrix objectAtIndex:7]];
-        if (brstylecl==0) {
-            [insertion appendString:[arrayMatrix objectAtIndex:9]];
-        } else if (brstylecl==1) {
-            [insertion appendString:[arrayMatrix objectAtIndex:11]];
-        } else if (brstylecl==2) {
-            [insertion appendString:[arrayMatrix objectAtIndex:13]];
-        } else if (brstylecl==3) {
-            [insertion appendString:[arrayMatrix objectAtIndex:14]];
-        } else if (brstylecl==5) {
-            //if ((brstyleop!=4)&&(brstyleop!=5))
-            [insertion appendString:[arrayMatrix objectAtIndex:15]];
-            [insertion appendString:[brtfcl stringValue]];
-        } else if (brstylecl==4) {
-            [insertion appendString:[arrayMatrix objectAtIndex:15]];
-        } else if (brstylecl==6) {
-            [insertion appendString:[arrayMatrix objectAtIndex:16]];
-        }
-    }
-    
-        [notifcenter postNotificationName:@"matrixpanel" object:insertion];
-
-    
+	if (drawborder) {
+		[insertion appendString:[arrayMatrix objectAtIndex:4]];
+		[insertion appendString:[arrayMatrix objectAtIndex:19]];
+	}
+	
+	if (environment == 0) {
+		[insertion appendString:[arrayMatrix objectAtIndex:5]];
+	} else {
+		[insertion appendString:[arrayMatrix objectAtIndex:18]];
+		if (tablenv) {
+			[insertion appendString:[arrayMatrix objectAtIndex:21]];
+		}
+		
+	}
+	
+	if (environment==0) {
+		if ((brstyleop==4) && (brstylecl==4)) {
+		} else {
+			[insertion appendString:[arrayMatrix objectAtIndex:7]];
+			if (brstylecl==0) {
+				[insertion appendString:[arrayMatrix objectAtIndex:9]];
+			} else if (brstylecl==1) {
+				[insertion appendString:[arrayMatrix objectAtIndex:11]];
+			} else if (brstylecl==2) {
+				[insertion appendString:[arrayMatrix objectAtIndex:13]];
+			} else if (brstylecl==3) {
+				[insertion appendString:[arrayMatrix objectAtIndex:14]];
+			} else if (brstylecl==5) {
+				//if ((brstyleop!=4)&&(brstyleop!=5))
+				[insertion appendString:[arrayMatrix objectAtIndex:15]];
+				[insertion appendString:[brtfcl stringValue]];
+			} else if (brstylecl==4) {
+				[insertion appendString:[arrayMatrix objectAtIndex:15]];
+			} else if (brstylecl==6) {
+				[insertion appendString:[arrayMatrix objectAtIndex:16]];
+			}
+		}
+	}
+	
+	[notifcenter postNotificationName:@"matrixpanel" object:insertion];
 }
 
 - (IBAction)envselChange:(id)sender{
     if([[sender selectedCell] tag]==1) {
-	[brselcl setEnabled:NO];
-	[brselop setEnabled:NO];
-	[brtfcl setEnabled:NO];
-	[brtfop setEnabled:NO];
-	[chbfig setEnabled:YES];
+		[brselcl setEnabled:NO];
+		[brselop setEnabled:NO];
+		[brtfcl setEnabled:NO];
+		[brtfop setEnabled:NO];
+		[chbfig setEnabled:YES];
     } else {
-	[brselcl setEnabled:YES];
-	[brselop setEnabled:YES];
-	[brtfcl setEnabled:YES];
-	[brtfop setEnabled:YES];
-	[chbfig setEnabled:NO];
-
+		[brselcl setEnabled:YES];
+		[brselop setEnabled:YES];
+		[brtfcl setEnabled:YES];
+		[brtfop setEnabled:YES];
+		[chbfig setEnabled:NO];
+		
     }
 }
 
-- (IBAction)brselChange:(id)sender{
+- (IBAction)brselChange:(id)sender {
     if ([[sender selectedCell] tag]==5) {
-	if (sender==brselop) {
-	    [brtfop setEnabled:YES];
-	} else {
-	    [brtfcl setEnabled:YES];
-	}
+		if (sender==brselop) {
+			[brtfop setEnabled:YES];
+		} else {
+			[brtfcl setEnabled:YES];
+		}
     } else {
-	if (sender==brselop) {
-	    [brtfop setEnabled:NO];
-	} else {
-	    [brtfcl setEnabled:NO];
-	}
+		if (sender==brselop) {
+			[brtfop setEnabled:NO];
+		} else {
+			[brtfcl setEnabled:NO];
+		}
     }
 }
 
 - (IBAction)resetMatrix:(id)sender{
     int i,j,action;
     int mwdth,mhght;
-    mwdth=[myMatrix colCount];
-    mhght=[myMatrix rowCount];
+    mwdth = [myMatrix colCount];
+    mhght = [myMatrix rowCount];
     
     if (sender==matmod) {
         action=[[sender selectedCell] tag];

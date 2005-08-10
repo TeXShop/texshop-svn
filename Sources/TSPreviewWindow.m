@@ -73,10 +73,7 @@ extern NSPanel *pageNumberWindow;
 {
     id	thePanel;
 	
-	if ([myDocument fromKit])
-		thePanel = [myDocument magnificationKitPanel];	
-	else
-		thePanel = [myDocument magnificationPanel];
+	thePanel = [myDocument magnificationPanel];
     
     [NSApp beginSheet: thePanel
             modalForWindow: self
@@ -95,10 +92,7 @@ extern NSPanel *pageNumberWindow;
 {
 	id	thePanel;
 		 
-    if ([myDocument fromKit]) 
-		thePanel = [myDocument pagenumberKitPanel];
-	else 
-		thePanel = [myDocument pagenumberPanel];
+	thePanel = [myDocument pagenumberPanel];
 
     [NSApp beginSheet: thePanel
             modalForWindow: self
@@ -400,7 +394,7 @@ extern NSPanel *pageNumberWindow;
 				[pageNumberWindow setHasShadow: PAGE_WINDOW_HAS_SHADOW];
 				[pageNumberWindow orderFront: nil];
 				[pageNumberWindow setFloatingPanel: YES];
-				[[myDocument pdfView] updateCurrentPage]; // darw page number
+				[[myDocument pdfView] updateCurrentPage]; // draw page number
 				
 				[super sendEvent: theEvent]; // let the scroller handle the situation
 				
