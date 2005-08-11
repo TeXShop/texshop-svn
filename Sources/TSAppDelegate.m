@@ -961,8 +961,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	if (!g_commandCompletionChar)
 		g_commandCompletionChar = [[NSString stringWithCharacters: &esc length: 1] retain];
 	
-	if (g_commandCompletionList)
-		[g_commandCompletionList release];
+	[g_commandCompletionList release];
 	g_commandCompletionList = nil;
 	g_canRegisterCommandCompletion = NO;
     completionPath = [CommandCompletionPathKey stringByStandardizingPath];
@@ -974,15 +973,15 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	if (!myData)
 		return;
     
-       int i = [[TSEncodingSupport sharedInstance] tagForEncoding:@"UTF-8 Unicode"];
-       NSStringEncoding myEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: i];
-       g_commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding: myEncoding];
-       if (! g_commandCompletionList) {
-            i = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
-            myEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: i];
-            g_commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding: myEncoding];
-            }
-		
+	int i = [[TSEncodingSupport sharedInstance] tagForEncoding:@"UTF-8 Unicode"];
+	NSStringEncoding myEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: i];
+	g_commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding: myEncoding];
+	if (! g_commandCompletionList) {
+		i = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
+		myEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: i];
+		g_commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding: myEncoding];
+	}
+	
 	if (!g_commandCompletionList)
 		return;
 	[g_commandCompletionList insertString: @"\n" atIndex: 0];	

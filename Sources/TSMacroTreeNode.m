@@ -541,7 +541,7 @@
 		keyEnum = [propertyList keyEnumerator];
 		while ((theKey = [keyEnum nextObject])) {
 			if ([theKey isKindOfClass: [NSString class]] &&
-				(dictArray = [propertyList objectForKey: theKey]) && 
+				((dictArray = [propertyList objectForKey: theKey])) && 
 				[dictArray isKindOfClass: [NSArray class]])
 			{
 				submenu = [TSMacroTreeNode submenuNodeWithName: theKey];

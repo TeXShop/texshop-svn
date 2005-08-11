@@ -22,6 +22,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "globals.h"
 
 /*" global defines for TeXShop.app "*/
 extern NSString *DefaultCommandKey;
@@ -185,55 +186,55 @@ extern BOOL g_canRegisterCommandCompletion;
 
 
 /*" Symbolic constants for the matrix used in 'Source window Position' of the TSPreferences. "*/
-typedef enum _DocumentWindowPosition 
+enum DocumentWindowPosition 
 {
     DocumentWindowPosFixed = 0,
     DocumentWindowPosSave = 1
-} DocumentWindowPosition;
+};
 
 /*" Symbolic constants for the matrix used in 'PDF window Position' of the TSPreferences. "*/
-typedef enum _PdfWindowPosition 
+enum PdfWindowPosition 
 {
     PdfWindowPosFixed = 0,
     PdfWindowPosSave = 1
-} PdfWindowPosition;
+};
 
 /*" Symbolic constants for the display mode to use "*/
-typedef enum _PdfDisplayMode
+enum PdfDisplayMode
 {
     PdfDisplayModeApple = 0,
     PdfDisplayModeGhostscript = 1
-} PdfDisplayMode;
+};
 
 /*" Symbolic constants for the Ghostscript color mode. "*/
-typedef enum _GsColorMode
+enum GsColorMode
 {
     GsColorModeGrayscale = 0,
     GsColorMode256 = 1,
     GsColorModeThousands = 2
-} GsColorMode;
+};
 
 /*" Symbolic constants for the default Typeset program to use. "*/
-typedef enum _DefaultCommand
+enum DefaultCommand
 {
     DefaultCommandTeX = 0,
     DefaultCommandLaTeX = 1,
     DefaultCommandConTEXt = 2,
     DefaultCommandUser = 3
-} _DefaultCommand;
+};
 
 
 /*" Symbolic constants for Japanese conversion "*/
-typedef enum _ShiftCommand
+enum FilterMode
 {
-    filterNone = 0,
-    filterMacJ = 1,
-    filterNSSJIS = 2
-} _ShiftCommand;
+    kNoFilterMode = 0,
+    kMacJapaneseFilterMode = 1,			// MacJapanese
+    kOtherJapaneseFilterMode = 2		// NSShiftJIS & EUCJapanese & JISJapanese
+};
 
 /*" Symbolic constants to determine TeX engine "*/
 /*" These are also tags on the typeset menu and the pulldown toolbar menus "*/
-typedef enum _EngineCommand
+enum EngineCommand
 {
     TexEngine = 1,
     LatexEngine = 2,
@@ -243,18 +244,7 @@ typedef enum _EngineCommand
     ContextEngine = 6,
     MetafontEngine = 7,
     UserEngine = 8
-} _EngineCommand;
-
-/*" Symbolic constants for Root File tests "*/
-typedef enum _RootCommand
-{
-    RootForOpening = 1,
-    RootForTexing = 2,
-    RootForPrinting = 3,
-    RootForSwitchWindow = 4,
-    RootForPdfSync = 5,
-    RootForTrashAUX = 6
-} _RootCommand;
+};
 
 // mitsu 1.29 (O)
 /*" Page style for MyPDFView"*/
@@ -314,7 +304,7 @@ typedef enum _NewMouseMode
 } _NewMouseMode;
 
 /*" Image copy/export types for MyPDFView"*/
-typedef enum _ImageCopyType
+enum ImageCopyType
 {
 	IMAGE_TYPE_TIFF_NC = 1, // no compresion
 	IMAGE_TYPE_TIFF_LZW = 2, // LZW compression
@@ -328,7 +318,7 @@ typedef enum _ImageCopyType
 	IMAGE_TYPE_BMP = 23, // does not work?
 	IMAGE_TYPE_PDF = 31, 
 	IMAGE_TYPE_EPS = 32
-} _ImageCopyType;
+};
 
 // end mitsu 1.29
 

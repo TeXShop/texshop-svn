@@ -3000,7 +3000,7 @@ preference change is cancelled. "*/
     if ((typesetStart) && (inputPipe)) {
         command = [[texCommand stringValue] stringByAppendingString:@"\n"];
 // added by mitsu --(F) TeXInput in Console Window with yen character
-			if (g_shouldFilter == filterMacJ) {
+			if (g_shouldFilter == kMacJapaneseFilterMode) {
 				command = filterYenToBackslash(command);
 			}
 // end addition
@@ -3433,13 +3433,13 @@ preference change is cancelled. "*/
 }
 
 BOOL isText1(int c) {
-    if ((c >= 0x0041) && (c <= 0x005a))
+    if ((c >= 'A') && (c <= 'Z'))
         return YES;
-    else if ((c >= 0x0061) && (c <= 0x007a))
+    else if ((c >= 'a') && (c <= 'z'))
         return YES;
     else
         return NO;
-    }
+}
 
 // fixColor2 is the old fixcolor, now only used when opening documents
 - (void)fixColor2: (unsigned)from : (unsigned)to
@@ -3648,7 +3648,7 @@ BOOL isText1(int c) {
 			 [textString characterAtIndex:[textView selectedRange].location - 1 ] != g_texChar ) {
 			
 			NSString *completionString = [g_autocompletionDictionary objectForKey:replacementString];
-			if ( completionString && (g_shouldFilter != filterMacJ || [replacementString
+			if ( completionString && (g_shouldFilter != kMacJapaneseFilterMode || [replacementString
                     characterAtIndex:0]!=g_texChar)) {
 				// should really send this as a notification, instead of calling it directly,
 				// or should separate out the code that actually performs the completion
@@ -5485,7 +5485,7 @@ aSelector
         // Insert the new text
 // changed by mitsu --(E) LaTex panel with yen; conversion backslash<->yen is handled by insertText
 //        [textView insertText: newString]; // this was late changed by mitsu to
-          if (g_shouldFilter == filterMacJ)
+          if (g_shouldFilter == kMacJapaneseFilterMode)
                 newString = filterBackslashToYen(newString);
           [textView replaceCharactersInRange:oldRange withString:newString];
 
@@ -6068,7 +6068,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
     aRange = NSMakeRange(0, [theSource length]);
     slist = [[NSMutableArray alloc] init];
     searchString = [NSString stringWithString:@"\\input"];
-    if (g_shouldFilter == filterMacJ)
+    if (g_shouldFilter == kMacJapaneseFilterMode)
 		searchString = filterBackslashToYen(searchString);
     while (YES) {
 		aRange = [theSource rangeOfString:searchString options:NSLiteralSearch range:aRange];
@@ -6204,7 +6204,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
     
     // see if \jobname is there
     searchString = [NSString stringWithString:@"\\jobname"];
-    if (g_shouldFilter == filterMacJ)
+    if (g_shouldFilter == kMacJapaneseFilterMode)
         searchString = filterBackslashToYen(searchString);
     aRange=[saveName rangeOfString:searchString options:NSLiteralSearch];
     if(aRange.location==NSNotFound) return saveName;
@@ -6299,7 +6299,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		[newString replaceCharactersInRange:searchRange withString:@""];
 
 	// Filtering for Japanese
-	if (g_shouldFilter == filterMacJ)
+	if (g_shouldFilter == kMacJapaneseFilterMode)
 		newString = filterBackslashToYen(newString);
 
 	// Replace the text--
@@ -6352,7 +6352,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		[newString replaceCharactersInRange:searchRange withString:@""];
 
 	// Filtering for Japanese
-	if (g_shouldFilter == filterMacJ)
+	if (g_shouldFilter == kMacJapaneseFilterMode)
 		newString = filterBackslashToYen(newString);
 
 	// Insert the new text

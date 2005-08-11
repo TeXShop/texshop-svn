@@ -23,10 +23,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-// #define filterNone	0	// others
-// #define filterMacJ	1	// MacJapanese
-// #define filterNSSJIS	2	// NSShiftJIS & EUCJapanese & JISJapanese
-
 @interface TSEncodingSupport : NSObject {
 
 }

@@ -390,14 +390,14 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 	NSString *draggedString = ([draggedNodes count]>0)?([[draggedNodes objectAtIndex: 0] content]):@"";
 	if (!draggedString)
 		draggedString = @"";	// content may be nil?
-	if (g_shouldFilter == filterMacJ) 
+	if (g_shouldFilter == kMacJapaneseFilterMode) 
 	{
 		if ([SUD boolForKey:@"ConvertToBackslash"]) // this case isn't necessary?
 			draggedString = filterYenToBackslash(draggedString);
 		else
 			draggedString = filterBackslashToYen(draggedString);
 	}
-	else if (g_shouldFilter == filterNSSJIS) 
+	else if (g_shouldFilter == kOtherJapaneseFilterMode) 
 	{
 		if ([SUD boolForKey:@"ConvertToYen"])
 			draggedString = filterBackslashToYen(draggedString);
@@ -481,9 +481,9 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 	{
         NSString *string = [pboard stringForType: NSStringPboardType];
 		NSString *tempStr = string;
-		if (g_shouldFilter == filterMacJ)	
+		if (g_shouldFilter == kMacJapaneseFilterMode)	
 			tempStr = filterBackslashToYen(string);
-		else if (g_shouldFilter == filterNSSJIS)	
+		else if (g_shouldFilter == kOtherJapaneseFilterMode)	
 			tempStr = filterYenToBackslash(string);
 		NSMutableString *nameStr = [NSMutableString stringWithString: 
 							[tempStr substringToIndex: ([tempStr length]<50)?[tempStr length]:50]];

@@ -325,7 +325,6 @@
     NSString    *fileContent;
     unsigned    fileLength;
     NSMutableString *equationString;
-    NSStringEncoding	theEncoding;
     NSData      *fileData;
     NSRange myRange, searchRange;
     
@@ -336,8 +335,7 @@
     
     // Encoding tag is fixed to 0 (Mac OS Roman). At least it doesn't work when it is 5 (DOSJapanese; Shift JIS).
     fileData = [NSData dataWithContentsOfFile:filePath];
-    theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: 0];
-    fileContent = [[[NSString alloc] initWithData:fileData encoding:theEncoding] autorelease];
+    fileContent = [[[NSString alloc] initWithData:fileData encoding:NSMacOSRomanStringEncoding] autorelease];
     if( fileContent == nil ) return nil;
 
     fileLength = [fileContent length];
@@ -489,11 +487,11 @@
 #endif //AUTOCOMPLETE_IN_INSERTTEXT
 
 	// Filtering for Japanese
-	if (g_shouldFilter == filterMacJ)
+	if (g_shouldFilter == kMacJapaneseFilterMode)
 	{
 		newString = filterBackslashToYen(newString);
 	}
-	else if (g_shouldFilter == filterNSSJIS)
+	else if (g_shouldFilter == kOtherJapaneseFilterMode)
 	{
 		newString = filterYenToBackslash(newString);
 	}
@@ -517,12 +515,12 @@
 	
 	BOOL returnValue = [super writeSelectionToPasteboard:pboard type:type];
 	if (returnValue && [type isEqualToString: NSStringPboardType]) {
-		if ((g_shouldFilter == filterMacJ) && [SUD boolForKey:@"ConvertToBackslash"])
+		if ((g_shouldFilter == kMacJapaneseFilterMode) && [SUD boolForKey:@"ConvertToBackslash"])
 		{
 			newString = filterYenToBackslash([pboard stringForType: NSStringPboardType]);
 			returnValue = [pboard setString: newString forType: NSStringPboardType];
 		}
-		else if ((g_shouldFilter == filterNSSJIS) && [SUD boolForKey:@"ConvertToYen"])
+		else if ((g_shouldFilter == kOtherJapaneseFilterMode) && [SUD boolForKey:@"ConvertToYen"])
 		{
 			newString = filterBackslashToYen([pboard stringForType: NSStringPboardType]);
 			returnValue = [pboard setString: newString forType: NSStringPboardType];
@@ -540,9 +538,9 @@
 		{
 		// mitsu 1.29 (T1)-- in order to enable "Undo Paste"
 			// Filtering for Japanese
-			if (g_shouldFilter == filterMacJ)
+			if (g_shouldFilter == kMacJapaneseFilterMode)
 				string = filterBackslashToYen(string);
-			else if (g_shouldFilter == filterNSSJIS)
+			else if (g_shouldFilter == kOtherJapaneseFilterMode)
 				string = filterYenToBackslash(string);
                                 
 			// zenitani 1.35 (A) -- normalizing newline character for regular expression
@@ -734,7 +732,7 @@
 			}
 			originalString = [textString substringWithRange: 
 						NSMakeRange(replaceLocation, selectedLocation-replaceLocation)];
-			//if (g_shouldFilter == filterMacJ)// we now use current encoding, so this isn't necessary
+			//if (g_shouldFilter == kMacJapaneseFilterMode)// we now use current encoding, so this isn't necessary
 			//	originalString = filterYenToBackslash(originalString);
 			[originalString retain];
 			completionListLocation = 0;
@@ -794,7 +792,7 @@
 					if (insRange.location != NSNotFound)
 						[newString replaceCharactersInRange:insRange withString:@""];
 					// Filtering for Japanese
-					//if (g_shouldFilter == filterMacJ)//we use current encoding, so this isn't necessary
+					//if (g_shouldFilter == kMacJapaneseFilterMode)//we use current encoding, so this isn't necessary
 					//	newString = filterBackslashToYen(newString);
 					if (![newString isEqualToString: originalString])
 						break;		// continue search if newString is equal to originalString
@@ -882,8 +880,6 @@
 {
 	NSString		*initialWord, *aWord, *completionPath, *backupPath;
 	NSData 			*myData;
-	int			theTag;
-	NSStringEncoding	theEncoding;
     
 	if (!g_commandCompletionList)
 		return;
@@ -891,7 +887,7 @@
 	// get the word(s) to register
 	initialWord = [[self string] substringWithRange: [self selectedRange]];
 	aWord = [initialWord stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
-	//if (g_shouldFilter == filterMacJ)// we now use current encoding, so this isn't necessary
+	//if (g_shouldFilter == kMacJapaneseFilterMode)// we now use current encoding, so this isn't necessary
 	//	aWord = filterYenToBackslash(aWord);
 	// add to the list-- it will be ideal if one can check redundancy
 	[g_commandCompletionList deleteCharactersInRange:NSMakeRange(0,1)]; // remove first LF
@@ -912,10 +908,7 @@
 	// save the new list to file
 	//myData = [g_commandCompletionList dataUsingEncoding: NSUTF8StringEncoding]; // not used
         
-	// theTag = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
-	theTag = [[TSEncodingSupport sharedInstance] tagForEncoding: @"UTF-8 Unicode"];
-	theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
-	myData = [g_commandCompletionList dataUsingEncoding: theEncoding allowLossyConversion:YES];
+	myData = [g_commandCompletionList dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
 
 	NS_DURING
 		[myData writeToFile:completionPath atomically:YES];

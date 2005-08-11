@@ -26,8 +26,7 @@
 #import "globals.h"
 #define SUD [NSUserDefaults standardUserDefaults]
 
-// NSStringEncoding currentEncodingID = NSMacOSRomanStringEncoding; // good idea, but I decided 'not yet'; koch
-NSString *yenString = nil;
+static NSString *yenString = nil;
 
 @implementation TSEncodingSupport
 
@@ -40,6 +39,16 @@ static id sharedEncodingSupport = nil;
     if (sharedEncodingSupport == nil) 
 	{
         sharedEncodingSupport = [[TSEncodingSupport alloc] init];
+		
+		int i;
+		NSStringEncoding enc;
+		for (i = 0; i <= 23; ++i) {
+			enc = [sharedEncodingSupport stringEncodingForTag:i];
+			NSLog(@"%d: '%@' / '%@' / '%@'", i, [NSString localizedNameOfStringEncoding:enc],
+				(NSString *)CFStringGetNameOfEncoding(CFStringConvertNSStringEncodingToEncoding(enc)),
+				(NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(enc))
+				);
+		}
     }
     return sharedEncodingSupport;
 }
@@ -56,7 +65,7 @@ static id sharedEncodingSupport = nil;
 	{
 		sharedEncodingSupport = [super init];
 		
-		g_shouldFilter = filterNone;
+		g_shouldFilter = kNoFilterMode;
 		// initialize yen string
 		unichar yenChar = 0x00a5;
 		yenString = [[NSString stringWithCharacters: &yenChar length:1] retain];
@@ -93,13 +102,13 @@ static id sharedEncodingSupport = nil;
 	NSRange selectedRange = [fieldEditor selectedRange];
 	NSString *newString;
 	
-	if (g_shouldFilter == filterMacJ)
+	if (g_shouldFilter == kMacJapaneseFilterMode)
 	{
 		newString = filterBackslashToYen(oldString);
 		[fieldEditor setString: newString];
 		[fieldEditor setSelectedRange: selectedRange];
 	}
-	else if (g_shouldFilter == filterNSSJIS)
+	else if (g_shouldFilter == kOtherJapaneseFilterMode)
 	{
 		newString = filterYenToBackslash(oldString);
 		[fieldEditor setString: newString];
@@ -121,31 +130,11 @@ static id sharedEncodingSupport = nil;
 	
 	currentEncoding = [SUD stringForKey:EncodingKey];
         
-/* not yet; koch */ 
-/*
-	if([currentEncoding isEqualToString:@"MacOSRoman"])
-        currentEncodingID = NSMacOSRomanStringEncoding;
-    else if([currentEncoding isEqualToString:@"IsoLatin"])
-        currentEncodingID = NSISOLatin1StringEncoding;
-    else if([currentEncoding isEqualToString:@"MacJapanese"]) 
-        currentEncodingID = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacJapanese); 
-	else if([currentEncoding isEqualToString:@"NSShiftJIS"]) 
-        currentEncodingID = NSShiftJISStringEncoding;
-    else if([currentEncoding isEqualToString:@"EUCJapanese"]) 
-        currentEncodingID = NSJapaneseEUCStringEncoding;
-    else if([currentEncoding isEqualToString:@"JISJapanese"]) 
-        currentEncodingID = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
-    else if([currentEncoding isEqualToString:@"MacKorean"]) 
-        currentEncodingID = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacKorean);
-    else 
-         currentEncodingID = NSMacOSRomanStringEncoding;
-*/
-
 	editMenu = [[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Edit", @"Edit")] submenu];
 	if (editMenu)
 	{
 		int i = [editMenu indexOfItemWithTarget:self andAction:@selector(toggleTeXCharConversion:)];
-		if (i>=0)	// remove menu item
+		if (i >= 0)	// remove menu item
 		{
 			[editMenu removeItemAtIndex: i];
 			if ([[editMenu itemAtIndex: i-1] isSeparatorItem])
@@ -165,7 +154,7 @@ static id sharedEncodingSupport = nil;
 							filterBackslashToYen(@"\\subsubsection"),
 							nil];
                 // mitsu 1.29 (P)
-		if (g_shouldFilter != filterMacJ && g_commandCompletionList)
+		if (g_shouldFilter != kMacJapaneseFilterMode && g_commandCompletionList)
 		{
 			[g_commandCompletionList replaceOccurrencesOfString: @"\\" withString: yenString
 						options: 0 range: NSMakeRange(0, [g_commandCompletionList length])];
@@ -175,7 +164,7 @@ static id sharedEncodingSupport = nil;
 				[[theDoc textView] setString: filterBackslashToYen([[theDoc textView] string])];
 		}
 		// end mitsu 1.29
-		g_shouldFilter = filterMacJ;
+		g_shouldFilter = kMacJapaneseFilterMode;
 		// set up menu item
 		if (editMenu)
 		{
@@ -201,7 +190,7 @@ static id sharedEncodingSupport = nil;
 							@"\\subsubsection",
 							nil];
                 // mitsu 1.29 (P)
-		if (g_shouldFilter == filterMacJ && g_commandCompletionList)
+		if (g_shouldFilter == kMacJapaneseFilterMode && g_commandCompletionList)
 		{
 			[g_commandCompletionList replaceOccurrencesOfString: yenString withString: @"\\"
 						options: 0 range: NSMakeRange(0, [g_commandCompletionList length])];
@@ -216,7 +205,7 @@ static id sharedEncodingSupport = nil;
 				[currentEncoding isEqualToString:@"EUC_JP"] || 
 				[currentEncoding isEqualToString:@"JISJapanese"])
 		{
-			g_shouldFilter = filterNSSJIS;
+			g_shouldFilter = kOtherJapaneseFilterMode;
 			// set up menu item
 			if (editMenu)
 			{
@@ -233,7 +222,7 @@ static id sharedEncodingSupport = nil;
 		}
 		else
 		{
-			g_shouldFilter = filterNone;
+			g_shouldFilter = kNoFilterMode;
 		}
 	}
 }

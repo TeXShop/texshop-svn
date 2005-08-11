@@ -34,6 +34,17 @@ enum DocumentType {
 	isTIFF		= 5
 };
 
+/*" Symbolic constants for Root File tests "*/
+enum RootCommand
+{
+    RootForOpening = 1,
+    RootForTexing = 2,
+    RootForPrinting = 3,
+    RootForSwitchWindow = 4,
+    RootForPdfSync = 5,
+    RootForTrashAUX = 6
+};
+
 @class MyPDFKitView;
 
 

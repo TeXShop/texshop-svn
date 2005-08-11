@@ -166,13 +166,13 @@ NSString *ExternalEditorNotification = @"ExternalEditorNotification";
 
 /*" Other variables "*/
 // BOOL documentsHaveLoaded;
-NSMutableDictionary 	*g_environment;	// the environment used for sub tasks
+NSMutableDictionary *g_environment;	// the environment used for sub tasks
 int			g_shouldFilter;		// automatic backslash/yen filtering ...
-int			g_texChar;		// set to backslash (\) or yen; used to accomodate certain "old" japanese LaTeX files
+int					g_texChar;		// set to backslash (\) or yen; used to accomodate certain "old" japanese LaTeX files
 NSDictionary		*g_autocompletionDictionary;  // added by Greg Landweber
 /* Code by Anton Leuski */
-NSArray*		g_taggedTeXSections; 
-NSArray*		g_taggedTagSections; 
+NSArray				*g_taggedTeXSections; 
+NSArray				*g_taggedTagSections; 
 
 // mitsu 1.29 (P)-- command completion
 NSString *g_commandCompletionChar = nil;	// The key triggering completion. Always set to ESC in finishCommandCompletionConfigure

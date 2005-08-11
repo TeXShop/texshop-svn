@@ -36,7 +36,7 @@ extern int g_shouldFilter;
 @implementation TSMacroEditor
 
 static id sharedMacroEditor = nil;
-static int savedFilter = filterNone; 
+static int savedFilter = kNoFilterMode; 
 
 + (id)sharedInstance 
 {
@@ -310,7 +310,7 @@ static int savedFilter = filterNone;
 			if (contentTouched)
 			{
 				// note: [NSTextView string] returns currently edited string. make sure to copy it
-				if (savedFilter != filterMacJ) 
+				if (savedFilter != kMacJapaneseFilterMode) 
 					contentString = [NSString stringWithString: [contentTextView string]];
 				else 
 					contentString = filterYenToBackslash([contentTextView string]);
@@ -335,7 +335,7 @@ static int savedFilter = filterNone;
 	if (newItem && [newItem isStandardItem])
 	{
 		contentString = [newItem content]?[newItem content]:@"";
-		if (g_shouldFilter == filterMacJ)
+		if (g_shouldFilter == kMacJapaneseFilterMode)
 			contentString = filterBackslashToYen(contentString);
 		savedFilter = g_shouldFilter;	// remember this filter option
 		[contentTextView setString: contentString];
@@ -496,7 +496,7 @@ static int savedFilter = filterNone;
 	NSString *string;
 	if (g_shouldFilter != savedFilter) // if the encoding was changed while TSMacroEditor is open...
 	{
-		if (g_shouldFilter == filterMacJ)
+		if (g_shouldFilter == kMacJapaneseFilterMode)
 		{
 			string = [contentTextView string];
 			string = filterBackslashToYen(string);
@@ -504,7 +504,7 @@ static int savedFilter = filterNone;
 			[contentTextView setString: string];
 			[contentTextView setDelegate: self];
 		}
-		else if(savedFilter == filterMacJ)
+		else if(savedFilter == kMacJapaneseFilterMode)
 		{
 			string = [contentTextView string];
 			string = filterYenToBackslash(string);
