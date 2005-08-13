@@ -31,12 +31,10 @@
 
 #define SUD [NSUserDefaults standardUserDefaults]
 
-extern int g_shouldFilter;
-
 @implementation TSMacroEditor
 
 static id sharedMacroEditor = nil;
-static int savedFilter = kNoFilterMode; 
+static TSFilterMode savedFilter = kNoFilterMode; 
 
 + (id)sharedInstance 
 {
@@ -494,6 +492,8 @@ static int savedFilter = kNoFilterMode;
 - (void)windowDidBecomeKey: (NSNotification *)aNotification
 {
 	NSString *string;
+	// FIXME/TODO: Instead of using savedFilter, register for notification
+	// when the encoding changes
 	if (g_shouldFilter != savedFilter) // if the encoding was changed while TSMacroEditor is open...
 	{
 		if (g_shouldFilter == kMacJapaneseFilterMode)

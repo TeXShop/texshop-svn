@@ -547,7 +547,7 @@
 				submenu = [TSMacroTreeNode submenuNodeWithName: theKey];
 				[nodeArray addObject: submenu];
 				enumerator = [dictArray objectEnumerator];
-				while (obj = [enumerator nextObject])
+				while ((obj = [enumerator nextObject]))
 				{
 					if ([obj isKindOfClass: [NSString class]])
 					{

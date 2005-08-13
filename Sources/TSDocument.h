@@ -25,14 +25,14 @@
 
 #define NUMBEROFERRORS	20
 
-enum DocumentType {
+typedef enum {
 	isTeX		= 0,
 	isOther		= 1,
 	isPDF		= 2,
 	isEPS		= 3,
 	isJPG		= 4,
 	isTIFF		= 5
-};
+} TSDocumentType;
 
 /*" Symbolic constants for Root File tests "*/
 enum RootCommand
@@ -121,7 +121,7 @@ enum RootCommand
     NSData		*previousFontData;	/*" holds font data in case preferences change is cancelled "*/
     int			myPrefResult;
     BOOL		fileIsTex;
-    int			_documentType;
+    TSDocumentType			_documentType;
     int			errorLine[NUMBEROFERRORS];
     int			errorNumber;
     int			whichError;
@@ -250,7 +250,7 @@ enum RootCommand
 - (BOOL)writeToFile:(NSString *)fileName ofType:(NSString *)docType;
 - (BOOL)keepBackupFile;
 - (void) setupTags;
-- (int) documentType;
+- (TSDocumentType) documentType;
 - (id) pdfWindow;
 - (id) pdfKitWindow;
 - (id) textWindow;

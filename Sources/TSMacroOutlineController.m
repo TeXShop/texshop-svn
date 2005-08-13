@@ -49,8 +49,6 @@
 
 #define SUD [NSUserDefaults standardUserDefaults]
 
-extern int g_shouldFilter;
-
 // ================================================================
 // Method implimentations
 // ================================================================

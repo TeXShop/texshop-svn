@@ -79,40 +79,7 @@
 // -----------------------------------------------------------------------------
 //
 // -----------------------------------------------------------------------------
-// We already have a textStorage() method implemented above.
 
-/* This is the original routine; it was later replaced, as below 
-- (void)setSelection:(id)ts 
-{
-    // ts can actually be a string or an attributed string.
-	NSRange		range 		= [[self firstTextView] selectedRange];
-    if ([ts isKindOfClass:[NSAttributedString class]]) {
-        [[self textStorage] replaceCharactersInRange:range withAttributedString:ts];
-    } else {
-        [[self textStorage] replaceCharactersInRange:range withString:ts];
-    }
-	range.location += [(NSString*)ts length];
-	range.length	= 0;
-	[[self firstTextView] setSelectedRange:range];
-}
-*/
-
-
-// New version by Stefan Walsen; November 17, 2003
-/* Here is the email explaining the problem and its cause:
-
-JŽr™me Laurens wrote:
-Le 17 nov. 03, ˆ 15:00, Stefan Walsen a Žcrit :
-[...]
-    set (content of selection of front document) to cmdOutput
-Beware, this last line breaks the undo stack and can lead to weird|dangerous 
-things unless the replacement string has exactly the same length as the replaced one...
-
-I noticed this, too. That's what I meant with the last line of my email.
-
-To keep me from doing important stuff, I looked into TeXShop's source and found the reason for this behaviour:
-TeXShop's undo manager just wasn't informed of the change in the document / selection.
-*/
 - (void)setSelection:(id)ts 
 {
     // ts can actually be a string or an attributed string.
@@ -544,7 +511,7 @@ TeXShop's undo manager just wasn't informed of the change in the document / sele
 - (id)handleOpenForExternalEditorCommand:(NSScriptCommand*)command;
 {
     NSDocumentController	*myController;
-    BOOL			externalEditor;
+    BOOL			useExternalEditor;
     id                          result;
     
     NSDictionary *args = [command evaluatedArguments];
@@ -552,17 +519,14 @@ TeXShop's undo manager just wasn't informed of the change in the document / sele
     if (!myName || [myName isEqualToString:@""])
         return [NSNumber numberWithBool:NO];
     
-    externalEditor = [SUD boolForKey:UseExternalEditorKey];
+    useExternalEditor = [SUD boolForKey:UseExternalEditorKey];
     myController = [NSDocumentController sharedDocumentController];
   //  forPreview = YES;
     [[self delegate] setForPreview:YES];
         
     result = [myController openDocumentWithContentsOfFile: myName display: YES];
 
-    if (externalEditor)
-        [[self delegate] setForPreview:YES];
-    else
-        [[self delegate] setForPreview:NO];
+	[[self delegate] setForPreview:useExternalEditor];
         
     if (result == nil)
         return [NSNumber numberWithBool:NO];

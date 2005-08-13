@@ -3368,7 +3368,7 @@ preference change is cancelled. "*/
 }
 
 
-- (int) documentType;
+- (TSDocumentType) documentType;
 {
     return _documentType;
 }

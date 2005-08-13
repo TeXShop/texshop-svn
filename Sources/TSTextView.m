@@ -732,8 +732,6 @@
 			}
 			originalString = [textString substringWithRange: 
 						NSMakeRange(replaceLocation, selectedLocation-replaceLocation)];
-			//if (g_shouldFilter == kMacJapaneseFilterMode)// we now use current encoding, so this isn't necessary
-			//	originalString = filterYenToBackslash(originalString);
 			[originalString retain];
 			completionListLocation = 0;
 		}
@@ -791,9 +789,6 @@
 					insRange = [newString rangeOfString:@"#INS#" options:0];
 					if (insRange.location != NSNotFound)
 						[newString replaceCharactersInRange:insRange withString:@""];
-					// Filtering for Japanese
-					//if (g_shouldFilter == kMacJapaneseFilterMode)//we use current encoding, so this isn't necessary
-					//	newString = filterBackslashToYen(newString);
 					if (![newString isEqualToString: originalString])
 						break;		// continue search if newString is equal to originalString
 				}
@@ -887,8 +882,7 @@
 	// get the word(s) to register
 	initialWord = [[self string] substringWithRange: [self selectedRange]];
 	aWord = [initialWord stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
-	//if (g_shouldFilter == kMacJapaneseFilterMode)// we now use current encoding, so this isn't necessary
-	//	aWord = filterYenToBackslash(aWord);
+
 	// add to the list-- it will be ideal if one can check redundancy
 	[g_commandCompletionList deleteCharactersInRange:NSMakeRange(0,1)]; // remove first LF
 	[g_commandCompletionList appendString: aWord];

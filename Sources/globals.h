@@ -22,7 +22,154 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "globals.h"
+
+#define ARRAYSIZE(x) ((int)(sizeof(x) / sizeof(x[0])))
+
+/*" Symbolic constants for the matrix used in 'Source window Position' of the TSPreferences. "*/
+enum DocumentWindowPosition 
+{
+    DocumentWindowPosFixed = 0,
+    DocumentWindowPosSave = 1
+};
+
+/*" Symbolic constants for the matrix used in 'PDF window Position' of the TSPreferences. "*/
+enum PdfWindowPosition 
+{
+    PdfWindowPosFixed = 0,
+    PdfWindowPosSave = 1
+};
+
+/*" Symbolic constants for the display mode to use "*/
+enum PdfDisplayMode
+{
+    PdfDisplayModeApple = 0,
+    PdfDisplayModeGhostscript = 1
+};
+
+/*" Symbolic constants for the Ghostscript color mode. "*/
+enum GsColorMode
+{
+    GsColorModeGrayscale = 0,
+    GsColorMode256 = 1,
+    GsColorModeThousands = 2
+};
+
+/*" Symbolic constants for the default Typeset program to use. "*/
+enum DefaultCommand
+{
+    DefaultCommandTeX = 0,
+    DefaultCommandLaTeX = 1,
+    DefaultCommandConTEXt = 2,
+    DefaultCommandUser = 3
+};
+
+
+/*" Symbolic constants for Japanese conversion "*/
+typedef enum
+{
+    kNoFilterMode = 0,
+    kMacJapaneseFilterMode = 1,			// MacJapanese
+    kOtherJapaneseFilterMode = 2		// NSShiftJIS & EUCJapanese & JISJapanese
+} TSFilterMode;
+
+/*" Symbolic constants to determine TeX engine "*/
+/*" These are also tags on the typeset menu and the pulldown toolbar menus "*/
+enum EngineCommand
+{
+    TexEngine = 1,
+    LatexEngine = 2,
+    BibtexEngine = 3,
+    IndexEngine = 4,
+    MetapostEngine = 5,
+    ContextEngine = 6,
+    MetafontEngine = 7,
+    UserEngine = 8
+};
+
+// mitsu 1.29 (O)
+/*" Page style for MyPDFView"*/
+typedef enum _PDFPageStyle
+{
+	PDF_SINGLE_PAGE_STYLE = 1,
+	PDF_TWO_PAGE_STYLE = 2, 
+	PDF_MULTI_PAGE_STYLE = 3, 
+	PDF_DOUBLE_MULTI_PAGE_STYLE = 4
+} _PDFPageStyle;
+
+typedef enum _PDFFirstPageStyle
+{
+        PDF_FIRST_LEFT = 1,
+        PDF_FIRST_RIGHT = 2
+} _PDFFirstPageStyle;
+
+/*" Size option for MyPDFView"*/
+typedef enum _PDFSizeOption
+{
+	PDF_ACTUAL_SIZE = -100, 
+	PDF_FIT_TO_NONE = -101, 
+	PDF_FIT_TO_WIDTH = -102, 
+	PDF_FIT_TO_HEIGHT = -103, 
+	PDF_FIT_TO_WINDOW = -104
+} _PDFSizeOption;
+
+/*" Mouse mode for MyPDFView"*/
+typedef enum _MouseMode
+{
+	MOUSE_MODE_NULL = 0,
+	MOUSE_MODE_SCROLL = 1, 
+	MOUSE_MODE_MAG_GLASS = 2, 
+	MOUSE_MODE_MAG_GLASS_L = 3, 
+	MOUSE_MODE_SELECT = 4
+} _MouseMode;
+
+/*" Size option for MyPDFKitView"*/
+typedef enum _NewPDFSizeOption
+{
+	NEW_PDF_ACTUAL_SIZE = 1, // PDF_ACTUAL_SIZE = -100, 
+	NEW_PDF_FIT_TO_NONE = 2, // PDF_FIT_TO_NONE = -101, 
+	NEW_PDF_FIT_TO_WINDOW = 3, // PDF_FIT_TO_WINDOW = -104
+	NEW_PDF_FIT_TO_WIDTH = 4, // PDF_FIT_TO_WIDTH = -102, 
+	NEW_PDF_FIT_TO_HEIGHT = 5 // PDF_FIT_TO_HEIGHT = -103, 
+
+} _NewPDFSizeOption;
+
+/*" Mouse mode for MyPDFKitView"*/
+typedef enum _NewMouseMode
+{
+	NEW_MOUSE_MODE_SCROLL = 1,
+	NEW_MOUSE_MODE_SELECT_TEXT = 2,
+	NEW_MOUSE_MODE_MAG_GLASS = 3, 
+	NEW_MOUSE_MODE_MAG_GLASS_L = 4, 
+	NEW_MOUSE_MODE_SELECT_PDF = 5
+} _NewMouseMode;
+
+/*" Image copy/export types for MyPDFView"*/
+enum ImageCopyType
+{
+	IMAGE_TYPE_TIFF_NC = 1, // no compresion
+	IMAGE_TYPE_TIFF_LZW = 2, // LZW compression
+	IMAGE_TYPE_TIFF_PB = 3, // PackBits compression
+	IMAGE_TYPE_JPEG_HIGH = 11, 
+	IMAGE_TYPE_JPEG_MEDIUM = 13, 
+	IMAGE_TYPE_JPEG_LOW = 15,
+        IMAGE_TYPE_PICT = 20,  
+	IMAGE_TYPE_PNG = 21, 
+	IMAGE_TYPE_GIF = 22, // not suitable for our purpose?
+	IMAGE_TYPE_BMP = 23, // does not work?
+	IMAGE_TYPE_PDF = 31, 
+	IMAGE_TYPE_EPS = 32
+};
+
+// end mitsu 1.29
+
+/*" Sync Methods"*/
+typedef enum _SyncMethodType
+{
+	PDFSYNC = 0, // original PDF sync
+	SEARCHONLY = 1, // new pdf search method
+	SEARCHFIRST = 2 // new pdf search first, but fall back on PDF sync if necessary
+} _SyncMethodType;
+
 
 /*" global defines for TeXShop.app "*/
 extern NSString *DefaultCommandKey;
@@ -168,166 +315,16 @@ extern NSString *ExternalEditorNotification;
 
 
 /*" Other variables "*/
-// extern BOOL documentsHaveLoaded;
-extern NSMutableDictionary 	*g_environment;	/*" Store for environment for subtasks, set in TSPreferences "*/
-extern int			g_shouldFilter;   /*" Used for Japanese yen conversion "*/
-extern int			g_texChar;	/*" The tex command character; usually \ but yen in Japanese yen "*/
-extern NSDictionary		*g_autocompletionDictionary;  // added by Greg Landweber
-extern int			g_macroType; // = EngineCommand for current window
-/* Code by Anton Leuski */
+extern NSMutableDictionary 	*g_environment;		/*" Store for environment for subtasks, set in TSPreferences "*/
+extern TSFilterMode			g_shouldFilter;		/*" Used for Japanese yen conversion "*/
+extern int					g_texChar;			/*" The tex command character; usually \ but yen in Japanese yen "*/
+extern NSDictionary			*g_autocompletionDictionary;  // added by Greg Landweber
+extern int					g_macroType; // = EngineCommand for current window
+
 extern NSArray*			g_taggedTeXSections; /*" Used by Tag menu; modified slightly for Japanese yen "*/
 extern NSArray*			g_taggedTagSections; /*" Used by Tag menu; "*/
-// mitsu 1.29 (P)-- command completion
-extern NSString *g_commandCompletionChar;
-extern NSMutableString *g_commandCompletionList;
-extern BOOL g_canRegisterCommandCompletion;
-// end mitsu 1.29
 
-
-
-/*" Symbolic constants for the matrix used in 'Source window Position' of the TSPreferences. "*/
-enum DocumentWindowPosition 
-{
-    DocumentWindowPosFixed = 0,
-    DocumentWindowPosSave = 1
-};
-
-/*" Symbolic constants for the matrix used in 'PDF window Position' of the TSPreferences. "*/
-enum PdfWindowPosition 
-{
-    PdfWindowPosFixed = 0,
-    PdfWindowPosSave = 1
-};
-
-/*" Symbolic constants for the display mode to use "*/
-enum PdfDisplayMode
-{
-    PdfDisplayModeApple = 0,
-    PdfDisplayModeGhostscript = 1
-};
-
-/*" Symbolic constants for the Ghostscript color mode. "*/
-enum GsColorMode
-{
-    GsColorModeGrayscale = 0,
-    GsColorMode256 = 1,
-    GsColorModeThousands = 2
-};
-
-/*" Symbolic constants for the default Typeset program to use. "*/
-enum DefaultCommand
-{
-    DefaultCommandTeX = 0,
-    DefaultCommandLaTeX = 1,
-    DefaultCommandConTEXt = 2,
-    DefaultCommandUser = 3
-};
-
-
-/*" Symbolic constants for Japanese conversion "*/
-enum FilterMode
-{
-    kNoFilterMode = 0,
-    kMacJapaneseFilterMode = 1,			// MacJapanese
-    kOtherJapaneseFilterMode = 2		// NSShiftJIS & EUCJapanese & JISJapanese
-};
-
-/*" Symbolic constants to determine TeX engine "*/
-/*" These are also tags on the typeset menu and the pulldown toolbar menus "*/
-enum EngineCommand
-{
-    TexEngine = 1,
-    LatexEngine = 2,
-    BibtexEngine = 3,
-    IndexEngine = 4,
-    MetapostEngine = 5,
-    ContextEngine = 6,
-    MetafontEngine = 7,
-    UserEngine = 8
-};
-
-// mitsu 1.29 (O)
-/*" Page style for MyPDFView"*/
-typedef enum _PDFPageStyle
-{
-	PDF_SINGLE_PAGE_STYLE = 1,
-	PDF_TWO_PAGE_STYLE = 2, 
-	PDF_MULTI_PAGE_STYLE = 3, 
-	PDF_DOUBLE_MULTI_PAGE_STYLE = 4
-} _PDFPageStyle;
-
-typedef enum _PDFFirstPageStyle
-{
-        PDF_FIRST_LEFT = 1,
-        PDF_FIRST_RIGHT = 2
-} _PDFFirstPageStyle;
-
-/*" Size option for MyPDFView"*/
-typedef enum _PDFSizeOption
-{
-	PDF_ACTUAL_SIZE = -100, 
-	PDF_FIT_TO_NONE = -101, 
-	PDF_FIT_TO_WIDTH = -102, 
-	PDF_FIT_TO_HEIGHT = -103, 
-	PDF_FIT_TO_WINDOW = -104
-} _PDFSizeOption;
-
-/*" Mouse mode for MyPDFView"*/
-typedef enum _MouseMode
-{
-	MOUSE_MODE_NULL = 0,
-	MOUSE_MODE_SCROLL = 1, 
-	MOUSE_MODE_MAG_GLASS = 2, 
-	MOUSE_MODE_MAG_GLASS_L = 3, 
-	MOUSE_MODE_SELECT = 4
-} _MouseMode;
-
-/*" Size option for MyPDFKitView"*/
-typedef enum _NewPDFSizeOption
-{
-	NEW_PDF_ACTUAL_SIZE = 1, // PDF_ACTUAL_SIZE = -100, 
-	NEW_PDF_FIT_TO_NONE = 2, // PDF_FIT_TO_NONE = -101, 
-	NEW_PDF_FIT_TO_WINDOW = 3, // PDF_FIT_TO_WINDOW = -104
-	NEW_PDF_FIT_TO_WIDTH = 4, // PDF_FIT_TO_WIDTH = -102, 
-	NEW_PDF_FIT_TO_HEIGHT = 5 // PDF_FIT_TO_HEIGHT = -103, 
-
-} _NewPDFSizeOption;
-
-/*" Mouse mode for MyPDFKitView"*/
-typedef enum _NewMouseMode
-{
-	NEW_MOUSE_MODE_SCROLL = 1,
-	NEW_MOUSE_MODE_SELECT_TEXT = 2,
-	NEW_MOUSE_MODE_MAG_GLASS = 3, 
-	NEW_MOUSE_MODE_MAG_GLASS_L = 4, 
-	NEW_MOUSE_MODE_SELECT_PDF = 5
-} _NewMouseMode;
-
-/*" Image copy/export types for MyPDFView"*/
-enum ImageCopyType
-{
-	IMAGE_TYPE_TIFF_NC = 1, // no compresion
-	IMAGE_TYPE_TIFF_LZW = 2, // LZW compression
-	IMAGE_TYPE_TIFF_PB = 3, // PackBits compression
-	IMAGE_TYPE_JPEG_HIGH = 11, 
-	IMAGE_TYPE_JPEG_MEDIUM = 13, 
-	IMAGE_TYPE_JPEG_LOW = 15,
-        IMAGE_TYPE_PICT = 20,  
-	IMAGE_TYPE_PNG = 21, 
-	IMAGE_TYPE_GIF = 22, // not suitable for our purpose?
-	IMAGE_TYPE_BMP = 23, // does not work?
-	IMAGE_TYPE_PDF = 31, 
-	IMAGE_TYPE_EPS = 32
-};
-
-// end mitsu 1.29
-
-/*" Sync Methods"*/
-typedef enum _SyncMethodType
-{
-	PDFSYNC = 0, // original PDF sync
-	SEARCHONLY = 1, // new pdf search method
-	SEARCHFIRST = 2 // new pdf search first, but fall back on PDF sync if necessary
-} _SyncMethodType;
-
-
+// Command completion
+extern NSString *g_commandCompletionChar;	/*" The key triggering completion. Always set to ESC in finishCommandCompletionConfigure "*/
+extern NSMutableString *g_commandCompletionList;/*" The list of completions, read from CommandCompletion.txt "*/
+extern BOOL g_canRegisterCommandCompletion;	/*" This is set to NO while e.g. CommandCompletion.txt is open "*/
