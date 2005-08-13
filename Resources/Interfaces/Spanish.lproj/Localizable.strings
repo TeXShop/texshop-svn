@@ -1,17 +1,5 @@
 /* Localizable Strings: Spanish */
 
-/* The real name of this file is "Localizable.strings". I have added the
-tex at the end so the file can be examined with TeXShop and important
-comments will stand out.*/
-
-/* Some of these localizations are crucial; if they are not made correctly,
-the program will not work. The crucial localizations are names of menu items;
-internal program code sometimes searches for menus by name. Crucial items are
-marked below with a TeX comment sign. Some menu names are added by the
-program and cannot be found in nib files; these are noted with "not in IB". These
-strings will not break the program if not translated, but then some menu names will
-appear in English. */
-
 "Tags" = "Marcas";
 "Typeset" = "Componer";					/*% Name of "Typeset" menu */
 "Save" = "Guardar";
