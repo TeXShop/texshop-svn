@@ -36,37 +36,46 @@ static id sharedEncodingSupport = nil;
 
 // We pair CFStringEncoding with custom names
 typedef struct {
-	CFStringEncoding	encoding;
+	NSStringEncoding	nsEnc;
+	CFStringEncoding	cfEnc;
 	NSString			*name;
 } TSEncoding;
 
 // List of the supported encodings.
-static const TSEncoding _availableEncodings[] = {
-	{ kCFStringEncodingMacRoman,			@"MacOSRoman" },
-	{ kCFStringEncodingISOLatin1,			@"IsoLatin" },
-	{ kCFStringEncodingISOLatin2,			@"IsoLatin2" },
-	{ kCFStringEncodingISOLatin5,			@"IsoLatin5" },
-	{ kCFStringEncodingMacJapanese,			@"MacJapanese" },
-	{ kCFStringEncodingDOSJapanese,			@"DOSJapanese" },
-	{ kCFStringEncodingShiftJIS_X0213_00,	@"SJIS_X0213" },
-	{ kCFStringEncodingEUC_JP,				@"EUC_JP" },
-	{ kCFStringEncodingISO_2022_JP,			@"JISJapanese" },
-	{ kCFStringEncodingMacKorean,			@"MacKorean" },
-	{ kCFStringEncodingUTF8,				@"UTF-8 Unicode" },
-	{ kCFStringEncodingUnicode,				@"Standard Unicode" },
-	{ kCFStringEncodingMacCyrillic,			@"Mac Cyrillic" },
-	{ kCFStringEncodingDOSCyrillic,			@"DOS Cyrillic" },
-	{ kCFStringEncodingDOSRussian,			@"DOS Russian" },
-	{ kCFStringEncodingWindowsCyrillic,		@"Windows Cyrillic" },
-	{ kCFStringEncodingKOI8_R,				@"KOI8_R" },
-	{ kCFStringEncodingMacChineseTrad,		@"Mac Chinese Traditional" },
-	{ kCFStringEncodingMacChineseSimp,		@"Mac Chinese Simplified" },
-	{ kCFStringEncodingDOSChineseTrad,		@"DOS Chinese Traditional" },
-	{ kCFStringEncodingDOSChineseSimplif,	@"DOS Chinese Simplified" },
-	{ kCFStringEncodingGBK_95,				@"GBK" },
-	{ kCFStringEncodingGB_2312_80,			@"GB 2312" },
-	{ kCFStringEncodingGB_18030_2000,		@"GB 18030" },
+static TSEncoding _availableEncodings[] = {
+	{ 0, kCFStringEncodingMacRoman,				@"MacOSRoman" },
+	{ 0, kCFStringEncodingISOLatin1,			@"IsoLatin" },
+	{ 0, kCFStringEncodingISOLatin2,			@"IsoLatin2" },
+	{ 0, kCFStringEncodingISOLatin5,			@"IsoLatin5" },
+	{ 0, kCFStringEncodingMacJapanese,			@"MacJapanese" },
+	{ 0, kCFStringEncodingDOSJapanese,			@"DOSJapanese" },
+	{ 0, kCFStringEncodingShiftJIS_X0213_00,	@"SJIS_X0213" },
+	{ 0, kCFStringEncodingEUC_JP,				@"EUC_JP" },
+	{ 0, kCFStringEncodingISO_2022_JP,			@"JISJapanese" },
+	{ 0, kCFStringEncodingMacKorean,			@"MacKorean" },
+	{ 0, kCFStringEncodingUTF8,					@"UTF-8 Unicode" },
+	{ 0, kCFStringEncodingUnicode,				@"Standard Unicode" },
+	{ 0, kCFStringEncodingMacCyrillic,			@"Mac Cyrillic" },
+	{ 0, kCFStringEncodingDOSCyrillic,			@"DOS Cyrillic" },
+	{ 0, kCFStringEncodingDOSRussian,			@"DOS Russian" },
+	{ 0, kCFStringEncodingWindowsCyrillic,		@"Windows Cyrillic" },
+	{ 0, kCFStringEncodingKOI8_R,				@"KOI8_R" },
+	{ 0, kCFStringEncodingMacChineseTrad,		@"Mac Chinese Traditional" },
+	{ 0, kCFStringEncodingMacChineseSimp,		@"Mac Chinese Simplified" },
+	{ 0, kCFStringEncodingDOSChineseTrad,		@"DOS Chinese Traditional" },
+	{ 0, kCFStringEncodingDOSChineseSimplif,	@"DOS Chinese Simplified" },
+	{ 0, kCFStringEncodingGBK_95,				@"GBK" },
+	{ 0, kCFStringEncodingGB_2312_80,			@"GB 2312" },
+	{ 0, kCFStringEncodingGB_18030_2000,		@"GB 18030" },
 };
+
++ (void)initialize
+{
+	// Conver the CF encodings to NS encodings.
+	int i;
+	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i)
+		_availableEncodings[i].nsEnc = CFStringConvertEncodingToNSStringEncoding(_availableEncodings[i].cfEnc);
+}
 
 //------------------------------------------------------------------------------
 + (id)sharedInstance 
@@ -334,13 +343,13 @@ static const TSEncoding _availableEncodings[] = {
 	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
 	if (tag < 0 || tag >= ARRAYSIZE(_availableEncodings))
 		tag = 0;
-	return _availableEncodings[tag].encoding;
+	return _availableEncodings[tag].nsEnc;
 }
 
 - (NSString *)keyForStringEncoding: (NSStringEncoding)encoding {
 	int i;
 	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
-		if (_availableEncodings[i].encoding == encoding)
+		if (_availableEncodings[i].nsEnc == encoding)
 			return _availableEncodings[i].name;
 	}
 	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
@@ -351,10 +360,10 @@ static const TSEncoding _availableEncodings[] = {
 	int i;
 	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
 		if ([key isEqualToString:_availableEncodings[i].name])
-			return CFStringConvertEncodingToNSStringEncoding(_availableEncodings[i].encoding);
+			return _availableEncodings[i].nsEnc;
 	}
 	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
-	return CFStringConvertEncodingToNSStringEncoding(_availableEncodings[0].encoding);
+	return _availableEncodings[0].nsEnc;
 }
 
 
@@ -367,7 +376,7 @@ static const TSEncoding _availableEncodings[] = {
 	int i;
 
 	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
-		enc = CFStringConvertEncodingToNSStringEncoding(_availableEncodings[i].encoding);
+		enc = _availableEncodings[i].nsEnc;
 		name = NSLocalizedStringFromTable(_availableEncodings[i].name, @"Encodings", @"Fetch localized encoding name");
 
 		item = [[[NSMenuItem alloc] initWithTitle: name action:0 keyEquivalent:@""] autorelease];
