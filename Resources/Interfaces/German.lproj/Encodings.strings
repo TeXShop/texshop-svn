@@ -1,0 +1,26 @@
+﻿/* Encoding names */
+
+"MacOSRoman"	= "Westeuropäisch (Mac OS Lateinisch)";
+"IsoLatin"	= "Westeuropäisch (ISO Latin 1)";
+"IsoLatin2"	= "Mitteleuropäisch (ISO Latin 2)";
+"IsoLatin5"	= "Türkisch (ISO Latin 5)";
+"MacJapanese"	= "Japanisch (Mac OS)";
+"DOSJapanese"	= "Japanisch (Windows, DOS)";
+"SJIS_X0213"	= "Japanisch (Shift JIS X0213)";
+"EUC_JP"	= "Japanisch (EUC)";
+"JISJapanese"	= "Japanisch (ISO 2022-JP)";
+"MacKorean"	= "Koreanisch (Mac OS)";
+"UTF-8 Unicode"	= "Unicode (UTF-8)";
+"Standard Unicode"	= "Unicode (UTF-16)";
+"Mac Cyrillic"	= "Kyrillisch (Mac OS)";
+"DOS Cyrillic"	= "Kyrillisch (DOS)";
+"DOS Russian"	= "Russisch (DOS)";
+"Windows Cyrillic"	= "Kyrillisch (Windows)";
+"KOI8_R"	= "Russisch (KOI8-R)";
+"Mac Chinese Traditional"	= "Traditionelles Chinesisch (Mac OS)";
+"Mac Chinese Simplified"	= "Vereinfachtes Chinesisch (Mac OS)";
+"DOS Chinese Traditional"	= "Traditionelles Chinesisch (Windows, DOS)";
+"DOS Chinese Simplified"	= "Vereinfachtes Chinesisch (Windows, DOS)";
+"GBK"	= "Chinesisch (GBK)";
+"GB 2312"	= "Vereinfachtes Chinesisch (GB 2312)";
+"GB 18030"	= "Chinesisch (GB 18030)";
