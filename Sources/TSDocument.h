@@ -22,7 +22,7 @@
  *
  */
 
-#import <AppKit/NSDocument.h>
+#import <AppKit/AppKit.h>
 
 #define NUMBEROFERRORS	20
 
@@ -181,7 +181,6 @@ enum RootCommand
 
 }
 - (void)configureTypesetButton;
--(void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel;
 - (void)saveToFile:(NSString *)fileName saveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo;
 // forsplit
@@ -194,27 +193,7 @@ enum RootCommand
 - (void) quitPagenumberPanel: sender;
 - (void) showStatistics: sender;
 - (void) updateStatistics: sender;
-- (void) doTex: sender;
-- (void) doLatex: sender;
-- (void) doBibtex: sender;
-- (void) doMetapost: sender;
-- (void) doContext: sender;
-- (void) doIndex: sender;
-- (void) doMetaFont: sender;
-- (void) doTexTemp: sender;
-- (void) doLatexTemp: sender;
-- (void) doBibtexTemp: sender;
-- (void) doMetapostTemp: sender;
-- (void) doContextTemp: sender;
-- (void) doIndexTemp: sender;
-- (void) doMetaFontTemp: sender;
-- (void) doTypeset: sender;
-- (void) doTypesetForScriptContinuously:(BOOL)method;
-- (void) doJob:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous;
-- (void) doJobForScript:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous;
-- (void) doTypesetEE: sender;
 - (void) doTemplate: sender;
-- (void) doTexCommand: sender;
 - (void) printSource: sender;
 - (void) okForRequest: sender;
 - (void) chooseEncoding: sender;
@@ -226,9 +205,6 @@ enum RootCommand
 - (void) doTag: sender;
 - (void) chooseProgram: sender;
 - (void) chooseProgramFF: sender;
-- (void) saveFinished: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo;
-- (BOOL) startTask: (NSTask*) task running: (NSString*) leafname withArgs: (NSMutableArray*) args inDirectoryContaining: (NSString*) sourcePath withEngine: (int)theEngine;
-- (void) completeSaveFinished;
 - (id) pdfView;
 - (id) pdfKitView;
 - (void) doCompletion:(NSNotification *)notification;
@@ -244,10 +220,6 @@ enum RootCommand
 - (int) errorLineFor: (int)theError;
 - (int) totalErrors;
 - (int) textViewCountTabs: (NSTextView *) aTextView andSpaces: (int *) spaces;
-- (void) fixColor: (unsigned)from : (unsigned)to;
-// - (void) fixColor1: sender;
-- (void) fixColor2: (unsigned)from :(unsigned)to;
-- (void) textDidChange:(NSNotification *)aNotification;
 - (BOOL)writeToFile:(NSString *)fileName ofType:(NSString *)docType;
 - (BOOL)keepBackupFile;
 - (void) setupTags;
@@ -256,20 +228,15 @@ enum RootCommand
 - (id) pdfKitWindow;
 - (id) textWindow;
 - (id) textView;
-- (id) rootDocument;
 - (void)fixUpTabs;
 - (BOOL) externalEditor;
 - (void) refreshPDFAndBringFront: (BOOL)front;
 - (void) refreshTEXT;
 - (NSString *)displayName;
 - (NSPDFImageRep *) myTeXRep;
-- (BOOL)textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString;
-- (NSRange)textView:(NSTextView *)aTextView willChangeSelectionFromCharacterRange:(NSRange)oldSelectedCharRange toCharacterRange:(NSRange)newSelectedCharRange;
 - (NSDictionary *)fileAttributesToWriteToFile:(NSString *)fullDocumentPath ofType:(NSString *)documentTypeName saveOperation:(NSSaveOperationType)saveOperationType;
-- (void)convertDocument;
 - (BOOL)isDocumentEdited;
 - (BOOL)fileIsTex; // added by zenitani, Feb 13, 2003
-- (void)abort:sender;
 - (void)bringPdfWindowFront;
 - (NSWindow *)getCallingWindow;
 - (void)setCallingWindow: (NSWindow *)thisWindow;
@@ -329,14 +296,6 @@ enum RootCommand
 - (void)registerForNotifications;
 - (void)setDocumentFontFromPreferences:(NSNotification *)notification;
 - (void)setupFromPreferencesUsingWindowController:(NSWindowController *)windowController;
-// added by John Nairn
-- (BOOL)checkMasterFile:(NSString *)theSource forTask:(int)task;
-- (BOOL) checkRootFile_forTask:(int)task;
-- (void) checkFileLinks:(NSString *)theSource;
-- (void) checkFileLinksA;
-- (NSString *) readInputArg:(NSString *)fileLine atIndex:(unsigned)i
-        homePath:(NSString *)home job:(NSString *)jobname;
-- (NSString *) decodeFile:(NSString *)relFile homePath:(NSString *)home job:(NSString *)jobname;
 - (void) makeMenuFromDirectory: (NSMenu *)menu basePath: (NSString *)basePath action:(SEL)action level:(unsigned)level; // added by S. Zenitani
 - (void)resetMacroButton:(NSNotification *)notification;
 
@@ -345,5 +304,66 @@ enum RootCommand
 
 
 
+@interface TSDocument (JobProcessing)
+
+- (void) doUser: (int)theEngine;
+
+- (void) doTex: sender;
+- (void) doLatex: sender;
+- (void) doBibtex: sender;
+- (void) doMetapost: sender;
+- (void) doContext: sender;
+- (void) doIndex: sender;
+- (void) doMetaFont: sender;
+- (void) doTexTemp: sender;
+- (void) doLatexTemp: sender;
+- (void) doBibtexTemp: sender;
+- (void) doMetapostTemp: sender;
+- (void) doContextTemp: sender;
+- (void) doIndexTemp: sender;
+- (void) doMetaFontTemp: sender;
+- (void) doTypeset: sender;
+- (void) doTypesetForScriptContinuously:(BOOL)method;
+- (void) doJob:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous;
+- (void) doJobForScript:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous;
+- (void) doTypesetEE: sender;
+
+- (void) saveFinished: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo;
+- (BOOL) startTask: (NSTask*) task running: (NSString*) leafname withArgs: (NSMutableArray*) args inDirectoryContaining: (NSString*) sourcePath withEngine: (int)theEngine;
+- (void) completeSaveFinished;
+
+- (void) doTexCommand: sender;
+- (void) convertDocument;
+- (void) abort:sender;
+- (void) sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+
+@end
 
 
+
+@interface TSDocument (RootFile)
+
+- (id) rootDocument;
+
+- (BOOL)checkMasterFile:(NSString *)theSource forTask:(int)task;
+- (BOOL) checkRootFile_forTask:(int)task;
+- (void) checkFileLinks:(NSString *)theSource;
+- (void) checkFileLinksA;
+- (NSString *) readInputArg:(NSString *)fileLine atIndex:(unsigned)i
+        homePath:(NSString *)home job:(NSString *)jobname;
+- (NSString *) decodeFile:(NSString *)relFile homePath:(NSString *)home job:(NSString *)jobname;
+
+@end
+
+
+
+@interface TSDocument (SyntaxHighlighting)
+
+- (void) fixColor: (unsigned)from : (unsigned)to;
+// - (void) fixColor1: sender;
+- (void) fixColor2: (unsigned)from :(unsigned)to;
+
+- (void) textDidChange:(NSNotification *)aNotification;
+- (BOOL)textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString;
+
+@end
