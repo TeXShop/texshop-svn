@@ -9,16 +9,18 @@
 		<key>29</key>
 		<string>113 598 552 44 0 0 1280 832 </string>
 		<key>512</key>
-		<string>440 514 358 80 0 0 1280 832 </string>
+		<string>439 514 358 80 0 0 1280 832 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>439.0</string>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>29</integer>
 		<integer>512</integer>
+		<integer>29</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8C46</string>
+	<key>IBUsesTextArchiving</key>
+	<true/>
 </dict>
 </plist>
