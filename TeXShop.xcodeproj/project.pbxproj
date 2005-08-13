@@ -240,6 +240,9 @@
 		40FEB2970540E7FA006370DB /* Macros_Context.plist in Resources */ = {isa = PBXBuildFile; fileRef = 40FEB2960540E7FA006370DB /* Macros_Context.plist */; };
 		40FF5D9D06D5674C00426CC9 /* XeLaTeX.engine in Resources */ = {isa = PBXBuildFile; fileRef = 40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */; };
 		40FF5DA806D567C600426CC9 /* XeTeX.engine in Resources */ = {isa = PBXBuildFile; fileRef = 40FF5DA706D567C600426CC9 /* XeTeX.engine */; };
+		520C2EEB08AE92850010B1F8 /* TSDocument-Jobs.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEA08AE92850010B1F8 /* TSDocument-Jobs.m */; };
+		520C2EF008AE984C0010B1F8 /* TSDocument-RootFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEE08AE984C0010B1F8 /* TSDocument-RootFile.m */; };
+		520C2EF108AE984C0010B1F8 /* TSDocument-Syntax.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */; };
 		5217898608A7FAD600FC1D44 /* NSString-Extras.h in Headers */ = {isa = PBXBuildFile; fileRef = 5217898408A7FAD600FC1D44 /* NSString-Extras.h */; };
 		5217898708A7FAD600FC1D44 /* NSString-Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 5217898508A7FAD600FC1D44 /* NSString-Extras.m */; };
 		525C20AE08A94BA5009C5A9C /* OpenHandCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */; };
@@ -420,6 +423,9 @@
 		40FEB2960540E7FA006370DB /* Macros_Context.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = Macros_Context.plist; sourceTree = "<group>"; };
 		40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = XeLaTeX.engine; sourceTree = "<group>"; };
 		40FF5DA706D567C600426CC9 /* XeTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = XeTeX.engine; sourceTree = "<group>"; };
+		520C2EEA08AE92850010B1F8 /* TSDocument-Jobs.m */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Jobs.m"; sourceTree = "<group>"; };
+		520C2EEE08AE984C0010B1F8 /* TSDocument-RootFile.m */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-RootFile.m"; sourceTree = "<group>"; };
+		520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Syntax.m"; sourceTree = "<group>"; };
 		5217898408A7FAD600FC1D44 /* NSString-Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Extras.h"; sourceTree = "<group>"; };
 		5217898508A7FAD600FC1D44 /* NSString-Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Extras.m"; sourceTree = "<group>"; };
 		525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OpenHandCursor.tiff; sourceTree = "<group>"; };
@@ -922,6 +928,9 @@
 			children = (
 				2A37F4AEFDCFA73011CA2CEA /* TSDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* TSDocument.m */,
+				520C2EEA08AE92850010B1F8 /* TSDocument-Jobs.m */,
+				520C2EEE08AE984C0010B1F8 /* TSDocument-RootFile.m */,
+				520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */,
 				40B7DEA9057139E2002872F2 /* TSDocumentScripting.h */,
 				40B7DEAA057139E2002872F2 /* TSDocumentScripting.m */,
 				F5ECC3200214678B01DF2474 /* TSToolbarController.h */,
@@ -1422,6 +1431,9 @@
 				4083912A060963C800266FAB /* TextFinder.m in Sources */,
 				40CD913907E4CE6C00DE6448 /* MyPDFKitView.m in Sources */,
 				5217898708A7FAD600FC1D44 /* NSString-Extras.m in Sources */,
+				520C2EEB08AE92850010B1F8 /* TSDocument-Jobs.m in Sources */,
+				520C2EF008AE984C0010B1F8 /* TSDocument-RootFile.m in Sources */,
+				520C2EF108AE984C0010B1F8 /* TSDocument-Syntax.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1697,7 +1709,11 @@
 		5288880F089D023A0095E82D /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
@@ -1706,13 +1722,18 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				WARNING_CFLAGS = "-Wextra";
 			};
 			name = Development;
 		};
 		52888810089D023A0095E82D /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
@@ -1721,13 +1742,18 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				WARNING_CFLAGS = "-Wextra";
 			};
 			name = Deployment;
 		};
 		52888811089D023A0095E82D /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
@@ -1736,6 +1762,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				WARNING_CFLAGS = "-Wextra";
 			};
 			name = Default;
 		};
