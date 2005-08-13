@@ -48,3 +48,4 @@
 -(id)initWithIdentifier:(id)identifier;
 -(id)inactiveDataCell;
 @end
+
