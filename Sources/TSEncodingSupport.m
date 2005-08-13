@@ -74,19 +74,6 @@ static const TSEncoding _availableEncodings[] = {
 {
     if (sharedEncodingSupport == nil) 
 	{
-#if 1
-		// FIXME/HACK: Some test code follows
-		int i;
-		NSStringEncoding enc;
-		for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
-			enc = CFStringConvertEncodingToNSStringEncoding(_availableEncodings[i].encoding);
-			NSLog(@"0x%04x: '%@' / '%@' / '%@'", (short)enc,
-				[NSString localizedNameOfStringEncoding:enc],
-				(NSString *)CFStringGetNameOfEncoding(CFStringConvertNSStringEncodingToEncoding(enc)),
-				NSLocalizedStringFromTable(_availableEncodings[i].name, @"Encodings", @"Fetch localized encoding name")
-				);
-		}
-#endif
         sharedEncodingSupport = [[TSEncodingSupport alloc] init];
     }
     return sharedEncodingSupport;
@@ -310,6 +297,10 @@ static const TSEncoding _availableEncodings[] = {
 // NOTE: To add new encodings, it is only necessary to add items to the next
 // three items, and add items to the preference nib and the document nib
 // and the menu nib; these additional items need appropriate tags.
+// UPDATE (Max Horn): Adding new encodings now is even simpler: just
+// add them to _availableEncodings and to the .nibs.
+// TODO: It could be even simpler: Auto-generate the menus, so the nib files
+// do not even have to be changed!
 
 - (int)tagForEncodingPreference
 {
@@ -321,236 +312,29 @@ static const TSEncoding _availableEncodings[] = {
 
 - (int)tagForEncoding: (NSString *)encoding
 {
-
-    if ([encoding isEqualToString:@"MacOSRoman"])
-        return 0;
-    else if ([encoding isEqualToString:@"IsoLatin"])
-        return 1;
-    else if ([encoding isEqualToString:@"IsoLatin2"])
-        return 2;
-    else if ([encoding isEqualToString:@"IsoLatin5"])
-        return 3;
-    else if ([encoding isEqualToString:@"MacJapanese"])
-        return 4;
-     // S. Zenitani Dec 13, 2002:
-    else if ([encoding isEqualToString:@"DOSJapanese"])
-        return 5;
-    else if ([encoding isEqualToString:@"SJIS_X0213"])
-        return 6;
-    else if ([encoding isEqualToString:@"EUC_JP"])
-        return 7;
-    else if ([encoding isEqualToString:@"JISJapanese"])
-        return 8;
-    else if ([encoding isEqualToString:@"MacKorean"])
-        return 9;
-    // --- end
-    else if ([encoding isEqualToString:@"UTF-8 Unicode"])
-        return 10;
-    else if ([encoding isEqualToString:@"Standard Unicode"])
-        return 11;
-     else if ([encoding isEqualToString:@"Mac Cyrillic"])
-        return 12;
-     else if ([encoding isEqualToString:@"DOS Cyrillic"])
-        return 13;
-     else if ([encoding isEqualToString:@"DOS Russian"])
-        return 14;
-     else if ([encoding isEqualToString:@"Windows Cyrillic"])
-        return 15;
-     else if ([encoding isEqualToString:@"KOI8_R"])
-        return 16;
-     else if ([encoding isEqualToString:@"Mac Chinese Traditional"])
-        return 17;
-     else if ([encoding isEqualToString:@"Mac Chinese Simplified"])
-        return 18;
-    else if ([encoding isEqualToString:@"DOS Chinese Traditional"])
-        return 19;
-    else if ([encoding isEqualToString:@"DOS Chinese Simplified"])
-        return 20;
-    else if ([encoding isEqualToString:@"GBK"])
-        return 21;
-    else if ([encoding isEqualToString:@"GB 2312"])
-        return 22;
-    else if ([encoding isEqualToString:@"GB 18030"])
-        return 23;
-    
-
-     else 
-        return 0;
+	int i;
+	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
+		if ([encoding isEqualToString:_availableEncodings[i].name])
+			return i;
+	}
+	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
+	return 0;
 }
 
 - (NSString *)encodingForTag: (int)tag
 {
-    NSString *value;
-    
-    switch (tag) {
-        case 0: value = [NSString stringWithString:@"MacOSRoman"];
-                break;
-        
-        case 1: value = [NSString stringWithString:@"IsoLatin"];
-                break;
-                
-        case 2: value = [NSString stringWithString:@"IsoLatin2"];
-                break;
-                
-        case 3: value = [NSString stringWithString:@"IsoLatin5"];
-                break;
-                
-        case 4: value = [NSString stringWithString:@"MacJapanese"];
-                break;
-                
-        // S. Zenitani Dec 13, 2002:
-        case 5: value = [NSString stringWithString:@"DOSJapanese"];
-                break;
-                
-        case 6: value = [NSString stringWithString:@"SJIS_X0213"];
-                break;
-                
-        case 7: value = [NSString stringWithString:@"EUC_JP"];
-                break;
-                
-        // Mitsuhiro Shishikura Jan 4, 2003:
-        case 8: value = [NSString stringWithString:@"JISJapanese"];
-                break;
-                
-        case 9: value = [NSString stringWithString:@"MacKorean"];
-                break;
-        
-        case 10: value = [NSString stringWithString:@"UTF-8 Unicode"];
-                break;
-                
-        case 11: value = [NSString stringWithString:@"Standard Unicode"];
-                break;
-                
-        case 12: value = [NSString stringWithString:@"Mac Cyrillic"];
-                break;
-                
-        case 13: value = [NSString stringWithString:@"DOS Cyrillic"];
-                break;
-                
-        case 14: value = [NSString stringWithString:@"DOS Russian"];
-                break;
-                
-        case 15: value = [NSString stringWithString:@"Windows Cyrillic"];
-                break;
-                
-        case 16: value = [NSString stringWithString:@"KOI8_R"];
-                break;
-                
-        case 17: value = [NSString stringWithString:@"Mac Chinese Traditional"];
-                break;
-        
-        case 18: value = [NSString stringWithString:@"Mac Chinese Simplified"];
-                break;
-        
-        case 19: value = [NSString stringWithString:@"DOS Chinese Traditional"];
-                break;
-        
-        case 20: value = [NSString stringWithString:@"DOS Chinese Simplified"];
-                break;
-        
-        case 21: value = [NSString stringWithString:@"GBK"];
-                break;
-        
-        case 22: value = [NSString stringWithString:@"GB 2312"];
-                break;
-        
-        case 23: value = [NSString stringWithString:@"GB 18030"];
-                break;
-        
-                
-        default: value = [NSString stringWithString:@"MacOSRoman"];
-                break;
-        }
-        
-        [value retain];
-        return value;
+	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
+	if (tag < 0 || tag >= ARRAYSIZE(_availableEncodings))
+		tag = 0;
+	return _availableEncodings[tag].name;
 }
 
-- (NSStringEncoding)stringEncodingForTag: (int)encoding
+- (NSStringEncoding)stringEncodingForTag: (int)tag
 {
-    NSStringEncoding	theEncoding;
-    
-    switch (encoding) {
-
-        case 0: theEncoding =  NSMacOSRomanStringEncoding;
-                break;
-        
-        case 1: theEncoding =  NSISOLatin1StringEncoding;
-                break;
-                
-        case 2: theEncoding =  NSISOLatin2StringEncoding;
-                break;
-                
-        case 3: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISOLatin5);
-                break;
-                
-        case 4: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacJapanese);
-                break;
-                
-        // S. Zenitani Dec 13, 2002:
-        case 5: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese);
-                break;
-                
-        case 6: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingShiftJIS_X0213_00);
-                break;
-                
-        case 7: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP);
-                break;
-                
-        // Mitsuhiro Shishikura Jan 4, 2003:
-        case 8: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
-                break;
-                
-        case 9: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacKorean);
-                break;
-        
-        case 10: theEncoding =  NSUTF8StringEncoding;
-                break;
-                
-        case 11: theEncoding =  NSUnicodeStringEncoding;
-                break;
-                
-        case 12: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacCyrillic);
-                 break;
-                
-        case 13: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSCyrillic);
-                 break;
-                
-        case 14: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSRussian);
-                 break;
-                
-        case 15: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingWindowsCyrillic);
-                 break;
-                
-        case 16: theEncoding =  CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingKOI8_R);
-                break;
-                
-        case 17: theEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacChineseTrad);
-                break;
-        
-        case 18: theEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingMacChineseSimp);
-                break;
-        
-        case 19: theEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSChineseTrad);
-                break;
-       
-        case 20: theEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSChineseSimplif);
-                break;
-       
-        case 21: theEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGBK_95);
-                break;
-       
-        case 22: theEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_2312_80);
-                break;
-       
-        case 23: theEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
-                break;
-                
-        default: theEncoding =  NSMacOSRomanStringEncoding;
-                 break;
-        }
-        
-    return theEncoding;
+	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
+	if (tag < 0 || tag >= ARRAYSIZE(_availableEncodings))
+		tag = 0;
+	return _availableEncodings[tag].encoding;
 }
 
 - (NSString *)keyForStringEncoding: (NSStringEncoding)encoding {
