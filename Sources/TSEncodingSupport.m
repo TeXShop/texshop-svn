@@ -351,10 +351,10 @@ static const TSEncoding _availableEncodings[] = {
 	int i;
 	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
 		if ([key isEqualToString:_availableEncodings[i].name])
-			return _availableEncodings[i].encoding;
+			return CFStringConvertEncodingToNSStringEncoding(_availableEncodings[i].encoding);
 	}
 	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
-	return _availableEncodings[0].encoding;
+	return CFStringConvertEncodingToNSStringEncoding(_availableEncodings[0].encoding);
 }
 
 
