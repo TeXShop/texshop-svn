@@ -29,16 +29,25 @@
 
 + (id)sharedInstance;
 
-//- (void)controlTextDidChange:(NSNotification *)note;
-// Delegate method for TextField; not necessary to declare here
-
 - (void)setupForEncoding;
 - (void)encodingChanged: (NSNotification *)note;
 - (IBAction)toggleTeXCharConversion:(id)sender;
+
+// Old encoding API: Uses 'tags' to enumerate the encodings, 'encoding' means a string used in the
+// preference storage, and finally, NSStringEncodings to be passed to the Cocoa APIs
 - (int)tagForEncodingPreference;
 - (int)tagForEncoding: (NSString *)encoding;
 - (NSString *)encodingForTag: (int)tag;
 - (NSStringEncoding)stringEncodingForTag: (int)encoding;
+
+// New encoding API: Uses NSStringEncoding to 
+- (NSString *)keyForStringEncoding: (NSStringEncoding)encoding;
+- (NSStringEncoding)encodingForKey: (NSString *)key;
+
+// Add a (localized) list of available encodings to the given menu. The tag of each menu item
+// will equal the corresponding NSStringEncoding.
+- (void)addEncodingsToMenu: (NSMenu *)menu;
+
 - (BOOL)ptexUtfOutputCheck: (NSString *)dataString withEncoding: (int)tag;  // zenitani 1.35 (C)
 - (NSData *)ptexUtfOutput: (NSTextView *)dataView withEncoding: (int)tag;   // zenitani 1.35 (C)
 @end

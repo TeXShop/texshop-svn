@@ -5,12 +5,12 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -30,7 +30,42 @@ static NSString *yenString = nil;
 
 @implementation TSEncodingSupport
 
+// Pointer to the TSEncodingSupport singleton
 static id sharedEncodingSupport = nil;
+
+// We pair CFStringEncoding with custom names
+typedef struct {
+	CFStringEncoding	encoding;
+	NSString			*name;
+} TSEncoding;
+
+// List of the supported encodings.
+static const TSEncoding _availableEncodings[] = {
+	{ kCFStringEncodingMacRoman,			@"MacOSRoman" },
+	{ kCFStringEncodingISOLatin1,			@"IsoLatin" },
+	{ kCFStringEncodingISOLatin2,			@"IsoLatin2" },
+	{ kCFStringEncodingISOLatin5,			@"IsoLatin5" },
+	{ kCFStringEncodingMacJapanese,			@"MacJapanese" },
+	{ kCFStringEncodingDOSJapanese,			@"DOSJapanese" },
+	{ kCFStringEncodingShiftJIS_X0213_00,	@"SJIS_X0213" },
+	{ kCFStringEncodingEUC_JP,				@"EUC_JP" },
+	{ kCFStringEncodingISO_2022_JP,			@"JISJapanese" },
+	{ kCFStringEncodingMacKorean,			@"MacKorean" },
+	{ kCFStringEncodingUTF8,				@"UTF-8 Unicode" },
+	{ kCFStringEncodingUnicode,				@"Standard Unicode" },
+	{ kCFStringEncodingMacCyrillic,			@"Mac Cyrillic" },
+	{ kCFStringEncodingDOSCyrillic,			@"DOS Cyrillic" },
+	{ kCFStringEncodingDOSRussian,			@"DOS Russian" },
+	{ kCFStringEncodingWindowsCyrillic,		@"Windows Cyrillic" },
+	{ kCFStringEncodingKOI8_R,				@"KOI8_R" },
+	{ kCFStringEncodingMacChineseTrad,		@"Mac Chinese Traditional" },
+	{ kCFStringEncodingMacChineseSimp,		@"Mac Chinese Simplified" },
+	{ kCFStringEncodingDOSChineseTrad,		@"DOS Chinese Traditional" },
+	{ kCFStringEncodingDOSChineseSimplif,	@"DOS Chinese Simplified" },
+	{ kCFStringEncodingGBK_95,				@"GBK" },
+	{ kCFStringEncodingGB_2312_80,			@"GB 2312" },
+	{ kCFStringEncodingGB_18030_2000,		@"GB 18030" },
+};
 
 //------------------------------------------------------------------------------
 + (id)sharedInstance 
@@ -38,17 +73,20 @@ static id sharedEncodingSupport = nil;
 {
     if (sharedEncodingSupport == nil) 
 	{
-        sharedEncodingSupport = [[TSEncodingSupport alloc] init];
-		
+#if 1
+		// FIXME/HACK: Some test code follows
 		int i;
 		NSStringEncoding enc;
-		for (i = 0; i <= 23; ++i) {
-			enc = [sharedEncodingSupport stringEncodingForTag:i];
-			NSLog(@"%d: '%@' / '%@' / '%@'", i, [NSString localizedNameOfStringEncoding:enc],
+		for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
+			enc = CFStringConvertEncodingToNSStringEncoding(_availableEncodings[i].encoding);
+			NSLog(@"0x%04x: '%@' / '%@' / '%@'", (short)enc,
+				[NSString localizedNameOfStringEncoding:enc],
 				(NSString *)CFStringGetNameOfEncoding(CFStringConvertNSStringEncodingToEncoding(enc)),
-				(NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(enc))
+				NSLocalizedStringFromTable(_availableEncodings[i].name, @"Encodings", @"Fetch localized encoding name")
 				);
 		}
+#endif
+        sharedEncodingSupport = [[TSEncodingSupport alloc] init];
     }
     return sharedEncodingSupport;
 }
@@ -154,6 +192,9 @@ static id sharedEncodingSupport = nil;
 							filterBackslashToYen(@"\\subsubsection"),
 							nil];
                 // mitsu 1.29 (P)
+		
+		// If the command completion list already exists, and we are about to change the filter mode:
+		// Update the command completion list to match the new filter mode.
 		if (g_shouldFilter != kMacJapaneseFilterMode && g_commandCompletionList)
 		{
 			[g_commandCompletionList replaceOccurrencesOfString: @"\\" withString: yenString
@@ -190,6 +231,8 @@ static id sharedEncodingSupport = nil;
 							@"\\subsubsection",
 							nil];
                 // mitsu 1.29 (P)
+		// If the command completion list already exists, and we are about to change the filter mode:
+		// Update the command completion list to match the new filter mode.
 		if (g_shouldFilter == kMacJapaneseFilterMode && g_commandCompletionList)
 		{
 			[g_commandCompletionList replaceOccurrencesOfString: yenString withString: @"\\"
@@ -509,6 +552,46 @@ static id sharedEncodingSupport = nil;
     return theEncoding;
 }
 
+- (NSString *)keyForStringEncoding: (NSStringEncoding)encoding {
+	int i;
+	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
+		if (_availableEncodings[i].encoding == encoding)
+			return _availableEncodings[i].name;
+	}
+	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
+	return _availableEncodings[0].name;
+}
+
+- (NSStringEncoding)encodingForKey: (NSString *)key {
+	int i;
+	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
+		if ([key isEqualToString:_availableEncodings[i].name])
+			return _availableEncodings[i].encoding;
+	}
+	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
+	return _availableEncodings[0].encoding;
+}
+
+
+- (void)addEncodingsToMenu: (NSMenu *)menu
+{
+#if 1
+	id <NSMenuItem> item;
+	NSString *name;
+	NSStringEncoding enc;
+	int i;
+
+	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
+		enc = CFStringConvertEncodingToNSStringEncoding(_availableEncodings[i].encoding);
+		name = NSLocalizedStringFromTable(_availableEncodings[i].name, @"Encodings", @"Fetch localized encoding name");
+
+		item = [[[NSMenuItem alloc] initWithTitle: name action:0 keyEquivalent:@""] autorelease];
+		//[item setTarget: self];
+		[item setTag: enc];
+		[menu addItem: item];
+	}
+#endif
+}
 
 // zenitani and itoh, 1.35 (C) -- support for utf.sty
 - (BOOL)ptexUtfOutputCheck: (NSString *)dataString withEncoding: (int)tag;
@@ -531,6 +614,7 @@ static id sharedEncodingSupport = nil;
         return NO;
     }
 }
+
 - (NSData *)ptexUtfOutput: (NSTextView *)dataView withEncoding: (int)tag;
 {
     NSString *dataString = [dataView string];
