@@ -62,6 +62,11 @@
 // #define COLORTIME  .02
 // #define COLORLENGTH 500000
 
+// FIXME: Try to get rid of the following two functions:
+static BOOL isText1(int c);
+static void report(NSString *itest);
+
+
 
 @implementation TSDocument : NSDocument
 
@@ -365,7 +370,25 @@
 	return value;
 }
 
+- (void)setupTextView:(NSTextView *)aTextView
+{
+    [aTextView setAutoresizingMask: NSViewWidthSizable];
+    [[aTextView textContainer] setWidthTracksTextView:YES];
+    [aTextView setDelegate:self];
+    [aTextView setAllowsUndo:YES];
+    [aTextView setRichText:NO];
+    [aTextView setUsesFontPanel:YES];
+    [aTextView setFont:[NSFont userFontOfSize:12.0]];
+    [aTextView setBackgroundColor: backgroundColor];
+    [aTextView setInsertionPointColor: insertionpointColor];
+    [aTextView setAcceptsGlyphInfo: YES]; // suggested by Itoh 1.35 (A) 
+    [aTextView setDocument: self];
 
+    [scrollView setDocumentView:aTextView];
+}
+
+// FIXME/TODO: Obviously windowControllerDidLoadNib is *way* too big. Need to simplify it,
+// and possibly move code to other functions.
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController
 {
     BOOL                spellExists;
@@ -388,7 +411,6 @@
     int			defaultcommand;
     NSSize		contentSize;
     NSColor		*backgroundColor, *insertionpointColor;
-	//NSColor	*whiteColor;
     NSDictionary	*myAttributes;
 		int                 i;
     BOOL                done;
@@ -408,22 +430,6 @@
 	NS_ENDHANDLER
 	
     
-	/*
-	 // Added by Greg Landweber to load the autocompletion dictionary
-	 // This code is modified from the code to load the LaTeX panel
-	 NSString	*autocompletionPath;
-	 
-	 autocompletionPath = [AutoCompletionPathKey stringByStandardizingPath];
-	 autocompletionPath = [autocompletionPath stringByAppendingPathComponent:@"autocompletion"];
-	 autocompletionPath = [autocompletionPath stringByAppendingPathExtension:@"plist"];
-	 if ([[NSFileManager defaultManager] fileExistsAtPath: autocompletionPath]) 
-	 g_autocompletionDictionary=[NSDictionary dictionaryWithContentsOfFile:autocompletionPath];
-	 else
-	 g_autocompletionDictionary=[NSDictionary dictionaryWithContentsOfFile:
-		 [[NSBundle mainBundle] pathForResource:@"autocompletion" ofType:@"plist"]];
-	 [g_autocompletionDictionary retain];
-	 // end of code added by Greg Landweber
-	 */
     backgroundColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:background_RKey]
 												green:  [SUD floatForKey:background_GKey]
 												 blue: [SUD floatForKey:background_BKey] 
@@ -433,44 +439,14 @@
 													green:  [SUD floatForKey:insertionpoint_GKey]
 													 blue: [SUD floatForKey:insertionpoint_BKey] 
 													alpha:1.0];
-    
-    //whiteColor = [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0];
-    
-	/*    
-		// New
-		contentSize = [scrollView contentSize];
-    textView = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
-    [textView setAutoresizingMask: NSViewWidthSizable];
-    [[textView textContainer] setWidthTracksTextView:YES];
-    [textView setDelegate:self];
-    [textView setAllowsUndo:YES];
-    [textView setRichText:NO];
-    [textView setUsesFontPanel:YES];
-    [textView setFont:[NSFont userFontOfSize:12.0]];
-    [textView setBackgroundColor: backgroundColor];
-    [scrollView setDocumentView:textView];
-    [textView release];
-	*/
-    /* End of New */
-    
+        
 	/* New forsplit */
 	
     
     contentSize = [scrollView contentSize];
     textView1 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
-    [textView1 setAutoresizingMask: NSViewWidthSizable];
-    [[textView1 textContainer] setWidthTracksTextView:YES];
-    [textView1 setDelegate:self];
-    [textView1 setAllowsUndo:YES];
-    [textView1 setRichText:NO];
-    [textView1 setUsesFontPanel:YES];
-    [textView1 setFont:[NSFont userFontOfSize:12.0]];
-    [textView1 setBackgroundColor: backgroundColor];
-    [textView1 setInsertionPointColor: insertionpointColor];
-    //[textView1 setInsertionPointColor: whiteColor];
+	[self setupTextView:textView1]
     [scrollView setDocumentView:textView1];
-    [textView1 setAcceptsGlyphInfo: YES]; // suggested by Itoh 1.35 (A) 
-    [textView1 setDocument: self]; // mitsu 1.29 (T2-4) added 
     [textView1 release];
     textView = textView1;
     /* End of New */
@@ -478,21 +454,10 @@
 	
     contentSize = [scrollView2 contentSize];
     textView2 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
-    [textView2 setAutoresizingMask: NSViewWidthSizable];
-    [[textView2 textContainer] setWidthTracksTextView:YES];
-    [textView2 setDelegate:self];
-    [textView2 setAllowsUndo:YES];
-    [textView2 setRichText:NO];
-    [textView2 setUsesFontPanel:YES];
+	[self setupTextView:textView2]
     if (spellExists) 
         [textView2 setContinuousSpellCheckingEnabled:[SUD boolForKey:SpellCheckEnabledKey]];
-    [textView2 setFont:[NSFont userFontOfSize:12.0]];
-    [textView2 setBackgroundColor: backgroundColor];
-    [textView2 setInsertionPointColor: insertionpointColor];
-    // [textView2 setInsertionPointColor: whiteColor];
     [scrollView2 setDocumentView:textView2];
-    [textView2 setAcceptsGlyphInfo: YES]; // suggested by Itoh 1.35 (A) 
-    [textView2 setDocument: self]; // mitsu 1.29 (T2-4) added 
     [textView2 release];
 	
     textStorage = [textView1 textStorage];
@@ -560,12 +525,15 @@
         ([fileExtension isEqualToString: @"jpeg"]) ||
         ([fileExtension isEqualToString: @"JPG"]) ||
         ([fileExtension isEqualToString: @"tif"]) ||
-        ([fileExtension isEqualToString: @"tiff"]))
+        ([fileExtension isEqualToString: @"tiff"])) {
 		;
-#ifndef MITSU_PDF
-    else
+		// It's some kind of non-PDF image
+    } else {
+		// Everything else is assumed to either be a PDF, or a file with a PDF preview.
+		// TODO/FIXME: That's actually not completly logical. E.g. a .bib file usually
+		// doesn't have a PDF preview, does it?
         [pdfView resetMagnification];
-#endif
+	}
 	
     if (( ! [fileExtension isEqualToString: @"tex"]) && ( ! [fileExtension isEqualToString: @"TEX"])
 		&& ( ! [fileExtension isEqualToString: @"dtx"]) && ( ! [fileExtension isEqualToString: @"ins"])
@@ -604,7 +572,7 @@
 	[pdfScrollView setDocumentView: pdfView];
 	[pdfView release];
 	[pdfView setAutoresizingMask: NSViewNotSizable];
-	// notofication for scroll
+	// notification for scroll
 	[[NSNotificationCenter defaultCenter] addObserver:pdfView selector:@selector(wasScrolled:) 
 												 name:NSViewBoundsDidChangeNotification object:[pdfView superview]];
 	// end mitsu 1.29
@@ -780,22 +748,7 @@
     
 	// end change
 	
-	/* old code       
-		defaultcommand = [SUD integerForKey:DefaultCommandKey];
-    switch (defaultcommand) {
-        case DefaultCommandTeX: [typesetButton setTitle: @"TeX"]; 
-			[typesetButtonEE setTitle: @"TeX"];
-			break;
-        case DefaultCommandLaTeX:   [typesetButton setTitle: @"LaTeX"]; 
-			[typesetButtonEE setTitle: @"LaTeX"];
-			break;
-        case DefaultCommandConTEXt: [typesetButton setTitle: @"ConTeXt"]; 
-			[typesetButtonEE setTitle: @"ConTeXt"];
-			break;
-	}
-    */
-	
-    
+
 #ifndef ROOTFILE    
     projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
     if ([[NSFileManager defaultManager] fileExistsAtPath: projectPath]) {
@@ -831,40 +784,7 @@
 		[myPDFKitView showWithPath: imagePath];
 		[pdfKitWindow setRepresentedFilename: imagePath];
 		[pdfKitWindow setTitle: [imagePath lastPathComponent]];
-		
-		
-		
-		
-		
-		
-		/*    
-			myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
-        pdfDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
-		
-        texRep = [[NSPDFImageRep imageRepWithContentsOfFile: imagePath] retain]; 
-		
-		// [pdfWindow setTitle: 
-		//        [[[[self fileName] lastPathComponent] 
-		//        stringByDeletingPathExtension] stringByAppendingString:@".pdf"]]; 
-		[pdfWindow setTitle: [imagePath lastPathComponent]];
-		// [pdfWindow setRepresentedFilename: [[[[self fileName] lastPathComponent] 
-		//        stringByDeletingPathExtension] stringByAppendingString:@".pdf"]]; //mitsu July4
-		[pdfView setImageRep: texRep]; // this releases old one!
-#ifndef MITSU_PDF
-		topLeftRect = [texRep bounds];
-		topLeftPoint.x = topLeftRect.origin.x;
-		topLeftPoint.y = topLeftRect.origin.y + topLeftRect.size.height - 1;
-		[pdfView scrollPoint: topLeftPoint];
-		[pdfView display];
-#endif
-		[pdfWindow makeKeyAndOrderFront: self];
-		*/			
-		
-		
-		
-		
-	}
-    else if (externalEditor) {
+	} else if (externalEditor) {
 		
 		PDFfromKit = YES;
 		[pdfKitWindow setTitle: [imagePath lastPathComponent]];
@@ -1027,8 +947,7 @@
         textView = textView1;
         [textView scrollRangeToVisible: selectedRange];
         [textView setSelectedRange: selectedRange];
-        }
-    else {
+	} else {
         theFrame = [scrollView frame];
         newSize.width = theFrame.size.width;
         newSize.height = 100;
@@ -1040,26 +959,11 @@
         [textView2 scrollRangeToVisible: selectedRange];
         selectedRange.length = 0;
         [textView2 setSelectedRange: selectedRange];
-
-/*        
-        sourceRange.location = 0;
-        sourceRange.length = [[textView string] length];
-        destRange.location = 0;
-        destRange.length = [[textView2 string] length];
-        myAttribString = [[[NSAttributedString alloc] initWithAttributedString:[textView attributedSubstringFromRange: sourceRange]] autorelease];
-        [[textView2 textStorage] replaceCharactersInRange:destRange withAttributedString:myAttribString];
-*/
- //     [textView2 setString: [textView string]];
-    
-//      [textView2 setTextContainer: [textView textContainer]];
+		
         windowIsSplit = YES;
         textView = textView1;
-        }
+	}
 }
-
-
-// endforsplit
-
 
 
 /* A user reported that while working with an external editor, he quit TeXShop and was
@@ -1084,11 +988,15 @@ in other code when an external editor is being used. */
 /*" This method registers all notifications that are necessary to work properly together with the other AppKit and TeXShop objects.
 "*/
 {
+	// FIXME/TODO: A lot of these notifcations may become obsolete (or at least can be replaced by a better mechanism)
+	// once we fix TSDocument to properly use multiple NSWindowController instances, one for each window associated
+	// with the document.
+
     // register to learn when the document window becomes main so we can fix the Typeset script
     
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(newMainWindow:)
         name:NSWindowDidBecomeMainNotification object:nil];
-                
+	
     // register for notifications when the document window becomes key so we can remember which window was
     // the frontmost. This is needed for the preferences.
     [[NSNotificationCenter defaultCenter] addObserver:[TSWindowManager sharedInstance] selector:@selector(documentWindowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:textWindow];
@@ -1392,7 +1300,7 @@ preference change is cancelled. "*/
 }
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType {
-
+	
     NSStringEncoding	theEncoding;
     NSRange             encodingRange, newEncodingRange, myRange, theRange;
     unsigned            length;
@@ -1402,46 +1310,20 @@ preference change is cancelled. "*/
     int                 linesTested;
     unsigned            start, end, irrelevant;
     
-    
-    // Insert code here to write your document from the given data.
-
-//    NSUndoManager		*myManager;
-//    NSNotificationCenter	*myCenter;
-    
-//    myManager = [textView undoManager];
-//    myCenter = [NSNotificationCenter defaultCenter];
-//    [myCenter postNotificationName: @"NSUndoManagerCheckpointNotification" object: myManager];
-    
-    
-//    [myManager beginUndoGrouping];
-//    [myManager endUndoGrouping];
-//    [myManager registerUndoWithTarget: scrollView selector:@selector(fake:) object: nil];
-//    [myManager removeAllActionsWithTarget: scrollView];  
-//    [myManager removeAllActions];
-    
-/*
-
-    myManager = [textView undoManager];
-    [myManager endUndoGrouping];
-*/    
-    
-    
-    
-    
     // The following is line has been changed to fix the bug from Geoff Leyland 
     // return [[textView string] dataUsingEncoding: NSASCIIStringEncoding];
     
     theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: encoding];
-   
+	
     if ((GetCurrentKeyModifiers() & optionKey) == 0) {
-    
+		
         text = [textView string];
         length = [text length];
         done = NO;
         linesTested = 0;
         myRange.location = 0;
         myRange.length = 1;
-
+		
         while ((myRange.location < length) && (!done) && (linesTested < 20)) {
             [text getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
             myRange.location = end;
@@ -1461,9 +1343,8 @@ preference change is cancelled. "*/
                     theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
                     encoding = theTag; tempencoding = theTag;
                     theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
-                    }
-                }
-            else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
+				}
+			} else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
                 encodingRange = [testString rangeOfString:@"%&encoding="];
                 if (encodingRange.location != NSNotFound) {
                     done = YES;
@@ -1475,29 +1356,27 @@ preference change is cancelled. "*/
                         theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
                         encoding = theTag; tempencoding = theTag;
                         theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
-                        }
-                    }
-                }
-            }
-        }
-
-   
-   
-   // zenitani 1.35 (C) --- utf.sty output
-   if( [SUD boolForKey:ptexUtfOutputEnabledKey] &&
-      [[TSEncodingSupport sharedInstance] ptexUtfOutputCheck: [textView string] withEncoding: encoding] ) {
-    
+					}
+				}
+			}
+		}
+	}
+	
+	
+	
+	// zenitani 1.35 (C) --- utf.sty output
+	if( [SUD boolForKey:ptexUtfOutputEnabledKey] &&
+		[[TSEncodingSupport sharedInstance] ptexUtfOutputCheck: [textView string] withEncoding: encoding] ) {
+		
         return [[TSEncodingSupport sharedInstance] ptexUtfOutput: textView withEncoding: encoding];
         
-        }
-    else {
-    
+	} else {
+		
         return [[textView string] dataUsingEncoding: theEncoding allowLossyConversion:YES];
         
-        }
+	}
     
 }
-
 
 
 - (BOOL)readFromFile:(NSString *)fileName ofType:(NSString *)type {
@@ -1510,7 +1389,7 @@ preference change is cancelled. "*/
     BOOL                done;
     int                 linesTested;
     
-//    tag = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
+	//    tag = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
     tag = encoding;
     theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
     myData = [NSData dataWithContentsOfFile:fileName];
@@ -1523,7 +1402,7 @@ preference change is cancelled. "*/
         linesTested = 0;
         myRange.location = 0;
         myRange.length = 1;
-
+		
         while ((myRange.location < length) && (!done) && (linesTested < 20)) {
             [firstBytes getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
             myRange.location = end;
@@ -1543,8 +1422,8 @@ preference change is cancelled. "*/
                     theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
                     encoding = theTag; tempencoding = theTag;
                     theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
-                    }
-                }
+				}
+			}
             else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
                 encodingRange = [testString rangeOfString:@"%&encoding="];
                 if (encodingRange.location != NSNotFound) {
@@ -1557,27 +1436,23 @@ preference change is cancelled. "*/
                         theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
                         encoding = theTag; tempencoding = theTag;
                         theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
-                        }
-                    }
-                }
-            }
-
+					}
+				}
+			}
+		}
+		
         [firstBytes release];
-        }
-
+	}
+	
     
     
     aString = [[[NSString alloc] initWithData:myData encoding:theEncoding] autorelease];
-    if (! aString) {
+    if (!aString) {
         badEncoding = tag;
         showBadEncodingDialog = YES;
-        tag = [[TSEncodingSupport sharedInstance] tagForEncoding: @"MacOSRoman"];
-        encoding = tag; tempencoding = tag;
-        theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
-        aString = [[[NSString alloc] initWithData:myData encoding:theEncoding] autorelease];
-        }
+        aString = [[[NSString alloc] initWithData:myData encoding:NSMacOSRomanStringEncoding] autorelease];
+	}
     return YES;
-    
 }
 
 // The default save operations clear the "document edited symbol" but
@@ -1775,7 +1650,6 @@ preference change is cancelled. "*/
 
 - (void) doJobForScript:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous;
 {
-    SEL		saveFinished;
     NSDate	*myDate;
     
     if (! fileIsTex)
@@ -1837,8 +1711,7 @@ preference change is cancelled. "*/
         [self saveFinished: self didSave:YES contextInfo:nil];
 	}
     else {
-        saveFinished = @selector(saveFinished:didSave:contextInfo:);
-        [self saveDocumentWithDelegate: self didSaveSelector: saveFinished contextInfo: nil];
+        [self saveDocumentWithDelegate: self didSaveSelector: @selector(saveFinished:didSave:contextInfo:) contextInfo: nil];
 	}
 }
 
@@ -2138,6 +2011,11 @@ preference change is cancelled. "*/
     }
 }
 
+// TODO/FIXME: The following method is badly named. What it really does: perform (La)TeX 
+// taks/job processing (or any other engine).
+// The only reason for its current name seems to be that before we typeset a document,
+// we always first save it. And at the end of that save process, we perform the
+// typesetting.
 - (void) saveFinished: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo;
 {
 #ifndef ROOTFILE
