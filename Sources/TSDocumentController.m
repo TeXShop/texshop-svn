@@ -37,38 +37,44 @@
 	// dialog, the user can choose a custom encoding; if that happens, then
 	// the value of _encoding is modified (see runModalOpenPanel below).
 	// This happens before openDocument: is called.
-    _encoding = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
+    _encoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
 }
 
-- (int) encoding
+- (NSStringEncoding)encoding
 {
     return _encoding;
 }
 
-- (IBAction)newDocument:(id)sender{
-    
-    _encoding = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
+- (IBAction)newDocument:(id)sender
+{
+    _encoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
     [super newDocument: sender];
 }
 
-- (IBAction)openDocument:(id)sender{
-    
+- (IBAction)openDocument:(id)sender
+{
     [super openDocument: sender];
-    _encoding = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
+    _encoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
 }
 
 
 - (int)runModalOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)extensions
 {
-    int		result;
-    int		theCode;
+    NSStringEncoding	theCode;
+    int					result;
     
-	// TODO: Consider creating the view/menu on the fly, based on the list of available
-	// encodings from TSEncodingSupport.
-    theCode = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
-    [openPanel setAccessoryView: encodingView ];
-    [encodingView retain];
-    [encodingMenu selectItemAtIndex: theCode];
+	// Set an accessory view, with the encoding popup button in it.
+    [openPanel setAccessoryView: encodingView];
+    [encodingView retain];	// FIXME: Is this line really necessary?
+
+	// Create the contents of the encoding menu on the fly
+	[encodingMenu removeAllItems];
+	[[TSEncodingSupport sharedInstance] addEncodingsToMenu:[encodingMenu menu] withTarget:0 action:0];
+	
+	// Select active encoding 
+    theCode = [[TSEncodingSupport sharedInstance] defaultEncoding];
+    [encodingMenu selectItemWithTag: theCode];
+	
     result = [super runModalOpenPanel: openPanel forTypes: extensions];
     if (result == YES) {
         _encoding = [[encodingMenu selectedCell] tag];

@@ -974,12 +974,10 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	if (!myData)
 		return;
     
-	int i = [[TSEncodingSupport sharedInstance] tagForEncoding:@"UTF-8 Unicode"];
-	NSStringEncoding myEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: i];
+	NSStringEncoding myEncoding = NSUTF8StringEncoding;
 	g_commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding: myEncoding];
 	if (! g_commandCompletionList) {
-		i = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
-		myEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: i];
+		myEncoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
 		g_commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding: myEncoding];
 	}
 	

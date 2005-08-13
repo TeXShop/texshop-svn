@@ -26,12 +26,12 @@
 
 @interface TSDocumentController : NSDocumentController
 {
-    id	encodingView;
-    id	encodingMenu;
-    int	_encoding;
+    NSView				*encodingView;
+    NSPopUpButton		*encodingMenu;
+    NSStringEncoding	_encoding;
 }    
 - (IBAction)openDocument:(id)sender;
 - (void)initializeEncoding;
 - (int)runModalOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)extensions;
-- (int) encoding;
+- (NSStringEncoding)encoding;
 @end

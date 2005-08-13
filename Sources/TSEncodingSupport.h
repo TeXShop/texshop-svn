@@ -41,16 +41,20 @@
 - (NSString *)encodingForTag: (int)tag;
 - (NSStringEncoding)stringEncodingForTag: (int)encoding;
 
-// New encoding API: Uses NSStringEncoding to 
+// New encoding API: Uses NSStringEncoding for the menu tags
+- (NSStringEncoding)defaultEncoding;
+- (NSStringEncoding)stringEncodingForKey: (NSString *)key;
 - (NSString *)keyForStringEncoding: (NSStringEncoding)encoding;
-- (NSStringEncoding)encodingForKey: (NSString *)key;
+- (NSString *)localizedNameForKey: (NSString *)key;
+- (NSString *)localizedNameForStringEncoding: (NSStringEncoding)encoding;
 
 // Add a (localized) list of available encodings to the given menu. The tag of each menu item
 // will equal the corresponding NSStringEncoding.
-- (void)addEncodingsToMenu: (NSMenu *)menu;
+- (void)addEncodingsToMenu:(NSMenu *)menu withTarget:(id)aTarget action:(SEL)anAction;
 
-- (BOOL)ptexUtfOutputCheck: (NSString *)dataString withEncoding: (int)tag;  // zenitani 1.35 (C)
-- (NSData *)ptexUtfOutput: (NSTextView *)dataView withEncoding: (int)tag;   // zenitani 1.35 (C)
+
+- (BOOL)ptexUtfOutputCheck: (NSString *)dataString withEncoding: (NSStringEncoding)enc;
+- (NSData *)ptexUtfOutput: (NSTextView *)dataView withEncoding: (NSStringEncoding)enc;
 @end
 
 NSMutableString *filterBackslashToYen(NSString *aString);

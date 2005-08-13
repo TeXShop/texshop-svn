@@ -81,20 +81,20 @@ static TSEncoding _availableEncodings[] = {
 + (id)sharedInstance 
 //------------------------------------------------------------------------------
 {
-    if (sharedEncodingSupport == nil) 
+	if (sharedEncodingSupport == nil) 
 	{
-        sharedEncodingSupport = [[TSEncodingSupport alloc] init];
-    }
-    return sharedEncodingSupport;
+		sharedEncodingSupport = [[TSEncodingSupport alloc] init];
+	}
+	return sharedEncodingSupport;
 }
 
 //------------------------------------------------------------------------------
 - (id)init 
 //------------------------------------------------------------------------------
 {
-    if (sharedEncodingSupport) 
+	if (sharedEncodingSupport) 
 	{
-        [super dealloc];
+		[super dealloc];
 	}
 	else
 	{
@@ -109,7 +109,7 @@ static TSEncoding _availableEncodings[] = {
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(encodingChanged:) 
 				name:@"EncodingChangedNotification" object:nil];
 
-// Here preferences are set for the state of the pasteboard conversion facility, which is only used with Japanese encoding.
+		// Here preferences are set for the state of the pasteboard conversion facility, which is only used with Japanese encoding.
 		if ([SUD objectForKey: @"ConvertToBackslash"] == nil)
 			[SUD setBool: NO forKey: @"ConvertToBackslash"];
 		if ([SUD objectForKey: @"ConvertToYen"] == nil)
@@ -122,7 +122,8 @@ static TSEncoding _availableEncodings[] = {
 - (void)dealloc
 //------------------------------------------------------------------------------
 {
-	if (self != sharedEncodingSupport) [super dealloc];	// Don't free our shared instance
+	if (self != sharedEncodingSupport)
+		[super dealloc];	// Don't free our shared instance
 }
 
 // Delegate method for text fields
@@ -164,7 +165,7 @@ static TSEncoding _availableEncodings[] = {
 	TSDocument *theDoc;
 	
 	currentEncoding = [SUD stringForKey:EncodingKey];
-        
+	
 	editMenu = [[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Edit", @"Edit")] submenu];
 	if (editMenu)
 	{
@@ -178,7 +179,7 @@ static TSEncoding _availableEncodings[] = {
 	}
 
 	if ([currentEncoding isEqualToString:@"MacJapanese"] ||
-            [currentEncoding isEqualToString:@"SJIS_X0213"] )
+			[currentEncoding isEqualToString:@"SJIS_X0213"] )
 	{
 		g_texChar = 0x00a5; // yen
 		[g_taggedTeXSections release];
@@ -188,7 +189,7 @@ static TSEncoding _availableEncodings[] = {
 							filterBackslashToYen(@"\\subsection"),
 							filterBackslashToYen(@"\\subsubsection"),
 							nil];
-                // mitsu 1.29 (P)
+				// mitsu 1.29 (P)
 		
 		// If the command completion list already exists, and we are about to change the filter mode:
 		// Update the command completion list to match the new filter mode.
@@ -208,7 +209,7 @@ static TSEncoding _availableEncodings[] = {
 		{
 			[editMenu addItem: [NSMenuItem separatorItem]];
 			menuTitle = [NSMutableString stringWithString:
-                        NSLocalizedString(@"Convert \\yen to \\ in Pasteboard", @"Convert \\yen to \\ in Pasteboard")];
+						NSLocalizedString(@"Convert \\yen to \\ in Pasteboard", @"Convert \\yen to \\ in Pasteboard")];
 			[menuTitle replaceOccurrencesOfString: @"\\yen" withString: yenString
 						options: 0 range: NSMakeRange(0, [menuTitle length])];
 			item = [editMenu addItemWithTitle: menuTitle 
@@ -227,7 +228,7 @@ static TSEncoding _availableEncodings[] = {
 							@"\\subsection",
 							@"\\subsubsection",
 							nil];
-                // mitsu 1.29 (P)
+				// mitsu 1.29 (P)
 		// If the command completion list already exists, and we are about to change the filter mode:
 		// Update the command completion list to match the new filter mode.
 		if (g_shouldFilter == kMacJapaneseFilterMode && g_commandCompletionList)
@@ -251,7 +252,7 @@ static TSEncoding _availableEncodings[] = {
 			{
 				[editMenu addItem: [NSMenuItem separatorItem]];
 				menuTitle = [NSMutableString stringWithString:
-                                NSLocalizedString(@"Convert \\ to \\yen in Pasteboard", @"Convert \\ to \\yen in Pasteboard")]; 
+								NSLocalizedString(@"Convert \\ to \\yen in Pasteboard", @"Convert \\ to \\yen in Pasteboard")]; 
 				[menuTitle replaceOccurrencesOfString: @"\\yen" withString: yenString
 							options: 0 range: NSMakeRange(0, [menuTitle length])];
 				item = [editMenu addItemWithTitle: menuTitle 
@@ -290,7 +291,7 @@ static TSEncoding _availableEncodings[] = {
 	
 	currentEncoding = [SUD stringForKey:EncodingKey];
 	if ([currentEncoding isEqualToString:@"MacJapanese"] ||
-            [currentEncoding isEqualToString:@"SJIS_X0213"])
+			[currentEncoding isEqualToString:@"SJIS_X0213"])
 		theKey = @"ConvertToBackslash";
 	else if ([currentEncoding isEqualToString:@"DOSJapanese"] ||
 		[currentEncoding isEqualToString:@"EUC_JP"] || 
@@ -303,6 +304,9 @@ static TSEncoding _availableEncodings[] = {
 	[(NSMenuItem *)sender setState: [SUD boolForKey: theKey]?NSOnState:NSOffState];
 }
 
+
+#pragma mark Old encoding API
+
 // NOTE: To add new encodings, it is only necessary to add items to the next
 // three items, and add items to the preference nib and the document nib
 // and the menu nib; these additional items need appropriate tags.
@@ -313,10 +317,10 @@ static TSEncoding _availableEncodings[] = {
 
 - (int)tagForEncodingPreference
 {
-    NSString	*currentEncoding;
-    
-    currentEncoding = [SUD stringForKey:EncodingKey];
-    return [self tagForEncoding: currentEncoding];
+	NSString	*currentEncoding;
+	
+	currentEncoding = [SUD stringForKey:EncodingKey];
+	return [self tagForEncoding: currentEncoding];
 }
 
 - (int)tagForEncoding: (NSString *)encoding
@@ -346,17 +350,19 @@ static TSEncoding _availableEncodings[] = {
 	return _availableEncodings[tag].nsEnc;
 }
 
-- (NSString *)keyForStringEncoding: (NSStringEncoding)encoding {
-	int i;
-	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
-		if (_availableEncodings[i].nsEnc == encoding)
-			return _availableEncodings[i].name;
-	}
-	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
-	return _availableEncodings[0].name;
+
+#pragma mark New encoding API
+
+- (NSStringEncoding)defaultEncoding
+{
+	NSString	*currentEncoding;
+	
+	currentEncoding = [SUD stringForKey:EncodingKey];
+	return [self stringEncodingForKey: currentEncoding];
 }
 
-- (NSStringEncoding)encodingForKey: (NSString *)key {
+- (NSStringEncoding)stringEncodingForKey: (NSString *)key
+{
 	int i;
 	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
 		if ([key isEqualToString:_availableEncodings[i].name])
@@ -366,10 +372,30 @@ static TSEncoding _availableEncodings[] = {
 	return _availableEncodings[0].nsEnc;
 }
 
-
-- (void)addEncodingsToMenu: (NSMenu *)menu
+- (NSString *)keyForStringEncoding: (NSStringEncoding)encoding
 {
-#if 1
+	int i;
+	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
+		if (_availableEncodings[i].nsEnc == encoding)
+			return _availableEncodings[i].name;
+	}
+	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
+	return _availableEncodings[0].name;
+}
+
+- (NSString *)localizedNameForKey: (NSString *)key
+{
+	return NSLocalizedStringFromTable(key, @"Encodings", @"Fetch localized encoding name");
+}
+
+- (NSString *)localizedNameForStringEncoding: (NSStringEncoding)encoding
+{
+	return [self localizedNameForKey: [self keyForStringEncoding:encoding]];
+}
+
+
+- (void)addEncodingsToMenu:(NSMenu *)menu withTarget:(id)aTarget action:(SEL)anAction
+{
 	id <NSMenuItem> item;
 	NSString *name;
 	NSStringEncoding enc;
@@ -377,117 +403,120 @@ static TSEncoding _availableEncodings[] = {
 
 	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
 		enc = _availableEncodings[i].nsEnc;
-		name = NSLocalizedStringFromTable(_availableEncodings[i].name, @"Encodings", @"Fetch localized encoding name");
+		name = [self localizedNameForKey:_availableEncodings[i].name];
 
-		item = [[[NSMenuItem alloc] initWithTitle: name action:0 keyEquivalent:@""] autorelease];
-		//[item setTarget: self];
+		item = [[[NSMenuItem alloc] initWithTitle: name action:anAction keyEquivalent:@""] autorelease];
+		if (aTarget)
+			[item setTarget: aTarget];
 		[item setTag: enc];
 		[menu addItem: item];
 	}
-#endif
 }
+
+#pragma mark Support for utf.sty
 
 // zenitani and itoh, 1.35 (C) -- support for utf.sty
-- (BOOL)ptexUtfOutputCheck: (NSString *)dataString withEncoding: (int)tag;
+- (BOOL)ptexUtfOutputCheck: (NSString *)dataString withEncoding: (NSStringEncoding)enc
 {
-    NSString *currentEncoding;
-    currentEncoding = [self encodingForTag:tag];
+	NSString *currentEncoding;
+	currentEncoding = [self keyForStringEncoding:enc];
 
-    if( ( [currentEncoding isEqualToString:@"MacJapanese"] ||
-          [currentEncoding isEqualToString:@"DOSJapanese"] ||
-          [currentEncoding isEqualToString:@"JISJapanese"] ||
-          [currentEncoding isEqualToString:@"EUC_JP"] ) &&
-        ![dataString canBeConvertedToEncoding: //[self stringEncodingForTag: tag]] ){
-            CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP) ] ){
-        return YES;
-    }else if( [currentEncoding isEqualToString:@"SJIS_X0213"] &&
-        ![dataString canBeConvertedToEncoding:
-            CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingShiftJIS_X0213_00) ] ){
-        return YES;
-    }else{
-        return NO;
-    }
+	if (([currentEncoding isEqualToString:@"MacJapanese"] ||
+		 [currentEncoding isEqualToString:@"DOSJapanese"] ||
+		 [currentEncoding isEqualToString:@"JISJapanese"] ||
+		 [currentEncoding isEqualToString:@"EUC_JP"] ) &&
+		![dataString canBeConvertedToEncoding:
+			CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP)]) {
+		return YES;
+	} else if ([currentEncoding isEqualToString:@"SJIS_X0213"] &&
+		![dataString canBeConvertedToEncoding:
+			CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingShiftJIS_X0213_00)]) {
+		return YES;
+	} else {
+		return NO;
+	}
 }
 
-- (NSData *)ptexUtfOutput: (NSTextView *)dataView withEncoding: (int)tag;
+- (NSData *)ptexUtfOutput: (NSTextView *)dataView withEncoding: (NSStringEncoding)enc
 {
-    NSString *dataString = [dataView string];
-    NSMutableString *utfString, *newString = [NSMutableString string];
-    NSRange charRange, aCIDRange;
-    NSString *subString;
-    NSGlyphInfo *aGlyph;
-    NSStringEncoding checkEncoding;
-    unsigned startl, endl, end;
-
-    if( [[self encodingForTag:tag] isEqualToString:@"SJIS_X0213"] ){
-        checkEncoding = [self stringEncodingForTag: tag];
-    }else{
-        checkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
-    }
-
-    charRange = NSMakeRange(0,1);
-    endl = 0;
-    while( charRange.location < [dataString length] ){
-        if( charRange.location == endl ){
-            [dataString getLineStart:&startl end:&endl contentsEnd:&end forRange:charRange];
-//            NSLog( @"%d %d %d", startl, end, endl);
-        }
-//        NSLog( @"%d %d", charRange.length, charRange.location);
-        charRange = [dataString rangeOfComposedCharacterSequenceAtIndex: charRange.location];
-//        NSLog( @"%d %d", charRange.length, charRange.location);
-        subString = [dataString substringWithRange: charRange];
-
-        if( ![subString canBeConvertedToEncoding: checkEncoding] ){
-            aGlyph = [[dataView textStorage] attribute:NSGlyphInfoAttributeName
-                        atIndex:charRange.location effectiveRange:&aCIDRange];
-            if( aGlyph ){
-                // from rtf2tex (1.35)
-/*                switch([aGlyph characterCollection]){
-		case NSAdobeCNS1CharacterCollection:
-                    utfString = [NSMutableString stringWithFormat:@"%cCIDC{%d}",
-                                    g_texChar, [aGlyph characterIdentifier]];
-                    break;
-		case NSAdobeGB1CharacterCollection:
-                    utfString = [NSMutableString stringWithFormat:@"%cCIDT{%d}",
-                                    g_texChar, [aGlyph characterIdentifier]];
-                    break;
-		case NSAdobeKorea1CharacterCollection:
-                    utfString = [NSMutableString stringWithFormat:@"%cCIDK{%d}",
-                                    g_texChar, [aGlyph characterIdentifier]];
-                    break;
-		case NSAdobeJapan1CharacterCollection:
-		case NSAdobeJapan2CharacterCollection:*/
-                    utfString = [NSMutableString stringWithFormat:@"%CCID{%d}",
-                                    g_texChar, [aGlyph characterIdentifier]];
-/*                    break;
-		case NSIdentityMappingCharacterCollection:
-                default:
-                    utfString = [NSMutableString stringWithFormat:@"?"];
-                    break;
-                }*/
-            }else if( charRange.length > 1 ){
-                NSLayoutManager *aLayout = [dataView layoutManager];
-                utfString = [NSMutableString stringWithFormat:@"%CCID{%d}", g_texChar,
-                    [aLayout glyphAtIndex:charRange.location]];
-            // 0x2014,0x2015 fix (reported by Kino-san)
-            }else if( ![[self encodingForTag:tag] isEqualToString:@"SJIS_X0213"] &&
-                        [subString characterAtIndex: 0] == 0x2015 ){
-                utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
-            }else{
-                utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}",
-                    g_texChar, [subString characterAtIndex: 0]];
-            }
-            if( ( charRange.location + charRange.length ) == end ){
-                [utfString appendString: @"%"];
-            }
-            [newString appendString: utfString];
-        }else{
-            [newString appendString: subString];
-        }
-        charRange.location += charRange.length;
-        charRange.length = 1;
-    }
-    return [newString dataUsingEncoding:[self stringEncodingForTag:tag] allowLossyConversion:YES];
+	NSString *dataString = [dataView string];
+	NSMutableString *utfString, *newString = [NSMutableString string];
+	NSRange charRange, aCIDRange;
+	NSString *subString;
+	NSGlyphInfo *aGlyph;
+	NSStringEncoding checkEncoding;
+	unsigned startl, endl, end;
+	
+	if ([[self keyForStringEncoding:enc] isEqualToString:@"SJIS_X0213"]) {
+		checkEncoding = enc;
+	} else {
+		checkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
+	}
+	
+	charRange = NSMakeRange(0,1);
+	endl = 0;
+	while (charRange.location < [dataString length]) {
+		if (charRange.location == endl) {
+			[dataString getLineStart:&startl end:&endl contentsEnd:&end forRange:charRange];
+			//            NSLog( @"%d %d %d", startl, end, endl);
+		}
+		//        NSLog( @"%d %d", charRange.length, charRange.location);
+		charRange = [dataString rangeOfComposedCharacterSequenceAtIndex: charRange.location];
+		//        NSLog( @"%d %d", charRange.length, charRange.location);
+		subString = [dataString substringWithRange: charRange];
+		
+		if (![subString canBeConvertedToEncoding: checkEncoding]) {
+			aGlyph = [[dataView textStorage] attribute:NSGlyphInfoAttributeName
+											   atIndex:charRange.location effectiveRange:&aCIDRange];
+			if (aGlyph) {
+				// from rtf2tex (1.35)
+				/*                switch([aGlyph characterCollection]){
+				case NSAdobeCNS1CharacterCollection:
+					utfString = [NSMutableString stringWithFormat:@"%cCIDC{%d}",
+						g_texChar, [aGlyph characterIdentifier]];
+					break;
+				case NSAdobeGB1CharacterCollection:
+					utfString = [NSMutableString stringWithFormat:@"%cCIDT{%d}",
+						g_texChar, [aGlyph characterIdentifier]];
+					break;
+				case NSAdobeKorea1CharacterCollection:
+					utfString = [NSMutableString stringWithFormat:@"%cCIDK{%d}",
+						g_texChar, [aGlyph characterIdentifier]];
+					break;
+				case NSAdobeJapan1CharacterCollection:
+				case NSAdobeJapan2CharacterCollection:*/
+				utfString = [NSMutableString stringWithFormat:@"%CCID{%d}",
+					g_texChar, [aGlyph characterIdentifier]];
+				/*                    break;
+				case NSIdentityMappingCharacterCollection:
+				default:
+					utfString = [NSMutableString stringWithFormat:@"?"];
+					break;
+				}*/
+			} else if (charRange.length > 1) {
+				NSLayoutManager *aLayout = [dataView layoutManager];
+				utfString = [NSMutableString stringWithFormat:@"%CCID{%d}", g_texChar,
+					[aLayout glyphAtIndex:charRange.location]];
+				// 0x2014,0x2015 fix (reported by Kino-san)
+			} else if (![[self keyForStringEncoding:enc] isEqualToString:@"SJIS_X0213"] &&
+					   [subString characterAtIndex: 0] == 0x2015) {
+				utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
+			} else {
+				utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}",
+					g_texChar, [subString characterAtIndex: 0]];
+			}
+			if ((charRange.location + charRange.length) == end) {
+				[utfString appendString: @"%"];
+			}
+			[newString appendString: utfString];
+		} else {
+			[newString appendString: subString];
+		}
+		charRange.location += charRange.length;
+		charRange.length = 1;
+	}
+	
+	return [newString dataUsingEncoding:enc allowLossyConversion:YES];
 }
 // end 1.35 (C)
 

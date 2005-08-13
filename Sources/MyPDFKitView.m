@@ -3470,7 +3470,6 @@ done:
 	NSDictionary			*mySelectedAttributes;
 	NSMutableDictionary		*newSelectedAttributes;
 	
-	int						tag, theTag;
     id						myData;
     NSStringEncoding		theEncoding;
     NSString				*firstBytes, *encodingString, *testString;
@@ -3501,13 +3500,12 @@ done:
 	sourceText[0] = [[myDocument textView] string];
 	sourcelength[0] = [sourceText[0] length];
 	
-	if (numberOfFiles > 0)
+	if (numberOfFiles > 0) {
 		for (i = 0; i < numberOfFiles; i++) {
 			
-			tag = [myDocument encoding];
-			theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
+			theEncoding = [myDocument encoding];
 			myData = [NSData dataWithContentsOfFile:[sourceFiles objectAtIndex:i]];
-    
+			
 			// data in source
 			firstBytes = [[NSString alloc] initWithData:myData encoding:NSMacOSRomanStringEncoding];
 			length1 = [firstBytes length];
@@ -3515,13 +3513,13 @@ done:
 			linesTested = 0;
 			myRange.location = 0;
 			myRange.length = 1;
-
+			
 			while ((myRange.location < length1) && (!done) && (linesTested < 20)) {
 				[firstBytes getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
 				myRange.location = end;
 				myRange.length = 1;
 				linesTested++;
-            
+				
 				theRange1.location = start; theRange1.length = (end - start);
 				testString = [firstBytes substringWithRange: theRange1];
 				encodingRange = [testString rangeOfString:@"%!TEX encoding ="];
@@ -3532,10 +3530,9 @@ done:
 					if (newEncodingRange.length > 0) {
 						encodingString = [[testString substringWithRange: newEncodingRange] 
 							stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-						theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
-						theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
-						}
+						theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForKey: encodingString];
 					}
+				}
 				else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
 					encodingRange = [testString rangeOfString:@"%&encoding="];
 					if (encodingRange.location != NSNotFound) {
@@ -3545,28 +3542,25 @@ done:
 						if (newEncodingRange.length > 0) {
 							encodingString = [[testString substringWithRange: newEncodingRange] 
 								stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-							theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
-							theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
-							}
+							theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForKey: encodingString];
 						}
 					}
 				}
-
+			}
+			
 			[firstBytes release];
-	
-    
-    
+			
+			
+			
 			aString = [[[NSString alloc] initWithData:myData encoding:theEncoding] autorelease];
 			if (! aString) {
-				tag = [[TSEncodingSupport sharedInstance] tagForEncoding: @"MacOSRoman"];
-				theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
-				aString = [[[NSString alloc] initWithData:myData encoding:theEncoding] autorelease];
-				}
-
-			sourceText[i + 1] = aString;
-			//sourceText[i + 1] = [NSString stringWithContentsOfFile: [sourceFiles objectAtIndex:i] encoding:NSMacOSRomanStringEncoding error: &theError];
-			sourcelength[i + 1] = [sourceText[i + 1] length];
+				aString = [[[NSString alloc] initWithData:myData encoding:NSMacOSRomanStringEncoding] autorelease];
 			}
+			
+			sourceText[i + 1] = aString;
+			sourcelength[i + 1] = [sourceText[i + 1] length];
+		}
+	}
 						
 	found = NO;
 	searchWindow = 10;
@@ -3574,7 +3568,7 @@ done:
 	numberOfTests = 1;
 	
 	while ((! found) && (numberOfTests < 20) && (testIndex >= 0)) {
-	
+		
 		// get surrounding letters back and forward
 		if (testIndex >= searchWindow)
 			startIndex = testIndex - searchWindow;
@@ -3584,19 +3578,19 @@ done:
 			endIndex = testIndex + searchWindow;
 		else
 			endIndex = length - 1;
-			
+		
 		myRange.location = startIndex;
 		myRange.length = endIndex - startIndex;
 		searchText = [fullText substringWithRange: myRange];
 		testIndex = testIndex - 5;
 		numberOfTests++;
 		
-	// search for this in the source
-	
+		// search for this in the source
+		
 		foundOne = NO;
 		foundMoreThanOne = NO;
 		for (i = 0; i < (numberOfFiles + 1); i++)
-			{
+		{
 			if (foundMoreThanOne) 
 				break;
 			maskRange.location = 0;
@@ -3613,22 +3607,22 @@ done:
 					foundIndex = i;
 					foundlength = sourcelength[i];
 					foundRange = searchRange;
-					}
 				}
 			}
+		}
 		if (foundOne && (!foundMoreThanOne)) {
 			found = YES;
 			if (foundIndex == 0) {
 				myTextView = [myDocument textView];
 				myTextWindow = [myDocument textWindow];
 				[myDocument setTextSelectionYellow: YES];
-				}
+			}
 			else {
 				newDocument = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfFile:[sourceFiles objectAtIndex:(foundIndex - 1)] display:YES];
 				myTextView = [newDocument textView];
 				myTextWindow = [newDocument textWindow];
 				[newDocument setTextSelectionYellow: YES];
-				}
+			}
 			mySelectedAttributes = [myTextView selectedTextAttributes];
 			newSelectedAttributes = [NSMutableDictionary dictionaryWithDictionary: mySelectedAttributes];
 			[newSelectedAttributes setObject:[NSColor yellowColor] forKey:@"NSBackgroundColor"];
@@ -3643,13 +3637,13 @@ done:
 			[myTextWindow makeKeyAndOrderFront:self];
 			// [myTextView setSelectedTextAttributes: mySelectedAttributes];
 			return YES;
-			}
+		}
 	}
 
 	testIndex = theIndex + 5;
 	numberOfTests = 2;
 	while ((! found) && (numberOfTests < 20) && (testIndex < length)) {
-	
+		
 		// get surrounding letters back and forward
 		if (testIndex > searchWindow)
 			startIndex = testIndex - searchWindow;
@@ -3666,12 +3660,11 @@ done:
 		testIndex = testIndex + 5;
 		numberOfTests++;
 		
-	// search for this in the source
-	// search for this in the source
+		// search for this in the source
+		// search for this in the source
 		foundOne = NO;
 		foundMoreThanOne = NO;
-		for (i = 0; i < (numberOfFiles + 1); i++)
-			{
+		for (i = 0; i < (numberOfFiles + 1); i++) {
 			if (foundMoreThanOne) 
 				break;
 			maskRange.location = 0;
@@ -3688,20 +3681,20 @@ done:
 					foundIndex = i;
 					foundlength = sourcelength[i];
 					foundRange = searchRange;
-					}
 				}
 			}
+		}
 		if (foundOne && (!foundMoreThanOne)) {
 			found = YES;
 			if (foundIndex == 0) {
 				myTextView = [myDocument textView];
 				myTextWindow = [myDocument textWindow];
-				}
+			}
 			else {
 				newDocument = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfFile:[sourceFiles objectAtIndex:(foundIndex - 1)] display:YES];
 				myTextView = [newDocument textView];
 				myTextWindow = [newDocument textWindow];
-				}
+			}
 			mySelectedAttributes = [myTextView selectedTextAttributes];
 			newSelectedAttributes = [NSMutableDictionary dictionaryWithDictionary: mySelectedAttributes];
 			[newSelectedAttributes setObject:[NSColor yellowColor] forKey:@"NSBackgroundColor"];
@@ -3712,12 +3705,12 @@ done:
 			else {
 				correctedFoundRange.location = foundRange.location - correction;
 				correctedFoundRange.length = foundRange.length;
-				}
+			}
 			[myTextView setSelectedRange: correctedFoundRange];
 			[myTextView scrollRangeToVisible: correctedFoundRange];
 			[myTextWindow makeKeyAndOrderFront:self];
 			return YES;
-			}
+		}
 	}
 	
 	return NO;

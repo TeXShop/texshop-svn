@@ -97,8 +97,8 @@ enum RootCommand
 	id			drawerKK;
 	
     id			tags;
-    int			encoding;		/*" using tags of encoding matrix; changing tags does not change preference "*/
-    int			tempencoding;
+    NSStringEncoding	_encoding;
+    NSStringEncoding	_tempencoding;
     int			whichScript;		/*" 100 = pdftex, 101 = gs, 102 = personal script "*/
     int			whichEngine;		/*" 1 = tex, 2 = latex, 3 = bibtex, 4 = makeindex, 5 = megapost, 6 = context,
                                                     7 = metafont "*/
@@ -109,7 +109,7 @@ enum RootCommand
     NSFileHandle	*readHandle;
     NSPipe		*inputPipe;
     NSPipe		*outputPipe;
-    NSString		*aString;		/*" holds the content of the tex document "*/
+    NSString		*_documentContent;		/*" holds the content of the tex document "*/
     NSTask		*texTask;
     NSTask		*bibTask;
     NSTask		*indexTask;
@@ -170,7 +170,7 @@ enum RootCommand
     BOOL                useTempEngine;
     BOOL                realEngine;
     NSWindow            *callingWindow;
-    int                 badEncoding;
+    NSStringEncoding	_badEncoding;
     BOOL                showBadEncodingDialog;
 	MyPDFKitView		*myPDFKitView;
 	BOOL				PDFfromKit;
@@ -197,7 +197,7 @@ enum RootCommand
 - (void) printSource: sender;
 - (void) okForRequest: sender;
 - (void) chooseEncoding: sender;
-- (int) encoding;
+- (NSStringEncoding) encoding;
 - (void) okForPrintRequest: sender;
 - (void) close;
 - (void) setProjectFile: sender;

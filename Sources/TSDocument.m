@@ -90,12 +90,12 @@
     tryAgain = NO;
     useTempEngine = NO;
     callingWindow = nil;
-    badEncoding = 0;
+    _badEncoding = 0;
     showBadEncodingDialog = NO;
 	PDFfromKit = NO;
 	textSelectionYellow = NO;
         
-    encoding = [[TSDocumentController sharedDocumentController] encoding];
+    _encoding = [[TSDocumentController sharedDocumentController] encoding];
     
     return self;
 }
@@ -332,12 +332,12 @@
 	
 	if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
 		if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030)) 
-            aString = [OGRegularExpression replaceNewlineCharactersInString:aString 
+            _documentContent = [OGRegularExpression replaceNewlineCharactersInString:_documentContent 
 															  withCharacter:OgreLfNewlineCharacter];
 	}
 	
-	[textView setString: aString];
-	length = [aString length];
+	[textView setString: _documentContent];
+	length = [_documentContent length];
 	[self setupTags];
 	
 	if (([SUD boolForKey:SyntaxColoringEnabledKey]) && (fileIsTex)) 
@@ -347,8 +347,8 @@
 		// syntaxColoringTimer = [[NSTimer scheduledTimerWithTimeInterval: COLORTIME target:self selector:@selector(fixColor1:) userInfo:nil repeats:YES] retain];
 	}
 	
-	// [aString release];  // mitsu 1.29 memory leak fix; aString is autoreleased
-	aString = nil;
+	// [_documentContent release];  // mitsu 1.29 memory leak fix; _documentContent is autoreleased
+	_documentContent = nil;
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
@@ -356,7 +356,7 @@
 	BOOL	value;
 	
 	value = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
-	if ((value) && (aString != nil))
+	if ((value) && (_documentContent != nil))
 		[self installStringIntoTextEdit];
 	[textView setNeedsDisplayInRect: [textView bounds]];
 	return value;
@@ -676,7 +676,7 @@
 		detexPipe = nil;
 		
     }
-	else if (aString != nil) 
+	else if (_documentContent != nil) 
     {
         [self installStringIntoTextEdit];
         
@@ -811,7 +811,7 @@
 - (void)tryBadEncodingDialog: (NSWindow *)theWindow
 {
     if (showBadEncodingDialog) {
-        NSString *theEncoding = [[TSEncodingSupport sharedInstance] encodingForTag: badEncoding];
+        NSString *theEncoding = [[TSEncodingSupport sharedInstance] localizedNameForStringEncoding: _badEncoding];
         NSBeginAlertSheet(NSLocalizedString(@"This file was opened with MacOSRoman encoding.", @"This file was opened with MacOSRoman encoding."),
 						  nil, nil, nil, theWindow, nil, nil, nil, nil, 
 						  NSLocalizedString(@"The file could not be opened with %@ encoding because it was not saved with that encoding. If you wish to open in another encoding, close the window and open again.", 
@@ -882,47 +882,54 @@
 
 // The next three methods implement the encoding button in the save panel
 
-- (void) chooseEncoding: sender;
+- (void) chooseEncoding: sender
 {
-    tempencoding = [[sender selectedCell] tag];
+	int tag = [[sender selectedCell] tag];
+	_tempencoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
 }
 
-- (int) encoding;
+- (NSStringEncoding) encoding
 {
-	return encoding;
+	return _encoding;
 }
 
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo
 {
-    tempencoding = encoding;
-    [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
+	_tempencoding = _encoding;
+	[super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
 
 
 - (void)saveToFile:(NSString *)fileName saveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo
 {
 	if (fileName != nil)
-		encoding = tempencoding;
+		_encoding = _tempencoding;
 	[super saveToFile: fileName saveOperation: saveOperation delegate: delegate didSaveSelector: didSaveSelector contextInfo: contextInfo];
 }
 
 
-- (BOOL)prepareSavePanel:(NSSavePanel *)savePanel;
+- (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
 {
-    NSView	*accessoryView;
-    
-    [openSaveBox selectItemAtIndex: encoding];
-    accessoryView = [savePanel accessoryView];
-    [openSaveView retain];
-    NSEnumerator *enumerator = [[accessoryView subviews] objectEnumerator];
-    id	anObject;
-    while ((anObject = [enumerator nextObject]))
-        [openSaveView addSubview: anObject];
-    [savePanel setAccessoryView: openSaveView];
-    return YES;
+	NSView	*accessoryView;
+	
+	// FIXME HACK: This can be removed once we converted all encoding menus to be generated on the fly.
+	NSString *encName = [[TSEncodingSupport sharedInstance] keyForStringEncoding:_encoding];
+	int tag = [[TSEncodingSupport sharedInstance] tagForEncoding:encName];
+
+	[openSaveBox selectItemAtIndex: tag];
+	accessoryView = [savePanel accessoryView];
+	[openSaveView retain];	// FIXME: Why is this retain needed?
+	
+	// FIXME: Why do we loop over the subviews of the accessoryView of the savepanel and add them ?!?
+	NSEnumerator *enumerator = [[accessoryView subviews] objectEnumerator];
+	id	anObject;
+	while ((anObject = [enumerator nextObject]))
+		[openSaveView addSubview: anObject];
+	[savePanel setAccessoryView: openSaveView];
+	return YES;
 }
 
-- (void) splitWindow: sender;
+- (void) splitWindow: sender
 {
     NSSize		newSize;
     NSRect		theFrame;
@@ -1292,61 +1299,51 @@ preference change is cancelled. "*/
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType {
 	
-    NSStringEncoding	theEncoding;
     NSRange             encodingRange, newEncodingRange, myRange, theRange;
     unsigned            length;
     NSString            *encodingString, *text, *testString;
-    int                 theTag;
     BOOL                done;
     int                 linesTested;
     unsigned            start, end, irrelevant;
     
-    // The following is line has been changed to fix the bug from Geoff Leyland 
-    // return [[textView string] dataUsingEncoding: NSASCIIStringEncoding];
-    
-    theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: encoding];
-	
-    if ((GetCurrentKeyModifiers() & optionKey) == 0) {
+	// FIXME: Unify this with the code in readFromFile:
+	if ((GetCurrentKeyModifiers() & optionKey) == 0) {
+		text = [textView string];
+		length = [text length];
+		done = NO;
+		linesTested = 0;
+		myRange.location = 0;
+		myRange.length = 1;
 		
-        text = [textView string];
-        length = [text length];
-        done = NO;
-        linesTested = 0;
-        myRange.location = 0;
-        myRange.length = 1;
-		
-        while ((myRange.location < length) && (!done) && (linesTested < 20)) {
-            [text getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
-            myRange.location = end;
-            myRange.length = 1;
-            linesTested++;
-            
-            theRange.location = start; theRange.length = (end - start);
-            testString = [text substringWithRange: theRange];
-            encodingRange = [testString rangeOfString:@"%!TEX encoding ="];
-            if (encodingRange.location != NSNotFound) {
-                done = YES;
-                newEncodingRange.location = encodingRange.location + 16;
-                newEncodingRange.length = [testString length] - newEncodingRange.location;
-                if (newEncodingRange.length > 0) {
-                    encodingString = [[testString substringWithRange: newEncodingRange] 
-                        stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                    theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
-                    encoding = theTag; tempencoding = theTag;
-                    theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
+		while ((myRange.location < length) && (!done) && (linesTested < 20)) {
+			[text getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+			myRange.location = end;
+			myRange.length = 1;
+			linesTested++;
+			
+			// FIXME: Simplify the following code
+			theRange.location = start; theRange.length = (end - start);
+			testString = [text substringWithRange: theRange];
+			encodingRange = [testString rangeOfString:@"%!TEX encoding ="];
+			if (encodingRange.location != NSNotFound) {
+				done = YES;
+				newEncodingRange.location = encodingRange.location + 16;
+				newEncodingRange.length = [testString length] - newEncodingRange.location;
+				if (newEncodingRange.length > 0) {
+					encodingString = [[testString substringWithRange: newEncodingRange] 
+						stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+					_encoding = _tempencoding = [[TSEncodingSupport sharedInstance] stringEncodingForKey: encodingString];
 				}
 			} else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
-                encodingRange = [testString rangeOfString:@"%&encoding="];
-                if (encodingRange.location != NSNotFound) {
-                    done = YES;
-                    newEncodingRange.location = encodingRange.location + 11;
-                    newEncodingRange.length = [testString length] - newEncodingRange.location;
-                    if (newEncodingRange.length > 0) {
-                        encodingString = [[testString substringWithRange: newEncodingRange] 
-                            stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                        theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
-                        encoding = theTag; tempencoding = theTag;
-                        theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
+				encodingRange = [testString rangeOfString:@"%&encoding="];
+				if (encodingRange.location != NSNotFound) {
+					done = YES;
+					newEncodingRange.location = encodingRange.location + 11;
+					newEncodingRange.length = [testString length] - newEncodingRange.location;
+					if (newEncodingRange.length > 0) {
+						encodingString = [[testString substringWithRange: newEncodingRange] 
+							stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						_encoding = _tempencoding = [[TSEncodingSupport sharedInstance] stringEncodingForKey: encodingString];
 					}
 				}
 			}
@@ -1357,35 +1354,26 @@ preference change is cancelled. "*/
 	
 	// zenitani 1.35 (C) --- utf.sty output
 	if( [SUD boolForKey:ptexUtfOutputEnabledKey] &&
-		[[TSEncodingSupport sharedInstance] ptexUtfOutputCheck: [textView string] withEncoding: encoding] ) {
+		[[TSEncodingSupport sharedInstance] ptexUtfOutputCheck: [textView string] withEncoding: _encoding] ) {
 		
-        return [[TSEncodingSupport sharedInstance] ptexUtfOutput: textView withEncoding: encoding];
-        
+        return [[TSEncodingSupport sharedInstance] ptexUtfOutput: textView withEncoding: _encoding];
 	} else {
-		
-        return [[textView string] dataUsingEncoding: theEncoding allowLossyConversion:YES];
-        
+        return [[textView string] dataUsingEncoding: _encoding allowLossyConversion:YES];
 	}
-    
 }
 
 
 - (BOOL)readFromFile:(NSString *)fileName ofType:(NSString *)type {
-    int			tag, theTag;
     id 			myData;
-    NSStringEncoding	theEncoding;
     NSString            *firstBytes, *encodingString, *testString;
     NSRange             encodingRange, newEncodingRange, myRange, theRange;
     unsigned            length, start, end, irrelevant;
     BOOL                done;
     int                 linesTested;
     
-	//    tag = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
-    tag = encoding;
-    theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
     myData = [NSData dataWithContentsOfFile:fileName];
     
-    // data in source
+	// FIXME: Unify this with the code in dataRepresentationOfType:
     if ((GetCurrentKeyModifiers() & optionKey) == 0) {
         firstBytes = [[NSString alloc] initWithData:myData encoding:NSMacOSRomanStringEncoding];
         length = [firstBytes length];
@@ -1394,39 +1382,35 @@ preference change is cancelled. "*/
         myRange.location = 0;
         myRange.length = 1;
 		
-        while ((myRange.location < length) && (!done) && (linesTested < 20)) {
-            [firstBytes getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
-            myRange.location = end;
-            myRange.length = 1;
-            linesTested++;
-            
-            theRange.location = start; theRange.length = (end - start);
-            testString = [firstBytes substringWithRange: theRange];
-            encodingRange = [testString rangeOfString:@"%!TEX encoding ="];
-            if (encodingRange.location != NSNotFound) {
-                done = YES;
-                newEncodingRange.location = encodingRange.location + 16;
-                newEncodingRange.length = [testString length] - newEncodingRange.location;
-                if (newEncodingRange.length > 0) {
-                    encodingString = [[testString substringWithRange: newEncodingRange] 
-                        stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                    theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
-                    encoding = theTag; tempencoding = theTag;
-                    theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
+		while ((myRange.location < length) && (!done) && (linesTested < 20)) {
+			[firstBytes getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+			myRange.location = end;
+			myRange.length = 1;
+			linesTested++;
+			
+			// FIXME: Simplify the following code
+			theRange.location = start; theRange.length = (end - start);
+			testString = [firstBytes substringWithRange: theRange];
+			encodingRange = [testString rangeOfString:@"%!TEX encoding ="];
+			if (encodingRange.location != NSNotFound) {
+				done = YES;
+				newEncodingRange.location = encodingRange.location + 16;
+				newEncodingRange.length = [testString length] - newEncodingRange.location;
+				if (newEncodingRange.length > 0) {
+					encodingString = [[testString substringWithRange: newEncodingRange] 
+						stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+					_encoding = _tempencoding = [[TSEncodingSupport sharedInstance] stringEncodingForKey: encodingString];
 				}
-			}
-            else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
-                encodingRange = [testString rangeOfString:@"%&encoding="];
-                if (encodingRange.location != NSNotFound) {
-                    done = YES;
-                    newEncodingRange.location = encodingRange.location + 11;
-                    newEncodingRange.length = [testString length] - newEncodingRange.location;
-                    if (newEncodingRange.length > 0) {
-                        encodingString = [[testString substringWithRange: newEncodingRange] 
-                            stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                        theTag = [[TSEncodingSupport sharedInstance] tagForEncoding:encodingString];
-                        encoding = theTag; tempencoding = theTag;
-                        theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: theTag];
+			} else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
+				encodingRange = [testString rangeOfString:@"%&encoding="];
+				if (encodingRange.location != NSNotFound) {
+					done = YES;
+					newEncodingRange.location = encodingRange.location + 11;
+					newEncodingRange.length = [testString length] - newEncodingRange.location;
+					if (newEncodingRange.length > 0) {
+						encodingString = [[testString substringWithRange: newEncodingRange] 
+							stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						_encoding = _tempencoding = [[TSEncodingSupport sharedInstance] stringEncodingForKey: encodingString];
 					}
 				}
 			}
@@ -1437,11 +1421,11 @@ preference change is cancelled. "*/
 	
     
     
-    aString = [[[NSString alloc] initWithData:myData encoding:theEncoding] autorelease];
-    if (!aString) {
-        badEncoding = tag;
+    _documentContent = [[[NSString alloc] initWithData:myData encoding:_encoding] autorelease];
+    if (!_documentContent) {
+        _badEncoding = _encoding;
         showBadEncodingDialog = YES;
-        aString = [[[NSString alloc] initWithData:myData encoding:NSMacOSRomanStringEncoding] autorelease];
+        _documentContent = [[[NSString alloc] initWithData:myData encoding:NSMacOSRomanStringEncoding] autorelease];
 	}
     return YES;
 }
@@ -1555,7 +1539,6 @@ preference change is cancelled. "*/
     NSNumber		*theLocation, *theLength;
     id			myData;
     NSStringEncoding	theEncoding;
-    int			tag;
     
     NSRange 		NewlineRange;
     int 		i, numTabs, numSpaces=0;
@@ -1591,17 +1574,16 @@ preference change is cancelled. "*/
         nameString = [nameString stringByAppendingPathComponent:[theItem title]];
         nameString = [nameString stringByAppendingPathExtension:@"tex"];
 */
-        tag = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
-        theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
+        theEncoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
         myData = [NSData dataWithContentsOfFile:nameString];
         templateString = [[[NSMutableString alloc] initWithData:myData encoding:theEncoding] autorelease];
 
-
-
         // check and rebuild the trailing string...
         numTabs = [self textViewCountTabs:textView andSpaces:(int *)&numSpaces];
-        for(i=0 ; i<numTabs ; i++) [indentString appendString:@"\t"];
-        for(i=0 ; i<numSpaces ; i++) [indentString appendString:@" "];
+        for (i = 0; i < numTabs; i++)
+			[indentString appendString:@"\t"];
+        for (i = 0; i < numSpaces; i++)
+			[indentString appendString:@" "];
 
         // modify the template string and add the tabs & spaces...
         NewlineRange = [templateString rangeOfString: @"\n"
@@ -2760,46 +2742,43 @@ preference change is cancelled. "*/
 // the next routine is used by applescript
 - (void)refreshTEXT; 
 {
-     int                tag;
-     unsigned           length;
-     NSString		*textPath;
-     NSRange            myRange;
+	unsigned           length;
+	NSString		*textPath;
+	NSRange            myRange;
 #ifndef ROOTFILE
-    NSString		*projectPath, *nameString;
+	NSString		*projectPath, *nameString;
 #endif
-
-    textPath = [self fileName];
-
-    if ([[NSFileManager defaultManager] fileExistsAtPath: textPath]) {
-    
-        tag = encoding;
-        NSStringEncoding theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
-        NSData *myData = [NSData dataWithContentsOfFile:textPath];
-        NSString *theString = [[[NSString alloc] initWithData:myData encoding:theEncoding] autorelease];
-
-        if (theString != nil) 
-        {	
-            [textView setString: theString];
-            length = [theString length];
-        
-            if (fileIsTex) {
-                if (windowIsSplit)
-                    [self splitWindow: self];
-                [self setupTags];
-                if (([SUD boolForKey:SyntaxColoringEnabledKey]) && (fileIsTex)) 
-                    {
-                    colorLocation = 0;
-                    [self fixColor2:0 :length];
-                    }
-                }
-    
-            myRange.location = 0;
-            myRange.length = 0;
-            [textView setSelectedRange: myRange];
-            [textWindow setInitialFirstResponder: textView];
-            [textWindow makeFirstResponder: textView];
-        }
-    }
+	
+	textPath = [self fileName];
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath: textPath]) {
+		
+		NSData *myData = [NSData dataWithContentsOfFile:textPath];
+		NSString *theString = [[[NSString alloc] initWithData:myData encoding:_encoding] autorelease];
+		
+		if (theString != nil) 
+		{	
+			[textView setString: theString];
+			length = [theString length];
+			
+			if (fileIsTex) {
+				if (windowIsSplit)
+					[self splitWindow: self];
+				[self setupTags];
+				if (([SUD boolForKey:SyntaxColoringEnabledKey]) && (fileIsTex)) 
+				{
+					colorLocation = 0;
+					[self fixColor2:0 :length];
+				}
+			}
+			
+			myRange.location = 0;
+			myRange.length = 0;
+			[textView setSelectedRange: myRange];
+			[textWindow setInitialFirstResponder: textView];
+			[textWindow makeFirstResponder: textView];
+		}
+	}
 }    
 
 
@@ -2823,7 +2802,7 @@ preference change is cancelled. "*/
     NSString		*newOutput, *numberOutput, *searchString, *tempString, *detexString;
     NSData		*myData, *detexData;
     NSRange		myRange, lineRange, searchRange;
-    int			error, tag;
+    int			error;
     int                 lineCount, wordCount, charCount;
     unsigned int	myLength;
     unsigned		start, end, irrelevant;
@@ -2831,17 +2810,14 @@ preference change is cancelled. "*/
     BOOL                result;
     
     NSFileHandle *myFileHandle = [aNotification object];
-    if (myFileHandle == readHandle) 
-    {
+    if (myFileHandle == readHandle) {
         myData = [[aNotification userInfo] objectForKey:@"NSFileHandleNotificationDataItem"];
-        if ([myData length]) 
-        {
-            tag = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
-            theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
+        if ([myData length]) {
+            theEncoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
             newOutput = [[NSString alloc] initWithData: myData encoding: theEncoding];
         
             // 1.35 (F) fix --- suggested by Kino-san
-            if( newOutput == nil ){
+            if (newOutput == nil) {
                 newOutput = [[NSString alloc] initWithData: myData encoding: NSMacOSRomanStringEncoding];
             }
             // 1.35 (F) end
