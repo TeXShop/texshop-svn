@@ -1,7 +1,7 @@
 {
     IBClasses = (
         {
-            ACTIONS = {"" = id; takeDestinationFromOutline = id; }; 
+            ACTIONS = {"" = id; nextPage = id; previousPage = id; takeDestinationFromOutline = id; }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
