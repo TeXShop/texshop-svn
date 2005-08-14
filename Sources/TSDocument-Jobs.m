@@ -406,21 +406,17 @@
 // typesetting.
 - (void) saveFinished: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo;
 {
-#ifndef ROOTFILE
-	NSString		 *project, *nameString, *projectPath;
-#endif
-	NSArray		*myList;
+	NSArray			*myList;
 	NSString		*theSource, *theKey, *myEngine, *testString, *programString;
-	NSRange		aRange, myRange, theRange, programRange, newProgramRange;
+	NSRange			aRange, myRange, theRange, programRange, newProgramRange;
 	unsigned int	mystart, myend;
-	unsigned int        start, end, irrelevant;
-	int                 whichEngineLocal;
-	int                 i, j;
-	BOOL                done;
-	unsigned            length;
-	int                 linesTested;
-	NSData              *myData;
-
+	unsigned int    start, end, irrelevant;
+	int             whichEngineLocal;
+	int             i, j;
+	BOOL            done;
+	unsigned        length;
+	int             linesTested;
+	NSData          *myData;
 
 
 	if (useTempEngine)
@@ -445,18 +441,13 @@
 		useTempEngine = NO;
 		return;
 	}
-#ifdef ROOTFILE
 	if ([self checkRootFile_forTask:RootForTexing]) {
 		useTempEngine = NO;
 		return;
 	}
-#endif
 
-#ifdef NAIRN
 	if (! externalEditor)
 		[self checkFileLinks:theSource];
-#endif
-
 
 	// New Stuff
 	length = [theSource length];
@@ -486,33 +477,27 @@
 					withLatex = NO;
 					theScript = 100;
 					done = YES;
-				}
-				else if ([programString isEqualToString:@"pdflatex"]) {
+				} else if ([programString isEqualToString:@"pdflatex"]) {
 					withLatex = YES;
 					theScript = 100;
 					done = YES;
-				}
-				else if ([programString isEqualToString:@"tex"]) {
+				} else if ([programString isEqualToString:@"tex"]) {
 					withLatex = NO;
 					theScript = 101;
 					done = YES;
-				}
-				else if ([programString isEqualToString:@"latex"]) {
+				} else if ([programString isEqualToString:@"latex"]) {
 					withLatex = YES;
 					theScript = 101;
 					done = YES;
-				}
-				else if ([programString isEqualToString:@"personaltex"]) {
+				} else if ([programString isEqualToString:@"personaltex"]) {
 					withLatex = NO;
 					theScript = 102;
 					done = YES;
-				}
-				else if ([programString isEqualToString:@"personallatex"]) {
+				} else if ([programString isEqualToString:@"personallatex"]) {
 					withLatex = YES;
 					theScript = 102;
 					done = YES;
-				}
-				else {
+				} else {
 					i = UserEngine;
 					j = [programButton numberOfItems];
 					while ((i <= j) && (! done)) {
@@ -547,24 +532,19 @@
 		if ((theKey) && ([theKey isEqualToString:@"%&pdftex"])) {
 			withLatex = NO;
 			theScript = 100;
-		}
-		else if ((theKey) && ([theKey isEqualToString:@"%&pdflatex"])) {
+		} else if ((theKey) && ([theKey isEqualToString:@"%&pdflatex"])) {
 			withLatex = YES;
 			theScript = 100;
-		}
-		else if ((theKey) && ([theKey isEqualToString:@"%&tex"])) {
+		} else if ((theKey) && ([theKey isEqualToString:@"%&tex"])) {
 			withLatex = NO;
 			theScript = 101;
-		}
-		else if ((theKey) && ([theKey isEqualToString:@"%&latex"])) {
+		} else if ((theKey) && ([theKey isEqualToString:@"%&latex"])) {
 			withLatex = YES;
 			theScript = 101;
-		}
-		else if ((theKey) && ([theKey isEqualToString:@"%&personaltex"])) {
+		} else if ((theKey) && ([theKey isEqualToString:@"%&personaltex"])) {
 			withLatex = NO;
 			theScript = 102;
-		}
-		else if ((theKey) && ([theKey isEqualToString:@"%&personallatex"])) {
+		} else if ((theKey) && ([theKey isEqualToString:@"%&personallatex"])) {
 			withLatex = YES;
 			theScript = 102;
 		}
@@ -581,28 +561,22 @@
 				if ([lowerprogramName isEqualToString:@"pdftex"]) {
 					withLatex = NO;
 					theScript = 100;
-				}
-				else if ([lowerprogramName isEqualToString:@"pdflatex"]) {
+				} else if ([lowerprogramName isEqualToString:@"pdflatex"]) {
 					withLatex = YES;
 					theScript = 100;
-				}
-				else if ([lowerprogramName isEqualToString:@"tex"]) {
+				} else if ([lowerprogramName isEqualToString:@"tex"]) {
 					withLatex = NO;
 					theScript = 101;
-				}
-				else if ([lowerprogramName isEqualToString:@"latex"]) {
+				} else if ([lowerprogramName isEqualToString:@"latex"]) {
 					withLatex = YES;
 					theScript = 101;
-				}
-				else if ([lowerprogramName isEqualToString:@"personaltex"]) {
+				} else if ([lowerprogramName isEqualToString:@"personaltex"]) {
 					withLatex = NO;
 					theScript = 102;
-				}
-				else if ([lowerprogramName isEqualToString:@"personallatex"]) {
+				} else if ([lowerprogramName isEqualToString:@"personallatex"]) {
 					withLatex = YES;
 					theScript = 102;
-				}
-				else {
+				} else {
 					i = UserEngine;
 					j = [programButton numberOfItems];
 					done = NO;
@@ -626,7 +600,7 @@
 			myEngine = [[SUD stringForKey:LatexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
 		else
 			myEngine = [[SUD stringForKey:TexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
-
+		
 		// search for --shell-escape
 		aRange = [myEngine rangeOfString:@"--shell-escape"];
 		if (aRange.location == NSNotFound)
@@ -648,50 +622,49 @@
 {
 	BOOL    isFile;
 	BOOL    isExecutable;
-
+	
 	// Ensure we have an absolute filename for the executable, prepending  the teTeX bin path if need be.
 	NSString* filename = leafname;
 	if (filename != nil && [filename length] > 0 && ([filename characterAtIndex: 0] != '/') && ([filename characterAtIndex: 0] != '~')) {
 		NSString* tetexBinPath = [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"];
 		filename = [tetexBinPath stringByAppendingString: leafname];
 	}
-
+	
 	// If the executable doesn't exist, we can't launch it.
 	filename = [filename stringByExpandingTildeInPath];
-
+	
 	if (theEngine >= UserEngine) {
 		isFile = [[NSFileManager defaultManager] fileExistsAtPath: filename];
 		if (! isFile) {
 			NSBeginAlertSheet(NSLocalizedString(@"Can't find required tool.", @"Can't find required tool."),
-				nil, nil, nil,[textView window], nil, nil, nil, nil,
-				NSLocalizedString(@"%@ does not exist", @"%@ does not exist"), filename);
+							  nil, nil, nil,[textView window], nil, nil, nil, nil,
+							  NSLocalizedString(@"%@ does not exist", @"%@ does not exist"), filename);
 			return FALSE;
-			}
-		else
+		} else
 			isExecutable = [[NSFileManager defaultManager] isExecutableFileAtPath: filename];
-			if (! isExecutable) {
-				NSBeginAlertSheet(NSLocalizedString(@"Can't find required tool.", @"Can't find required tool."),
-					nil,nil,nil,[textView window],nil,nil,nil,nil,
-					NSLocalizedString(@"%@ does not have the executable bit set.", @"%@ does not have the executable bit set."), filename);
-				return FALSE;
-				}
+		if (! isExecutable) {
+			NSBeginAlertSheet(NSLocalizedString(@"Can't find required tool.", @"Can't find required tool."),
+							  nil,nil,nil,[textView window],nil,nil,nil,nil,
+							  NSLocalizedString(@"%@ does not have the executable bit set.", @"%@ does not have the executable bit set."), filename);
+			return FALSE;
 		}
+	}
 	else
 		isExecutable = [[NSFileManager defaultManager] isExecutableFileAtPath: filename];
 	if (filename == nil || [filename length] == 0 || isExecutable == FALSE) {
 		NSBeginAlertSheet(NSLocalizedString(@"Can't find required tool.", @"Can't find required tool."),
-							nil, nil, nil, [textView window], nil, nil, nil, nil,
+						  nil, nil, nil, [textView window], nil, nil, nil, nil,
 						  NSLocalizedString(@"%@ does not exist. Perhaps teTeX was not installed or was removed during a system upgrade. If so, go to the TeXShop web site and follow the instructions to (re)install teTeX. Another possibility is that a tool path is incorrectly configured in TeXShop preferences. This can happen if you are using the fink teTeX distribution.",
-						  @"%@ does not exist. Perhaps teTeX was not installed or was removed during a system upgrade. If so, go to the TeXShop web site and follow the instructions to (re)install teTeX. Another possibility is that a tool path is incorrectly configured in TeXShop preferences. This can happen if you are using the fink teTeX distribution."),
-
-						/*
-						  NSLocalizedString(@"%@ does not exist.  Is one of the tool paths configured incorrectly?",
-											@"%@ does not exist.  Is one of the tool paths configured incorrectly?"),
-						*/
+											@"%@ does not exist. Perhaps teTeX was not installed or was removed during a system upgrade. If so, go to the TeXShop web site and follow the instructions to (re)install teTeX. Another possibility is that a tool path is incorrectly configured in TeXShop preferences. This can happen if you are using the fink teTeX distribution."),
+						  
+						  /*
+						   NSLocalizedString(@"%@ does not exist.  Is one of the tool paths configured incorrectly?",
+											 @"%@ does not exist.  Is one of the tool paths configured incorrectly?"),
+						   */
 						  filename);
 		return FALSE;
 	}
-
+	
 	// We know the executable is okay, so give it a go...
 	[task setLaunchPath: filename];
 	[task setArguments: args];
@@ -711,9 +684,6 @@
 	NSMutableArray	*args;
 	NSDictionary	*myAttributes;
 	NSString		*imagePath;
-#ifndef ROOTFILE
-	NSString		 *project, *nameString, *projectPath;
-#endif
 	NSString		*sourcePath;
 	NSString            *gsPath;
 	NSRange		aRange;
@@ -733,58 +703,24 @@
 
 	myFileName = [self fileName];
 	if ([myFileName length] > 0) {
-
+		
 		if (startDate != nil) {
 			[startDate release];
 			startDate = nil;
-			}
-
-#ifndef ROOTFILE
-
-		projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
-		if ([[NSFileManager defaultManager] fileExistsAtPath: projectPath]) {
-			NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
-			if ([projectRoot isAbsolutePath]) {
-				nameString = [NSString stringWithString:projectRoot];
-			}
-			else {
-				nameString = [[self fileName] stringByDeletingLastPathComponent];
-				nameString = [[nameString stringByAppendingString:@"/"]
-					stringByAppendingString: [NSString stringWithContentsOfFile: projectPath]];
-				nameString = [nameString stringByStandardizingPath];
-			}
-			imagePath = [[nameString stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
 		}
-		else
-#endif
-			imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-
+		
+		imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+		
 		if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
 			myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
 			startDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
 		}
 		else
 			startDate = nil;
-
-#ifndef ROOTFILE
-		project = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension: @"texshop"];
-		if ([[NSFileManager defaultManager] fileExistsAtPath: project]) {
-			NSString *projectRoot = [NSString stringWithContentsOfFile: project];
-			if ([projectRoot isAbsolutePath]) {
-				sourcePath = [NSString stringWithString:projectRoot];
-			}
-			else {
-				sourcePath = [[self fileName] stringByDeletingLastPathComponent];
-				sourcePath = [[sourcePath stringByAppendingString:@"/"]
-					stringByAppendingString: projectRoot];
-				sourcePath = [sourcePath stringByStandardizingPath];
-			}
-		}
-		else
-#endif
-			sourcePath = myFileName;
-
-
+		
+		sourcePath = myFileName;
+		
+		
 
 		args = [NSMutableArray array];
 
@@ -838,7 +774,7 @@
 				}
 			texTask = [[NSTask alloc] init];
 
-			if (whichEngineLocal ==ContextEngine) {
+			if (whichEngineLocal == ContextEngine) {
 				if (theScript == 100) {
 					enginePath = [[NSBundle mainBundle] pathForResource:@"contextwrap" ofType:nil];
 					[args addObject: [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
@@ -846,8 +782,7 @@
 						[args addObject:@"YES"];
 					else
 						[args addObject:@"NO"];
-					}
-				else {
+				} else {
 					enginePath = [[NSBundle mainBundle] pathForResource:@"contextdviwrap" ofType:nil];
 					if (continuous)
 						[args addObject:@"YES"];
@@ -860,28 +795,20 @@
 					else
 						[args addObject: @"Ghostscript"];
 					[args addObject: [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
-					 if ((theScript == 101) && ([SUD boolForKey:SavePSEnabledKey]))
+					if ((theScript == 101) && ([SUD boolForKey:SavePSEnabledKey]))
 						[args addObject: @"yes"];
-					 else
+					else
 						[args addObject: @"no"];
-				   // if ([SUD boolForKey:SavePSEnabledKey])
-				   //     [args addObject: [NSString stringWithString:@"--keep-psfile"]];
-					}
-				 }
-
-
-		//    else if (whichEngine == 3)
-		//        myEngine = @"omega"; // currently this should never occur
-
-
-			else if (whichEngineLocal == MetapostEngine)
-				{
+					// if ([SUD boolForKey:SavePSEnabledKey])
+					//     [args addObject: [NSString stringWithString:@"--keep-psfile"]];
+				}
+			} else if (whichEngineLocal == MetapostEngine) {
 				NSString* mpEngineString;
 				switch ([SUD integerForKey:MetaPostCommandKey]) {
 					case 0: mpEngineString = @"mptopdfwrap"; break;
 					case 1: mpEngineString = @"metapostwrap"; break;
 					default: mpEngineString = @"mptopdfwrap"; break;
-					}
+				}
 				enginePath = [[NSBundle mainBundle] pathForResource:mpEngineString ofType:nil];
 				if (continuous)
 					[args addObject: @"YES"];
@@ -890,84 +817,80 @@
 				gsPath = [[SUD stringForKey:GSBinPathKey] stringByExpandingTildeInPath]; // 1.35 (D)
 				[args addObject: gsPath];
 				[args addObject: [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
-				 }
-
-			else switch (theScript) {
-
-				case 100:
-
-					if (withLatex)
-						myEngine = [[SUD stringForKey:LatexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
-					else
-						myEngine = [[SUD stringForKey:TexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
-
-					if (continuous) {
-						myEngine = [myEngine stringByAppendingString:@" --interaction=nonstopmode "];
-						}
-
-					if (omitShellEscape) {
-						aRange = [myEngine rangeOfString:@"--shell-escape"];
-						if (aRange.location == NSNotFound)
-							warningGiven = YES;
-						else {
-							NSString* myEngineFirst = [myEngine substringToIndex: aRange.location];
-							here = aRange.location + aRange.length;
-							NSString* myEngineLast = [myEngine substringFromIndex: here];
-							myEngine = [myEngineFirst stringByAppendingString: myEngineLast];
-							}
-						}
-					break;
-
-				case 101:
-					if (continuous) {
-						if (withLatex) {
-							enginePath = [[NSBundle mainBundle] pathForResource:@"altpdflatex" ofType:nil];
-							myEngine = [enginePath stringByAppendingString:@" --maxpfb --tex-path "];
-							 myEngine = [myEngine stringByAppendingString: [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath]]; // 1.35 (D)
-							// fixPath = NO;
-							}
-						else {
-							enginePath = [[NSBundle mainBundle] pathForResource:@"altpdftex" ofType:nil];
-							myEngine = [enginePath stringByAppendingString:@" --maxpfb --tex-path "];
-							myEngine = [myEngine stringByAppendingString: [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath]]; // 1.35 (D)
-							// fixPath = NO;
-							}
-						}
-					else {
-						if (withLatex)
-							myEngine = [[SUD stringForKey:LatexGSCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
-						else
-							myEngine = [[SUD stringForKey:TexGSCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
-						}
-
-					if (([SUD integerForKey:DistillerCommandKey] == 1) && (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_2))
-							myEngine = [myEngine stringByAppendingString: @" --distiller /usr/bin/pstopdf"];
-
-					break;
-
-				case 102:
-
-					if (withLatex)
-						myEngine = [[SUD stringForKey:LatexScriptCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
-					else
-						myEngine = [[SUD stringForKey:TexScriptCommandKey] stringByExpandingTildeInPath]; // 1.35 (D;
-
-					if ([myEngine length] == 0) {
+			} else {
+				switch (theScript) {
+					case 100:
 						if (withLatex)
 							myEngine = [[SUD stringForKey:LatexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
 						else
 							myEngine = [[SUD stringForKey:TexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
+						
+						if (continuous) {
+							myEngine = [myEngine stringByAppendingString:@" --interaction=nonstopmode "];
 						}
-
-					break;
-
+							
+						if (omitShellEscape) {
+							aRange = [myEngine rangeOfString:@"--shell-escape"];
+							if (aRange.location == NSNotFound)
+								warningGiven = YES;
+							else {
+								NSString* myEngineFirst = [myEngine substringToIndex: aRange.location];
+								here = aRange.location + aRange.length;
+								NSString* myEngineLast = [myEngine substringFromIndex: here];
+								myEngine = [myEngineFirst stringByAppendingString: myEngineLast];
+							}
+						}
+						break;
+						
+					case 101:
+						if (continuous) {
+							if (withLatex) {
+								enginePath = [[NSBundle mainBundle] pathForResource:@"altpdflatex" ofType:nil];
+								myEngine = [enginePath stringByAppendingString:@" --maxpfb --tex-path "];
+								myEngine = [myEngine stringByAppendingString: [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath]]; // 1.35 (D)
+																																				  // fixPath = NO;
+							} else {
+								enginePath = [[NSBundle mainBundle] pathForResource:@"altpdftex" ofType:nil];
+								myEngine = [enginePath stringByAppendingString:@" --maxpfb --tex-path "];
+								myEngine = [myEngine stringByAppendingString: [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath]]; // 1.35 (D)
+																																				  // fixPath = NO;
+							}
+						} else {
+							if (withLatex)
+								myEngine = [[SUD stringForKey:LatexGSCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
+							else
+								myEngine = [[SUD stringForKey:TexGSCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
+						}
+						
+						if (([SUD integerForKey:DistillerCommandKey] == 1) && (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_2))
+							myEngine = [myEngine stringByAppendingString: @" --distiller /usr/bin/pstopdf"];
+						
+						break;
+						
+					case 102:
+						
+						if (withLatex)
+							myEngine = [[SUD stringForKey:LatexScriptCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
+						else
+							myEngine = [[SUD stringForKey:TexScriptCommandKey] stringByExpandingTildeInPath]; // 1.35 (D;
+						
+						if ([myEngine length] == 0) {
+							if (withLatex)
+								myEngine = [[SUD stringForKey:LatexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
+							else
+								myEngine = [[SUD stringForKey:TexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
+						}
+							
+							break;
+						
 				}
+			}
 
 
 		  //  if ((whichEngine != 2) && (whichEngine != 3) && (whichEngine != 4)) {
 			if ((whichEngineLocal != MetapostEngine) && (whichEngineLocal != ContextEngine)) {
 
-			enginePath = [self separate:myEngine into:args];
+				enginePath = [self separate:myEngine into:args];
 			}
 
 			// Koch: Feb 20; this allows spaces everywhere in path except
@@ -994,8 +917,7 @@
 				[texTask release];
 				texTask = nil;
 			}
-		}
-		else if (whichEngineLocal == BibtexEngine) {
+		} else if (whichEngineLocal == BibtexEngine) {
 			NSString* bibPath = [sourcePath stringByDeletingPathExtension];
 			// Koch: ditto; allow spaces in path
 			[args addObject: [bibPath lastPathComponent]];
@@ -1014,8 +936,7 @@
 					default: bibtexEngineString = @"bibtex"; break;
 					}
 			[self startTask: bibTask running: bibtexEngineString withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal];
-		}
-		else if (whichEngineLocal == IndexEngine) {
+		} else if (whichEngineLocal == IndexEngine) {
 			NSString* indexPath = [sourcePath stringByDeletingPathExtension];
 			// Koch: ditto, spaces in path
 			[args addObject: [indexPath lastPathComponent]];
@@ -1027,8 +948,7 @@
 			}
 			indexTask = [[NSTask alloc] init];
 			[self startTask: indexTask running: @"makeindex" withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal];
-		}
-		else if (whichEngineLocal == MetafontEngine) {
+		} else if (whichEngineLocal == MetafontEngine) {
 			NSString* metaFontPath = [sourcePath stringByDeletingPathExtension];
 			// Koch: ditto, spaces in path
 			[args addObject: [metaFontPath lastPathComponent]];
@@ -1040,8 +960,7 @@
 			}
 			metaFontTask = [[NSTask alloc] init];
 			[self startTask: metaFontTask running: @"mf" withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal];
-		}
-		else if (whichEngineLocal >= UserEngine) {
+		} else if (whichEngineLocal >= UserEngine) {
 			NSString* userEngineName = [[[programButton itemAtIndex:(whichEngineLocal - 1)] title] stringByAppendingString:@".engine"];
 			NSString* userEnginePath = [[EnginePathKey stringByAppendingString:@"/"] stringByAppendingString: userEngineName];
 			// NSString* userPath = [sourcePath stringByDeletingPathExtension];
@@ -1267,28 +1186,26 @@
 	if ((typesetStart) && (inputPipe)) {
 		command = [[texCommand stringValue] stringByAppendingString:@"\n"];
 // added by mitsu --(F) TeXInput in Console Window with yen character
-			if (g_shouldFilter == kMacJapaneseFilterMode) {
-				command = filterYenToBackslash(command);
+		if (g_shouldFilter == kMacJapaneseFilterMode) {
+			command = filterYenToBackslash(command);
 			}
 // end addition
 
 		myData = [command dataUsingEncoding: NSMacOSRomanStringEncoding allowLossyConversion:YES];
-			[writeHandle writeData: myData];
-			// added by mitsu --(L) reflect tex input and clear tex input field in console window
-			NSRange selectedRange = [outputText selectedRange];
-			selectedRange.location += selectedRange.length;
-			selectedRange.length = 0;
-			// in the next two lines, replace "command" by "old command" after Japanese modification made -- koch
-			[outputText replaceCharactersInRange: selectedRange withString: command];
-			selectedRange.length = [command length];
-			[outputText setTextColor: [NSColor redColor] range: selectedRange];
-			[outputText scrollRangeToVisible: selectedRange];
-			[texCommand setStringValue: @""];
-			// end addition
+		[writeHandle writeData: myData];
+		// added by mitsu --(L) reflect tex input and clear tex input field in console window
+		NSRange selectedRange = [outputText selectedRange];
+		selectedRange.location += selectedRange.length;
+		selectedRange.length = 0;
+		// in the next two lines, replace "command" by "old command" after Japanese modification made -- koch
+		[outputText replaceCharactersInRange: selectedRange withString: command];
+		selectedRange.length = [command length];
+		[outputText setTextColor: [NSColor redColor] range: selectedRange];
+		[outputText scrollRangeToVisible: selectedRange];
+		[texCommand setStringValue: @""];
+		// end addition
 
-		}
-
-
+	}
 }
 
 - (void)abort:(id)sender
@@ -1360,15 +1277,8 @@
 {
 	NSString		*imagePath;
 	NSString            *alternatePath;
-#ifndef ROOTFILE
-	NSString		*projectPath, *nameString;
-#endif
 	NSDictionary	*myAttributes;
 	NSDate		*endDate;
-#ifndef MITSU_PDF
-	NSRect		topLeftRect;
-	NSPoint		topLeftPoint;
-#endif
 	int			status;
 	BOOL                alreadyFound;
 
@@ -1384,13 +1294,11 @@
 				[bibTask terminate];
 				[bibTask release];
 				bibTask = nil;
-			}
-			else if ([aNotification object] == indexTask) {
+			} else if ([aNotification object] == indexTask) {
 				[indexTask terminate];
 				[indexTask release];
 				indexTask = nil;
-			}
-			else if ([aNotification object] == metaFontTask) {
+			} else if ([aNotification object] == metaFontTask) {
 				[metaFontTask terminate];
 				[metaFontTask release];
 				metaFontTask = nil;
@@ -1407,33 +1315,13 @@
 		status = [[aNotification object] terminationStatus];
 
 		if ((status == 0) || (status == 1))  {
-#ifndef ROOTFILE
-			projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
-			if ([[NSFileManager defaultManager] fileExistsAtPath: projectPath])
-			{
-				NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
-				if ([projectRoot isAbsolutePath]) {
-					nameString = [NSString stringWithString:projectRoot];
-				}
-				else {
-					nameString = [[self fileName] stringByDeletingLastPathComponent];
-					nameString = [[nameString stringByAppendingString:@"/"]
-						stringByAppendingString: [NSString stringWithContentsOfFile: projectPath]];
-					nameString = [nameString stringByStandardizingPath];
-				}
-				imagePath = [[nameString stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-			}
-			else
-#endif
-				imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+			imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
 
 			alreadyFound = NO;
-			if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath])
-			{
+			if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
 				myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
 				endDate = [myAttributes objectForKey:NSFileModificationDate];
-				if ((startDate == nil) || ! [startDate isEqualToDate: endDate])
-				{
+				if ((startDate == nil) || ! [startDate isEqualToDate: endDate]) {
 					alreadyFound = YES;
 					PDFfromKit = YES;
 					[myPDFKitView reShowWithPath: imagePath];
@@ -1443,28 +1331,6 @@
 
 
 
-
-					/*
-					 texRep = [[NSPDFImageRep imageRepWithContentsOfFile: imagePath] retain];
-					 if (texRep)
-					 {
-						 // [pdfWindow setTitle:[[[[self fileName] lastPathComponent] stringByDeletingPathExtension] 					stringByAppendingPathExtension:@"pdf"]];
-						 [pdfWindow setTitle: [imagePath lastPathComponent]];
-						 [pdfView setImageRep: texRep];
-#ifndef MITSU_PDF
-						 if (startDate == nil)
-						 {
-							 topLeftRect = [texRep bounds];
-							 topLeftPoint.x = topLeftRect.origin.x;
-							 topLeftPoint.y = topLeftRect.origin.y + topLeftRect.size.height - 1;
-							 [pdfView scrollPoint: topLeftPoint];
-						 }
-#endif
-
-						 [pdfView setNeedsDisplay:YES];
-						 [pdfWindow makeKeyAndOrderFront: self];
-					 }
-					 */
 				}
 			}
 
@@ -1473,8 +1339,7 @@
 				if ([[NSFileManager defaultManager] fileExistsAtPath: alternatePath]) {
 					texRep = [[NSPDFImageRep imageRepWithContentsOfFile: alternatePath] retain];
 					[[NSFileManager defaultManager] removeFileAtPath: alternatePath handler:nil];
-					if (texRep)
-					{
+					if (texRep) {
 						[pdfWindow setTitle: [imagePath lastPathComponent]];
 						[pdfView setImageRep: texRep];
 						[pdfView setNeedsDisplay:YES];

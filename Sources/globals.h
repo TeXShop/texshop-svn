@@ -24,10 +24,50 @@
 
 #import <Foundation/Foundation.h>
 
+// This nifty macro computes the size of a static array.
 #define ARRAYSIZE(x) ((int)(sizeof(x) / sizeof(x[0])))
 
+// The yen and backslash characters are both used to start LaTeX commands. Used
+// frequently throughout the code to detect commands.
 #define	YEN			0x00a5
 #define	BACKSLASH	'\\'
+
+
+// The following block defines constants used in the PDF code. 
+// TODO: Move this to a more appropriate header file.
+#if 1
+
+#define PAGE_SPACE_H	10
+#define PAGE_SPACE_V	10
+
+#define HORIZONTAL_SCROLL_AMOUNT	60
+#define VERTICAL_SCROLL_AMOUNT	60
+#define HORIZONTAL_SCROLL_OVERLAP	60
+#define VERTICAL_SCROLL_OVERLAP		60
+#define SCROLL_TOLERANCE 0.5
+
+#define PAGE_WINDOW_H_OFFSET	60
+#define PAGE_WINDOW_V_OFFSET	-10
+#define PAGE_WINDOW_WIDTH		55
+#define PAGE_WINDOW_HEIGHT		20
+#define PAGE_WINDOW_DRAW_X		7
+#define PAGE_WINDOW_DRAW_Y		3
+#define PAGE_WINDOW_HAS_SHADOW	NO
+
+#define SIZE_WINDOW_H_OFFSET	75
+#define SIZE_WINDOW_V_OFFSET	-10
+#define SIZE_WINDOW_WIDTH		70
+#define SIZE_WINDOW_HEIGHT		20
+#define SIZE_WINDOW_DRAW_X		5
+#define SIZE_WINDOW_DRAW_Y		3
+#define SIZE_WINDOW_HAS_SHADOW	NO
+
+#define JPEG_COMPRESSION_HIGH	1.0
+#define JPEG_COMPRESSION_MEDIUM	0.95
+#define JPEG_COMPRESSION_LOW	0.85
+
+
+#endif
 
 
 /*" Symbolic constants for the matrix used in 'Source window Position' of the TSPreferences. "*/

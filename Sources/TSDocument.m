@@ -107,9 +107,7 @@
 
 
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-#ifdef MITSU_PDF
-	 [[NSNotificationCenter defaultCenter] removeObserver:pdfView];// mitsu 1.29 (O) need to remove here, otherwise updateCurrentPage fails
-#endif
+	[[NSNotificationCenter defaultCenter] removeObserver:pdfView];// mitsu 1.29 (O) need to remove here, otherwise updateCurrentPage fails
 	if (syntaxColoringTimer != nil)
 	{
 		[syntaxColoringTimer invalidate];
@@ -172,43 +170,21 @@
 	id			printView;
 	NSPrintOperation	*printOperation;
 	NSString		*imagePath;
-#ifndef ROOTFILE
-	NSString		*projectPath, *nameString;
-#endif
 	NSString		*theSource;
 	id			aRep;
 	int			result;
-
+	
 	if (_documentType == isTeX) {
-
+		
 		if (! externalEditor) {
 			theSource = [[self textView] string];
 			if ([self checkMasterFile:theSource forTask:RootForPrinting])
 				return;
-	#ifdef ROOTFILE
 			if ([self checkRootFile_forTask:RootForPrinting])
 				return;
-	#endif
-			}
-
-#ifndef ROOTFILE
-		projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
-		if ([[NSFileManager defaultManager] fileExistsAtPath: projectPath]) {
-			NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
-			if ([projectRoot isAbsolutePath]) {
-				nameString = [NSString stringWithString:projectRoot];
-			}
-			else {
-				nameString = [[self fileName] stringByDeletingLastPathComponent];
-				nameString = [[nameString stringByAppendingString:@"/"]
-					stringByAppendingString: [NSString stringWithContentsOfFile: projectPath]];
-				nameString = [nameString stringByStandardizingPath];
-			}
-			imagePath = [[nameString stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
 		}
-		else
-#endif
-			imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+		
+		imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
 	}
 	else if (_documentType == isPDF)
 		imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
@@ -216,7 +192,7 @@
 		imagePath = [self fileName];
 	else
 		imagePath = [self fileName];
-
+	
 	aRep = nil;
 	if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
 		if ((_documentType == isTeX) || (_documentType == isPDF))
@@ -395,12 +371,7 @@
 {
 	BOOL                spellExists;
 	NSString		*imagePath;
-#ifndef ROOTFILE
-	NSString		*projectPath, *nameString;
-#endif
-#ifdef ROOTFILE
 	NSString		*theSource;
-#endif
 	NSString		*fileExtension;
 	NSRange		myRange;
 	BOOL		imageFound;
@@ -530,7 +501,6 @@
 
 	/* handle images */
 
-#ifdef MITSU_PDF
 	// mitsu 1.29 (S4)-- flipped clip view
 	// the following code allows the window to be anchored at top left when scrolled
 	[pdfView retain]; // hold it when clipView is released
@@ -549,7 +519,6 @@
 	[[NSNotificationCenter defaultCenter] addObserver:pdfView selector:@selector(wasScrolled:)
 												 name:NSViewBoundsDidChangeNotification object:[pdfView superview]];
 	// end mitsu 1.29
-#endif
 
 	[pdfView setImageType: _documentType];
 
@@ -698,31 +667,12 @@
 	// end change
 
 
-#ifndef ROOTFILE
-	projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: projectPath]) {
-		NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
-		if ([projectRoot isAbsolutePath]) {
-			nameString = [NSString stringWithString:projectRoot];
-		}
-		else {
-			nameString = [[self fileName] stringByDeletingLastPathComponent];
-			nameString = [[nameString stringByAppendingString:@"/"]
-				stringByAppendingString: [NSString stringWithContentsOfFile: projectPath]];
-			nameString = [nameString stringByStandardizingPath];
-		}
-		imagePath = [[nameString stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-	}
-	else
-#endif
-
-#ifdef ROOTFILE
-		theSource = [[self textView] string];
+	theSource = [[self textView] string];
 	if ([self checkMasterFile: theSource forTask:RootForOpening])
 		return;
 	if ([self checkRootFile_forTask: RootForOpening])
 		return;
-#endif
+
 	imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
 
@@ -1754,9 +1704,7 @@ preference change is cancelled. "*/
 }
 
 
-#pragma mark -
 #pragma mark Tag menu
-#pragma mark -
 
 - (void) doTag: sender;
 {
@@ -1937,6 +1885,7 @@ preference change is cancelled. "*/
 }
 
 
+#pragma mark Task errors
 
 - (int) errorLineFor: (int)theError{
 	if (theError < errorNumber)
@@ -2029,6 +1978,8 @@ preference change is cancelled. "*/
 	}
 
 }
+
+#pragma mark -
 
 - (id) pdfWindow;
 {
@@ -2607,47 +2558,27 @@ preference change is cancelled. "*/
 - (void) refreshPDFWindow:(NSTimer *)timer;
 {
 	NSString		*imagePath;
-	#ifndef ROOTFILE
-	NSString		*projectPath, *nameString;
-	#endif
 	NSDate              *newDate;
 	NSDictionary        *myAttributes;
 	BOOL                front;
-
-
-#ifndef ROOTFILE
-	projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: projectPath]) {
-		NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
-		if ([projectRoot isAbsolutePath]) {
-			nameString = [NSString stringWithString:projectRoot];
-			}
-		else {
-			nameString = [[self fileName] stringByDeletingLastPathComponent];
-			nameString = [[nameString stringByAppendingString:@"/"]
-				stringByAppendingString: [NSString stringWithContentsOfFile: projectPath]];
-			nameString = [nameString stringByStandardizingPath];
-			}
-		imagePath = [[nameString stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+	
+	
+	imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath] && [[NSFileManager defaultManager] isReadableFileAtPath: imagePath]) {
+		myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
+		newDate = [myAttributes objectForKey:NSFileModificationDate];
+		if ((pdfDate == nil) || ([newDate compare:pdfDate] == NSOrderedDescending) || tryAgain) {
+			
+			tryAgain = NO;
+			if (pdfDate != nil) [pdfDate release];
+			[newDate retain];
+			pdfDate = newDate;
+			
+			front = [SUD boolForKey: BringPdfFrontOnAutomaticUpdateKey];
+			[self refreshPDFAndBringFront: front];
 		}
-	else
-#endif
-		imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-
-		if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath] && [[NSFileManager defaultManager] isReadableFileAtPath: imagePath]) {
-			myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
-			newDate = [myAttributes objectForKey:NSFileModificationDate];
-			if ((pdfDate == nil) || ([newDate compare:pdfDate] == NSOrderedDescending) || tryAgain) {
-
-				tryAgain = NO;
-				if (pdfDate != nil) [pdfDate release];
-				[newDate retain];
-				pdfDate = newDate;
-
-				front = [SUD boolForKey: BringPdfFrontOnAutomaticUpdateKey];
-				[self refreshPDFAndBringFront: front];
-				}
-			}
+	}
 }
 
 
@@ -2657,29 +2588,8 @@ preference change is cancelled. "*/
 {
 	NSPDFImageRep	*tempRep;
 	NSString		*imagePath;
-#ifndef ROOTFILE
-	NSString		*projectPath, *nameString;
-#endif
 
-
-#ifndef ROOTFILE
-	projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: projectPath]) {
-		NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
-		if ([projectRoot isAbsolutePath]) {
-			nameString = [NSString stringWithString:projectRoot];
-		}
-		else {
-			nameString = [[self fileName] stringByDeletingLastPathComponent];
-			nameString = [[nameString stringByAppendingString:@"/"]
-				stringByAppendingString: [NSString stringWithContentsOfFile: projectPath]];
-			nameString = [nameString stringByStandardizingPath];
-		}
-		imagePath = [[nameString stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-	}
-	else
-#endif
-		imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+	imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
 
 	if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
 		tempRep = [NSPDFImageRep imageRepWithContentsOfFile: imagePath];
@@ -2703,9 +2613,6 @@ preference change is cancelled. "*/
 	unsigned           length;
 	NSString		*textPath;
 	NSRange            myRange;
-#ifndef ROOTFILE
-	NSString		*projectPath, *nameString;
-#endif
 
 	textPath = [self fileName];
 
@@ -3475,16 +3382,16 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 - (void)trashAUXFiles: sender;
 {
 	NSString        *theSource;
-
+	
 	aggressiveTrash = NO;
 	if ((GetCurrentKeyModifiers() & optionKey) != 0)
 		aggressiveTrash = YES;
 	if ([SUD boolForKey:AggressiveTrashAUXKey])
 		aggressiveTrash = YES;
-
+	
 	if (! fileIsTex)
 		return;
-
+	
 	if (! [SUD boolForKey:AggressiveTrashAUXKey])
 		[self trashAUX];
 	else {
@@ -3493,12 +3400,10 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 			return;
 		if ([self fileName] == nil)
 			return;
-#ifdef ROOTFILE
 		if ([self checkRootFile_forTask:RootForTrashAUX])
 			return;
-#endif
 		[self trashAUX];
-		}
+	}
 }
 
 

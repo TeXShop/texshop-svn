@@ -30,6 +30,13 @@
 
 #define SUD [NSUserDefaults standardUserDefaults]
 
+
+// to set the bounds of rotated view
+#define Make90Rect(rect) (NSMakeRect(rect.origin.x, rect.origin.y+rect.size.height, rect.size.height, rect.size.width))
+#define Make180Rect(rect) (NSMakeRect(-rect.origin.x-rect.size.width, -rect.origin.y-rect.size.height, rect.size.width, rect.size.height))
+#define Make270Rect(rect) (NSMakeRect(rect.origin.x+rect.size.width, rect.origin.y, rect.size.height, rect.size.width))
+
+
 NSPanel *pageNumberWindow = nil;
 // int imageCopyType = IMAGE_TYPE_JPEG_MEDIUM;  //koch; made this a global
 BOOL centerPage = YES; // temporary option to turn on/off the centering of the page
@@ -75,9 +82,7 @@ NSData *draggedData;
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[pageBackgroundColor release]; // mitsu 1.29
-	// the next two lines are by Wolfgang Lux, fixing the bug that pdf files are still open in the finder after closing
-	 if (myRep != nil)
+	[pageBackgroundColor release];
 	[myRep release];
 	[super dealloc];
 }
@@ -93,20 +98,20 @@ NSData *draggedData;
 
 - (void)drawDotsForPage:(int)page atPoint: (NSPoint)p;
 {
-		NSFileManager	*fileManager;
-		int             pageNumber;
-		NSNumber        *thePageNumber;
-		NSString         *syncInfo, *pageSearchString, *keyLine;
-		NSRange         pageRangeStart, myRange;
-		NSRange         pageRangeEnd, smallerRange;
-		NSRange         remainingRange, searchResultRange;
-		NSRange         newRange;
-		int             syncNumber, x, y;
-		unsigned        theStart, theEnd;
-		double          newx, newy;
-		NSRect          smallRect;
-		NSColor         *backColor;
-		unsigned        start, end, irrelevant;
+	NSFileManager	*fileManager;
+	int             pageNumber;
+	NSNumber        *thePageNumber;
+	NSString         *syncInfo, *pageSearchString, *keyLine;
+	NSRange         pageRangeStart, myRange;
+	NSRange         pageRangeEnd, smallerRange;
+	NSRange         remainingRange, searchResultRange;
+	NSRange         newRange;
+	int             syncNumber, x, y;
+	unsigned        theStart, theEnd;
+	double          newx, newy;
+	NSRect          smallRect;
+	NSColor         *backColor;
+	unsigned        start, end, irrelevant;
 
 	if (! [myDocument syncState])
 		return;
@@ -364,85 +369,6 @@ scroller position.
 		pageBackgroundColor = [[NSColor whiteColor] retain];
 
 	[[self enclosingScrollView] setNeedsDisplay:YES];
-
-/*  int		pagenumber;
-	NSRect	myBounds, newBounds;
-	double	magsize;
-	BOOL	modifiedRep = NO;
-	double	newWidth, newHeight;
-
-	NSScrollView *enclosingScrollView = [self enclosingScrollView];
-	NSView *documentView = [enclosingScrollView documentView];
-
-	magsize = [self magnification];
-	theMagSize = magsize;
-	[self renewGState];
-
-	if (theRep != nil)
-
-		{
-		if (myRep != nil) {
-			modifiedRep = YES;
-			pagenumber = [myRep currentPage] + 1;
-			[myRep release];
-			}
-		else
-			pagenumber = 1;
-		myRep = theRep;
-
-		if ((documentType == isTeX) || (documentType == isPDF)) {
-
-//            myBounds = [theRep bounds];
-// mitsu change; the file dvipdfmx for Japanese users creates pdf files with nonzero origin, but the origin must
-// be zero in TeXShop to draw correctly
-			myBounds.origin.x = 0; myBounds.origin.y = 0;
-			myBounds.size = [theRep bounds].size;
-// end
-
-			newWidth = myBounds.size.width;
-			newHeight = myBounds.size.height;
-			[totalPage setIntValue: [myRep pageCount]];
-			if (pagenumber < 1) pagenumber = 1;
-			if (pagenumber > [myRep pageCount]) pagenumber = [myRep pageCount];
-			[currentPage setIntValue: pagenumber];
-			[currentPage display];
-			[myRep setCurrentPage: (pagenumber - 1)];
-			if (! modifiedRep) {
-				// myBounds = [myRep bounds];
-				// mitsu change
-				myBounds.origin.x = 0; myBounds.origin.y = 0;
-				myBounds.size = [myRep bounds].size;
-				// end
-
-				oldWidth = myBounds.size.width;
-				oldHeight = myBounds.size.height;
-				newBounds.size.width = myBounds.size.width * (magsize);
-				newBounds.size.height = myBounds.size.height * (magsize);
-				[documentView setFrame: newBounds];
-				[documentView setBounds: myBounds];
-				// [self setMagnification: theMagSize];
-				}
-			else if ((abs(newHeight - oldHeight) > 1) || (abs(newWidth - oldWidth) > 1)) {
-				oldWidth = newWidth;
-				oldHeight = newHeight;
-				newBounds.size.width = myBounds.size.width * (magsize);
-				newBounds.size.height = myBounds.size.height * (magsize);
-				[documentView setFrame: newBounds];
-				[documentView setBounds: myBounds];
-				[self setMagnification: theMagSize];
-				}
-			}
-		else {
-			[totalPage setIntValue: 1];
-			[currentPage setIntValue: 1];
-			[currentPage display];
-			}
-
-		[[self superview] setNeedsDisplay:YES];
-		[[self enclosingScrollView] setNeedsDisplay:YES];
-		[self setNeedsDisplay:YES];
-		}
-*/
 }
 
 
@@ -735,7 +661,6 @@ failed. If you change the code below, be sure to test carefully!
 */
 - (void) setMagnification: (double)magSize;
 {
-	// mitsu 1.29 (O)
 	NSRect	myBounds, visRect;
 	NSPoint topLeft, theOrigin;
 	int	magPercent;
@@ -783,40 +708,6 @@ failed. If you change the code below, be sure to test carefully!
 
 	[[self enclosingScrollView] setNeedsDisplay:YES];
 	[(NSClipView *)[self superview] setCopiesOnScroll: copiesOnScroll];
-	// end mitsu 1.29
-
-/* old code was:
-		double	mag;
-		NSRect	myBounds, newBounds;
-		double	tempRotationAmount;
-
-		NSScrollView *enclosingScrollView = [self enclosingScrollView];
-		NSView *documentView = [enclosingScrollView documentView];
-
-		tempRotationAmount = rotationAmount;
-		rotationAmount = 0;
-		[self fixRotation];
-		rotationAmount = tempRotationAmount;
-
-		myBounds = [self bounds];
-		newBounds.size.width = myBounds.size.width * (magSize);
-		newBounds.size.height = myBounds.size.height * (magSize);
-		theMagSize = magSize;
-		[documentView setFrame: newBounds];
-		[documentView setBounds: myBounds];
-
-		[self fixRotation];
-
-		mag = round(magSize * 100.0);
-		// Warning: if the next line is changed to setIntValue, the magnification
-		//    fails!
-		[myScale setDoubleValue: mag];
-		// [myStepper setIntValue: mag];
-
-		[[self superview] setNeedsDisplay:YES];
-		[[self enclosingScrollView] setNeedsDisplay:YES];
-		[self setNeedsDisplay:YES];
-*/
 }
 
 - (void) changeScale: sender;
@@ -1719,7 +1610,6 @@ failed. If you change the code below, be sure to test carefully!
 
 - (void) fixRotation
 {
-	// mitsu 1.29 (O) completely rewritten
 	NSPoint	theCenter, theOrigin;
 	NSRect	myBounds, visRect;
 	double	width, height;
@@ -1752,46 +1642,6 @@ failed. If you change the code below, be sure to test carefully!
 		theOrigin.y = myBounds.origin.y + myBounds.size.height - visRect.size.height;
 	visRect.origin = theOrigin;
 	[self scrollRectToVisible:visRect];
-	// end mitsu 1.29
-
-/* old code was:
-	NSPoint	aPoint;
-	NSRect	newBounds, selfBounds;
-	double	width, height;
-
-	 NSScrollView *enclosingScrollView = [self enclosingScrollView];
-	 NSView *documentView = [enclosingScrollView documentView];
-
-	 selfBounds = [self bounds];
-	 width = selfBounds.size.width;
-	 height = selfBounds.size.height;
-
-	 [documentView setBoundsRotation: rotationAmount];
-
-	 switch (rotationAmount) {
-		case 0: aPoint.x = 0; aPoint.y = 0;
-				newBounds.size.width = width * theMagSize;
-				newBounds.size.height = height * theMagSize;
-				break;
-		case 90: aPoint.x = 0; aPoint.y = height;
-				newBounds.size.width = height * theMagSize;
-				newBounds.size.height = width * theMagSize;
-				break;
-		case 180: aPoint.x = width; aPoint.y = height;
-				newBounds.size.width = width * theMagSize;
-				newBounds.size.height = height * theMagSize;
-				break;
-		case -90: aPoint.x = width; aPoint.y = 0;
-				newBounds.size.width = height * theMagSize;
-				newBounds.size.height = width * theMagSize;
-		}
-	[documentView setBoundsOrigin: aPoint];
-	[documentView setFrameSize: newBounds.size];
-
-	[self setNeedsDisplay:YES];
-	[[self superview] setNeedsDisplay:YES];
-	[[self enclosingScrollView] setNeedsDisplay:YES];
-*/
 }
 
 - (float)rotationAmount
@@ -1817,30 +1667,30 @@ failed. If you change the code below, be sure to test carefully!
 
 - (void)doSync: (NSEvent *)theEvent
 {
-		NSFileManager	*fileManager;
-		NSNumber        *thePageNumber;
-		NSString        *syncInfo, *pageSearchString, *valueString;
-		NSString        *searchString;
-		NSString        *searchOpenString, *searchCloseString;
-		NSRange         searchOpenRange, searchCloseRange, myRange;
-		NSRange         searchOpenResultRange, searchCloseResultRange;
-		NSRange         searchRange, searchResultRange;
-		NSRange         smallerRange;
-		NSString        *includeFileName;
-		NSString        *keyLine;
-		int             pageNumber;
-		NSRange         pageRangeStart;
-		NSRange         pageRangeEnd;
-		NSRange         remainingRange;
-		NSRange         thisRange, newRange, foundRange;
-		NSNumber        *anotherNumber;
-		int             aNumber;
-		int             syncNumber, oldSyncNumber, x, oldx, y, oldy;
-		BOOL            found, done;
-		unsigned        theStart, theEnd, theContentsEnd;
-		NSString        *newFileName, *theExtension;
-		TSDocument      *newDocument;
-		unsigned        start, end, irrelevant;
+	NSFileManager	*fileManager;
+	NSNumber        *thePageNumber;
+	NSString        *syncInfo, *pageSearchString, *valueString;
+	NSString        *searchString;
+	NSString        *searchOpenString, *searchCloseString;
+	NSRange         searchOpenRange, searchCloseRange, myRange;
+	NSRange         searchOpenResultRange, searchCloseResultRange;
+	NSRange         searchRange, searchResultRange;
+	NSRange         smallerRange;
+	NSString        *includeFileName;
+	NSString        *keyLine;
+	int             pageNumber;
+	NSRange         pageRangeStart;
+	NSRange         pageRangeEnd;
+	NSRange         remainingRange;
+	NSRange         thisRange, newRange, foundRange;
+	NSNumber        *anotherNumber;
+	int             aNumber;
+	int             syncNumber, oldSyncNumber, x, oldx, y, oldy;
+	BOOL            found, done;
+	unsigned        theStart, theEnd, theContentsEnd;
+	NSString        *newFileName, *theExtension;
+	TSDocument      *newDocument;
+	unsigned        start, end, irrelevant;
 
 	includeFileName = nil;
 
@@ -2195,47 +2045,6 @@ failed. If you change the code below, be sure to test carefully!
 		includeFileName = [theStack objectAtIndex: stackPointer];
 
 
-/*
-	done = NO;
-	searchCloseString = [NSString stringWithString:@")"];
-	searchOpenString = [NSString stringWithString:@"("];
-
-	while (! done) {
-
-		searchCloseRange.location = 0; searchCloseRange.length = foundRange.location;
-		searchCloseResultRange = [syncInfo rangeOfString: searchCloseString options:NSBackwardsSearch range: searchCloseRange];
-
-		searchOpenRange.location = 0; searchOpenRange.length = foundRange.location;
-		searchOpenResultRange = [syncInfo rangeOfString: searchOpenString options:NSBackwardsSearch range: searchOpenRange];
-
-		if (searchOpenResultRange.location == NSNotFound) {
-			done = YES;
-			includeFileName = nil;
-			}
-
-		else if ((searchCloseResultRange.location == NSNotFound) ||
-				(searchCloseResultRange.location < searchOpenResultRange.location)) {
-			done = YES;
-			 NS_DURING
-			[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: searchOpenResultRange];
-			NS_HANDLER
-			return;
-			NS_ENDHANDLER
-			smallerRange.location = theStart + 1;
-			smallerRange.length = theEnd - theStart - 2;
-			NS_DURING
-			includeFileName = [syncInfo substringWithRange: smallerRange];
-			NS_HANDLER
-			return;
-			NS_ENDHANDLER
-			}
-
-		else {
-			foundRange.location = searchOpenResultRange.location - 1;
-			}
-		}
-*/
-
 	if (includeFileName == nil) {
 		[myDocument toLine:aNumber];
 		[[myDocument  textWindow] makeKeyAndOrderFront:self];
@@ -2254,257 +2063,6 @@ failed. If you change the code below, be sure to test carefully!
 		}
 
 
-
-///////////////////////////////////////////////////////////
-/*
-	// search backward for ); if found, replace syncInfo with everything after the character
-	searchString = [NSString stringWithString:@")"];
-	searchRange.location = 0; searchRange.length = pageRangeStart.location;
-	searchResultRange = [syncInfo rangeOfString: searchString options:NSBackwardsSearch range: searchRange];
-	if (searchResultRange.location != NSNotFound) {
-		smallerRange.location = searchResultRange.location + 1;
-		smallerRange.length = [syncInfo length] - searchResultRange.location - 1;
-		NS_DURING
-		syncInfo = [syncInfo substringWithRange: smallerRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		}
-
-	// search backward for (; if found, record the filename and then search forward for ) and replace syncInfo by
-	// everything between these spots
-	pageSearchString = [[NSString stringWithString:@"s "] stringByAppendingString: [thePageNumber stringValue]];
-	pageRangeStart = [syncInfo rangeOfString: pageSearchString];
-	if (pageRangeStart.location == NSNotFound)
-		return;
-	searchString = [NSString stringWithString:@"("];
-	searchRange.location = 0; searchRange.length = pageRangeStart.location;
-	searchResultRange = [syncInfo rangeOfString: searchString options:NSBackwardsSearch range: searchRange];
-	if (searchResultRange.location != NSNotFound) {
-		NS_DURING
-		[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: searchResultRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		smallerRange.location = theStart + 1;
-		smallerRange.length = theEnd - theStart - 2;
-		NS_DURING
-		includeFileName = [syncInfo substringWithRange: smallerRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		smallerRange.location = theEnd;
-		smallerRange.length = [syncInfo length] - smallerRange.location - 1;
-
-		// logInt = [syncInfo length];
-		// logNumber = [NSNumber numberWithInt: logInt];
-		// NSLog([logNumber stringValue]);
-
-		NS_DURING
-		syncInfo = [syncInfo substringWithRange: smallerRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		searchString = [NSString stringWithString:@")"];
-		searchResultRange = [syncInfo rangeOfString: searchString];
-		if (searchResultRange.location != NSNotFound) {
-			smallerRange.location = 0;
-			smallerRange.length = searchResultRange.location + 1;
-			NS_DURING
-			syncInfo = [syncInfo substringWithRange: smallerRange];
-			NS_HANDLER
-			return;
-			NS_ENDHANDLER
-			}
-		}
-
-
-	// Search backward to the previous page number, if one exists
-	// Search forward to the next page number, if one exists
-	// Replace syncInfo by the information between these two numbers
-	pageNumber = pageNumber - 1;
-	thePageNumber = [NSNumber numberWithInt: pageNumber];
-	pageSearchString = [[NSString stringWithString:@"s "] stringByAppendingString: [thePageNumber stringValue]];
-	pageRangeStart = [syncInfo rangeOfString: pageSearchString];
-	if (pageRangeStart.location != NSNotFound) {
-		smallerRange.location = pageRangeStart.location;
-		smallerRange.length = [syncInfo length] - pageRangeStart.location;
-		NS_DURING
-		syncInfo = [syncInfo substringWithRange: smallerRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		}
-	pageNumber = pageNumber + 2;
-	thePageNumber = [NSNumber numberWithInt: pageNumber];
-	pageSearchString = [[NSString stringWithString:@"s "] stringByAppendingString: [thePageNumber stringValue]];
-	pageRangeEnd = [syncInfo rangeOfString: pageSearchString];
-	if (pageRangeEnd.location != NSNotFound) {
-		smallerRange.location = 0;
-		smallerRange.length = pageRangeEnd.location;
-		NS_DURING
-		syncInfo = [syncInfo substringWithRange: smallerRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		}
-
-	// Search backwards to any line starting with "p". Remove this first stuff
-	pageNumber = pageNumber - 1;
-	thePageNumber = [NSNumber numberWithInt: pageNumber];
-	pageSearchString = [[NSString stringWithString:@"s "] stringByAppendingString: [thePageNumber stringValue]];
-	pageRangeStart = [syncInfo rangeOfString: pageSearchString];
-
-	if (pageRangeStart.location == NSNotFound)
-		return;
-	searchString = [NSString stringWithString:@"p"];
-	searchRange.location = 0; searchRange.length = pageRangeStart.location;
-
-	searchResultRange = [syncInfo rangeOfString: searchString options:NSBackwardsSearch range: searchRange];
-	if (!(searchResultRange.location == NSNotFound)) {
-		NS_DURING
-		[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: searchResultRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		smallerRange.location = theEnd;
-		smallerRange.length = [syncInfo length] - theEnd;
-		NS_DURING
-		syncInfo = [syncInfo substringWithRange: smallerRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		}
-
-
-	// Now syncInfo contains exactly the required information for the given page
-	// and nothing more. Also if includeFileName is not nil, it contains the name
-	// of the include file being examined
-
-	// Search  for "p 15 683402 6834958" to find the first
-	// element whose y-coordinate is lower than the y-coordinate of the click
-	// Back up one element and use the first number to find the corresponding
-	// line number; select that line
-
-	found = YES;
-	syncNumber = -1;
-	x = 0; y = 0;
-	remainingRange.location = 0;
-	remainingRange.length = [syncInfo length];
-	do {
-		oldSyncNumber = syncNumber;
-		oldx = x; oldy = y;
-		if (remainingRange.length < 0)
-			{found = NO; break;}
-		searchResultRange = [syncInfo rangeOfString: @"p" options: NSLiteralSearch range: remainingRange];
-		if (searchResultRange.location == NSNotFound)
-			{found = NO; break;}
-
-		NS_DURING
-		[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: searchResultRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		remainingRange.location = theEnd + 1;
-		remainingRange.length = [syncInfo length] - remainingRange.location;
-		newRange.location = theStart;
-		newRange.length = theEnd - theStart;
-		NS_DURING
-		keyLine = [syncInfo substringWithRange: newRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-
-		searchResultRange = [keyLine rangeOfCharacterFromSet: [NSCharacterSet decimalDigitCharacterSet]];
-		newRange.location = searchResultRange.location;
-		newRange.length = [keyLine length] - newRange.location;
-		NS_DURING
-		keyLine = [keyLine substringWithRange: newRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		syncNumber = [keyLine intValue]; // number of entry
-
-		searchResultRange = [keyLine rangeOfString: @" "];
-		if (searchResultRange.location == NSNotFound)
-			return;
-		newRange.location = searchResultRange.location;
-		newRange.length = [keyLine length] - newRange.location;
-		NS_DURING
-		keyLine = [keyLine substringWithRange: newRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		searchResultRange = [keyLine rangeOfCharacterFromSet: [NSCharacterSet decimalDigitCharacterSet]];
-		newRange.location = searchResultRange.location;
-		newRange.length = [keyLine length] - newRange.location;
-		NS_DURING
-		keyLine = [keyLine substringWithRange: newRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		x = [keyLine intValue];
-
-		searchResultRange = [keyLine rangeOfString: @" "];
-		if (searchResultRange.location == NSNotFound)
-			return;
-		newRange.location = searchResultRange.location;
-		newRange.length = [keyLine length] - newRange.location;
-		NS_DURING
-		keyLine = [keyLine substringWithRange: newRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		y = [keyLine intValue];
-		}
-	while (found && (y > yValue));
-
-	if ((oldSyncNumber < 0) && (syncNumber < 0))
-		return;
-
-	if (oldSyncNumber < 0)
-		oldSyncNumber = syncNumber;
-
-	aNumber = [NSNumber numberWithInt: oldSyncNumber];
-	pageSearchString = [[NSString stringWithString:@"l "] stringByAppendingString: [aNumber stringValue]];
-	pageRangeStart = [syncInfo rangeOfString: pageSearchString];
-	if (pageRangeStart.location == NSNotFound) {
-		syncInfo = [NSString stringWithContentsOfFile:infoFile];
-		pageRangeStart = [syncInfo rangeOfString: pageSearchString];
-		}
-	NS_DURING
-	[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: pageRangeStart];
-	NS_HANDLER
-	return;
-	NS_ENDHANDLER
-	newRange.location = theStart;
-	newRange.length = (theEnd - theStart);
-	thisRange = [syncInfo rangeOfString: @" " options: NSLiteralSearch range: newRange];
-	newRange.location = thisRange.location + 1;
-	newRange.length = theEnd - newRange.location;
-	thisRange = [syncInfo rangeOfString: @" " options: NSLiteralSearch range: newRange];
-	newRange.location = thisRange.location + 1;
-	newRange.length = theEnd - newRange.location;
-	NS_DURING
-	valueString = [syncInfo substringWithRange: newRange];
-	NS_HANDLER
-	return;
-	NS_ENDHANDLER
-
-	aNumber = [valueString intValue];
-	if (includeFileName == nil) {
-		[myDocument toLine:aNumber];
-		[[myDocument  textWindow] makeKeyAndOrderFront:self];
-		}
-	else {
-		newFileName = [[[myDocument fileName] stringByDeletingLastPathComponent] stringByAppendingString:@"/"];
-		newFileName = [newFileName stringByAppendingString: includeFileName];
-		includeFileName = [[newFileName stringByStandardizingPath] stringByAppendingPathExtension: @"tex"];
-		newDocument = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfFile:includeFileName display:YES];
-		[newDocument toLine:aNumber];
-		[[newDocument textWindow] makeKeyAndOrderFront:self];
-		}
-*/
 }
 
 
@@ -2849,206 +2407,6 @@ failed. If you change the code below, be sure to test carefully!
 	[self recacheMarquee];
 }
 // end Magnifying Glass
-
-/* old version
-// added by mitsu --(I) Magnifying Glass
-- (void)doMagnifyingGlass:(NSEvent *)theEvent
-{
-	NSPoint mouseLocWindow, mouseLocView;
-	NSRect oldBounds, newBounds, magRectWindow, magRectView, oldRect, diffRect;
-	float minY, maxY;
-	BOOL postNote, cursorVisible, commandDown = NO, wasDoubleClick, wasTripleClick;
-	float magWidth, magHeight, magOffsetX, magOffsetY;
-
-#define magScale 	0.4	// you may want to change this
-
-	//if (rotationAmount == 180) // mitsu 1.29 (S1) due to a bug in PDFImageRep, escape here
-	//	return;
-
-	postNote = [self postsBoundsChangedNotifications];
-	[self setPostsBoundsChangedNotifications: NO];	// block the view from sending notification
-	//[self lockFocus]; // the view is already focused, so it is not necessary to lock?
-
-	oldBounds = [self bounds];
-	oldRect.origin = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-	oldRect.size = NSMakeSize(0,0);
-	cursorVisible = YES;
-	wasDoubleClick = ([theEvent clickCount] == 2); // mitsu 1.29 (S5)-- allow double/triple click
-	wasTripleClick = ([theEvent clickCount] > 2);
-
-	do {
-		if ([theEvent type]==NSLeftMouseDragged || [theEvent type]==NSLeftMouseDown || [theEvent type]==NSFlagsChanged)
-		{
-			// get Mouse location and check if it is with the view's rect
-			if (!([theEvent type]==NSFlagsChanged))
-				mouseLocWindow = [theEvent locationInWindow];
-			mouseLocView = [self convertPoint: mouseLocWindow fromView:nil];
-			// check if the mouse is in the rect
-			if([self mouse:mouseLocView inRect:[self visibleRect]])
-			{
-				if (cursorVisible)
-				{
-					[NSCursor hide];
-					cursorVisible = NO;
-				}
-				// define rect for magnification in window coordinate
-				if (wasTripleClick) // mitsu 1.29 (S5) set magRectWindow here
-				{
-					magRectWindow = [self convertRect:[self visibleRect] toView:nil];
-				}
-				else
-				{
-					if (wasDoubleClick)
-					{
-						magWidth = 380;
-						magHeight = 250;
-						magOffsetX = magWidth/2;
-						magOffsetY = magHeight/2;
-					}
-					else
-					{
-						// koch
-						if (([theEvent modifierFlags] & NSCommandKeyMask))
-						{
-							if (! commandDown) {
-								largeMagnify = !largeMagnify;
-								if (largeMagnify) {
-									magWidth = 380; magHeight = 250;}
-								else {
-									magWidth = 150; magHeight = 100;}
-								commandDown = YES;
-							}
-						}
-						else
-							commandDown = NO;
-						if (([theEvent modifierFlags] & NSAlternateKeyMask) && (! commandDown))
-						{
-							if (largeMagnify) {
-								magWidth = 150; magHeight = 100;}
-							else {
-								magWidth = 380; magHeight = 250;}
-							}
-						else {
-							if (largeMagnify) {
-								magWidth = 380; magHeight = 250;}
-							else {
-								magWidth = 150; magHeight = 100;}
-							}
-						// end koch
-					}
-					magOffsetX = magWidth/2;
-					magOffsetY = magHeight/2;
-					magRectWindow = NSMakeRect(mouseLocWindow.x-magOffsetX, mouseLocWindow.y-magOffsetY,
-											magWidth, magHeight);
-				}
-				// resize bounds around mouseLocView
-				newBounds = NSMakeRect(mouseLocView.x+magScale*(oldBounds.origin.x-mouseLocView.x),
-								mouseLocView.y+magScale*(oldBounds.origin.y-mouseLocView.y),
-								magScale*(oldBounds.size.width), magScale*(oldBounds.size.height));
-
-				// mitsu 1.29 (S1) fix for rotated view
-				if (rotationAmount == 0)
-					[self setBounds: newBounds];
-				else if (rotationAmount == 90)
-					[self setBounds: Make90Rect(newBounds)];
-				else if (rotationAmount == 180)
-				{
-					[self setBounds: Make180Rect(newBounds)];
-					[self setBoundsRotation: 180];
-				}
-				else if (rotationAmount == -90)
-					[self setBounds: Make270Rect(newBounds)];
-				// it was:
-				//[self setBounds: newBounds];
-				// end mitsu 1.29
-
-				// draw it in the rect
-				magRectView = NSInsetRect([self convertRect:magRectWindow fromView:nil],1,1);
-				[self displayRect: magRectView];
-
-				// reset bounds
-				// mitsu 1.29 (S1)
-				if (rotationAmount == 0)
-					[self setBounds: oldBounds];
-				if (rotationAmount == 90)
-					[self setBounds: Make90Rect(oldBounds)];
-				if (rotationAmount == 180)
-				{
-					[self setBounds: Make180Rect(oldBounds)];
-					[self setBoundsRotation: 180];
-				}
-				else if (rotationAmount == -90)
-					[self setBounds: Make270Rect(oldBounds)];
-				// it was:
-				//[self setBounds: oldBounds];
-				// end mitsu 1.29
-
-				magRectView = [self convertRect:magRectWindow fromView:nil];
-				// clean up the trace
-				diffRect.origin.x = oldRect.origin.x;
-				diffRect.size.width = oldRect.size.width;
-				if ((diffRect.size.height = magRectView.origin.y-oldRect.origin.y) > 0)
-				{	// erase bottom
-					diffRect.origin.y = oldRect.origin.y;
-					[self displayRect: diffRect]; //NSIntegralRect()?
-					minY = magRectView.origin.y;
-				}
-				else
-					minY = oldRect.origin.y;
-				if ((diffRect.size.height = oldRect.origin.y+oldRect.size.height
-									-magRectView.origin.y-magRectView.size.height) > 0)
-				{	// erase top
-					diffRect.origin.y = magRectView.origin.y+magRectView.size.height;
-					[self displayRect: diffRect]; //NSIntegralRect()?
-					maxY = magRectView.origin.y+magRectView.size.height;
-				}
-				else
-					maxY = oldRect.origin.y+oldRect.size.height;
-				diffRect.origin.y = minY;
-				diffRect.size.height = maxY-minY;
-				if ((diffRect.size.width = magRectView.origin.x-oldRect.origin.x) > 0)
-				{	// erase left
-					diffRect.origin.x = oldRect.origin.x;
-					[self displayRect: diffRect]; //NSIntegralRect()?
-				}
-				if ((diffRect.size.width = oldRect.origin.x+oldRect.size.width
-											-magRectView.origin.x-magRectView.size.width) > 0)
-				{	// erase right
-					diffRect.origin.x = magRectView.origin.x+magRectView.size.width;
-					[self displayRect: diffRect]; //NSIntegralRect()?
-				}
-				// remember the current rect
-				oldRect = magRectView;
-			}
-			else
-			{
-				// mouse is not in the rect, show cursor and reset old rect
-				if (!cursorVisible)
-				{
-					[NSCursor unhide];
-					cursorVisible = YES;
-				}
-				[self displayRect: oldRect];
-				oldRect.origin = mouseLocView;
-				oldRect.size = NSMakeSize(0,0);
-				[self autoscroll: theEvent]; // mitsu 1.29 (S3) added autoscroll
-			}
-		}
-		else if ([theEvent type]==NSLeftMouseUp)
-		{
-			break;
-		}
-		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask |
-				NSLeftMouseDraggedMask | NSFlagsChangedMask];
-	} while (YES);
-
-	[NSCursor unhide];
-	//[self unlockFocus];
-	[self setPostsBoundsChangedNotifications: postNote];
-	[self setNeedsDisplayInRect: oldRect];
-}
-// end addition
-*/
 
 // mitsu 1.29 (S2)
 // derived from Apple's Sample code PDFView/DraggableScrollView.m

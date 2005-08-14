@@ -120,7 +120,6 @@
 - (void)updateMarquee: (NSTimer *)timer;
 - (void)cleanupMarquee: (BOOL)terminate;
 - (void)recacheMarquee;
-- (void)moveSelection: (NSEvent *)theEvent;
 - (BOOL)hasSelection;
 - (NSData *)imageDataFromSelectionType: (int)type;
 // - (void)saveSelectionToFile: (id)sender;
@@ -140,8 +139,4 @@
 - (void)setupSourceFiles;
 - (void)keyDown:(NSEvent *)theEvent;
 @end
-
-#define JPEG_COMPRESSION_HIGH	1.0
-#define JPEG_COMPRESSION_MEDIUM	0.95
-#define JPEG_COMPRESSION_LOW	0.85
 
