@@ -402,10 +402,6 @@
     NSString		*theSource;
 #endif
     NSString		*fileExtension;
-#ifndef MITSU_PDF
-    NSRect		topLeftRect;
-    NSPoint		topLeftPoint;
-#endif
     NSRange		myRange;
     BOOL		imageFound;
     NSString		*theFileName;
@@ -511,21 +507,7 @@
     
     _documentType = isTeX;
     fileExtension = [[self fileName] pathExtension];
-    
-    if (([fileExtension isEqualToString: @"jpg"]) || 
-        ([fileExtension isEqualToString: @"jpeg"]) ||
-        ([fileExtension isEqualToString: @"JPG"]) ||
-        ([fileExtension isEqualToString: @"tif"]) ||
-        ([fileExtension isEqualToString: @"tiff"])) {
-		;
-		// It's some kind of non-PDF image
-    } else {
-		// Everything else is assumed to either be a PDF, or a file with a PDF preview.
-		// TODO/FIXME: That's actually not completly logical. E.g. a .bib file usually
-		// doesn't have a PDF preview, does it?
-        [pdfView resetMagnification];
-	}
-	
+    	
     if (( ! [fileExtension isEqualToString: @"tex"]) && ( ! [fileExtension isEqualToString: @"TEX"])
 		&& ( ! [fileExtension isEqualToString: @"dtx"]) && ( ! [fileExtension isEqualToString: @"ins"])
 		&& ( ! [fileExtension isEqualToString: @"sty"]) && ( ! [fileExtension isEqualToString: @"cls"])
@@ -571,8 +553,7 @@
 	
     [pdfView setImageType: _documentType];
 	
-    if (! fileIsTex)
-	{
+    if (!fileIsTex) {
         imageFound = NO;
         imagePath = [self fileName];
         
@@ -584,8 +565,6 @@
                 pdfDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
 			}
 			
-            // texRep = [[NSPDFImageRep imageRepWithContentsOfFile: imagePath] retain];
-            // [pdfWindow setTitle: [[self fileName] lastPathComponent]];
 			[pdfKitWindow setTitle: [[self fileName] lastPathComponent]]; 
             // [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4; 
             // supposed to allow command click of window title to lead to file, but doesn't
@@ -623,71 +602,50 @@
 			return;
 		}
 		
-		if ((imageFound) && (_documentType == isPDF)) {
-			
-			PDFfromKit = YES;
-			[myPDFKitView showWithPath: imagePath];
-			[pdfKitWindow setRepresentedFilename: imagePath];
-			[pdfKitWindow setTitle: [imagePath lastPathComponent]];
-			[pdfKitWindow makeKeyAndOrderFront: self];
-			if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
-				pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] 
-																	target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
-			}
-			return;
-		}
-		
         if (imageFound) {
-			// pdf part here is irrelevant after pdfkit use above
-			[pdfView setImageType: _documentType];
-			[pdfView setImageRep: texRep]; // this releases old one!
-#ifndef MITSU_PDF
 			if (_documentType == isPDF) {
-				topLeftRect = [texRep bounds];
-				topLeftPoint.x = topLeftRect.origin.x;
-				topLeftPoint.y = topLeftRect.origin.y + topLeftRect.size.height - 1;
-				[pdfView scrollPoint: topLeftPoint];
-			}
-#endif
-			
-			if (texRep != nil) 
-				[pdfView display];
-#ifndef MITSU_PDF
-			if ((_documentType == isJPG) || (_documentType == isTIFF))
-                [pdfView resetMagnification];
-#endif
-			[pdfWindow makeKeyAndOrderFront: self];
-			
-			if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
-				pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] 
-																	target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
+				
+				PDFfromKit = YES;
+				[myPDFKitView showWithPath: imagePath];
+				[pdfKitWindow setRepresentedFilename: imagePath];
+				[pdfKitWindow setTitle: [imagePath lastPathComponent]];
+				[pdfKitWindow makeKeyAndOrderFront: self];
+				if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
+					pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] 
+																		target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
+				}
+			} else {
+				[pdfView setImageType: _documentType];
+				[pdfView setImageRep: texRep]; // this releases old one!
+				
+				if (texRep != nil) 
+					[pdfView display];
+				[pdfWindow makeKeyAndOrderFront: self];
+				
+				if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
+					pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] 
+																		target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
+				}
 			}
 			return;
 		}
 	}
 	/* end of images */
-	if (externalEditor) {
-		[self setHasUndoManager: NO];  // so reporting no changes does not lead to error messages
+
+	if (externalEditor || _documentContent != nil) {
+		if (externalEditor)
+			[self setHasUndoManager: NO];  // so reporting no changes does not lead to error messages
+		else
+			[self installStringIntoTextEdit];
+
 		texTask = nil;
 		bibTask = nil;
 		indexTask = nil;
 		metaFontTask = nil;
 		detexTask = nil;   
 		detexPipe = nil;
-		
-    }
-	else if (_documentContent != nil) 
-    {
-        [self installStringIntoTextEdit];
-        
-        texTask = nil;
-        bibTask = nil;
-        indexTask = nil;
-        metaFontTask = nil;
-        detexTask = nil;   
-        detexPipe = nil;
-    }
-    
+	}
+	
 	if (! externalEditor) {
 		myRange.location = 0;
 		myRange.length = 0;
@@ -696,7 +654,7 @@
 			[textView setContinuousSpellCheckingEnabled:[SUD boolForKey:SpellCheckEnabledKey]];
 		[textWindow setInitialFirstResponder: textView];
 		[textWindow makeFirstResponder: textView];
-    }
+	}
     
     if (!fileIsTex) 
         return;
