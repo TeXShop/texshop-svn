@@ -64,7 +64,9 @@ BOOL isText1(int c) {
 	int		theChar;
 	unsigned	end;
 	
-	if ((! [SUD boolForKey:SyntaxColoringEnabledKey]) || (! fileIsTex)) return;
+	// No syntax coloring if the file is not TeX, or if SC is disabled
+	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
+		return;
 	
 	// regularColor = [NSColor blackColor];
 	regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey] 
@@ -163,9 +165,9 @@ BOOL isText1(int c) {
 		fastColor = YES;
 	else if (affectedCharRange.length == 1) {
 		aChar = [[textView string] characterAtIndex: affectedCharRange.location];
-		if (/* (aChar >= ' ') && */ (aChar != 165) && (aChar != 0x005c) && (aChar != '%'))
+		if ((aChar != YEN) && (aChar != BACKSLASH) && (aChar != '%'))
 			fastColor = YES;
-		if (aChar == 0x005c) {
+		if (aChar == BACKSLASH) {
 			fastColor = YES;
 			myAttribString = [[[NSMutableAttributedString alloc] initWithAttributedString:[textView attributedSubstringFromRange: affectedCharRange]] autorelease];
 			myAttributes = [myAttribString attributesAtIndex: 0 effectiveRange: NULL];
@@ -346,7 +348,9 @@ BOOL isText1(int c) {
 	NSMutableAttributedString 	*myAttribString;
 	NSDictionary		*myAttributes;
 	
-	if ((! [SUD boolForKey:SyntaxColoringEnabledKey]) || (! fileIsTex)) return;
+	// No syntax coloring if the file is not TeX, or if SC is disabled
+	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
+		return;
 	
 	// regularColor = [NSColor blackColor];
 	regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey] 

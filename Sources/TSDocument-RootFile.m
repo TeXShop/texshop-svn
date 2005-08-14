@@ -35,6 +35,103 @@
 	return rootDocument;
 }
 
+- (BOOL) checkRootFile: (NSString *)nameString forTask:(int)task
+{
+	NSArray 			*wlist;
+	NSEnumerator 		*en;
+	id                      obj;
+	NSDocumentController    *dc;
+	int                         theEngine;
+
+	// is the document open?
+	wlist = [NSApp orderedDocuments];
+	en = [wlist objectEnumerator];
+	while ((obj = [en nextObject])) {
+		// TODO: Consider using [obj isMemberOfClass:[TSDocument class]] here
+		if ([[obj windowNibName] isEqualToString:@"TSDocument"]) {
+			if ([[obj fileName] isEqualToString:nameString]) {
+				if (obj == self)
+					return NO;
+				rootDocument = obj;
+				if (task == RootForPrinting) {
+					[obj printDocument:nil];
+				} else if (task == RootForPdfSync) {
+					[obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
+				} else if (task == RootForSwitchWindow) {
+					[obj setCallingWindow: textWindow];
+					[obj bringPdfWindowFront];
+				} else if (task == RootForTexing) {
+					// FIXME: The following code block exists twice in this function
+					theEngine = useTempEngine ? tempEngine : whichEngine;
+					if (whichEngine >= UserEngine) {
+						[obj doUser:whichEngine];
+					} else {
+						switch (theEngine) {
+							case TexEngine: [obj doTex:nil]; break;
+							case LatexEngine: [obj doLatex:nil]; break;
+							case ContextEngine: [obj doContext:nil]; break;
+							case MetapostEngine: [obj doMetapost:nil]; break;
+							case BibtexEngine: [obj doBibtex:nil]; break;
+							case IndexEngine: [obj doIndex:nil]; break;
+							case MetafontEngine: [obj doMetaFont:nil]; break;
+							default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
+													   nil,nil,nil,[textView window],nil,nil,nil,nil,
+													   @"Path Name: %@",nameString);
+						}
+					}
+				} else if (task == RootForOpening) {
+					;
+				} else if (task == RootForTrashAUX) {
+					[obj trashAUX];
+				}
+				return YES;
+			}
+		}
+	}
+	
+	// document not found, open document and typeset
+	dc = [NSDocumentController sharedDocumentController];
+	obj = [dc openDocumentWithContentsOfFile:nameString display:YES];
+	if (obj) {
+		if (obj == self)
+			return NO;
+		if (task == RootForPrinting) {
+			[obj printDocument:nil];
+		} else if (task == RootForPdfSync) {
+			[obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
+		} else if (task == RootForTexing) {
+			// FIXME: The following code block exists twice in this function
+			theEngine = useTempEngine ? tempEngine : whichEngine;
+			if (whichEngine >= UserEngine) {
+				[obj doUser:whichEngine];
+			} else {
+				switch (theEngine) {
+					case TexEngine: [obj doTex:nil]; break;
+					case LatexEngine: [obj doLatex:nil]; break;
+					case ContextEngine: [obj doContext:nil]; break;
+					case MetapostEngine: [obj doMetapost:nil]; break;
+					case BibtexEngine: [obj doBibtex:nil]; break;
+					case IndexEngine: [obj doIndex:nil]; break;
+					case MetafontEngine: [obj doMetaFont:nil]; break;
+					default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
+											   nil,nil,nil,[textView window],nil,nil,nil,nil,
+											   @"Path Name: %@",nameString);
+				}
+			}
+		} else if (task == RootForOpening) {
+			[[obj textWindow] miniaturize:self];
+		} else if (task == RootForTrashAUX) {
+			[obj trashAUX];
+		}
+		return YES;
+	} else {
+		NSBeginAlertSheet(NSLocalizedString(@"The source LaTeX document cannot be found.", @"The source LaTeX document cannot be found."),
+						  nil,nil,nil,nil,nil,nil,nil,nil,
+						  @"Path Name: %@",nameString);
+	}
+	return YES;
+}
+
 //-----------------------------------------------------------------------------
 - (BOOL)checkMasterFile:(NSString *)theSource forTask:(int)task;
 //-----------------------------------------------------------------------------
@@ -44,11 +141,6 @@
 	NSRange                 myRange, theRange, sourcedocRange, newSourceDocRange;
 	NSString                *testString, *sourcedocString;
 	NSString                *nameString;
-	NSArray                 *wlist;
-	NSEnumerator            *en;
-	id                      obj;
-	NSDocumentController    *dc;
-	int                     theEngine;
 	unsigned                length;
 	BOOL                    done;
 	int                     linesTested;
@@ -91,7 +183,7 @@
 	}
 	
 	
-	if ((! done) && ([SUD boolForKey:UseOldHeadingCommandsKey])) {
+	if (!done && [SUD boolForKey:UseOldHeadingCommandsKey]) {
 		
 		aRange = [theSource rangeOfString:@"%SourceDoc "];
 		if (aRange.location != NSNotFound) {
@@ -108,111 +200,19 @@
 		nameString = [self
 			decodeFile:sourcedocString
 			  homePath:home job:jobname];
-		
-		// is the document open?
-		wlist = [NSApp orderedDocuments];
-		en = [wlist objectEnumerator];
-		while ((obj = [en nextObject])) {
-			// TODO: Consider using [obj isMemberOfClass:[TSDocument class]] here
-			if ([[obj windowNibName] isEqualToString:@"TSDocument"]) {
-				if ([[obj fileName] isEqualToString:nameString]) {
-					if (obj == self)
-						return NO;
-					rootDocument = obj;
-					if (task == RootForPrinting) {
-						[obj printDocument:nil];
-					} else if (task == RootForPdfSync) {
-						[obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
-					} else if (task == RootForSwitchWindow) {
-						[obj setCallingWindow: textWindow];
-						[obj bringPdfWindowFront];
-					} else if (task == RootForTexing) {	
-						// FIXME: The following code block exists four times in this source file
-						theEngine = useTempEngine ? tempEngine : whichEngine;
-						if (whichEngine >= UserEngine) {
-							[obj doUser:whichEngine];
-						} else {
-							switch (theEngine) {
-								case TexEngine: [obj doTex:nil]; break;
-								case LatexEngine: [obj doLatex:nil]; break;
-								case ContextEngine: [obj doContext:nil]; break;
-								case MetapostEngine: [obj doMetapost:nil]; break;
-								case BibtexEngine: [obj doBibtex:nil]; break;
-								case IndexEngine: [obj doIndex:nil]; break;
-								case MetafontEngine: [obj doMetaFont:nil]; break;
-								default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
-														   nil,nil,nil,[textView window],nil,nil,nil,nil,
-														   @"Path Name: %@",nameString);
-							}
-						}
-					} else if (task == RootForOpening) {
-						;
-					} else if (task == RootForTrashAUX) {
-						[obj trashAUX];
-					}
-					return YES;
-				}
-			}
-		}
-		
-		// document not found, open document and typeset
-		dc = [NSDocumentController sharedDocumentController];
-		obj = [dc openDocumentWithContentsOfFile:nameString display:YES];
-		if (obj) {
-			if (obj == self)
-				return NO;
-			if (task == RootForPrinting) {
-				[obj printDocument:nil];
-			} else if (task == RootForPdfSync) {
-				[obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
-			}
-			else if (task == RootForTexing) {
-				// FIXME: The following code block exists four times in this source file
-				theEngine = useTempEngine ? tempEngine : whichEngine;
-				if (whichEngine >= UserEngine) {
-					[obj doUser:whichEngine];
-				} else {
-					switch (theEngine) {
-						case TexEngine: [obj doTex:nil]; break;
-						case LatexEngine: [obj doLatex:nil]; break;
-						case ContextEngine: [obj doContext:nil]; break;
-						case MetapostEngine: [obj doMetapost:nil]; break;
-						case BibtexEngine: [obj doBibtex:nil]; break;
-						case IndexEngine: [obj doIndex:nil]; break;
-						case MetafontEngine: [obj doMetaFont:nil]; break;
-						default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
-												   nil,nil,nil,[textView window],nil,nil,nil,nil,
-												   @"Path Name: %@",nameString);
-					}
-				}
-			} else if (task == RootForOpening) {
-				[[obj textWindow] miniaturize:self];
-			} else if (task == RootForTrashAUX) {
-				[obj trashAUX];
-			}
-			return YES;
-		}
-		else {
-			NSBeginAlertSheet(NSLocalizedString(@"The source LaTeX document cannot be found.", @"The source LaTeX document cannot be found."),
-							  nil,nil,nil,nil,nil,nil,nil,nil,
-							  @"Path Name: %@",nameString);
-		}
-		return YES;
+
+		return [self checkRootFile:nameString forTask:task];
 	}
 	
 	return NO;
 }
+
 
 //-----------------------------------------------------------------------------
 - (BOOL) checkRootFile_forTask:(int)task
 //-----------------------------------------------------------------------------
 {
 	NSString			*projectPath, *nameString;
-	NSArray 			*wlist;
-	NSEnumerator 		*en;
-	id 				obj;
-	NSDocumentController 	*dc;
-	int                         theEngine;
 	
 	projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
 	if (![[NSFileManager defaultManager] fileExistsAtPath: projectPath]) 
@@ -232,92 +232,7 @@
 		nameString = [nameString stringByStandardizingPath];
 	}
 	
-		// is the document open?
-		wlist = [NSApp orderedDocuments];
-		en = [wlist objectEnumerator];
-		while ((obj = [en nextObject])) {
-			// TODO: Consider using [obj isMemberOfClass:[TSDocument class]] here
-			if ([[obj windowNibName] isEqualToString:@"TSDocument"]) {
-				if ([[obj fileName] isEqualToString:nameString]) {
-					if (obj == self)
-						return NO;
-					rootDocument = obj;
-					if (task == RootForPrinting) {
-						[obj printDocument:nil];
-					} else if (task == RootForPdfSync) {
-						[obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
-					} else if (task == RootForSwitchWindow) {
-						[obj setCallingWindow: textWindow];
-						[obj bringPdfWindowFront];
-					} else if (task == RootForTexing) {
-						// FIXME: The following code block exists four times in this source file
-						theEngine = useTempEngine ? tempEngine : whichEngine;
-						if (whichEngine >= UserEngine) {
-							[obj doUser:whichEngine];
-						} else {
-							switch (theEngine) {
-								case TexEngine: [obj doTex:nil]; break;
-								case LatexEngine: [obj doLatex:nil]; break;
-								case ContextEngine: [obj doContext:nil]; break;
-								case MetapostEngine: [obj doMetapost:nil]; break;
-								case BibtexEngine: [obj doBibtex:nil]; break;
-								case IndexEngine: [obj doIndex:nil]; break;
-								case MetafontEngine: [obj doMetaFont:nil]; break;
-								default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
-														   nil,nil,nil,[textView window],nil,nil,nil,nil,
-														   @"Path Name: %@",nameString);
-							}
-						}
-					} else if (task == RootForOpening) {
-						;
-					} else if (task == RootForTrashAUX) {
-						[obj trashAUX];
-					}
-					return YES;
-				}
-			}
-		}
-		
-		// document not found, open document and typeset
-		dc = [NSDocumentController sharedDocumentController];
-		obj = [dc openDocumentWithContentsOfFile:nameString display:YES];
-		if (obj) {
-			if (obj == self)
-				return NO;
-			if (task == RootForPrinting) {
-				[obj printDocument:nil];
-			} else if (task == RootForPdfSync) {
-				[obj doPreviewSyncWithFilename:[self fileName] andLine:pdfSyncLine andCharacterIndex:pdfCharacterIndex andTextView: textView];
-			}
-			else if (task == RootForTexing) {
-				// FIXME: The following code block exists four times in this source file
-				theEngine = useTempEngine ? tempEngine : whichEngine;
-				if (whichEngine >= UserEngine) {
-					[obj doUser:whichEngine];
-				} else {
-					switch (theEngine) {
-						case TexEngine: [obj doTex:nil]; break;
-						case LatexEngine: [obj doLatex:nil]; break;
-						case ContextEngine: [obj doContext:nil]; break;
-						case MetapostEngine: [obj doMetapost:nil]; break;
-						case BibtexEngine: [obj doBibtex:nil]; break;
-						case IndexEngine: [obj doIndex:nil]; break;
-						case MetafontEngine: [obj doMetaFont:nil]; break;
-						default: NSBeginAlertSheet(NSLocalizedString(@"Typesetting engine cannot be found.", @"Typesetting engine cannot be found."),
-												   nil,nil,nil,[textView window],nil,nil,nil,nil,
-												   @"Path Name: %@",nameString);
-					}
-				}
-			} else if (task == RootForOpening) {
-				[[obj textWindow] miniaturize:self];
-			}
-			return YES;
-		} else {
-			NSBeginAlertSheet(NSLocalizedString(@"The source LaTeX document cannot be found.", @"The source LaTeX document cannot be found."),
-							  nil,nil,nil,nil,nil,nil,nil,nil,
-							  @"Path Name: %@",nameString);
-		}
-		return YES;
+	return [self checkRootFile:nameString forTask:task];
 }
 
 - (void) checkFileLinksA
@@ -328,10 +243,7 @@
 	id theRoot;
 	
 	// first save all related, open, dirty files
-	if (rootDocument != nil)
-		theRoot = rootDocument;
-	else
-		theRoot = self;
+	theRoot = rootDocument ? rootDocument : self;
 	
 	wlist = [NSApp orderedDocuments];
 	en = [wlist objectEnumerator];
@@ -371,6 +283,7 @@
 	searchString = [NSString stringWithString:@"\\input"];
 	if (g_shouldFilter == kMacJapaneseFilterMode)
 		searchString = filterBackslashToYen(searchString);
+
 	while (YES) {
 		aRange = [theSource rangeOfString:searchString options:NSLiteralSearch range:aRange];
 		if (aRange.location == NSNotFound)
@@ -394,7 +307,7 @@
 	
 	// compare file list to current MyDocuments
 	wlist = [NSApp orderedDocuments];
-	en   =[wlist objectEnumerator];
+	en = [wlist objectEnumerator];
 	
 	while ((obj = [en nextObject])) {
 		if ([[obj windowNibName] isEqualToString:@"TSDocument"]) {
@@ -433,7 +346,7 @@
 		if (aRange.location == 0)
 			return nil;
 		firstChar = [fileLine characterAtIndex:aRange.location-1];
-		if (firstChar != '\\')
+		if (firstChar != BACKSLASH)
 			return nil;
 	}
 	
@@ -488,7 +401,7 @@
 	
 	// expand to full path
 	firstChar = [relFile characterAtIndex:0];
-	if (firstChar=='~')
+	if (firstChar == '~')
 		saveName = [relFile stringByExpandingTildeInPath];
 	else if (firstChar == '/')
 		saveName = relFile;

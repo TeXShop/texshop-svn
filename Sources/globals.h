@@ -26,6 +26,10 @@
 
 #define ARRAYSIZE(x) ((int)(sizeof(x) / sizeof(x[0])))
 
+#define	YEN			0x00a5
+#define	BACKSLASH	'\\'
+
+
 /*" Symbolic constants for the matrix used in 'Source window Position' of the TSPreferences. "*/
 enum DocumentWindowPosition 
 {
@@ -219,7 +223,6 @@ extern NSString *PdfKitMouseModeKey; // mitsu 1.29 (O)
 extern NSString *PdfQuickDragKey; // mitsu 1.29 drag & drop
 extern NSString *SaveDocumentFontKey;
 extern NSString *SyntaxColoringEnabledKey;
-extern NSString *FastColoringKey;
 extern NSString *KeepBackupKey;
 extern NSString *TetexBinPathKey;
 extern NSString *GSBinPathKey;

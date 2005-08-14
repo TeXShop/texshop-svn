@@ -130,9 +130,9 @@
     [self configureExternalEditor];
     
 	if ([[SUD stringForKey:EncodingKey] isEqualToString:@"MacJapanese"]) 
-        g_texChar = 165;		// yen
+        g_texChar = YEN;
     else
-        g_texChar = 0x005c;	// backslash
+        g_texChar = BACKSLASH;
 
 // added by mitsu --(H) Macro menu and (G) TSEncodingSupport
     [[TSEncodingSupport sharedInstance] setupForEncoding];        // this must come after

@@ -102,7 +102,7 @@ static TSEncoding _availableEncodings[] = {
 		
 		g_shouldFilter = kNoFilterMode;
 		// initialize yen string
-		unichar yenChar = 0x00a5;
+		unichar yenChar = YEN;
 		yenString = [[NSString stringWithCharacters: &yenChar length:1] retain];
 		
 		// register for encoding changed notification
@@ -181,7 +181,7 @@ static TSEncoding _availableEncodings[] = {
 	if ([currentEncoding isEqualToString:@"MacJapanese"] ||
 			[currentEncoding isEqualToString:@"SJIS_X0213"] )
 	{
-		g_texChar = 0x00a5; // yen
+		g_texChar = YEN; // yen
 		[g_taggedTeXSections release];
 		g_taggedTeXSections = [[NSArray alloc] initWithObjects:
 							filterBackslashToYen(@"\\chapter"),
@@ -220,7 +220,7 @@ static TSEncoding _availableEncodings[] = {
 	}
 	else 
 	{
-		g_texChar = 0x005c; // backslash
+		g_texChar = BACKSLASH;
 		[g_taggedTeXSections release];
 		g_taggedTeXSections = [[NSArray alloc] initWithObjects:
 							@"\\chapter",

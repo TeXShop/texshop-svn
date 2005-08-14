@@ -70,7 +70,6 @@ NSString *PdfKitMouseModeKey = @"PdfKitMouseMode"; // mitsu 1.29 (O)
 NSString *PdfQuickDragKey = @"PdfQuickDrag"; // mitsu 1.29 drag & drop
 NSString *SaveDocumentFontKey = @"SaveDocumentFont";
 NSString *SyntaxColoringEnabledKey = @"SyntaxColoringEnabled";
-NSString *FastColoringKey = @"FastColor";
 NSString *KeepBackupKey = @"KeepBackup";
 NSString *TetexBinPathKey = @"TetexBinPath";
 NSString *GSBinPathKey = @"GSBinPath";

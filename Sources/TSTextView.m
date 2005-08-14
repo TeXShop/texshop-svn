@@ -378,7 +378,7 @@
 	// Extend word selection to cover an initial backslash (TeX command)
 	if (granularity == NSSelectByWord)
 	{
-		if (replacementRange.location >= 1 && [textString characterAtIndex: replacementRange.location-1] == '\\')
+		if (replacementRange.location >= 1 && [textString characterAtIndex: replacementRange.location-1] == BACKSLASH)
 		{
 			replacementRange.location--;
 			replacementRange.length++;
@@ -471,7 +471,7 @@
 		{
 			NSString *completionString = [g_autocompletionDictionary objectForKey:aString];
 			if ( completionString && 
-				(!g_shouldFilter || [aString characterAtIndex:0]!=0x00a5)) // avoid completing yen
+				(!g_shouldFilter || [aString characterAtIndex:0] != YEN)) // avoid completing yen
 			{
 #define ALLOW_UNDO_AUTOCOMPLETION
 #ifdef ALLOW_UNDO_AUTOCOMPLETION
@@ -488,12 +488,9 @@
 #endif //AUTOCOMPLETE_IN_INSERTTEXT
 
 	// Filtering for Japanese
-	if (g_shouldFilter == kMacJapaneseFilterMode)
-	{
+	if (g_shouldFilter == kMacJapaneseFilterMode) {
 		newString = filterBackslashToYen(newString);
-	}
-	else if (g_shouldFilter == kOtherJapaneseFilterMode)
-	{
+	} else if (g_shouldFilter == kOtherJapaneseFilterMode) {
 		newString = filterYenToBackslash(newString);
 	}
 	
@@ -516,13 +513,10 @@
 	
 	BOOL returnValue = [super writeSelectionToPasteboard:pboard type:type];
 	if (returnValue && [type isEqualToString: NSStringPboardType]) {
-		if ((g_shouldFilter == kMacJapaneseFilterMode) && [SUD boolForKey:@"ConvertToBackslash"])
-		{
+		if ((g_shouldFilter == kMacJapaneseFilterMode) && [SUD boolForKey:@"ConvertToBackslash"]) {
 			newString = filterYenToBackslash([pboard stringForType: NSStringPboardType]);
 			returnValue = [pboard setString: newString forType: NSStringPboardType];
-		}
-		else if ((g_shouldFilter == kOtherJapaneseFilterMode) && [SUD boolForKey:@"ConvertToYen"])
-		{
+		} else if ((g_shouldFilter == kOtherJapaneseFilterMode) && [SUD boolForKey:@"ConvertToYen"]) {
 			newString = filterBackslashToYen([pboard stringForType: NSStringPboardType]);
 			returnValue = [pboard setString: newString forType: NSStringPboardType];
 		}
@@ -532,11 +526,9 @@
 
 - (BOOL)readSelectionFromPasteboard:(NSPasteboard *)pboard type:(NSString *)type
 {
-	if (g_shouldFilter && [type isEqualToString: NSStringPboardType])
-	{
+	if (g_shouldFilter && [type isEqualToString: NSStringPboardType]) {
 		NSString *string = [pboard stringForType: NSStringPboardType];
-		if (string)
-		{
+		if (string) {
 		// mitsu 1.29 (T1)-- in order to enable "Undo Paste"
 			// Filtering for Japanese
 			if (g_shouldFilter == kMacJapaneseFilterMode)
@@ -547,9 +539,9 @@
 			// zenitani 1.35 (A) -- normalizing newline character for regular expression
 			long MacVersion;
 			if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
-			if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030)) 
-				string = [OGRegularExpression replaceNewlineCharactersInString:string 
-						withCharacter:OgreLfNewlineCharacter];
+				if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030)) 
+					string = [OGRegularExpression replaceNewlineCharactersInString:string 
+							withCharacter:OgreLfNewlineCharacter];
 			}
 		
 			// Replace the text--imitate what happens in ordinary editing
