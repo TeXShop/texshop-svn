@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,56 +38,56 @@ typedef enum {
 /*" Symbolic constants for Root File tests "*/
 enum RootCommand
 {
-    RootForOpening = 1,
-    RootForTexing = 2,
-    RootForPrinting = 3,
-    RootForSwitchWindow = 4,
-    RootForPdfSync = 5,
-    RootForTrashAUX = 6
+	RootForOpening = 1,
+	RootForTexing = 2,
+	RootForPrinting = 3,
+	RootForSwitchWindow = 4,
+	RootForPdfSync = 5,
+	RootForTrashAUX = 6
 };
 
 @class MyPDFKitView;
 
 
-@interface TSDocument : NSDocument 
+@interface TSDocument : NSDocument
 {
-    // forsplit
-    id			textView1;
-    id			textView2;
-    id			scrollView2;
-    id			splitView;
-    NSTextStorage 	*textStorage;
-    BOOL		windowIsSplit;
+	// forsplit
+	id			textView1;
+	id			textView2;
+	id			scrollView2;
+	id			splitView;
+	NSTextStorage 	*textStorage;
+	BOOL		windowIsSplit;
 // endforsplit
-    id			textView;		/*" textView displaying the current TeX source "*/
-    id			scrollView;		/*" scrollView for textView"*/
-    id			pdfView;		/*" view displaying the current preview "*/
-    id			textWindow;		/*" window displaying the current document "*/
-    id			pdfWindow;		/*" window displaying the current pdf preview "*/
+	id			textView;		/*" textView displaying the current TeX source "*/
+	id			scrollView;		/*" scrollView for textView"*/
+	id			pdfView;		/*" view displaying the current preview "*/
+	id			textWindow;		/*" window displaying the current document "*/
+	id			pdfWindow;		/*" window displaying the current pdf preview "*/
 	id			pdfKitWindow;
-    id			outputWindow;		/*" window displaying the output of the running TeX process "*/
-    id			outputText;		/*" text displaying the output of the running TeX process "*/
-    NSTextField		*texCommand;		/*" connected to the command textField on the errors panel "*/
-    id			popupButton;		/*" popupButton displaying all the TeX templates "*/
-    id			projectPanel;
-    id			projectName;
-    id			requestWindow;
-    id			printRequestPanel;
-    id			pagenumberPanel;
+	id			outputWindow;		/*" window displaying the output of the running TeX process "*/
+	id			outputText;		/*" text displaying the output of the running TeX process "*/
+	NSTextField		*texCommand;		/*" connected to the command textField on the errors panel "*/
+	id			popupButton;		/*" popupButton displaying all the TeX templates "*/
+	id			projectPanel;
+	id			projectName;
+	id			requestWindow;
+	id			printRequestPanel;
+	id			pagenumberPanel;
 	id			pagenumberKitPanel;
-    id			magnificationPanel;
+	id			magnificationPanel;
 	id			magnificationKitPanel;
-    id			statisticsPanel;
-    id			statisticsForm;
-    id			openSaveBox;
-    id			openSaveView;
-    id			linePanel;
-    id			lineBox;
-    id			typesetButton;
-    id			typesetButtonEE;
-    id			programButton;
-    id			programButtonEE;
-	
+	id			statisticsPanel;
+	id			statisticsForm;
+	id			openSaveBox;
+	id			openSaveView;
+	id			linePanel;
+	id			lineBox;
+	id			typesetButton;
+	id			typesetButtonEE;
+	id			programButton;
+	id			programButtonEE;
+
 	id			previousButtonKK;
 	id			nextButtonKK;
 	id			gotopageOutletKK;
@@ -95,88 +95,88 @@ enum RootCommand
 	id			mouseModeMatrixKK;
 	id			backforthKK;
 	id			drawerKK;
-	
-    id			tags;
-    NSStringEncoding	_encoding;
-    NSStringEncoding	_tempencoding;
-    int			whichScript;		/*" 100 = pdftex, 101 = gs, 102 = personal script "*/
-    int			whichEngine;		/*" 1 = tex, 2 = latex, 3 = bibtex, 4 = makeindex, 5 = megapost, 6 = context,
-                                                    7 = metafont "*/
-    id			rootDocument;
-    BOOL		tagLine;
-    BOOL		typesetStart;		/*" YES if tex output "*/
-    NSFileHandle	*writeHandle;
-    NSFileHandle	*readHandle;
-    NSPipe		*inputPipe;
-    NSPipe		*outputPipe;
-    NSString		*_documentContent;		/*" holds the content of the tex document "*/
-    NSTask		*texTask;
-    NSTask		*bibTask;
-    NSTask		*indexTask;
-    NSTask		*metaFontTask;
-    NSTask		*detexTask;
-    NSPipe		*detexPipe;
-    NSFileHandle        *detexHandle;
-    NSDate		*startDate;
-    NSPDFImageRep	*texRep;
-    NSData		*previousFontData;	/*" holds font data in case preferences change is cancelled "*/
-    int			myPrefResult;
-    BOOL		fileIsTex;
-    TSDocumentType			_documentType;
-    int			errorLine[NUMBEROFERRORS];
-    int			errorNumber;
-    int			whichError;
-    int			theScript;		/*" script currently executing; 100, 101, 102 "*/
-    unsigned	colorStart, colorEnd;
-    BOOL		fastColor, fastColorBackTeX;
-    NSTimer		*syntaxColoringTimer;	/*" Timer that repeatedly handles syntax coloring "*/
-    unsigned	colorLocation;
-    NSTimer		*tagTimer;		/*" Timer that repeatedly handles tag updates "*/
-    unsigned	tagLocation;
-    unsigned	tagLocationLine;
-    BOOL		makeError;
-    BOOL		returnline;
-    SEL			tempSEL;
-    NSColor		*commandColor, *commentColor, *markerColor;
-    id			mSelection;
-    id			gotopageOutlet;
-    id			magnificationOutlet;
-    id			previousButton;
-    id			nextButton;
-    BOOL                taskDone;
-    int                 pdfSyncLine;
-    id                  syncBox;
-    BOOL                aggressiveTrash;
-    
-    IBOutlet NSMatrix 	*mouseModeMatrix; // mitsu 1.29 (O)
-    IBOutlet NSMenu 	*mouseModeMenu; // mitsu 1.29 (O)
+
+	id			tags;
+	NSStringEncoding	_encoding;
+	NSStringEncoding	_tempencoding;
+	int			whichScript;		/*" 100 = pdftex, 101 = gs, 102 = personal script "*/
+	int			whichEngine;		/*" 1 = tex, 2 = latex, 3 = bibtex, 4 = makeindex, 5 = megapost, 6 = context,
+													7 = metafont "*/
+	id			rootDocument;
+	BOOL		tagLine;
+	BOOL		typesetStart;		/*" YES if tex output "*/
+	NSFileHandle	*writeHandle;
+	NSFileHandle	*readHandle;
+	NSPipe		*inputPipe;
+	NSPipe		*outputPipe;
+	NSString		*_documentContent;		/*" holds the content of the tex document "*/
+	NSTask		*texTask;
+	NSTask		*bibTask;
+	NSTask		*indexTask;
+	NSTask		*metaFontTask;
+	NSTask		*detexTask;
+	NSPipe		*detexPipe;
+	NSFileHandle        *detexHandle;
+	NSDate		*startDate;
+	NSPDFImageRep	*texRep;
+	NSData		*previousFontData;	/*" holds font data in case preferences change is cancelled "*/
+	int			myPrefResult;
+	BOOL		fileIsTex;
+	TSDocumentType			_documentType;
+	int			errorLine[NUMBEROFERRORS];
+	int			errorNumber;
+	int			whichError;
+	int			theScript;		/*" script currently executing; 100, 101, 102 "*/
+	unsigned	colorStart, colorEnd;
+	BOOL		fastColor, fastColorBackTeX;
+	NSTimer		*syntaxColoringTimer;	/*" Timer that repeatedly handles syntax coloring "*/
+	unsigned	colorLocation;
+	NSTimer		*tagTimer;		/*" Timer that repeatedly handles tag updates "*/
+	unsigned	tagLocation;
+	unsigned	tagLocationLine;
+	BOOL		makeError;
+	BOOL		returnline;
+	SEL			tempSEL;
+	NSColor		*commandColor, *commentColor, *markerColor;
+	id			mSelection;
+	id			gotopageOutlet;
+	id			magnificationOutlet;
+	id			previousButton;
+	id			nextButton;
+	BOOL                taskDone;
+	int                 pdfSyncLine;
+	id                  syncBox;
+	BOOL                aggressiveTrash;
+
+	IBOutlet NSMatrix 	*mouseModeMatrix; // mitsu 1.29 (O)
+	IBOutlet NSMenu 	*mouseModeMenu; // mitsu 1.29 (O)
 	IBOutlet NSMenu 	*mouseModeMenuKit; // mitsu 1.29 (O)
-    IBOutlet NSMenu 	*magnificationMenu; // mitsu 1.29 test
-    
-    BOOL		externalEditor;
+	IBOutlet NSMenu 	*magnificationMenu; // mitsu 1.29 test
+
+	BOOL		externalEditor;
 // added by mitsu --(H) Macro menu; macroButton
-    id			macroButton;		/*" pull-down list for macros "*/
-    id                  macroButtonEE;          /*" same in pdf window "*/
-    id			autoCompleteButton;
-    BOOL		doAutoComplete;
-    BOOL		warningGiven;
-    BOOL		omitShellEscape;
-    BOOL		withLatex;
-    NSDate              *pdfDate;
-    NSTimer             *pdfRefreshTimer;
-    BOOL                typesetContinuously;
-    BOOL                tryAgain;
-    int                 tempEngine;
-    BOOL                useTempEngine;
-    BOOL                realEngine;
-    NSWindow            *callingWindow;
-    NSStringEncoding	_badEncoding;
-    BOOL                showBadEncodingDialog;
+	id			macroButton;		/*" pull-down list for macros "*/
+	id                  macroButtonEE;          /*" same in pdf window "*/
+	id			autoCompleteButton;
+	BOOL		doAutoComplete;
+	BOOL		warningGiven;
+	BOOL		omitShellEscape;
+	BOOL		withLatex;
+	NSDate              *pdfDate;
+	NSTimer             *pdfRefreshTimer;
+	BOOL                typesetContinuously;
+	BOOL                tryAgain;
+	int                 tempEngine;
+	BOOL                useTempEngine;
+	BOOL                realEngine;
+	NSWindow            *callingWindow;
+	NSStringEncoding	_badEncoding;
+	BOOL                showBadEncodingDialog;
 	MyPDFKitView		*myPDFKitView;
 	BOOL				PDFfromKit;
 	unsigned int		pdfCharacterIndex;
 	BOOL				textSelectionYellow;
-    
+
 // end addition
 
 }
@@ -280,7 +280,7 @@ enum RootCommand
 - (BOOL)isDoAutoCompleteEnabled; // mitsu 1.29 (T4)
 - (void)insertSpecial:(NSString *)theString undoKey:(NSString *)key;
 - (void)insertSpecialNonStandard:(NSString *)theString undoKey:(NSString *)key;
-- (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation 
+- (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation
 	length: (unsigned)newLength key:(NSString *)key;
 - (void)undoSpecial:(id)theDictionary;
 - (void)doCommentOrIndent: (id)sender;
@@ -350,7 +350,7 @@ enum RootCommand
 - (void) checkFileLinks:(NSString *)theSource;
 - (void) checkFileLinksA;
 - (NSString *) readInputArg:(NSString *)fileLine atIndex:(unsigned)i
-        homePath:(NSString *)home job:(NSString *)jobname;
+		homePath:(NSString *)home job:(NSString *)jobname;
 - (NSString *) decodeFile:(NSString *)relFile homePath:(NSString *)home job:(NSString *)jobname;
 
 @end

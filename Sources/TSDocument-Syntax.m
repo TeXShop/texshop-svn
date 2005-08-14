@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -35,7 +35,7 @@ static BOOL isText1(int c);
 - (void)textDidChange:(NSNotification *)aNotification;
 {
 	[self fixColor :colorStart :colorEnd];
-	if (tagLine) 
+	if (tagLine)
 		[self setupTags];
 	colorStart = 0;
 	colorEnd = 0;
@@ -63,22 +63,22 @@ BOOL isText1(int c) {
 	unsigned	start1, end1;
 	int		theChar;
 	unsigned	end;
-	
+
 	// No syntax coloring if the file is not TeX, or if SC is disabled
 	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
 		return;
-	
+
 	// regularColor = [NSColor blackColor];
-	regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey] 
+	regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey]
 											 green:[SUD floatForKey:foreground_GKey] blue:[SUD floatForKey:foreground_BKey] alpha:1.00];
-	
+
 	textString = [textView string];
 	if (textString == nil) return;
 	length = [textString length];
 	// [[textView textStorage] beginEditing];
 	[textStorage beginEditing];
-	
-	
+
+
 	colorRange.location = 0;
 	colorRange.length = length;
 	[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
@@ -86,13 +86,13 @@ BOOL isText1(int c) {
 	final = end1;
 	colorRange.location = start1;
 	colorRange.length = end1 - start1;
-	
+
 	[textView setTextColor: regularColor range: colorRange];
-	
+
 	// NSLog(@"begin");
 	while (location < final) {
 		theChar = [textString characterAtIndex: location];
-		
+
 		if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
 			colorRange.location = location;
 			colorRange.length = 1;
@@ -131,11 +131,11 @@ BOOL isText1(int c) {
 		} else
 			location++;
 	}
-	
+
 	// [[textView textStorage] endEditing];
 	[textStorage endEditing];
-	
-	
+
+
 }
 
 
@@ -149,7 +149,7 @@ BOOL isText1(int c) {
 	// course we already map Cmd-Clicking to something else anyway.
 	// Still, at least block selections would be useful for our users. But until the rest
 	// of the code is not aware of this possibility, we better keep this disabled.
-	
+
 	NSRange			matchRange, tagRange;
 	NSString			*textString;
 	int				i, j, count, uchar, leftpar, rightpar, aChar;
@@ -159,7 +159,7 @@ BOOL isText1(int c) {
 	NSMutableAttributedString 	*myAttribString;
 	NSDictionary		*myAttributes;
 	NSColor			*previousColor;
-	
+
 	fastColor = NO;
 	if (affectedCharRange.length == 0)
 		fastColor = YES;
@@ -172,30 +172,30 @@ BOOL isText1(int c) {
 			myAttribString = [[[NSMutableAttributedString alloc] initWithAttributedString:[textView attributedSubstringFromRange: affectedCharRange]] autorelease];
 			myAttributes = [myAttribString attributesAtIndex: 0 effectiveRange: NULL];
 			// mitsu 1.29 parhaps this (and several others below) can be replaced by
-			// myAttributes = [[textView textStorage] attributesAtIndex: 
+			// myAttributes = [[textView textStorage] attributesAtIndex:
 			// 					affectedCharRange.location effectiveRange: NULL];
 			// end mitsu 1.29 and myAttribString is not necessary
 			previousColor = [myAttributes objectForKey:NSForegroundColorAttributeName];
-			if (previousColor != commentColor) 
+			if (previousColor != commentColor)
 				fastColorBackTeX = YES;
 		}
 	}
-	
+
 	colorStart = affectedCharRange.location;
 	colorEnd = colorStart;
-	
-	
+
+
 	tagRange = [replacementString rangeOfString:@"%:"];
 	if (tagRange.length != 0)
 		tagLine = YES;
-	
+
 	// added by S. Zenitani -- "\n" increments tagLocationLine
 	tagRange = [replacementString rangeOfString:@"\n"];
 	if (tagRange.length != 0)
 		tagLine = YES;
 	// end
-	
-	
+
+
 	textString = [textView string];
 	[textString getLineStart:&start end:&end contentsEnd:&end1 forRange:affectedCharRange];
 	tagRange.location = start;
@@ -203,15 +203,15 @@ BOOL isText1(int c) {
 	matchRange = [textString rangeOfString:@"%:" options:0 range:tagRange];
 	if (matchRange.length != 0)
 		tagLine = YES;
-	
+
 	// for tagLocationLine (2) Zenitani
 	matchRange = [textString rangeOfString:@"\n" options:0 range:tagRange];
 	if (matchRange.length != 0)
 		tagLine = YES;
-	
+
 	/* code by Anton Leuski */
 	if ([SUD boolForKey: TagSectionsKey]) {
-		
+
 		for(i = 0; i < [g_taggedTeXSections count]; ++i) {
 			tagRange = [replacementString rangeOfString:[g_taggedTeXSections objectAtIndex:i]];
 			if (tagRange.length != 0) {
@@ -219,15 +219,15 @@ BOOL isText1(int c) {
 				break;
 			}
 		}
-		
+
 		if (!tagLine) {
-			
+
 			textString = [textView string];
-			[textString getLineStart:&start end:&end 
+			[textString getLineStart:&start end:&end
 						 contentsEnd:&end1 forRange:affectedCharRange];
 			tagRange.location	= start;
 			tagRange.length		= end - start;
-			
+
 			for(i = 0; i < [g_taggedTeXSections count]; ++i) {
 				matchRange = [textString rangeOfString: [g_taggedTeXSections objectAtIndex:i] options:0 range:tagRange];
 				if (matchRange.length != 0) {
@@ -235,25 +235,25 @@ BOOL isText1(int c) {
 					break;
 				}
 			}
-			
+
 		}
 	}
-	
-	if (replacementString == nil) 
+
+	if (replacementString == nil)
 		return YES;
 	else
 		colorEnd = colorStart + [replacementString length];
-	
+
 	if ([replacementString length] != 1)
 		return YES;
 	rightpar = [replacementString characterAtIndex:0];
-	
+
 	// mitsu 1.29 (T4) compare with "inserText:" in TSTextView.m
 #define AUTOCOMPLETE_IN_INSERTTEXT
 #ifndef AUTOCOMPLETE_IN_INSERTTEXT
 	// end mitsu 1.29
-	
-	
+
+
 	// Code added by Greg Landweber for auto-completions of '^', '_', etc.
 	// Should provide a preference setting for users to turn it off!
 	// First, avoid completing \^, \_, \"
@@ -262,7 +262,7 @@ BOOL isText1(int c) {
 		if (rightpar >= 128 ||
 			[textView selectedRange].location == 0 ||
 			[textString characterAtIndex:[textView selectedRange].location - 1 ] != g_texChar ) {
-			
+
 			NSString *completionString = [g_autocompletionDictionary objectForKey:replacementString];
 			if (completionString && (g_shouldFilter != kMacJapaneseFilterMode || [replacementString
 					characterAtIndex:0]!=g_texChar)) {
@@ -270,9 +270,9 @@ BOOL isText1(int c) {
 				// or should separate out the code that actually performs the completion
 				// from the code that responds to the notification sent by the LaTeX panel.
 				// mitsu 1.29 (T4)
-				[self insertSpecialNonStandard:completionString 
+				[self insertSpecialNonStandard:completionString
 									   undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
-				//[textView insertSpecialNonStandard:completionString 
+				//[textView insertSpecialNonStandard:completionString
 				//			undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
 				// original was
 				//    [self doCompletion:[NSNotification notificationWithName:@"" object:completionString]];
@@ -281,27 +281,27 @@ BOOL isText1(int c) {
 			}
 		}
 	}
-	
+
 	// End of code added by Greg Landweber
 	// mitsu 1.29 (T4)
 #endif
 	// end mitsu 1.29
-	
-	
+
+
 	if (rightpar == 0x000a)
 		returnline = YES;
-	
+
 	if (! [SUD boolForKey:ParensMatchingEnabledKey]) return YES;
 	if ((rightpar != '}') &&  (rightpar != ')') &&  (rightpar != ']')) return YES;
-	
-	if (rightpar == '}') 
+
+	if (rightpar == '}')
 		leftpar = '{';
-	else if (rightpar == ')') 
+	else if (rightpar == ')')
 		leftpar = '(';
-	else 
+	else
 		leftpar = '[';
-	
-	textString = [textView string];    
+
+	textString = [textView string];
 	i = affectedCharRange.location;
 	j = 1;
 	count = 1;
@@ -320,7 +320,7 @@ BOOL isText1(int c) {
 			matchRange.length = 1;
 			/* koch: here 'affinity' and 'stillSelecting' are necessary,
 				else the wrong range is selected. */
-			[textView setSelectedRange: matchRange 
+			[textView setSelectedRange: matchRange
 							  affinity: NSSelectByCharacter stillSelecting: YES];
 			[textView display];
 			myDate = [NSDate date];
@@ -347,41 +347,41 @@ BOOL isText1(int c) {
 	unsigned			end;
 	NSMutableAttributedString 	*myAttribString;
 	NSDictionary		*myAttributes;
-	
+
 	// No syntax coloring if the file is not TeX, or if SC is disabled
 	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
 		return;
-	
+
 	// regularColor = [NSColor blackColor];
-	regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey] 
+	regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey]
 											 green:[SUD floatForKey:foreground_GKey] blue:[SUD floatForKey:foreground_BKey] alpha:1.00];
-	
-	
+
+
 	textString = [textView string];
 	if (textString == nil) return;
 	length = [textString length];
 	if (length == 0) return;
-	
+
 	if (returnline) {
 		colorRange.location = from + 1;
 		colorRange.length = 0;
 	} else {
-		
+
 		// This is an attempt to be safe.
-		// However, it should be fine to set colorRange.location = from and colorRange.length = (to - from) 
+		// However, it should be fine to set colorRange.location = from and colorRange.length = (to - from)
 		if (from < length)
 			colorRange.location = from;
 		else
 			colorRange.location = length - 1;
-		
+
 		if (to < length)
 			colorRange.length = to - colorRange.location;
 		else
 			colorRange.length = length - colorRange.location;
 	}
-	
+
 	// We try to color simple character changes directly.
-	
+
 	// Look first at backspaces over anything except a comment character or line feed
 	if (fastColor && (colorRange.length == 0)) {
 		[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
@@ -398,9 +398,9 @@ BOOL isText1(int c) {
 				}
 				i++;
 			}
-			
+
 			[textView setTextColor: regularColor range: wordRange];
-			
+
 			fastColor = NO;
 			fastColorBackTeX = NO;
 			return;
@@ -436,9 +436,9 @@ BOOL isText1(int c) {
 		fastColor = NO;
 		fastColorBackTeX = NO;
 	}
-	
+
 	fastColorBackTeX = NO;
-	
+
 	// Look next at cases when a single character is added
 	if ( fastColor && (colorRange.length == 1) && (colorRange.location > 0)) {
 		theChar = [textString characterAtIndex: colorRange.location];
@@ -520,7 +520,7 @@ BOOL isText1(int c) {
 					}
 					i++;
 				}
-				
+
 				[textView setTextColor: regularColor range: wordRange];
 			} else
 				[textView setTextColor: regularColor range: colorRange];
@@ -553,13 +553,13 @@ BOOL isText1(int c) {
 					}
 					i++;
 				}
-				
+
 				[textView setTextColor: commandColor range: wordRange];
 			}
 			fastColor = NO;
 			return;
 		}
-		
+
 		if ((theChar != g_texChar) && (theChar != '{') && (theChar != '}') && (theChar != '$') &&
 			(theChar != '%') && (theChar != ' ') && (previousChar != '}') && (previousChar != '{')
 			&& (previousChar != '$') ) {
@@ -577,7 +577,7 @@ BOOL isText1(int c) {
 					}
 					i++;
 				}
-				
+
 				[textView setTextColor: regularColor range: wordRange];
 			}
 			else if ((previousColor == commandColor) && (! isText1(previousChar)) && (previousChar != g_texChar)) {
@@ -594,7 +594,7 @@ BOOL isText1(int c) {
 					}
 					i++;
 				}
-				
+
 				[textView setTextColor: regularColor range: wordRange];
 			} else if (previousChar >= ' ')
 				[textView setTextColor: previousColor range: colorRange];
@@ -604,22 +604,22 @@ BOOL isText1(int c) {
 			return;
 		}
 	}
-	
+
 	fastColor = NO;
-	
+
 	// If that trick fails, we work harder.
 	// [[textView textStorage] beginEditing];
 	[textStorage beginEditing];
-	
+
 	[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
 	location = start1;
 	final = end1;
-	
+
 	colorRange.location = start1;
 	colorRange.length = end1 - start1;
-	
+
 	// The following code fixes a subtle syntax coloring bug; Koch; Jan 1, 2003
-	if (start1 > 0) 
+	if (start1 > 0)
 		newRange1.location = (start1 - 1);
 	else
 		newRange1.location = 0;
@@ -629,12 +629,12 @@ BOOL isText1(int c) {
 		newRange1.length = end1 - start1;
 	[textView setTextColor: regularColor range: newRange1];
 	// End of fix
-	
-	[textView setTextColor: regularColor range: colorRange]; 
-	
+
+	[textView setTextColor: regularColor range: colorRange];
+
 	while (location < final) {
 		theChar = [textString characterAtIndex: location];
-		
+
 		if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
 			colorRange.location = location;
 			colorRange.length = 1;
@@ -673,7 +673,7 @@ BOOL isText1(int c) {
 		} else
 			location++;
 	}
-		
+
 		// [[textView textStorage] endEditing];
 		[textStorage endEditing];
 }
@@ -687,27 +687,27 @@ BOOL isText1(int c) {
 	long	length;
 	NSRange	theRange;
 	// NSColor     *regularColor;
-	
+
 	if (syntaxColoringTimer != nil) {
 		[syntaxColoringTimer invalidate];
 		[syntaxColoringTimer release];
 		syntaxColoringTimer = nil;
 	}
-	
+
 	textString = [textView string];
 	length = [textString length];
-	if ([SUD boolForKey:SyntaxColoringEnabledKey]) 
+	if ([SUD boolForKey:SyntaxColoringEnabledKey])
 		[self fixColor :0 :length];
 	else {
 		theRange.location = 0;
 		theRange.length = length;
 		[textView setTextColor: [NSColor blackColor] range: theRange];
-		//regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey] 
+		//regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey]
 		//green:[SUD floatForKey:foreground_GKey] blue:[SUD floatForKey:foreground_BKey] alpha:1.00];
 		//[textView setTextColor: regularColor range: theRange];
 	}
-	
-	
+
+
 	// colorLocation = 0;
 	// syntaxColoringTimer = [[NSTimer scheduledTimerWithTimeInterval: COLORTIME target:self selector:@selector(fixColor1:) 	userInfo:nil repeats:YES] retain];
 }

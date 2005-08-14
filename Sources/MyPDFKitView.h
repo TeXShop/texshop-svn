@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -29,53 +29,53 @@
 @interface MyPDFKitView : PDFView
 {
 	id								currentPage;
-    id								totalPage;
-    id								myScale;
-    id								myStepper;
-    id								currentPage1;
-    id								totalPage1;
-    id								myScale1;
-    id								myStepper1;
+	id								totalPage;
+	id								myScale;
+	id								myStepper;
+	id								currentPage1;
+	id								totalPage1;
+	id								myScale1;
+	id								myStepper1;
 	id								myDocument;
 	NSDrawer						*_drawer;
 	PDFOutline						*_outline;
 	NSTextField						*_noOutlineText;
 	NSOutlineView					*_outlineView;
-	
+
 	NSMutableArray					*_searchResults;
 	IBOutlet NSTableView			*_searchTable;
 	IBOutlet NSProgressIndicator	*_searchProgress;
 	IBOutlet NSMatrix				*mouseModeMatrix;
 	IBOutlet NSMenu					*mouseModeMenu;
-	
-	
+
+
 	NSWindow						*myPDFWindow;
 	int								pageStyle;
 	int								firstPageStyle;
 	int								resizeOption;
-	
+
 	int								totalPages;
-	
+
 	int								mouseMode;
 	int								currentMouseMode;
-	
+
 	int								totalRotation;
-	
+
 	NSRect							selectedRect;
 	NSRect							oldVisibleRect;
 	NSTimer							*selRectTimer;
-	
+
 	// copy/paste stuff
 	id								imageTypeView;
 	id								imageTypePopup;
-	
+
 	int								pageIndexForMark;
 	NSRect							pageBoundsForMark;
 	BOOL							drawMark;
 	NSMutableArray					*sourceFiles;
-	
+
 	double							oldMagnification;
-	
+
 	BOOL							downOverLink;
 }
 

@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -59,7 +59,7 @@ static NSString*	kSplitID			= @"Split";
 // added by mitsu --(H) Macro menu; macroButton
 static NSString*	kMacrosTID			= @"Macros";
 // end addition
-	
+
 
 // PDF Window toolbar items
 static NSString*	kTypesetEETID			= @"TypesetEE";
@@ -98,18 +98,18 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 
 - (NSToolbar*)makeToolbar:(NSString*)inID
 {
-    // Create a new toolbar instance, and attach it to our document window 
-    NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier: inID] autorelease];
-    
-    // Set up toolbar properties: Allow customization, give a default display mode, and remember state 		in user defaults 
-    [toolbar setAllowsUserCustomization: YES];
-    [toolbar setAutosavesConfiguration: YES];
-    [toolbar setDisplayMode: NSToolbarDisplayModeIconOnly];
-    
-    // We are the delegate
-    [toolbar setDelegate: self];
-	
-    return toolbar;
+	// Create a new toolbar instance, and attach it to our document window
+	NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier: inID] autorelease];
+
+	// Set up toolbar properties: Allow customization, give a default display mode, and remember state 		in user defaults
+	[toolbar setAllowsUserCustomization: YES];
+	[toolbar setAutosavesConfiguration: YES];
+	[toolbar setDisplayMode: NSToolbarDisplayModeIconOnly];
+
+	// We are the delegate
+	[toolbar setDelegate: self];
+
+	return toolbar;
 }
 
 // -----------------------------------------------------------------------------
@@ -118,16 +118,16 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 
 - (NSToolbarItem*) makeToolbarItemWithItemIdentifier:(NSString*)itemIdent key:(NSString*)itemKey
 {
-    NSToolbarItem*	toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] 	autorelease];
-    NSString*	labelKey = [NSString stringWithFormat:@"tiLabel%@", itemKey];
-    NSString*	paletteLabelKey	= [NSString stringWithFormat:@"tiPaletteLabel%@", itemKey];
-    NSString*	toolTipKey = [NSString stringWithFormat:@"tiToolTip%@", itemKey];
-	
-    [toolbarItem setLabel: NSLocalizedStringFromTable(labelKey, @"ToolbarItems", itemKey)];
-    [toolbarItem setPaletteLabel: NSLocalizedStringFromTable(paletteLabelKey, @"ToolbarItems", 		[toolbarItem label])];
-    [toolbarItem setToolTip: NSLocalizedStringFromTable(toolTipKey, @"ToolbarItems", [toolbarItem 	label])];
-	
-    return toolbarItem;
+	NSToolbarItem*	toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] 	autorelease];
+	NSString*	labelKey = [NSString stringWithFormat:@"tiLabel%@", itemKey];
+	NSString*	paletteLabelKey	= [NSString stringWithFormat:@"tiPaletteLabel%@", itemKey];
+	NSString*	toolTipKey = [NSString stringWithFormat:@"tiToolTip%@", itemKey];
+
+	[toolbarItem setLabel: NSLocalizedStringFromTable(labelKey, @"ToolbarItems", itemKey)];
+	[toolbarItem setPaletteLabel: NSLocalizedStringFromTable(paletteLabelKey, @"ToolbarItems", 		[toolbarItem label])];
+	[toolbarItem setToolTip: NSLocalizedStringFromTable(toolTipKey, @"ToolbarItems", [toolbarItem 	label])];
+
+	return toolbarItem;
 }
 
 // -----------------------------------------------------------------------------
@@ -138,8 +138,8 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 {
 	NSToolbarItem*	toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemKey];
 	[toolbarItem setImage: [NSImage imageNamed:imageName]];
-	
-	// Tell the item what message to send when it is clicked 
+
+	// Tell the item what message to send when it is clicked
 	[toolbarItem setTarget: target];
 	[toolbarItem setAction: action];
 	return toolbarItem;
@@ -149,14 +149,14 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 //
 // -----------------------------------------------------------------------------
 
-- (NSToolbarItem*) makeToolbarItemWithItemIdentifier:(NSString*)itemIdent key:(NSString*)itemKey customView:(id)customView 
+- (NSToolbarItem*) makeToolbarItemWithItemIdentifier:(NSString*)itemIdent key:(NSString*)itemKey customView:(id)customView
 {
 	NSToolbarItem*	toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemKey];
 	[toolbarItem setView: customView];
 
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([customView frame]), NSHeight([customView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([customView frame]), NSHeight([customView frame]))];
-	
+
 	return toolbarItem;
 }
 
@@ -164,7 +164,7 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 //
 // -----------------------------------------------------------------------------
 
-- (void) setupToolbar 
+- (void) setupToolbar
 {
 	[typesetButton retain];
 	[typesetButton removeFromSuperview];
@@ -187,8 +187,8 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 	[macroButtonEE removeFromSuperview];
 	// end addition
 	[[self textWindow] setToolbar: [self makeToolbar: kSourceToolbarIdentifier]];
-	
-	
+
+
 	[previousButton retain];
 	[previousButton removeFromSuperview];
 	[nextButton retain];
@@ -215,17 +215,17 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 	[syncBox removeFromSuperview];
 	[backforthKK retain];
 	[backforthKK removeFromSuperview];
-	
+
 	// HACK: The following is a trick to get the NSSegmentedControl to display correctly
 	// (i.e. the same way as in Preview.app). There seems to be a bug (or misfeature?) in
 	// this control that causes it to display differently when its label is an empty string
 	// than when its label is "not set", i.e. when we pass 0 instead of a NSString.
 	[backforthKK setLabel:0 forSegment:0];
 	[backforthKK setLabel:0 forSegment:1];
-	
+
 	[drawerKK retain];
 	[drawerKK removeFromSuperview];
-	
+
 	[[self pdfWindow] setToolbar: [self makeToolbar: kPDFToolbarIdentifier]];
 	[[self pdfKitWindow] setToolbar: [self makeToolbar: kPDFKitToolbarIdentifier]];
 }
@@ -236,12 +236,12 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 
 - (void)doPreviousPage:(id)sender
 {
-    [[self pdfView] previousPage: sender];
+	[[self pdfView] previousPage: sender];
 }
 
 - (void)doPreviousPageKK:(id)sender
 {
-    [[self pdfKitView] previousPage: sender];
+	[[self pdfKitView] previousPage: sender];
 }
 
 // -----------------------------------------------------------------------------
@@ -250,17 +250,17 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 
 - (void)doNextPage:(id)sender
 {
-    [[self pdfView] nextPage: sender];
+	[[self pdfView] nextPage: sender];
 }
 
 - (void)doNextPageKK:(id)sender
 {
-    [[self pdfKitView] nextPage: sender];
+	[[self pdfKitView] nextPage: sender];
 }
 
 - (void)toggleTheDrawer:(id)sender
 {
-    [[self pdfKitView] toggleDrawer: sender];
+	[[self pdfKitView] toggleDrawer: sender];
 }
 
 
@@ -270,31 +270,31 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 // -----------------------------------------------------------------------------
 
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
-    // Required delegate method   Given an item identifier, self method returns an item 
-    // The toolbar will use self method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself
-	
+	// Required delegate method   Given an item identifier, self method returns an item
+	// The toolbar will use self method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself
+
 	NSToolbarItem *toolbarItem = 0;
 	NSMenuItem *menuFormRep;
 	NSMenu *submenu;
 	id <NSMenuItem> submenuItem;
-	
+
 	//    if ([itemIdent isEqual: kSaveDocToolbarItemIdentifier]) {
 	//		return [self makeToolbarItemWithItemIdentifier:itemIdent key:@"Save"
 	//				imageName:@"SaveDocumentItemImage" target:self action:@selector(saveDocument:)];
 	//	}
-	
+
 	// Source toolbar
-	
+
 	/*
 	 if ([itemIdent isEqual: kTypesetTID]) {
 		 return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 customView:typesetButton];
 	 }
 	 */
-	
+
 	if ([itemIdent isEqual: kTypesetTID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:typesetButton];
-		
+
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
 		submenu = [[[NSMenu alloc] init] autorelease];
 		submenuItem = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Typeset", @"Typeset") action: @selector(doTypeset:) keyEquivalent:@""] autorelease];
@@ -304,93 +304,93 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
-	
+
+
 	/*
 	 if ([itemIdent isEqual: kProgramTID]) {
 		 return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 customView:programButton];
 	 }
 	 */
-	
-    if ([itemIdent isEqual: kProgramTID]) {
+
+	if ([itemIdent isEqual: kProgramTID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:programButton];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-		
+
 		[menuFormRep setSubmenu: [programButton menu]];
 		[menuFormRep setTitle: [toolbarItem label]];
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
-		
+
 		return toolbarItem;
 	}
-	
-    if ([itemIdent isEqual: kTeXTID]) {
+
+	if ([itemIdent isEqual: kTeXTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"TeXAction" target:self action:@selector(doTexTemp:)];
 	}
-	
-    if ([itemIdent isEqual: kLaTeXTID]) {
+
+	if ([itemIdent isEqual: kLaTeXTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"LaTeXAction" target:self action:@selector(doLatexTemp:)];
 	}
-	
-    if ([itemIdent isEqual: kBibTeXTID]) {
+
+	if ([itemIdent isEqual: kBibTeXTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"BibTeXAction" target:self action:@selector(doBibtexTemp:)];
 	}
-	
-    if ([itemIdent isEqual: kMakeIndexTID]) {
+
+	if ([itemIdent isEqual: kMakeIndexTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"MakeIndexAction" target:self action:@selector(doIndexTemp:)];
 	}
-	
-    if ([itemIdent isEqual: kMetaPostTID]) {
+
+	if ([itemIdent isEqual: kMetaPostTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"MetaPostAction" target:self action:@selector(doMetapostTemp:)];
 	}
-	
-    if ([itemIdent isEqual: kConTeXTID]) {
+
+	if ([itemIdent isEqual: kConTeXTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"ConTeXAction" target:self action:@selector(doContextTemp:)];
 	}
-	
-    if ([itemIdent isEqual: kSplitID]) {
+
+	if ([itemIdent isEqual: kSplitID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"split1" target:self action:@selector(splitWindow:)];
 	}
-	
-    if ([itemIdent isEqual: kDrawerKKTID]) {
+
+	if ([itemIdent isEqual: kDrawerKKTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"DrawerToggleToolbarImage" target:self action:@selector(toggleTheDrawer:)];
 	}
-	
-	
-    if ([itemIdent isEqual: kMetaFontID]) {
+
+
+	if ([itemIdent isEqual: kMetaFontID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"MetaFontAction" target:self action:@selector(doMetaFontTemp:)];
 	}
-	
+
 	if ([itemIdent isEqual: kTagsTID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:tags];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-		
+
 		[menuFormRep setSubmenu: [tags menu]];
 		[menuFormRep setTitle: [toolbarItem label]];
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
+
 	if ([itemIdent isEqual: kTemplatesID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:popupButton];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-		
+
 		[menuFormRep setSubmenu: [popupButton menu]];
 		[menuFormRep setTitle: [toolbarItem label]];
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
-		
+
 		return toolbarItem;
 	}
-	
+
 	if ([itemIdent isEqual: kAutoCompleteID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 												   customView:autoCompleteButton];
@@ -404,32 +404,32 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
+
 	// added by mitsu --(H) Macro menu; macroButton
 	if ([itemIdent isEqual: kMacrosTID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:macroButton];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-		
+
 		[menuFormRep setSubmenu: [macroButton menu]];
 		[[TSMacroMenuController sharedInstance] addItemsToPopupButton: macroButton];
 		[menuFormRep setTitle: [toolbarItem label]];
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
-		
+
 		return toolbarItem;
 	}
 	// end addition
-	
-	
+
+
 	// PDF toolbar
-	
+
 	/*
 	 if ([itemIdent isEqual: kTypesetEETID]) {
 		 return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 customView:typesetButtonEE];
 	 }
 	 */
-	
-    if ([itemIdent isEqual: kTypesetEETID]) {
+
+	if ([itemIdent isEqual: kTypesetEETID]) {
 		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 													customView:typesetButtonEE];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
@@ -441,13 +441,13 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
-	/*	
+
+	/*
 		if ([itemIdent isEqual: kTypesetKKTID]) {
 			toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 														customView:TypesetButtonKK];
 			menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-			
+
 			submenuItem = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Typeset", @"Typeset") action: @selector(doTypeset:) 				keyEquivalent:@""] autorelease];
 			[submenu addItem: submenuItem];
 			[menuFormRep setSubmenu: submenu];
@@ -456,27 +456,27 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 			return toolbarItem;
 		}
 	 */
-	
+
 	/*
 	 if ([itemIdent isEqual: kProgramEETID]) {
 		 return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 customView:programButtonEE];
 	 }
 	 */
-	
-    if ([itemIdent isEqual: kProgramEETID]) {
+
+	if ([itemIdent isEqual: kProgramEETID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:programButtonEE];
-		
+
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
 		[menuFormRep setTitle: [toolbarItem label]];
-		
+
 		submenu = [[[NSMenu alloc] init] autorelease];
 		id <NSMenuItem> tempsubmenuItem;
 		NSString *tempString;
 		id tempTarget;
-		SEL tempAction;	
+		SEL tempAction;
 		int i;
-		int j = [[programButtonEE menu] numberOfItems]; 
+		int j = [[programButtonEE menu] numberOfItems];
 		for (i = 0; i < j; i++) {
 			tempsubmenuItem = [[programButtonEE menu] itemAtIndex: i];
 			tempString = [tempsubmenuItem title];
@@ -487,67 +487,67 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 			[submenuItem setTag: i];
 			[submenu addItem: submenuItem];
 		}
-		
-		
+
+
 		[menuFormRep setSubmenu: submenu];
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
-	/*	
+
+	/*
 		if ([itemIdent isEqual: kProgramKKTID]) {
 			toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:ProgramButtonKK];
 			NSMenuItem*	menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-			
+
 			[menuFormRep setSubmenu: [ProgramButtonKK menu]];
 			[menuFormRep setTitle: [toolbarItem label]];
 			[toolbarItem setMenuFormRepresentation: menuFormRep];
-			
+
 			return toolbarItem;
 		}
 	 */
-	
-	
-    if ([itemIdent isEqual: kMacrosEETID]) {
+
+
+	if ([itemIdent isEqual: kMacrosEETID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:macroButtonEE];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-		
+
 		[menuFormRep setSubmenu: [macroButtonEE menu]];
 		[[TSMacroMenuController sharedInstance] addItemsToPopupButton: macroButtonEE];
 		[menuFormRep setTitle: [toolbarItem label]];
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
-		
+
 		return toolbarItem;
 	}
-	
+
 	/*
 	 if ([itemIdent isEqual: kMacrosKKTID]) {
 		 toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:macroButtonKK];
 		 menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-		 
+
 		 [menuFormRep setSubmenu: [macroButtonKK menu]];
 		 [[TSMacroMenuController sharedInstance] addItemsToPopupButton: macroButtonKK];
 		 [menuFormRep setTitle: [toolbarItem label]];
 		 [toolbarItem setMenuFormRepresentation: menuFormRep];
-		 
+
 		 return toolbarItem;
 	 }
 	 */
-	
-	
+
+
 	/*
 	 if ([itemIdent isEqual: kPreviousPageButtonTID]) {
 		 return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 customView:previousButton];
 	 }
-	 
+
 	 if ([itemIdent isEqual: kNextPageButtonTID]) {
 		 return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 customView:nextButton];
 	 }
 	 */
-	
-    if ([itemIdent isEqual: kPreviousPageButtonTID]) {
+
+	if ([itemIdent isEqual: kPreviousPageButtonTID]) {
 		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 													customView:previousButton];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
@@ -556,8 +556,8 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
-    if ([itemIdent isEqual: kNextPageButtonTID]) {
+
+	if ([itemIdent isEqual: kNextPageButtonTID]) {
 		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 													customView:nextButton];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
@@ -566,24 +566,24 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
-	
-    if ([itemIdent isEqual: kPreviousPageTID]) {
+
+
+	if ([itemIdent isEqual: kPreviousPageTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 							 imageName:@"PreviousPageAction" target:self action:@selector(doPreviousPage:)];
 	}
-	
-    if ([itemIdent isEqual: kNextPageTID]) {
+
+	if ([itemIdent isEqual: kNextPageTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 							 imageName:@"NextPageAction" target:self action:@selector(doNextPage:)];
 	}
-	
+
 	if ([itemIdent isEqual: kBackForthKKTID]) {
 		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 													customView:backforthKK];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
 		[menuFormRep setTitle: [toolbarItem label]];
-		
+
 		submenu = [[[NSMenu alloc] init] autorelease];
 		submenuItem = [[[NSMenuItem alloc] initWithTitle: @"Back" action: @selector(doBack:) keyEquivalent:@""] autorelease];
 		[submenuItem setTarget: self];
@@ -592,15 +592,15 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[submenuItem setTarget: self];
 		[submenu addItem: submenuItem];
 		[menuFormRep setSubmenu: submenu];
-		
-		
-		
+
+
+
 		// [menuFormRep setAction: @selector(doBackForth:)];
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
-	
+
+
 	if ([itemIdent isEqual: kPreviousPageButtonKKTID]) {
 		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 													customView:previousButtonKK];
@@ -610,8 +610,8 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
-    if ([itemIdent isEqual: kNextPageButtonKKTID]) {
+
+	if ([itemIdent isEqual: kNextPageButtonKKTID]) {
 		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 													customView:nextButtonKK];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
@@ -620,28 +620,28 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
-	
-    if ([itemIdent isEqual: kPreviousPageKKTID]) {
+
+
+	if ([itemIdent isEqual: kPreviousPageKKTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"PreviousPageAction" target:self action:@selector(doPreviousPageKK:)];
 	}
-	
-    if ([itemIdent isEqual: kNextPageKKTID]) {
+
+	if ([itemIdent isEqual: kNextPageKKTID]) {
 		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 											 imageName:@"NextPageAction" target:self action:@selector(doNextPageKK:)];
 	}
-	
+
 	/*
 	 if ([itemIdent isEqual: kGotoPageTID]) {
 		 return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:gotopageOutlet];
 	 }
-	 
+
 	 if ([itemIdent isEqual: kMagnificationTID]) {
 		 return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:magnificationOutlet];
 	 }
 	 */
-    if ([itemIdent isEqual: kGotoPageTID]) {
+	if ([itemIdent isEqual: kGotoPageTID]) {
 		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 													customView:gotopageOutlet];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
@@ -656,7 +656,7 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[menuFormRep setTarget: pdfWindow];
 		return toolbarItem;
 	}
-				
+
 	if ([itemIdent isEqual: kGotoPageKKTID]) {
 		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 													customView:gotopageOutletKK];
@@ -672,9 +672,9 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[menuFormRep setTarget: pdfKitWindow];
 		return toolbarItem;
 	}
-	
-	
-    if ([itemIdent isEqual: kMagnificationTID]) {
+
+
+	if ([itemIdent isEqual: kMagnificationTID]) {
 		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 													customView:magnificationOutlet];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
@@ -688,9 +688,9 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[menuFormRep setTarget: pdfWindow];
 		return toolbarItem;
 	}
-				
-	
-    if ([itemIdent isEqual: kMagnificationKKTID]) {
+
+
+	if ([itemIdent isEqual: kMagnificationKKTID]) {
 		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 													customView:magnificationOutletKK];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
@@ -704,14 +704,14 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[menuFormRep setTarget: pdfKitWindow];
 		return toolbarItem;
 	}
-	
+
 #ifdef MITSU_PDF
 	// mitsu 1.29 (O)
-    if ([itemIdent isEqual: kMouseModeTID]) {
+	if ([itemIdent isEqual: kMouseModeTID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:mouseModeMatrix];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
 		[menuFormRep setSubmenu: mouseModeMenu];
-		
+
 		/* or one can set up menu by hand
 			NSMenu *		menu = [[[NSMenu alloc] initWithTitle: [toolbarItem label]] autorelease];
 		[menuFormRep setTarget: pdfView];
@@ -720,37 +720,37 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 										   action: @selector(changeMouseMode:) keyEquivalent:@""];
 		[item setTarget: pdfView];
 		[item setTag: MOUSE_MODE_SCROLL];
-		
+
 		item = [menu addItemWithTitle: NSLocalizedString(@"MagnifyingGlass", @"MagnifyingGlass")
 							   action: @selector(changeMouseMode:) keyEquivalent:@""];
 		[item setTarget: pdfView];
 		[item setTag: MOUSE_MODE_MAG_GLASS];
-		
+
 		item = [menu addItemWithTitle: NSLocalizedString(@"MagnifyingGlass Large", @"MagnifyingGlass Large")
 							   action: @selector(changeMouseMode:) keyEquivalent:@""];
 		[item setTarget: pdfView];
 		[item setTag: MOUSE_MODE_MAG_GLASS_L];
-		
+
 		item = [menu addItemWithTitle: NSLocalizedString(@"Select", @"Select")
 							   action: @selector(changeMouseMode:) keyEquivalent:@""];
 		[item setTarget: pdfView];
 		[item setTag: MOUSE_MODE_SELECT];
-		
+
 		[menuFormRep setSubmenu: menu];*/
-		
+
 		[menuFormRep setTitle: [toolbarItem label]];
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
-		
+
 		return toolbarItem;
 	}
-	
-	
+
+
 	// mitsu 1.29 (O)
-    if ([itemIdent isEqual: kMouseModeKKTID]) {
+	if ([itemIdent isEqual: kMouseModeKKTID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent customView:mouseModeMatrixKK];
 		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
 		[menuFormRep setSubmenu: mouseModeMenuKit];
-		
+
 		/* or one can set up menu by hand
 			NSMenu *		menu = [[[NSMenu alloc] initWithTitle: [toolbarItem label]] autorelease];
 		[menuFormRep setTarget: pdfView];
@@ -759,33 +759,33 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 										   action: @selector(changeMouseMode:) keyEquivalent:@""];
 		[item setTarget: pdfView];
 		[item setTag: MOUSE_MODE_SCROLL];
-		
+
 		item = [menu addItemWithTitle: NSLocalizedString(@"MagnifyingGlass", @"MagnifyingGlass")
 							   action: @selector(changeMouseMode:) keyEquivalent:@""];
 		[item setTarget: pdfView];
 		[item setTag: MOUSE_MODE_MAG_GLASS];
-		
+
 		item = [menu addItemWithTitle: NSLocalizedString(@"MagnifyingGlass Large", @"MagnifyingGlass Large")
 							   action: @selector(changeMouseMode:) keyEquivalent:@""];
 		[item setTarget: pdfView];
 		[item setTag: MOUSE_MODE_MAG_GLASS_L];
-		
+
 		item = [menu addItemWithTitle: NSLocalizedString(@"Select", @"Select")
 							   action: @selector(changeMouseMode:) keyEquivalent:@""];
 		[item setTarget: pdfView];
 		[item setTag: MOUSE_MODE_SELECT];
-		
+
 		[menuFormRep setSubmenu: menu];*/
-		
+
 		[menuFormRep setTitle: [toolbarItem label]];
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
-		
+
 		return toolbarItem;
 	}
-	
+
 	// end mitsu 1.29
 #endif
-	
+
 	if ([itemIdent isEqual: kSyncMarksTID]) {
 		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
 												   customView:syncBox];
@@ -800,30 +800,30 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
-	
-	
-	
+
+
+
 	//	if ([itemIdent isEqual: SearchDocToolbarItemIdentifier]) {
-	
+
 	//		toolbarItem 	= [self makeToolbarItemWithItemIdentifier:itemIdent key:@"Search"];
-	
+
 	//	NSMenu *submenu = nil;
 	//	NSMenuItem *submenuItem = nil, *menuFormRep = nil;
-	
-	
-	// Use a custom view, a text field, for the search item 
+
+
+	// Use a custom view, a text field, for the search item
 	//	[toolbarItem setView: searchFieldOutlet];
 	//	[toolbarItem setMinSize:NSMakeSize(30, NSHeight([searchFieldOutlet frame]))];
 	//	[toolbarItem setMaxSize:NSMakeSize(400,NSHeight([searchFieldOutlet frame]))];
-	
-	// By default, in text only mode, a custom items label will be shown as disabled text, but you can provide a 
-	// custom menu of your own by using <item> setMenuFormRepresentation] 
-	
+
+	// By default, in text only mode, a custom items label will be shown as disabled text, but you can provide a
+	// custom menu of your own by using <item> setMenuFormRepresentation]
+
 	/*
 	 submenu = [[[NSMenu alloc] init] autorelease];
 	 submenuItem = [[[NSMenuItem alloc] initWithTitle: @"Search Panel" action: @selector(searchUsingSearchPanel:) keyEquivalent: @""] autorelease];
 	 menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-	 
+
 	 [submenu addItem: submenuItem];
 	 [submenuItem setTarget: self];
 	 [menuFormRep setSubmenu: submenu];
@@ -832,10 +832,10 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 	 */
 	//		return toolbarItem;
 	//   }
-	
-	// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa 
-	// Returning nil will inform the toolbar self kind of item is not supported 
-    return nil;
+
+	// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa
+	// Returning nil will inform the toolbar self kind of item is not supported
+	return nil;
 }
 
 // -----------------------------------------------------------------------------
@@ -843,31 +843,31 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 // -----------------------------------------------------------------------------
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method   Returns the ordered list of items to be shown in the toolbar by default    
-    // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
-    // user chooses to revert to the default items self set will be used 
+	// Required delegate method   Returns the ordered list of items to be shown in the toolbar by default
+	// If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
+	// user chooses to revert to the default items self set will be used
 
 	NSString*	toolbarID = [toolbar identifier];
-	
+
 	if ([toolbarID isEqual:kSourceToolbarIdentifier]) {
 
 		return [NSArray arrayWithObjects:
 					kTypesetTID,
 					kProgramTID,
-					NSToolbarPrintItemIdentifier, 
-					// NSToolbarSeparatorItemIdentifier, 
+					NSToolbarPrintItemIdentifier,
+					// NSToolbarSeparatorItemIdentifier,
 					// kLaTeXTID,
 					// kBibTeXTID,
 					kMacrosTID,
 					kTagsTID,
 					kTemplatesID,
-					NSToolbarFlexibleSpaceItemIdentifier, 
+					NSToolbarFlexibleSpaceItemIdentifier,
 					kSplitID,
-					// NSToolbarFlexibleSpaceItemIdentifier, 
-					// NSToolbarSpaceItemIdentifier, 
+					// NSToolbarFlexibleSpaceItemIdentifier,
+					// NSToolbarSpaceItemIdentifier,
 				nil];
 	}
-	
+
 	if ([toolbarID isEqual:kPDFToolbarIdentifier]) {
 
 		return [NSArray arrayWithObjects:
@@ -877,16 +877,16 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 					kNextPageTID,
 					kTypesetEETID,
 					// kProgramEETID,
-					NSToolbarPrintItemIdentifier, 
+					NSToolbarPrintItemIdentifier,
 					// NSToolbarSeparatorItemIdentifier,
-					kMagnificationTID, 
+					kMagnificationTID,
 					kGotoPageTID,
 					kMouseModeTID, // mitsu 1.29 (O)
-					NSToolbarFlexibleSpaceItemIdentifier, 
-					NSToolbarSpaceItemIdentifier, 
+					NSToolbarFlexibleSpaceItemIdentifier,
+					NSToolbarSpaceItemIdentifier,
 				nil];
 	}
-	
+
 	if ([toolbarID isEqual:kPDFKitToolbarIdentifier]) {
 
 		return [NSArray arrayWithObjects:
@@ -896,19 +896,19 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 					kNextPageKKTID,
 					kBackForthKKTID,
 					kDrawerKKTID,
-                   // kTypesetEETID,
-                    // kProgramEETID,
-					NSToolbarPrintItemIdentifier, 
+				   // kTypesetEETID,
+					// kProgramEETID,
+					NSToolbarPrintItemIdentifier,
 					// NSToolbarSeparatorItemIdentifier,
-					kMagnificationKKTID, 
+					kMagnificationKKTID,
 					kGotoPageKKTID,
 					kMouseModeKKTID, // mitsu 1.29 (O)
-					NSToolbarFlexibleSpaceItemIdentifier, 
-					NSToolbarSpaceItemIdentifier, 
+					NSToolbarFlexibleSpaceItemIdentifier,
+					NSToolbarSpaceItemIdentifier,
 				nil];
 	}
 
-	
+
 	return [NSArray array];
 }
 
@@ -917,15 +917,15 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 // -----------------------------------------------------------------------------
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method   Returns the list of all allowed items by identifier   By default, the toolbar 
-    // does not assume any items are allowed, even the separator   So, every allowed item must be explicitly listed   
-    // The set of allowed items is used to construct the customization palette 
+	// Required delegate method   Returns the list of all allowed items by identifier   By default, the toolbar
+	// does not assume any items are allowed, even the separator   So, every allowed item must be explicitly listed
+	// The set of allowed items is used to construct the customization palette
 
 	NSString*	toolbarID = [toolbar identifier];
 
 	if ([toolbarID isEqual:kSourceToolbarIdentifier]) {
 
-		return [NSArray arrayWithObjects: 	
+		return [NSArray arrayWithObjects:
 //					kSaveDocToolbarItemIdentifier,
 					kTypesetTID,
 					kProgramTID,
@@ -941,17 +941,17 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 					kAutoCompleteID,
 					kSplitID,
 					kMacrosTID,
-					NSToolbarPrintItemIdentifier, 
+					NSToolbarPrintItemIdentifier,
 					NSToolbarCustomizeToolbarItemIdentifier,
-					NSToolbarFlexibleSpaceItemIdentifier, 
-					NSToolbarSpaceItemIdentifier, 
-					NSToolbarSeparatorItemIdentifier, 
+					NSToolbarFlexibleSpaceItemIdentifier,
+					NSToolbarSpaceItemIdentifier,
+					NSToolbarSeparatorItemIdentifier,
 				nil];
 	}
-	
+
 	if ([toolbarID isEqual:kPDFToolbarIdentifier]) {
 
-		return [NSArray arrayWithObjects: 	
+		return [NSArray arrayWithObjects:
 //					kSaveDocToolbarItemIdentifier,
 					kPreviousPageButtonTID,
 					kNextPageButtonTID,
@@ -967,22 +967,22 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 					kMetaPostTID,
 					kConTeXTID,
 					kMetaFontID,
- 					kGotoPageTID,
+					kGotoPageTID,
 					kMagnificationTID,
 					kMouseModeTID,
 					kSyncMarksTID,
 					NSToolbarPrintItemIdentifier,
 					NSToolbarCustomizeToolbarItemIdentifier,
-					NSToolbarFlexibleSpaceItemIdentifier, 
-					NSToolbarSpaceItemIdentifier, 
-					NSToolbarSeparatorItemIdentifier, 
+					NSToolbarFlexibleSpaceItemIdentifier,
+					NSToolbarSpaceItemIdentifier,
+					NSToolbarSeparatorItemIdentifier,
 				nil];
 
 	}
-	
+
 	if ([toolbarID isEqual:kPDFKitToolbarIdentifier]) {
 
-		return [NSArray arrayWithObjects: 	
+		return [NSArray arrayWithObjects:
 //					kSaveDocToolbarItemIdentifier,
 					kPreviousPageButtonKKTID,
 					kNextPageButtonKKTID,
@@ -1000,15 +1000,15 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 					kMetaPostTID,
 					kConTeXTID,
 					kMetaFontID,
- 					kGotoPageKKTID,
+					kGotoPageKKTID,
 					kMagnificationKKTID,
 					kMouseModeKKTID,
 					kSyncMarksTID,
 					NSToolbarPrintItemIdentifier,
 					NSToolbarCustomizeToolbarItemIdentifier,
-					NSToolbarFlexibleSpaceItemIdentifier, 
-					NSToolbarSpaceItemIdentifier, 
-					NSToolbarSeparatorItemIdentifier, 
+					NSToolbarFlexibleSpaceItemIdentifier,
+					NSToolbarSpaceItemIdentifier,
+					NSToolbarSeparatorItemIdentifier,
 				nil];
 
 	}
@@ -1022,58 +1022,58 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 // -----------------------------------------------------------------------------
 
 - (void) toolbarWillAddItem: (NSNotification *) notif {
-    // Optional delegate method   Before an new item is added to the toolbar, self notification is posted   
-    // self is the best place to notice a new item is going into the toolbar   For instance, if you need to 
-    // cache a reference to the toolbar item or need to set up some initial state, self is the best place 
-    // to do it    The notification object is the toolbar to which the item is being added   The item being 
-    // added is found by referencing the @"item" key in the userInfo 
-    NSToolbarItem *addedItem = [[notif userInfo] objectForKey: @"item"];
+	// Optional delegate method   Before an new item is added to the toolbar, self notification is posted
+	// self is the best place to notice a new item is going into the toolbar   For instance, if you need to
+	// cache a reference to the toolbar item or need to set up some initial state, self is the best place
+	// to do it    The notification object is the toolbar to which the item is being added   The item being
+	// added is found by referencing the @"item" key in the userInfo
+	NSToolbarItem *addedItem = [[notif userInfo] objectForKey: @"item"];
 //    if([[addedItem itemIdentifier] isEqual: SearchDocToolbarItemIdentifier]) {
 //	activeSearchItem = [addedItem retain];
 //	[activeSearchItem setTarget: self];
 //	[activeSearchItem setAction: @selector(searchUsingToolbarTextField:)];
-//    } else 
+//    } else
 	if ([[addedItem itemIdentifier] isEqual: NSToolbarPrintItemIdentifier]) {
 
 		NSString*	toolbarID = [[addedItem toolbar] identifier];
-	
+
 		if ([toolbarID isEqual:kSourceToolbarIdentifier]) {
-	
-			[addedItem setToolTip: NSLocalizedStringFromTable(@"tiToolTipPrintSource", 
+
+			[addedItem setToolTip: NSLocalizedStringFromTable(@"tiToolTipPrintSource",
 									@"ToolbarItems",  @"Print the source")];
 			[addedItem setTarget: self];
 			[addedItem setAction: @selector(printSource:)];
-	
+
 		} else if ([toolbarID isEqual:kPDFToolbarIdentifier]) {
-	
-			[addedItem setToolTip: NSLocalizedStringFromTable(@"tiToolTipPrint", 
+
+			[addedItem setToolTip: NSLocalizedStringFromTable(@"tiToolTipPrint",
 									@"ToolbarItems",  @"Print the document")];
 			[addedItem setTarget: self];
 		}
-		
+
 		 else if ([toolbarID isEqual:kPDFKitToolbarIdentifier]) {
-	
-			[addedItem setToolTip: NSLocalizedStringFromTable(@"tiToolTipPrint", 
+
+			[addedItem setToolTip: NSLocalizedStringFromTable(@"tiToolTipPrint",
 									@"ToolbarItems",  @"Print the document")];
 			[addedItem setTarget: self];
 		}
 
 	}
-}  
+}
 
 // -----------------------------------------------------------------------------
 //
 // -----------------------------------------------------------------------------
 
 - (void) toolbarDidRemoveItem: (NSNotification *) notif {
-    // Optional delegate method   After an item is removed from a toolbar the notification is sent   self allows 
-    // the chance to tear down information related to the item that may have been cached   The notification object
-    // is the toolbar to which the item is being added   The item being added is found by referencing the @"item"
-    // key in the userInfo 
+	// Optional delegate method   After an item is removed from a toolbar the notification is sent   self allows
+	// the chance to tear down information related to the item that may have been cached   The notification object
+	// is the toolbar to which the item is being added   The item being added is found by referencing the @"item"
+	// key in the userInfo
 //    NSToolbarItem *removedItem = [[notif userInfo] objectForKey: @"item"];
 //	if (removedItem==activeSearchItem) {
 //		[activeSearchItem autorelease];
-//		activeSearchItem = nil;    
+//		activeSearchItem = nil;
 //  }
 }
 
@@ -1083,34 +1083,34 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 // this is based on validateMenuItem
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem {
-    // Optional method   self message is sent to us since we are the target of some toolbar item actions 
-    // (for example:  of the save items action) 
-    BOOL 		enable 		= NO;
+	// Optional method   self message is sent to us since we are the target of some toolbar item actions
+	// (for example:  of the save items action)
+	BOOL 		enable 		= NO;
 	NSString	*toolbarID	= [[toolbarItem toolbar] identifier];
 	NSString	*itemID		= [toolbarItem itemIdentifier];
-	
+
 	// FIXME: The following line of code is broken in two ways. First off, it shouldn't
 	// invoke validateMenuItem on 'super' but rather it should use 'self'.
-	// Secondly, even if one fixes that, this doesn't help (even if you fix the 
+	// Secondly, even if one fixes that, this doesn't help (even if you fix the
 	// resulting crash), because other methods are use -- e.g. doLatexTemp: instead
-	// of doLatex:. 
+	// of doLatex:.
 	// It might be possible to reunify the two methods again, but for the time being,
 	// I disable it.  (Max Horn, Aug 07 2005)
 	enable =  [super validateMenuItem: toolbarItem];
-	
+
 	if (fileIsTex) {
 
 		if ([itemID isEqual: kSaveDocToolbarItemIdentifier]) {
-		// We will return YES (ie  the button is enabled) only when the document is dirty and needs saving 
+		// We will return YES (ie  the button is enabled) only when the document is dirty and needs saving
 			enable = [self isDocumentEdited];
 		} else if ([itemID isEqual: NSToolbarPrintItemIdentifier]) {
 			enable = YES;
-		}	
+		}
 	}
 	else if ([itemID isEqual: kSaveDocToolbarItemIdentifier]) {
 
 		enable = (_documentType == isOther);
-		
+
 	}
 	else if ([itemID isEqual: NSToolbarPrintItemIdentifier]) {
 
@@ -1128,17 +1128,17 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 			([itemID isEqual: kPreviousPageButtonKKTID]) ||
 			([itemID isEqual: kPreviousPageKKTID])) {
 						// TODO: Check whether we are on the first page
-                        enable = (_documentType == isPDF);
+						enable = (_documentType == isPDF);
 	}
 	else if	(([itemID isEqual: kNextPageButtonTID]) ||
 			([itemID isEqual: kNextPageTID]) ||
 			([itemID isEqual: kNextPageButtonKKTID]) ||
 			([itemID isEqual: kNextPageKKTID])) {
 						// TODO: Check whether we are on the last page
-                        enable = (_documentType == isPDF);  
+						enable = (_documentType == isPDF);
 	}
 
-    return enable;
+	return enable;
 }
 
 

@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -88,7 +88,7 @@
 			}
 		}
 	}
-	
+
 	// document not found, open document and typeset
 	dc = [NSDocumentController sharedDocumentController];
 	obj = [dc openDocumentWithContentsOfFile:nameString display:YES];
@@ -145,29 +145,29 @@
 	BOOL                    done;
 	int                     linesTested;
 	unsigned                start, end, irrelevant;
-	
+
 	if (theSource == nil)
 		return NO;
-	
+
 	jobname=[[self fileName] stringByDeletingLastPathComponent];
-	
+
 	// load home path and jobname
 	home = [[self fileName] stringByDeletingLastPathComponent];
 	jobname = [[[self fileName] lastPathComponent] stringByDeletingPathExtension];
-	
+
 	// see if there is a parent document
 	length = [theSource length];
 	done = NO;
 	linesTested = 0;
 	myRange.location = 0;
 	myRange.length = 1;
-	
+
 	while ((myRange.location < length) && (!done) && (linesTested < 20)) {
 		[theSource getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
 		myRange.location = end;
 		myRange.length = 1;
 		linesTested++;
-		
+
 		theRange.location = start; theRange.length = (end - start);
 		testString = [theSource substringWithRange: theRange];
 		sourcedocRange = [testString rangeOfString:@"%!TEX root ="];
@@ -176,15 +176,15 @@
 			newSourceDocRange.length = [testString length] - newSourceDocRange.location;
 			if (newSourceDocRange.length > 0) {
 				done = YES;
-				sourcedocString = [[testString substringWithRange: newSourceDocRange] 
+				sourcedocString = [[testString substringWithRange: newSourceDocRange]
 						stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 			}
 		}
 	}
-	
-	
+
+
 	if (!done && [SUD boolForKey:UseOldHeadingCommandsKey]) {
-		
+
 		aRange = [theSource rangeOfString:@"%SourceDoc "];
 		if (aRange.location != NSNotFound) {
 			bRange = [theSource lineRangeForRange:aRange];
@@ -194,16 +194,16 @@
 			}
 		}
 	}
-	
+
 	if (done) {
-		
+
 		nameString = [self
 			decodeFile:sourcedocString
 			  homePath:home job:jobname];
 
 		return [self checkRootFile:nameString forTask:task];
 	}
-	
+
 	return NO;
 }
 
@@ -213,25 +213,25 @@
 //-----------------------------------------------------------------------------
 {
 	NSString			*projectPath, *nameString;
-	
+
 	projectPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"texshop"];
-	if (![[NSFileManager defaultManager] fileExistsAtPath: projectPath]) 
+	if (![[NSFileManager defaultManager] fileExistsAtPath: projectPath])
 		return NO;
-	
+
 	NSString *projectRoot = [NSString stringWithContentsOfFile: projectPath];
 	projectRoot = [projectRoot stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	if ([projectRoot length] == 0)
 		return NO;
-	
+
 	if ([projectRoot isAbsolutePath]) {
 		nameString = [NSString stringWithString:projectRoot];
 	} else {
 		nameString = [[self fileName] stringByDeletingLastPathComponent];
-		nameString = [[nameString stringByAppendingString:@"/"] 
+		nameString = [[nameString stringByAppendingString:@"/"]
 		stringByAppendingString: [NSString stringWithContentsOfFile: projectPath]];
 		nameString = [nameString stringByStandardizingPath];
 	}
-	
+
 	return [self checkRootFile:nameString forTask:task];
 }
 
@@ -241,18 +241,18 @@
 	NSEnumerator *en;
 	id obj;
 	id theRoot;
-	
+
 	// first save all related, open, dirty files
 	theRoot = rootDocument ? rootDocument : self;
-	
+
 	wlist = [NSApp orderedDocuments];
 	en = [wlist objectEnumerator];
 	while ((obj = [en nextObject])) {
-		
-		if (([[obj windowNibName] isEqualToString:@"TSDocument"]) && 
-			(obj != self) && 
-			(([obj rootDocument] == theRoot) || (obj == rootDocument)) && 
-			([obj isDocumentEdited])) { 
+
+		if (([[obj windowNibName] isEqualToString:@"TSDocument"]) &&
+			(obj != self) &&
+			(([obj rootDocument] == theRoot) || (obj == rootDocument)) &&
+			([obj isDocumentEdited])) {
 			[obj saveDocument:self];
 		}
 	}
@@ -260,7 +260,7 @@
 
 
 - (void) checkFileLinks:(NSString *)theSource
-{ 
+{
 	NSString *home,*jobname=[[self fileName] stringByDeletingLastPathComponent];
 	NSRange aRange,bRange;
 	NSString *saveName, *searchString;
@@ -269,14 +269,14 @@
 	NSEnumerator *en;
 	id obj;
 	unsigned numFiles,i;
-	
+
 	if (![SUD boolForKey:SaveRelatedKey])
 		return;
-	
+
 	// load home path and jobname
 	home = [[self fileName] stringByDeletingLastPathComponent];
 	jobname = [[[self fileName] lastPathComponent] stringByDeletingPathExtension];
-	
+
 	// create list of linked files from \input commands
 	aRange = NSMakeRange(0, [theSource length]);
 	slist = [[NSMutableArray alloc] init];
@@ -293,35 +293,35 @@
 							  atIndex:aRange.location-bRange.location+6
 							 homePath:home job:jobname];
 		saveName = [saveName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		if(saveName) 
+		if(saveName)
 			[slist addObject:saveName];
 		aRange.location += 6;
 		aRange.length = [theSource length] - aRange.location;
 	}
 	numFiles = [slist count];
-	
-	if (numFiles==0) {	
+
+	if (numFiles==0) {
 		[slist release];
 		return;
 	}
-	
+
 	// compare file list to current MyDocuments
 	wlist = [NSApp orderedDocuments];
 	en = [wlist objectEnumerator];
-	
+
 	while ((obj = [en nextObject])) {
 		if ([[obj windowNibName] isEqualToString:@"TSDocument"]) {
 			saveName = [obj fileName];
-			for (i = 0; i < numFiles; i++) {   
+			for (i = 0; i < numFiles; i++) {
 				if ([saveName isEqualToString:[slist objectAtIndex:i]]) {
-					if ([obj isDocumentEdited]) 
+					if ([obj isDocumentEdited])
 						[obj saveDocument:self];
 					break;
 				}
 			}
 		}
 	}
-	
+
 	// release file list
 	[slist release];
 }
@@ -334,11 +334,11 @@
 {
 	unichar firstChar;
 	NSRange aRange;
-	
+
 	// error if no command argument data
 	if (i >= [fileLine length])
 		return nil;
-	
+
 	// skip if commented out
 	aRange = [fileLine rangeOfString:@"%" options:NSLiteralSearch];
 	if (aRange.location != NSNotFound && aRange.location < i) {
@@ -349,10 +349,10 @@
 		if (firstChar != BACKSLASH)
 			return nil;
 	}
-	
+
 	// check if next character is { or ' '
 	firstChar = [fileLine characterAtIndex:i];
-	
+
 	// argument in {}'s
 	if (firstChar == '{') {
 		// find ending brace
@@ -369,19 +369,19 @@
 				return nil;
 			firstChar = [fileLine characterAtIndex:i];
 		}
-		
+
 		// find next space or line end
 		aRange=[fileLine rangeOfString:@" " options:NSLiteralSearch
 								 range:NSMakeRange(i, [fileLine length]-i)];
-		if (aRange.location == NSNotFound) 
+		if (aRange.location == NSNotFound)
 			aRange = NSMakeRange(i, [fileLine length]-i);
 		else
 			aRange = NSMakeRange(i,aRange.location-i);
-		
+
 		return [self decodeFile:[fileLine substringWithRange:aRange]
 					   homePath:home job:jobname];
 	}
-	
+
 	// not an input command
 	return nil;
 }
@@ -395,17 +395,17 @@
 	NSMutableString *saveTemp;
 	unichar firstChar;
 	NSRange aRange;
-	
+
 	// trim white space first
 	relFile = [relFile stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-	
+
 	// expand to full path
 	firstChar = [relFile characterAtIndex:0];
 	if (firstChar == '~')
 		saveName = [relFile stringByExpandingTildeInPath];
 	else if (firstChar == '/')
 		saveName = relFile;
-	else if (firstChar == '.') { 
+	else if (firstChar == '.') {
 		while ([relFile hasPrefix:@"../"]) {
 			home = [home stringByDeletingLastPathComponent];
 			relFile = [relFile substringFromIndex:3];
@@ -414,7 +414,7 @@
 	}
 	else
 		saveName = [NSString stringWithFormat:@"%@/%@",home,relFile];
-	
+
 	// see if \jobname is there
 	searchString = [NSString stringWithString:@"\\jobname"];
 	if (g_shouldFilter == kMacJapaneseFilterMode)
@@ -422,7 +422,7 @@
 	aRange = [saveName rangeOfString:searchString options:NSLiteralSearch];
 	if(aRange.location == NSNotFound)
 		return saveName;
-	
+
 	// replace \jobname(s)
 	saveTemp = [NSMutableString stringWithString:saveName];
 	[saveTemp replaceOccurrencesOfString:searchString withString:jobname options:NSLiteralSearch

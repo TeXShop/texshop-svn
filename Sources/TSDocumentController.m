@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -37,49 +37,49 @@
 	// dialog, the user can choose a custom encoding; if that happens, then
 	// the value of _encoding is modified (see runModalOpenPanel below).
 	// This happens before openDocument: is called.
-    _encoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
+	_encoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
 }
 
 - (NSStringEncoding)encoding
 {
-    return _encoding;
+	return _encoding;
 }
 
 - (IBAction)newDocument:(id)sender
 {
-    _encoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
-    [super newDocument: sender];
+	_encoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
+	[super newDocument: sender];
 }
 
 - (IBAction)openDocument:(id)sender
 {
-    [super openDocument: sender];
-    _encoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
+	[super openDocument: sender];
+	_encoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
 }
 
 
 - (int)runModalOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)extensions
 {
-    NSStringEncoding	theCode;
-    int					result;
-    
+	NSStringEncoding	theCode;
+	int					result;
+
 	// Set an accessory view, with the encoding popup button in it.
-    [openPanel setAccessoryView: encodingView];
-    [encodingView retain];	// FIXME: Is this line really necessary?
+	[openPanel setAccessoryView: encodingView];
+	[encodingView retain];	// FIXME: Is this line really necessary?
 
 	// Create the contents of the encoding menu on the fly
 	[encodingMenu removeAllItems];
 	[[TSEncodingSupport sharedInstance] addEncodingsToMenu:[encodingMenu menu] withTarget:0 action:0];
-	
-	// Select active encoding 
-    theCode = [[TSEncodingSupport sharedInstance] defaultEncoding];
-    [encodingMenu selectItemWithTag: theCode];
-	
-    result = [super runModalOpenPanel: openPanel forTypes: extensions];
-    if (result == YES) {
-        _encoding = [[encodingMenu selectedCell] tag];
+
+	// Select active encoding
+	theCode = [[TSEncodingSupport sharedInstance] defaultEncoding];
+	[encodingMenu selectItemWithTag: theCode];
+
+	result = [super runModalOpenPanel: openPanel forTypes: extensions];
+	if (result == YES) {
+		_encoding = [[encodingMenu selectedCell] tag];
 	}
-    return result;
+	return result;
 }
 
 @end

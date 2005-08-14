@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,18 +38,18 @@ extern NSPanel *pageNumberWindow;
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)backingType defer:(BOOL)flag
 {
-    id		result;
-	
-    result = [super initWithContentRect:contentRect styleMask:styleMask backing:backingType defer:flag];
-	
-		
+	id		result;
+
+	result = [super initWithContentRect:contentRect styleMask:styleMask backing:backingType defer:flag];
+
+
 	[self setBackgroundColor: [NSColor whiteColor]];
-	
+
 	float alpha = [SUD floatForKey: PreviewWindowAlphaKey];
 	if (alpha < 0.999)
 		[self setAlphaValue:alpha];
-		
-    return result;
+
+	return result;
 }
 
 
@@ -57,55 +57,55 @@ extern NSPanel *pageNumberWindow;
 /*
 - (BOOL)makeFirstResponder:(NSResponder *)aResponder
 {
-    if (aResponder == self)
-        return NO;
-    else return [super makeFirstResponder: aResponder];
+	if (aResponder == self)
+		return NO;
+	else return [super makeFirstResponder: aResponder];
 }
 */
 
 - (void) becomeMainWindow
 {
-    [super becomeMainWindow];
-    [myDocument fixMacroMenuForWindowChange];
+	[super becomeMainWindow];
+	[myDocument fixMacroMenuForWindowChange];
 }
 
 
 - (void) doTextMagnify: sender
 {
-    id	thePanel;
-	
+	id	thePanel;
+
 	thePanel = [myDocument magnificationPanel];
-    
-    [NSApp beginSheet: thePanel
-            modalForWindow: self
-            modalDelegate: self
-            didEndSelector: @selector(magnificationDidEnd:returnCode:contextInfo:) 
-            contextInfo: nil];
+
+	[NSApp beginSheet: thePanel
+			modalForWindow: self
+			modalDelegate: self
+			didEndSelector: @selector(magnificationDidEnd:returnCode:contextInfo:)
+			contextInfo: nil];
 }
 
 - (void)magnificationDidEnd:(NSWindow *)sheet returnCode: (int)returnCode contextInfo: (void *)contextInfo
 {
-    // [sheet close];
-    [sheet orderOut: self];
+	// [sheet close];
+	[sheet orderOut: self];
 }
 
 - (void) doTextPage: sender      // for toolbar in text mode
 {
 	id	thePanel;
-		 
+
 	thePanel = [myDocument pagenumberPanel];
 
-    [NSApp beginSheet: thePanel
-            modalForWindow: self
-            modalDelegate: self
-            didEndSelector:  @selector(pagenumberDidEnd:returnCode:contextInfo:)
-            contextInfo: nil];
+	[NSApp beginSheet: thePanel
+			modalForWindow: self
+			modalDelegate: self
+			didEndSelector:  @selector(pagenumberDidEnd:returnCode:contextInfo:)
+			contextInfo: nil];
 }
 
 - (void)pagenumberDidEnd:(NSWindow *)sheet returnCode: (int)returnCode contextInfo: (void *)contextInfo
 {
-    // [sheet close];
-    [sheet orderOut: self];
+	// [sheet close];
+	[sheet orderOut: self];
 }
 
 
@@ -113,62 +113,62 @@ extern NSPanel *pageNumberWindow;
 
 - (void) runPageLayout: sender;
 {
-    [myDocument runPageLayout: sender];
+	[myDocument runPageLayout: sender];
 }
 
 - (void) printDocument: sender;
 {
-    [myDocument printDocument: sender];
+	[myDocument printDocument: sender];
 }
 
 - (void) printSource: sender;
 {
-    [myDocument printSource: sender];
+	[myDocument printSource: sender];
 }
 
 - (void) doTypeset: sender;
 {
-    [myDocument doTypeset: sender];
+	[myDocument doTypeset: sender];
 }
 
 - (void) flipShowSync: sender;
 {
-    [myDocument flipShowSync: sender];
+	[myDocument flipShowSync: sender];
 }
 
 - (void) doTex: sender;
 {
-    [myDocument doTex: sender];
+	[myDocument doTex: sender];
 }
 
 - (void) doLatex: sender;
 {
-    [myDocument doLatex: sender];
+	[myDocument doLatex: sender];
 }
 
 - (void) doBibtex: sender;
 {
-    [myDocument doBibtex: sender];
+	[myDocument doBibtex: sender];
 }
 
 - (void) doIndex: sender;
 {
-    [myDocument doIndex: sender];
+	[myDocument doIndex: sender];
 }
 
 - (void) doMetapost: sender;
 {
-    [myDocument doMetapost: sender];
+	[myDocument doMetapost: sender];
 }
 
 - (void) doContext: sender;
 {
-    [myDocument doContext: sender];
+	[myDocument doContext: sender];
 }
 
 - (void) doMetaFont: sender;
 {
-    [myDocument doMetaFont: sender];
+	[myDocument doMetaFont: sender];
 }
 
 - (void) previousPage: sender;
@@ -189,17 +189,17 @@ extern NSPanel *pageNumberWindow;
 
 - (void) doChooseMethod: sender;
 {
-    [myDocument doChooseMethod: sender];
+	[myDocument doChooseMethod: sender];
 }
 
 - (void) doError: sender;
 {
-    [myDocument doError: sender];
+	[myDocument doError: sender];
 }
 
 - (void) setProjectFile: sender;
 {
-    [myDocument setProjectFile: sender];
+	[myDocument setProjectFile: sender];
 }
 
 - (void) rotateClockwise: sender;
@@ -231,7 +231,7 @@ extern NSPanel *pageNumberWindow;
 
 - (void) lastPage: sender;
 {
-    if ([myDocument fromKit])
+	if ([myDocument fromKit])
 		[[myDocument pdfKitView] lastPage: sender];
 	else
 		[[myDocument pdfView] lastPage: sender];
@@ -240,28 +240,28 @@ extern NSPanel *pageNumberWindow;
 - (void) up: sender;
 {
 	if (![myDocument fromKit]) {
-        [[myDocument pdfView] up: sender];
+		[[myDocument pdfView] up: sender];
 	}
 }
 
 - (void) down: sender;
 {
 	if (![myDocument fromKit]) {
-        [[myDocument pdfView] down: sender];
+		[[myDocument pdfView] down: sender];
 	}
 }
 
 - (void) top: sender;
 {
 	if (![myDocument fromKit]) {
-        [[myDocument pdfView] top: sender];
+		[[myDocument pdfView] top: sender];
 	}
 }
 
 - (void) bottom: sender;
 {
 	if (![myDocument fromKit]) {
-        [[myDocument pdfView] bottom: sender];
+		[[myDocument pdfView] bottom: sender];
 	}
 }
 
@@ -269,14 +269,14 @@ extern NSPanel *pageNumberWindow;
 - (void) left: sender;
 {
 	if (![myDocument fromKit]) {
-        [[myDocument pdfView] left: sender];
+		[[myDocument pdfView] left: sender];
 	}
 }
 
 - (void) right: sender;
 {
 	if (![myDocument fromKit]) {
-        [[myDocument pdfView] right: sender];
+		[[myDocument pdfView] right: sender];
 	}
 }
 
@@ -284,86 +284,86 @@ extern NSPanel *pageNumberWindow;
 
 - (void) orderOut:sender;
 {
-    if ([myDocument externalEditor])
-        [myDocument close];
-    else if (([myDocument documentType] != isTeX) && ([myDocument documentType] != isOther)) {
-        [myDocument close];
-        }
-    else
-        [super orderOut: sender];
+	if ([myDocument externalEditor])
+		[myDocument close];
+	else if (([myDocument documentType] != isTeX) && ([myDocument documentType] != isOther)) {
+		[myDocument close];
+		}
+	else
+		[super orderOut: sender];
 }
 
 - (void)associatedWindow:(id)sender;
 {
-    if ([myDocument documentType] == isTeX) {
-        if ([myDocument getCallingWindow] == nil)
-            [[myDocument textWindow] makeKeyAndOrderFront: self];
-        else
-            [[myDocument getCallingWindow] makeKeyAndOrderFront: self];
-        
-        }
+	if ([myDocument documentType] == isTeX) {
+		if ([myDocument getCallingWindow] == nil)
+			[[myDocument textWindow] makeKeyAndOrderFront: self];
+		else
+			[[myDocument getCallingWindow] makeKeyAndOrderFront: self];
+
+		}
 }
 
 - (void)sendEvent:(NSEvent *)theEvent
 {
 	if (![myDocument fromKit]) {
-		
+
 		unichar	theChar;
-		
+
 		if ([theEvent type] == NSKeyDown) {
-			
-			/*   
+
+			/*
 			if (([theEvent modifierFlags] & NSControlKeyMask) &&
 				([myDocument documentType] == isTeX) &&
 				([[theEvent charactersIgnoringModifiers] isEqualToString:@"1"])) {
-				
+
 				[[myDocument textWindow] makeKeyAndOrderFront: self];
 				return;
-            }
+			}
 			*/
-			
+
 			theChar = [[theEvent characters] characterAtIndex:0];
-			
+
 			switch (theChar) {
-				
+
 #ifdef MITSU_PDF
-					
+
 				case NSUpArrowFunctionKey: [self up:self]; return;
-					
+
 				case NSDownArrowFunctionKey: [self down:self]; return;
-					
+
 				case NSLeftArrowFunctionKey: [self left: self]; return;// mitsu 1.29 (O) changed from previousPage
-					
+
 				case NSRightArrowFunctionKey: [self right: self]; return;// mitsu 1.29 (O) changed from nextPage
 
 				case NSPageUpFunctionKey: [self top:self]; return;
-					
+
 				case NSPageDownFunctionKey: [self bottom:self]; return;
-					
+
 #else
-					
+
 				case NSLeftArrowFunctionKey: [self previousPage: self]; return;
-					
+
 				case NSRightArrowFunctionKey: [self nextPage: self]; return;
-					
+
 #endif
-					
+
 				case NSHomeFunctionKey: [self firstPage: self]; return;
-					
+
 				case NSEndFunctionKey: [self lastPage: self]; return;
-				
+
 				case ' ':
 					if (([theEvent modifierFlags] & NSShiftKeyMask) == 0)
 						[self nextPage: self];
 					else
 						[self previousPage: self];
 					return;
-            }
+			}
 		}
-		
-		
+
+
 #ifdef MITSU_PDF
-		
+
 		else if ([theEvent type] == NSFlagsChanged) // mitsu 1.29 (S2)
 		{
 			[[myDocument pdfView] flagsChanged: theEvent];
@@ -374,10 +374,10 @@ extern NSPanel *pageNumberWindow;
 			// check if mouse was in vertical scroller's knob
 			MyPDFView *pdfView = [myDocument pdfView];
 			NSScroller *scroller = [[pdfView enclosingScrollView] verticalScroller];
-			if (([scroller testPart: [theEvent locationInWindow]] == NSScrollerKnob) && 
-				([myDocument documentType] == isTeX || [myDocument documentType] == isPDF) && 
-				([pdfView pageStyle] == PDF_MULTI_PAGE_STYLE || 
-				 [pdfView pageStyle] == PDF_DOUBLE_MULTI_PAGE_STYLE) && 
+			if (([scroller testPart: [theEvent locationInWindow]] == NSScrollerKnob) &&
+				([myDocument documentType] == isTeX || [myDocument documentType] == isPDF) &&
+				([pdfView pageStyle] == PDF_MULTI_PAGE_STYLE ||
+				 [pdfView pageStyle] == PDF_DOUBLE_MULTI_PAGE_STYLE) &&
 				([pdfView rotationAmount] == 0 || [pdfView rotationAmount] == 180))
 			{
 				// create a small window displaying page number
@@ -388,51 +388,51 @@ extern NSPanel *pageNumberWindow;
 				aRect.origin.y += aRect.size.height/2 + PAGE_WINDOW_V_OFFSET;
 				aRect.size.width = PAGE_WINDOW_WIDTH;
 				aRect.size.height = PAGE_WINDOW_HEIGHT;
-				pageNumberWindow = [[NSPanel alloc] initWithContentRect: aRect 
-															  styleMask: NSBorderlessWindowMask | NSUtilityWindowMask 
-																backing: NSBackingStoreBuffered //NSBackingStoreRetained 
+				pageNumberWindow = [[NSPanel alloc] initWithContentRect: aRect
+															  styleMask: NSBorderlessWindowMask | NSUtilityWindowMask
+																backing: NSBackingStoreBuffered //NSBackingStoreRetained
 																  defer: NO];
 				[pageNumberWindow setHasShadow: PAGE_WINDOW_HAS_SHADOW];
 				[pageNumberWindow orderFront: nil];
 				[pageNumberWindow setFloatingPanel: YES];
 				[[myDocument pdfView] updateCurrentPage]; // draw page number
-				
+
 				[super sendEvent: theEvent]; // let the scroller handle the situation
-				
+
 				[pageNumberWindow close];
 				pageNumberWindow = nil;
 				return;
 			}
 		}
-        
+
 #endif
-	}        
-    [super sendEvent: theEvent];
+	}
+	[super sendEvent: theEvent];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem;
 {
 
-    if ([anItem action] == @selector(displayLatexPanel:))
-        return NO;
-    if ([anItem action] == @selector(displayMatrixPanel:))
-        return NO;
+	if ([anItem action] == @selector(displayLatexPanel:))
+		return NO;
+	if ([anItem action] == @selector(displayMatrixPanel:))
+		return NO;
 
 #ifdef MITSU_PDF
 #else
-    if ([anItem action] == @selector(rotateClockwise:) || 
-    	[anItem action] == @selector(rotateCounterclockwise:))
-        return (([myDocument documentType] == isTeX) || ([myDocument documentType] == isPDF));
+	if ([anItem action] == @selector(rotateClockwise:) ||
+		[anItem action] == @selector(rotateCounterclockwise:))
+		return (([myDocument documentType] == isTeX) || ([myDocument documentType] == isPDF));
 #endif
 
-    if ([anItem action] == @selector(doError:) || 
-    	[anItem action] == @selector(printSource:))
-        return ((![myDocument externalEditor]) && ([myDocument documentType] == isTeX));
+	if ([anItem action] == @selector(doError:) ||
+		[anItem action] == @selector(printSource:))
+		return ((![myDocument externalEditor]) && ([myDocument documentType] == isTeX));
 
-    if ([anItem action] == @selector(setProjectFile:))
-        return ([myDocument documentType] == isTeX);
+	if ([anItem action] == @selector(setProjectFile:))
+		return ([myDocument documentType] == isTeX);
 
-    if ([myDocument documentType] != isTeX) {
+	if ([myDocument documentType] != isTeX) {
 		if ([anItem action] == @selector(saveDocument:))
 			return ([myDocument documentType] == isOther);
 		if ([anItem action] == @selector(doTex:) ||
@@ -449,26 +449,26 @@ extern NSPanel *pageNumberWindow;
 					([myDocument documentType] == isJPG) ||
 					([myDocument documentType] == isTIFF));
 	}
-        
+
 #ifdef MITSU_PDF
 
-    	// mitsu 1.29 (O)
-    if ([anItem action] == @selector(changePageStyle:)) // @selector(changePDFViewSize:)) 
-        return (([myDocument documentType] == isTeX) || ([myDocument documentType] == isPDF));
+		// mitsu 1.29 (O)
+	if ([anItem action] == @selector(changePageStyle:)) // @selector(changePDFViewSize:))
+		return (([myDocument documentType] == isTeX) || ([myDocument documentType] == isPDF));
 
-    if ([anItem action] == @selector(copy:) || [anItem action] == @selector(saveSelectionToFile:))
-        return ([[myDocument pdfView] hasSelection]);
+	if ([anItem action] == @selector(copy:) || [anItem action] == @selector(saveSelectionToFile:))
+		return ([[myDocument pdfView] hasSelection]);
 	// end mitsu 1.29 (O)
 
 #endif
-			
-    return [super validateMenuItem: anItem];
+
+	return [super validateMenuItem: anItem];
 }
 
 
 - (TSDocument *)document;
 {
-    return myDocument;
+	return myDocument;
 }
 
 #ifdef MITSU_PDF

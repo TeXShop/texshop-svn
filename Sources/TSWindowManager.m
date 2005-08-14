@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -52,14 +52,14 @@ static id _sharedInstance = nil;
 }
 
 //------------------------------------------------------------------------------
-- (id)init 
+- (id)init
 //------------------------------------------------------------------------------
 {
-    if (_sharedInstance != nil) 
+	if (_sharedInstance != nil)
 	{
-        [super dealloc];
-        return _sharedInstance;
-    }
+		[super dealloc];
+		return _sharedInstance;
+	}
 	_sharedInstance = self;
 	return self;
 }
@@ -76,64 +76,64 @@ static id _sharedInstance = nil;
 //-----------------------------------------------------------------------------
 - (void)documentWindowDidBecomeKey:(NSNotification *)note
 //-----------------------------------------------------------------------------
-{    
-    // do not retain the window here!
-    _activeDocumentWindow = [note object];
-    
-    // Update check mark in "Typeset" menu
-    [self checkProgramMenuItem: [[[note object] document] whichEngine] checked: YES];
+{
+	// do not retain the window here!
+	_activeDocumentWindow = [note object];
+
+	// Update check mark in "Typeset" menu
+	[self checkProgramMenuItem: [[[note object] document] whichEngine] checked: YES];
 }
 
 /* This method was added on November 9, 2003, to fix the following bug: in Jaguar (but not Panther)
-    when the application does not open empty windows upon activation,  suppose we make the 
-    preview window be the active window, and then reach over and close the document window.
-    If no other windows are active, then clicking on the menu bar causes a crash.
-    
-    Investigation shows that in Panther, the various notifications below are sent in the following
-    order:
-    
-        pdf close
-        document active
-        document close
-        
-    but in 10.2.8 they are sent in the following order
-    
-        document close
-        pdf close
-        document active
-        
-    The fix is to add the following new call, used only by the close method of TSDocument.
-    Experiments show that this call and the various notifications are made in the following order
-    in Panther
-    
-        pdf close
-        document active
-        new call
-        document close
-        
-    and in 10.2.8
-    
-        document close
-        pdf close
-        document active
-        new call
-        
-    If a second document is available and becomes active, then in either case it's
-    document active notification is received after all of the above calls.
-    
+	when the application does not open empty windows upon activation,  suppose we make the
+	preview window be the active window, and then reach over and close the document window.
+	If no other windows are active, then clicking on the menu bar causes a crash.
+
+	Investigation shows that in Panther, the various notifications below are sent in the following
+	order:
+
+		pdf close
+		document active
+		document close
+
+	but in 10.2.8 they are sent in the following order
+
+		document close
+		pdf close
+		document active
+
+	The fix is to add the following new call, used only by the close method of TSDocument.
+	Experiments show that this call and the various notifications are made in the following order
+	in Panther
+
+		pdf close
+		document active
+		new call
+		document close
+
+	and in 10.2.8
+
+		document close
+		pdf close
+		document active
+		new call
+
+	If a second document is available and becomes active, then in either case it's
+	document active notification is received after all of the above calls.
+
 */
 - (void)closeActiveDocument
 {
-    _activeDocumentWindow = nil;
+	_activeDocumentWindow = nil;
 }
 
-/*" This method is registered with the NotificationCenter and will be called when a document window will be closed. 
+/*" This method is registered with the NotificationCenter and will be called when a document window will be closed.
 "*/
 //-----------------------------------------------------------------------------
 - (void)documentWindowWillClose:(NSNotification *)note
 //-----------------------------------------------------------------------------
 {
-    _activeDocumentWindow = nil;
+	_activeDocumentWindow = nil;
 }
 
 /*" Returns the active document window or nil if no document window is active.
@@ -142,7 +142,7 @@ static id _sharedInstance = nil;
 - (NSWindow *)activeDocumentWindow
 //-----------------------------------------------------------------------------
 {
-    return _activeDocumentWindow;
+	return _activeDocumentWindow;
 }
 
 //-----------------------------------------------------------------------------
@@ -150,12 +150,12 @@ static id _sharedInstance = nil;
 //-----------------------------------------------------------------------------
 {
 	// Update check mark in "Typeset" menu
-    if ([doc documentType] == isTeX)
+	if ([doc documentType] == isTeX)
 		[self checkProgramMenuItem: [doc whichEngine] checked: flag];
 
 #ifdef MITSU_PDF
 	// Update menu item Preview=>Display Format/Magnification
-    if ([doc documentType] == isTeX || [doc documentType] == isPDF)
+	if ([doc documentType] == isTeX || [doc documentType] == isPDF)
 	{
 		NSMenu *previewMenu = [[[NSApp mainMenu] itemWithTitle:
 				NSLocalizedString(@"Preview", @"Preview")] submenu];
@@ -177,20 +177,20 @@ static id _sharedInstance = nil;
 //-----------------------------------------------------------------------------
 - (void)pdfWindowDidBecomeKey:(NSNotification *)note
 //-----------------------------------------------------------------------------
-{    
-    // do not retain the window here!
-    _activePdfWindow = [note object];
-	
+{
+	// do not retain the window here!
+	_activePdfWindow = [note object];
+
 	[self setPdfWindowWithDocument:[[note object] document] isActive:YES];
 }
 
-/*" This method is registered with the NotificationCenter and will be called when a document window will be closed. 
+/*" This method is registered with the NotificationCenter and will be called when a document window will be closed.
 "*/
 //-----------------------------------------------------------------------------
 - (void)pdfWindowWillClose:(NSNotification *)note
 //-----------------------------------------------------------------------------
 {
-    _activePdfWindow = nil;
+	_activePdfWindow = nil;
 
 }
 
@@ -198,14 +198,14 @@ static id _sharedInstance = nil;
 - (NSWindow *)activePdfWindow
 //-----------------------------------------------------------------------------
 {
-    return _activePdfWindow;
+	return _activePdfWindow;
 }
 
 //-----------------------------------------------------------------------------
 - (void)documentWindowDidResignKey:(NSNotification *)note
 //-----------------------------------------------------------------------------
-{    
-    [self checkProgramMenuItem: [[[note object] document] whichEngine] checked: NO];
+{
+	[self checkProgramMenuItem: [[[note object] document] whichEngine] checked: NO];
 }
 
 //-----------------------------------------------------------------------------
@@ -219,9 +219,9 @@ static id _sharedInstance = nil;
 //-----------------------------------------------------------------------------
 - (void)checkProgramMenuItem: (int)programID checked: (BOOL)flag
 //-----------------------------------------------------------------------------
-{    
-    [[[[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")] submenu] 
-        itemWithTag:programID] setState: (flag)?NSOnState:NSOffState];
+{
+	[[[[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")] submenu]
+		itemWithTag:programID] setState: (flag)?NSOnState:NSOffState];
 }
 
 

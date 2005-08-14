@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -27,30 +27,30 @@
 
 @interface TSMatrixPanelController : NSWindowController
 {
-    IBOutlet id borderbutton;
-    IBOutlet id brselcl;
-    IBOutlet id brselop;
-    IBOutlet id brtfcl;
-    IBOutlet id brtfop;
-    IBOutlet id chbfig;
-    IBOutlet id envsel;
-    IBOutlet id gridbutton;
-    IBOutlet id hstep;
-    IBOutlet id htf;
-    IBOutlet id matmod;
-    IBOutlet id matrixtable;
-    IBOutlet id mtscrv;
-    IBOutlet id vstep;
-    IBOutlet id vtf;
+	IBOutlet id borderbutton;
+	IBOutlet id brselcl;
+	IBOutlet id brselop;
+	IBOutlet id brtfcl;
+	IBOutlet id brtfop;
+	IBOutlet id chbfig;
+	IBOutlet id envsel;
+	IBOutlet id gridbutton;
+	IBOutlet id hstep;
+	IBOutlet id htf;
+	IBOutlet id matmod;
+	IBOutlet id matrixtable;
+	IBOutlet id mtscrv;
+	IBOutlet id vstep;
+	IBOutlet id vtf;
 
-    BOOL shown; //YES if user has chosen to display panel
-    
-    NSArray *arrayMatrix;
-    NSNotificationCenter *notifcenter;
-    NSMutableArray	    *draggedRows;
+	BOOL shown; //YES if user has chosen to display panel
 
-    MatrixData *myMatrix;
-    //NSMutableArray *myRows;
+	NSArray *arrayMatrix;
+	NSNotificationCenter *notifcenter;
+	NSMutableArray	    *draggedRows;
+
+	MatrixData *myMatrix;
+	//NSMutableArray *myRows;
 
 
 
@@ -69,9 +69,9 @@
 @end
 
 @interface MatrixData : NSObject {
-    NSMutableArray    *rows;
-    int activeRows;
-    int activeCols;
+	NSMutableArray    *rows;
+	int activeRows;
+	int activeCols;
 }
 
 - (int)rowCount;

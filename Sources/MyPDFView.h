@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -26,30 +26,30 @@
 
 @class TSDocument;
 
-@interface MyPDFView : NSView 
+@interface MyPDFView : NSView
 {
-    id			currentPage;
-    id			totalPage;
-    id			myScale;
-    id			myStepper;
-    id			currentPage1;
-    id			totalPage1;
-    id			myScale1;
-    id			myStepper1;
-    int			documentType;
-    double		oldMagnification;
-    //double		oldWidth, oldHeight; // mitsu 1.29 (O) not used
-    BOOL		fixScroll;
-    NSPDFImageRep	*myRep;
-    TSDocument		*myDocument;
-    int			rotationAmount;  // will be 0, 90, -90, 180
-    double		theMagSize;
-    //BOOL		largeMagnify; // for magnifying glass // mitsu 1.29 (O) not used
-	
+	id			currentPage;
+	id			totalPage;
+	id			myScale;
+	id			myStepper;
+	id			currentPage1;
+	id			totalPage1;
+	id			myScale1;
+	id			myStepper1;
+	int			documentType;
+	double		oldMagnification;
+	//double		oldWidth, oldHeight; // mitsu 1.29 (O) not used
+	BOOL		fixScroll;
+	NSPDFImageRep	*myRep;
+	TSDocument		*myDocument;
+	int			rotationAmount;  // will be 0, 90, -90, 180
+	double		theMagSize;
+	//BOOL		largeMagnify; // for magnifying glass // mitsu 1.29 (O) not used
+
 	// mitsu 1.29 (O)
 	int 	pageStyle;
-        int     firstPageStyle;
-	float 	pageWidth; 
+		int     firstPageStyle;
+	float 	pageWidth;
 	float 	pageHeight;
 	float 	totalWidth;
 	float 	totalHeight;
@@ -61,14 +61,14 @@
 	int currentMouseMode;
 	IBOutlet NSMatrix *mouseModeMatrix;
 	IBOutlet NSMenu *mouseModeMenu;
-	IBOutlet NSView *imageTypeView; 
-	IBOutlet NSPopUpButton *imageTypePopup; 
-        NSColor *pageBackgroundColor; 
+	IBOutlet NSView *imageTypeView;
+	IBOutlet NSPopUpButton *imageTypePopup;
+		NSColor *pageBackgroundColor;
 	// end mitsu 1.29
 }
 
 // set up the view
-- (void) setImageType: (int)theType;    
+- (void) setImageType: (int)theType;
 - (void) setDocument: (id) theDocument;
 - (void) setImageRep: (NSPDFImageRep *)theRep;
 - (void)setupForPDFRep: (NSPDFImageRep *)newRep style: (int)newPageStyle;

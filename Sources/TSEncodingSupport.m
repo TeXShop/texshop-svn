@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -78,10 +78,10 @@ static TSEncoding _availableEncodings[] = {
 }
 
 //------------------------------------------------------------------------------
-+ (id)sharedInstance 
++ (id)sharedInstance
 //------------------------------------------------------------------------------
 {
-	if (sharedEncodingSupport == nil) 
+	if (sharedEncodingSupport == nil)
 	{
 		sharedEncodingSupport = [[TSEncodingSupport alloc] init];
 	}
@@ -89,24 +89,24 @@ static TSEncoding _availableEncodings[] = {
 }
 
 //------------------------------------------------------------------------------
-- (id)init 
+- (id)init
 //------------------------------------------------------------------------------
 {
-	if (sharedEncodingSupport) 
+	if (sharedEncodingSupport)
 	{
 		[super dealloc];
 	}
 	else
 	{
 		sharedEncodingSupport = [super init];
-		
+
 		g_shouldFilter = kNoFilterMode;
 		// initialize yen string
 		unichar yenChar = YEN;
 		yenString = [[NSString stringWithCharacters: &yenChar length:1] retain];
-		
+
 		// register for encoding changed notification
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(encodingChanged:) 
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(encodingChanged:)
 				name:@"EncodingChangedNotification" object:nil];
 
 		// Here preferences are set for the state of the pasteboard conversion facility, which is only used with Japanese encoding.
@@ -137,7 +137,7 @@ static TSEncoding _availableEncodings[] = {
 	NSString *oldString = [fieldEditor string];
 	NSRange selectedRange = [fieldEditor selectedRange];
 	NSString *newString;
-	
+
 	if (g_shouldFilter == kMacJapaneseFilterMode)
 	{
 		newString = filterBackslashToYen(oldString);
@@ -149,7 +149,7 @@ static TSEncoding _availableEncodings[] = {
 		newString = filterYenToBackslash(oldString);
 		[fieldEditor setString: newString];
 		[fieldEditor setSelectedRange: selectedRange];
-	}		
+	}
 }
 
 
@@ -163,9 +163,9 @@ static TSEncoding _availableEncodings[] = {
 	id <NSMenuItem> item;
 	NSMutableString *menuTitle;
 	TSDocument *theDoc;
-	
+
 	currentEncoding = [SUD stringForKey:EncodingKey];
-	
+
 	editMenu = [[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Edit", @"Edit")] submenu];
 	if (editMenu)
 	{
@@ -190,14 +190,14 @@ static TSEncoding _availableEncodings[] = {
 							filterBackslashToYen(@"\\subsubsection"),
 							nil];
 				// mitsu 1.29 (P)
-		
+
 		// If the command completion list already exists, and we are about to change the filter mode:
 		// Update the command completion list to match the new filter mode.
 		if (g_shouldFilter != kMacJapaneseFilterMode && g_commandCompletionList)
 		{
 			[g_commandCompletionList replaceOccurrencesOfString: @"\\" withString: yenString
 						options: 0 range: NSMakeRange(0, [g_commandCompletionList length])];
-			theDoc = [[NSDocumentController sharedDocumentController] 
+			theDoc = [[NSDocumentController sharedDocumentController]
 				documentForFileName: [CommandCompletionPathKey stringByStandardizingPath]];
 			if (theDoc)
 				[[theDoc textView] setString: filterBackslashToYen([[theDoc textView] string])];
@@ -212,13 +212,13 @@ static TSEncoding _availableEncodings[] = {
 						NSLocalizedString(@"Convert \\yen to \\ in Pasteboard", @"Convert \\yen to \\ in Pasteboard")];
 			[menuTitle replaceOccurrencesOfString: @"\\yen" withString: yenString
 						options: 0 range: NSMakeRange(0, [menuTitle length])];
-			item = [editMenu addItemWithTitle: menuTitle 
+			item = [editMenu addItemWithTitle: menuTitle
 					action:@selector(toggleTeXCharConversion:) keyEquivalent: @""];
 			[item setTarget: self];
-			[item setState: [SUD boolForKey: @"ConvertToBackslash"]?NSOnState:NSOffState];		
+			[item setState: [SUD boolForKey: @"ConvertToBackslash"]?NSOnState:NSOffState];
 		}
 	}
-	else 
+	else
 	{
 		g_texChar = BACKSLASH;
 		[g_taggedTeXSections release];
@@ -235,15 +235,15 @@ static TSEncoding _availableEncodings[] = {
 		{
 			[g_commandCompletionList replaceOccurrencesOfString: yenString withString: @"\\"
 						options: 0 range: NSMakeRange(0, [g_commandCompletionList length])];
-			theDoc = [[NSDocumentController sharedDocumentController] 
+			theDoc = [[NSDocumentController sharedDocumentController]
 				documentForFileName: [CommandCompletionPathKey stringByStandardizingPath]];
 			if (theDoc)
 				[[theDoc textView] setString: filterYenToBackslash([[theDoc textView] string])];
 		}
 		// end mitsu 1.29
-	
+
 		if ([currentEncoding isEqualToString:@"DOSJapanese"] ||
-				[currentEncoding isEqualToString:@"EUC_JP"] || 
+				[currentEncoding isEqualToString:@"EUC_JP"] ||
 				[currentEncoding isEqualToString:@"JISJapanese"])
 		{
 			g_shouldFilter = kOtherJapaneseFilterMode;
@@ -252,13 +252,13 @@ static TSEncoding _availableEncodings[] = {
 			{
 				[editMenu addItem: [NSMenuItem separatorItem]];
 				menuTitle = [NSMutableString stringWithString:
-								NSLocalizedString(@"Convert \\ to \\yen in Pasteboard", @"Convert \\ to \\yen in Pasteboard")]; 
+								NSLocalizedString(@"Convert \\ to \\yen in Pasteboard", @"Convert \\ to \\yen in Pasteboard")];
 				[menuTitle replaceOccurrencesOfString: @"\\yen" withString: yenString
 							options: 0 range: NSMakeRange(0, [menuTitle length])];
-				item = [editMenu addItemWithTitle: menuTitle 
+				item = [editMenu addItemWithTitle: menuTitle
 						action:@selector(toggleTeXCharConversion:) keyEquivalent: @""];
 				[item setTarget: self];
-				[item setState: [SUD boolForKey: @"ConvertToYen"]?NSOnState:NSOffState];	
+				[item setState: [SUD boolForKey: @"ConvertToYen"]?NSOnState:NSOffState];
 			}
 		}
 		else
@@ -274,7 +274,7 @@ static TSEncoding _availableEncodings[] = {
 //------------------------------------------------------------------------------
 {
 	[self setupForEncoding];
-	
+
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"ResetTagsMenuNotification" object:self];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DocumentSyntaxColorNotification" object:self];
 	//[[NSNotificationCenter defaultCenter] postNotificationName:@"ReloadMacrosNotification" object:self];
@@ -288,17 +288,17 @@ static TSEncoding _availableEncodings[] = {
 {
 	NSString *currentEncoding;
 	NSString *theKey;
-	
+
 	currentEncoding = [SUD stringForKey:EncodingKey];
 	if ([currentEncoding isEqualToString:@"MacJapanese"] ||
 			[currentEncoding isEqualToString:@"SJIS_X0213"])
 		theKey = @"ConvertToBackslash";
 	else if ([currentEncoding isEqualToString:@"DOSJapanese"] ||
-		[currentEncoding isEqualToString:@"EUC_JP"] || 
+		[currentEncoding isEqualToString:@"EUC_JP"] ||
 		[currentEncoding isEqualToString:@"JISJapanese"])
 		theKey = @"ConvertToYen";
 	else
-		return;	
+		return;
 	[SUD setBool: ![SUD boolForKey: theKey]  forKey: theKey];
 	[SUD synchronize];
 	[(NSMenuItem *)sender setState: [SUD boolForKey: theKey]?NSOnState:NSOffState];
@@ -318,7 +318,7 @@ static TSEncoding _availableEncodings[] = {
 - (int)tagForEncodingPreference
 {
 	NSString	*currentEncoding;
-	
+
 	currentEncoding = [SUD stringForKey:EncodingKey];
 	return [self tagForEncoding: currentEncoding];
 }
@@ -356,7 +356,7 @@ static TSEncoding _availableEncodings[] = {
 - (NSStringEncoding)defaultEncoding
 {
 	NSString	*currentEncoding;
-	
+
 	currentEncoding = [SUD stringForKey:EncodingKey];
 	return [self stringEncodingForKey: currentEncoding];
 }
@@ -446,13 +446,13 @@ static TSEncoding _availableEncodings[] = {
 	NSGlyphInfo *aGlyph;
 	NSStringEncoding checkEncoding;
 	unsigned startl, endl, end;
-	
+
 	if ([[self keyForStringEncoding:enc] isEqualToString:@"SJIS_X0213"]) {
 		checkEncoding = enc;
 	} else {
 		checkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
 	}
-	
+
 	charRange = NSMakeRange(0,1);
 	endl = 0;
 	while (charRange.location < [dataString length]) {
@@ -464,7 +464,7 @@ static TSEncoding _availableEncodings[] = {
 		charRange = [dataString rangeOfComposedCharacterSequenceAtIndex: charRange.location];
 		//        NSLog( @"%d %d", charRange.length, charRange.location);
 		subString = [dataString substringWithRange: charRange];
-		
+
 		if (![subString canBeConvertedToEncoding: checkEncoding]) {
 			aGlyph = [[dataView textStorage] attribute:NSGlyphInfoAttributeName
 											   atIndex:charRange.location effectiveRange:&aCIDRange];
@@ -515,7 +515,7 @@ static TSEncoding _availableEncodings[] = {
 		charRange.location += charRange.length;
 		charRange.length = 1;
 	}
-	
+
 	return [newString dataUsingEncoding:enc allowLossyConversion:YES];
 }
 // end 1.35 (C)

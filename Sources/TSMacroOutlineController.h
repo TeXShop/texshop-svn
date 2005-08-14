@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -25,13 +25,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-// In order to use this controller, create an instance of MyOutlineView 
-// which is a subclass of NSOutlineView.  
-// Instantiate this class in Interface Builder and make connections 
-// with the outline view as "delegate" and "dataSource".  
-// Use "setRootOfTree" to assign the root node of the tree.  
-// Use "nodeFromDictionary" of "TSMacroTreeNode" to create such a node 
-// from a dictionary.  
+// In order to use this controller, create an instance of MyOutlineView
+// which is a subclass of NSOutlineView.
+// Instantiate this class in Interface Builder and make connections
+// with the outline view as "delegate" and "dataSource".
+// Use "setRootOfTree" to assign the root node of the tree.
+// Use "nodeFromDictionary" of "TSMacroTreeNode" to create such a node
+// from a dictionary.
 
 #define SEPARATOR_IMAGE @"Separator.tiff"
 #define MyOutlineViewAddedItemNotification		@"MyOutlineViewAddedItem"
@@ -40,12 +40,12 @@
 
 @class TSMacroTreeNode;
 
-@interface TSMacroOutlineController : NSObject 
+@interface TSMacroOutlineController : NSObject
 {
-    TSMacroTreeNode	*rootOfTree;
-    NSArray	 		*draggedNodes;
+	TSMacroTreeNode	*rootOfTree;
+	NSArray	 		*draggedNodes;
 
-    IBOutlet id outlineView;
+	IBOutlet id outlineView;
 }
 
 + (TSMacroOutlineController *)sharedInstance;
@@ -60,7 +60,7 @@
 - (void)addSubmenu: (id)sender;
 - (void)addSeparator: (id)sender;
 - (void)addNewDataToSelection:(TSMacroTreeNode *)newChild;
-- (void)addNewDataArrayToSelection:(NSArray *)newChildren; 
+- (void)addNewDataArrayToSelection:(NSArray *)newChildren;
 - (void)duplicateSelection: (id)sender;
 - (void)sortData: (id)sender;
 
@@ -79,7 +79,7 @@
 
 @interface ImageAndTextCell : NSTextFieldCell {
 @private
-    NSImage	*image;
+	NSImage	*image;
 }
 
 - (void)setImage:(NSImage *)anImage;

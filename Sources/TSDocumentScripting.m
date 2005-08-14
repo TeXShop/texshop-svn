@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -35,7 +35,7 @@
 
 - (NSTextStorage *)textStorage
 {
-    return [[self textView] textStorage];
+	return [[self textView] textStorage];
 }
 
 // -----------------------------------------------------------------------------
@@ -53,17 +53,17 @@
 
 - (NSWindow *)window
 {
-    return [self textWindow];
+	return [self textWindow];
 }
 
-//- (NSUndoManager *)undoManager 
+//- (NSUndoManager *)undoManager
 //{
 //   return [[self window] undoManager];
 //}
 
-- (NSLayoutManager *)layoutManager 
+- (NSLayoutManager *)layoutManager
 {
-    return [[[self textStorage] layoutManagers] objectAtIndex:0];
+	return [[[self textStorage] layoutManagers] objectAtIndex:0];
 }
 
 // -----------------------------------------------------------------------------
@@ -81,9 +81,9 @@
 //
 // -----------------------------------------------------------------------------
 
-- (void)setSelection:(id)ts 
+- (void)setSelection:(id)ts
 {
-    // ts can actually be a string or an attributed string.
+	// ts can actually be a string or an attributed string.
 
 	NSRange		range = [[self firstTextView] selectedRange];
 	NSString *oldString, *key= @"AppleEvent";
@@ -93,18 +93,18 @@
 	oldString = [[textView string] substringWithRange: range];
 
 	// Insert the new text
-    if ([ts isKindOfClass:[NSAttributedString class]]) {
-        [[self textStorage] replaceCharactersInRange:range withAttributedString:ts];
-        newStringLen = [(NSAttributedString*)ts length];
-    } else {
-        [[self textStorage] replaceCharactersInRange:range withString:ts];
-        newStringLen = [(NSString*)ts length];
-    }
+	if ([ts isKindOfClass:[NSAttributedString class]]) {
+		[[self textStorage] replaceCharactersInRange:range withAttributedString:ts];
+		newStringLen = [(NSAttributedString*)ts length];
+	} else {
+		[[self textStorage] replaceCharactersInRange:range withString:ts];
+		newStringLen = [(NSString*)ts length];
+	}
 
 	// register undo
-	[self registerUndoWithString:oldString location:range.location 
+	[self registerUndoWithString:oldString location:range.location
 						length:newStringLen key:key];
-	
+
 	from = range.location;
 	to = from + newStringLen;
 	[self fixColor:from :to];
@@ -118,15 +118,15 @@
 // Scripting support.
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
-    NSArray *orderedDocs = [NSApp valueForKey:@"orderedDocuments"];
-    unsigned theIndex = [orderedDocs indexOfObjectIdenticalTo:self];
+	NSArray *orderedDocs = [NSApp valueForKey:@"orderedDocuments"];
+	unsigned theIndex = [orderedDocs indexOfObjectIdenticalTo:self];
 
-    if (theIndex != NSNotFound) {
-        NSScriptClassDescription *desc = (NSScriptClassDescription *)[NSScriptClassDescription classDescriptionForClass:[NSApplication class]];
-        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:desc containerSpecifier:nil key:@"orderedDocuments" index:theIndex] autorelease];
-    } else {
-        return nil;
-    }
+	if (theIndex != NSNotFound) {
+		NSScriptClassDescription *desc = (NSScriptClassDescription *)[NSScriptClassDescription classDescriptionForClass:[NSApplication class]];
+		return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:desc containerSpecifier:nil key:@"orderedDocuments" index:theIndex] autorelease];
+	} else {
+		return nil;
+	}
 }
 
 // -----------------------------------------------------------------------------
@@ -135,12 +135,12 @@
 // We already have a textStorage() method implemented above.
 
 - (void)setTextStorage:(id)ts {
-    // ts can actually be a string or an attributed string.
-    if ([ts isKindOfClass:[NSAttributedString class]]) {
-        [[self textStorage] replaceCharactersInRange:NSMakeRange(0, [[self textStorage] length]) withAttributedString:ts];
-    } else {
-        [[self textStorage] replaceCharactersInRange:NSMakeRange(0, [[self textStorage] length]) withString:ts];
-    }
+	// ts can actually be a string or an attributed string.
+	if ([ts isKindOfClass:[NSAttributedString class]]) {
+		[[self textStorage] replaceCharactersInRange:NSMakeRange(0, [[self textStorage] length]) withAttributedString:ts];
+	} else {
+		[[self textStorage] replaceCharactersInRange:NSMakeRange(0, [[self textStorage] length]) withString:ts];
+	}
 }
 
 
@@ -149,12 +149,12 @@
 // -----------------------------------------------------------------------------
 
 - (id)coerceValueForTextStorage:(id)value {
-    // We want to just get Strings unchanged.  We will detect this and do the right thing in setTextStorage().  We do this because, this way, we will do more reasonable things about attributes when we are receiving plain text.
-    if ([value isKindOfClass:[NSString class]]) {
-        return value;
-    } else {
-        return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
-    }
+	// We want to just get Strings unchanged.  We will detect this and do the right thing in setTextStorage().  We do this because, this way, we will do more reasonable things about attributes when we are receiving plain text.
+	if ([value isKindOfClass:[NSString class]]) {
+		return value;
+	} else {
+		return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
+	}
 }
 
 
@@ -166,23 +166,23 @@
 {
 	NSDictionary*	args 			= [command evaluatedArguments];
 	NSString*		text			= [args objectForKey:@"AText"];
-	BOOL			caseSensitive	= [args objectForKey:@"CaseSensitive"] ? 
+	BOOL			caseSensitive	= [args objectForKey:@"CaseSensitive"] ?
 											[[args objectForKey:@"CaseSensitive"] boolValue] : NO;
 //	BOOL			wholeWord		= [args objectForKey:@"WholeWord"] ?
 //											[[args objectForKey:@"WholeWord"] boolValue] : NO;
-	BOOL			directionUp		= [args objectForKey:@"Direction"] ? 
+	BOOL			directionUp		= [args objectForKey:@"Direction"] ?
 											[[args objectForKey:@"Direction"] boolValue] : NO;
 	unsigned		startFrom		= [args objectForKey:@"StartOffset"] ?
 											[[args objectForKey:@"StartOffset"] unsignedIntValue] :
 											[[self firstTextView] selectedRange].location;
-	NSString*		myText			= [[self firstTextView] string];										
-											
+	NSString*		myText			= [[self firstTextView] string];
+
 	NSRange			result, searchRange;
 	unsigned		mask = NSLiteralSearch;
-	
+
 	if (!caseSensitive)
 		mask |= NSCaseInsensitiveSearch;
-		
+
 	if (directionUp) {
 		mask |= NSBackwardsSearch;
 		searchRange.location	= 0;
@@ -191,7 +191,7 @@
 		searchRange.location	= startFrom;
 		searchRange.length 		= [myText length] - startFrom;
 	}
-	
+
 	result	= [myText rangeOfString:text options:mask range:searchRange];
 	if (result.location == NSNotFound) {
 		return [NSNumber numberWithUnsignedInt:0];
@@ -202,153 +202,153 @@
 
 - (id)handleLatexCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:LatexEngine withError:YES runContinuously:YES];
-    
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:LatexEngine withError:YES runContinuously:YES];
+
+	return nil;
 }
 
 - (id)handleLatexInteractiveCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:LatexEngine withError:YES runContinuously:NO];
-    
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:LatexEngine withError:YES runContinuously:NO];
+
+	return nil;
 }
 
 - (id)handleTexCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:TexEngine withError:YES runContinuously:YES];
- 
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:TexEngine withError:YES runContinuously:YES];
+
+	return nil;
 }
 
 - (id)handleTexInteractiveCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:TexEngine withError:YES runContinuously:NO];
- 
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:TexEngine withError:YES runContinuously:NO];
+
+	return nil;
 }
 
 - (id)handleBibtexCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:BibtexEngine withError:YES runContinuously:YES];
- 
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:BibtexEngine withError:YES runContinuously:YES];
+
+	return nil;
 }
 
 - (id)handleBibtexInteractiveCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:BibtexEngine withError:YES runContinuously:NO];
- 
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:BibtexEngine withError:YES runContinuously:NO];
+
+	return nil;
 }
 
 
 - (id)handleContextCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:ContextEngine withError:YES runContinuously:YES];
- 
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:ContextEngine withError:YES runContinuously:YES];
+
+	return nil;
 }
 
 - (id)handleContextInteractiveCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:ContextEngine withError:YES runContinuously:NO];
- 
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:ContextEngine withError:YES runContinuously:NO];
+
+	return nil;
 }
 
 - (id)handleMetapostCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:MetapostEngine withError:YES runContinuously:YES];
- 
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:MetapostEngine withError:YES runContinuously:YES];
+
+	return nil;
 }
 
 - (id)handleMetapostInteractiveCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:MetapostEngine withError:YES runContinuously:NO];
- 
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:MetapostEngine withError:YES runContinuously:NO];
+
+	return nil;
 }
 
 - (id)handleMakeindexCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:IndexEngine withError:YES runContinuously:YES];
- 
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:IndexEngine withError:YES runContinuously:YES];
+
+	return nil;
 }
 
 - (id)handleMakeindexInteractiveCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doJobForScript:IndexEngine withError:YES runContinuously:NO];
- 
-    return nil;
+	taskDone = NO;
+	[self doJobForScript:IndexEngine withError:YES runContinuously:NO];
+
+	return nil;
 }
 
 - (id)handleTypesetCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doTypesetForScriptContinuously:YES];
- 
-    return nil;
+	taskDone = NO;
+	[self doTypesetForScriptContinuously:YES];
+
+	return nil;
 }
 
 - (id)handleTypesetInteractiveCommand:(NSScriptCommand*)command
 {
-    taskDone = NO;
-    [self doTypesetForScriptContinuously:NO];
- 
-    return nil;
+	taskDone = NO;
+	[self doTypesetForScriptContinuously:NO];
+
+	return nil;
 }
 
 - (id)handleRefreshPDFCommand:(NSScriptCommand*)command
 {
-    [self refreshPDFAndBringFront: YES];
- 
-    return nil;
+	[self refreshPDFAndBringFront: YES];
+
+	return nil;
 }
 
 - (id)handleRefreshPDFBackgroundCommand:(NSScriptCommand*)command
 {
-    [self refreshPDFAndBringFront: NO];
- 
-    return nil;
+	[self refreshPDFAndBringFront: NO];
+
+	return nil;
 }
 
 - (id)handleRefreshTEXTCommand:(NSScriptCommand*)command
 {
-    [self refreshTEXT];
- 
-    return nil;
+	[self refreshTEXT];
+
+	return nil;
 }
 
 - (id)handleTaskDoneCommand:(NSScriptCommand*)command
 {
-    NSNumber *theResult = [NSNumber numberWithBool:taskDone];
-    return theResult;
+	NSNumber *theResult = [NSNumber numberWithBool:taskDone];
+	return theResult;
 }
 
 - (id)handleGotoLineCommand:(NSScriptCommand*)command
 {
-    int line;
-    
-    NSDictionary* args = [command evaluatedArguments];
-    line = [[args objectForKey:@"LineNumber"] unsignedIntValue];
-    [self toLine:line];
- 
-    return nil;
+	int line;
+
+	NSDictionary* args = [command evaluatedArguments];
+	line = [[args objectForKey:@"LineNumber"] unsignedIntValue];
+	[self toLine:line];
+
+	return nil;
 }
 
 
@@ -371,7 +371,7 @@
 // -----------------------------------------------------------------------------
 
 - (unsigned)offset
-{	
+{
 	unsigned	x = [[mDocument firstTextView] selectedRange].location;
 	return x;
 }
@@ -394,14 +394,14 @@
 {
 	NSRange		range 		= [[mDocument firstTextView] selectedRange];
 	unsigned	textLength	= [[[mDocument firstTextView] string] length];
-	
+
 	if (off > textLength)
 		off = textLength;
 	range.location = off;
 	if ((range.location + range.length) > textLength)
 		range.length = textLength - range.location;
-	
-        [[mDocument firstTextView] setSelectedRange:range];
+
+		[[mDocument firstTextView] setSelectedRange:range];
 }
 
 // -----------------------------------------------------------------------------
@@ -412,12 +412,12 @@
 {
 	NSRange		range 		= [[mDocument firstTextView] selectedRange];
 	unsigned	textLength	= [[[mDocument firstTextView] string] length];
-	
+
 	range.length = len;
 	if ((range.location + range.length) > textLength)
 		range.length = textLength - range.location;
 
-        [[mDocument firstTextView] setSelectedRange:range];
+		[[mDocument firstTextView] setSelectedRange:range];
 }
 
 // -----------------------------------------------------------------------------
@@ -437,7 +437,7 @@
 //
 // -----------------------------------------------------------------------------
 
-- (void)setContent:(NSString*)ts 
+- (void)setContent:(NSString*)ts
 {
 	[mDocument setSelection:ts];
 }
@@ -446,12 +446,12 @@
 - (NSTextStorage*)textStorage
 {
 	NSRange		range 		= [[mDocument firstTextView] selectedRange];
-	return [[[NSTextStorage alloc] initWithAttributedString:[[mDocument textStorage] 
+	return [[[NSTextStorage alloc] initWithAttributedString:[[mDocument textStorage]
 				attributedSubstringFromRange:range]] autorelease];
 }
 
 // We already have a textStorage() method implemented above.
-- (void)setTextStorage:(id)ts 
+- (void)setTextStorage:(id)ts
 {
 	[mDocument setSelection:ts];
 }
@@ -469,19 +469,19 @@
 // -----------------------------------------------------------------------------
 
 - (NSArray *)orderedDocuments {
-    NSArray *orderedWindows = [NSApp valueForKey:@"orderedWindows"];
-    unsigned i, c = [orderedWindows count];
-    NSMutableArray *orderedDocs = [NSMutableArray array];
-    id curDelegate;
-    
-    for (i=0; i<c; i++) {
-        curDelegate = [[orderedWindows objectAtIndex:i] delegate];
-        
-        if ((curDelegate != nil) && [curDelegate isKindOfClass:[TSDocument class]]) {
-            [orderedDocs addObject:curDelegate];
-        }
-    }
-    return orderedDocs;
+	NSArray *orderedWindows = [NSApp valueForKey:@"orderedWindows"];
+	unsigned i, c = [orderedWindows count];
+	NSMutableArray *orderedDocs = [NSMutableArray array];
+	id curDelegate;
+
+	for (i=0; i<c; i++) {
+		curDelegate = [[orderedWindows objectAtIndex:i] delegate];
+
+		if ((curDelegate != nil) && [curDelegate isKindOfClass:[TSDocument class]]) {
+			[orderedDocs addObject:curDelegate];
+		}
+	}
+	return orderedDocs;
 }
 
 // -----------------------------------------------------------------------------
@@ -489,7 +489,7 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)application:(NSApplication *)sender delegateHandlesKey:(NSString *)key {
-    return [key isEqualToString:@"orderedDocuments"];
+	return [key isEqualToString:@"orderedDocuments"];
 }
 
 // -----------------------------------------------------------------------------
@@ -497,12 +497,12 @@
 // -----------------------------------------------------------------------------
 
 - (void)insertInOrderedDocuments:(TSDocument *)doc atIndex:(int)index {
-    [doc retain];	// Keep it around...
-    [[doc firstTextView] setSelectedRange:NSMakeRange(0, 0)];
+	[doc retain];	// Keep it around...
+	[[doc firstTextView] setSelectedRange:NSMakeRange(0, 0)];
 //	[doc setDocumentName:nil];
 //	[doc setDocumentEdited:NO];
 //	[doc setPotentialSaveDirectory:[TSDocument openSavePanelDirectory]];
-    [[doc window] makeKeyAndOrderFront:nil];
+	[[doc window] makeKeyAndOrderFront:nil];
 }
 
 // -----------------------------------------------------------------------------
@@ -511,28 +511,28 @@
 
 - (id)handleOpenForExternalEditorCommand:(NSScriptCommand*)command;
 {
-    NSDocumentController	*myController;
-    BOOL			useExternalEditor;
-    id                          result;
-    
-    NSDictionary *args = [command evaluatedArguments];
-    NSString *myName = [args objectForKey:@"FileName"];
-    if (!myName || [myName isEqualToString:@""])
-        return [NSNumber numberWithBool:NO];
-    
-    useExternalEditor = [SUD boolForKey:UseExternalEditorKey];
-    myController = [NSDocumentController sharedDocumentController];
+	NSDocumentController	*myController;
+	BOOL			useExternalEditor;
+	id                          result;
+
+	NSDictionary *args = [command evaluatedArguments];
+	NSString *myName = [args objectForKey:@"FileName"];
+	if (!myName || [myName isEqualToString:@""])
+		return [NSNumber numberWithBool:NO];
+
+	useExternalEditor = [SUD boolForKey:UseExternalEditorKey];
+	myController = [NSDocumentController sharedDocumentController];
   //  forPreview = YES;
-    [[self delegate] setForPreview:YES];
-        
-    result = [myController openDocumentWithContentsOfFile: myName display: YES];
+	[[self delegate] setForPreview:YES];
+
+	result = [myController openDocumentWithContentsOfFile: myName display: YES];
 
 	[[self delegate] setForPreview:useExternalEditor];
-        
-    if (result == nil)
-        return [NSNumber numberWithBool:NO];
-    else
-        return [NSNumber numberWithBool:YES];
+
+	if (result == nil)
+		return [NSNumber numberWithBool:NO];
+	else
+		return [NSNumber numberWithBool:YES];
 }
 
 

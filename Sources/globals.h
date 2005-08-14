@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -31,64 +31,64 @@
 
 
 /*" Symbolic constants for the matrix used in 'Source window Position' of the TSPreferences. "*/
-enum DocumentWindowPosition 
+enum DocumentWindowPosition
 {
-    DocumentWindowPosFixed = 0,
-    DocumentWindowPosSave = 1
+	DocumentWindowPosFixed = 0,
+	DocumentWindowPosSave = 1
 };
 
 /*" Symbolic constants for the matrix used in 'PDF window Position' of the TSPreferences. "*/
-enum PdfWindowPosition 
+enum PdfWindowPosition
 {
-    PdfWindowPosFixed = 0,
-    PdfWindowPosSave = 1
+	PdfWindowPosFixed = 0,
+	PdfWindowPosSave = 1
 };
 
 /*" Symbolic constants for the display mode to use "*/
 enum PdfDisplayMode
 {
-    PdfDisplayModeApple = 0,
-    PdfDisplayModeGhostscript = 1
+	PdfDisplayModeApple = 0,
+	PdfDisplayModeGhostscript = 1
 };
 
 /*" Symbolic constants for the Ghostscript color mode. "*/
 enum GsColorMode
 {
-    GsColorModeGrayscale = 0,
-    GsColorMode256 = 1,
-    GsColorModeThousands = 2
+	GsColorModeGrayscale = 0,
+	GsColorMode256 = 1,
+	GsColorModeThousands = 2
 };
 
 /*" Symbolic constants for the default Typeset program to use. "*/
 enum DefaultCommand
 {
-    DefaultCommandTeX = 0,
-    DefaultCommandLaTeX = 1,
-    DefaultCommandConTEXt = 2,
-    DefaultCommandUser = 3
+	DefaultCommandTeX = 0,
+	DefaultCommandLaTeX = 1,
+	DefaultCommandConTEXt = 2,
+	DefaultCommandUser = 3
 };
 
 
 /*" Symbolic constants for Japanese conversion "*/
 typedef enum
 {
-    kNoFilterMode = 0,
-    kMacJapaneseFilterMode = 1,			// MacJapanese
-    kOtherJapaneseFilterMode = 2		// NSShiftJIS & EUCJapanese & JISJapanese
+	kNoFilterMode = 0,
+	kMacJapaneseFilterMode = 1,			// MacJapanese
+	kOtherJapaneseFilterMode = 2		// NSShiftJIS & EUCJapanese & JISJapanese
 } TSFilterMode;
 
 /*" Symbolic constants to determine TeX engine "*/
 /*" These are also tags on the typeset menu and the pulldown toolbar menus "*/
 enum EngineCommand
 {
-    TexEngine = 1,
-    LatexEngine = 2,
-    BibtexEngine = 3,
-    IndexEngine = 4,
-    MetapostEngine = 5,
-    ContextEngine = 6,
-    MetafontEngine = 7,
-    UserEngine = 8
+	TexEngine = 1,
+	LatexEngine = 2,
+	BibtexEngine = 3,
+	IndexEngine = 4,
+	MetapostEngine = 5,
+	ContextEngine = 6,
+	MetafontEngine = 7,
+	UserEngine = 8
 };
 
 // mitsu 1.29 (O)
@@ -96,24 +96,24 @@ enum EngineCommand
 typedef enum _PDFPageStyle
 {
 	PDF_SINGLE_PAGE_STYLE = 1,
-	PDF_TWO_PAGE_STYLE = 2, 
-	PDF_MULTI_PAGE_STYLE = 3, 
+	PDF_TWO_PAGE_STYLE = 2,
+	PDF_MULTI_PAGE_STYLE = 3,
 	PDF_DOUBLE_MULTI_PAGE_STYLE = 4
 } _PDFPageStyle;
 
 typedef enum _PDFFirstPageStyle
 {
-        PDF_FIRST_LEFT = 1,
-        PDF_FIRST_RIGHT = 2
+		PDF_FIRST_LEFT = 1,
+		PDF_FIRST_RIGHT = 2
 } _PDFFirstPageStyle;
 
 /*" Size option for MyPDFView"*/
 typedef enum _PDFSizeOption
 {
-	PDF_ACTUAL_SIZE = -100, 
-	PDF_FIT_TO_NONE = -101, 
-	PDF_FIT_TO_WIDTH = -102, 
-	PDF_FIT_TO_HEIGHT = -103, 
+	PDF_ACTUAL_SIZE = -100,
+	PDF_FIT_TO_NONE = -101,
+	PDF_FIT_TO_WIDTH = -102,
+	PDF_FIT_TO_HEIGHT = -103,
 	PDF_FIT_TO_WINDOW = -104
 } _PDFSizeOption;
 
@@ -121,20 +121,20 @@ typedef enum _PDFSizeOption
 typedef enum _MouseMode
 {
 	MOUSE_MODE_NULL = 0,
-	MOUSE_MODE_SCROLL = 1, 
-	MOUSE_MODE_MAG_GLASS = 2, 
-	MOUSE_MODE_MAG_GLASS_L = 3, 
+	MOUSE_MODE_SCROLL = 1,
+	MOUSE_MODE_MAG_GLASS = 2,
+	MOUSE_MODE_MAG_GLASS_L = 3,
 	MOUSE_MODE_SELECT = 4
 } _MouseMode;
 
 /*" Size option for MyPDFKitView"*/
 typedef enum _NewPDFSizeOption
 {
-	NEW_PDF_ACTUAL_SIZE = 1, // PDF_ACTUAL_SIZE = -100, 
-	NEW_PDF_FIT_TO_NONE = 2, // PDF_FIT_TO_NONE = -101, 
+	NEW_PDF_ACTUAL_SIZE = 1, // PDF_ACTUAL_SIZE = -100,
+	NEW_PDF_FIT_TO_NONE = 2, // PDF_FIT_TO_NONE = -101,
 	NEW_PDF_FIT_TO_WINDOW = 3, // PDF_FIT_TO_WINDOW = -104
-	NEW_PDF_FIT_TO_WIDTH = 4, // PDF_FIT_TO_WIDTH = -102, 
-	NEW_PDF_FIT_TO_HEIGHT = 5 // PDF_FIT_TO_HEIGHT = -103, 
+	NEW_PDF_FIT_TO_WIDTH = 4, // PDF_FIT_TO_WIDTH = -102,
+	NEW_PDF_FIT_TO_HEIGHT = 5 // PDF_FIT_TO_HEIGHT = -103,
 
 } _NewPDFSizeOption;
 
@@ -143,8 +143,8 @@ typedef enum _NewMouseMode
 {
 	NEW_MOUSE_MODE_SCROLL = 1,
 	NEW_MOUSE_MODE_SELECT_TEXT = 2,
-	NEW_MOUSE_MODE_MAG_GLASS = 3, 
-	NEW_MOUSE_MODE_MAG_GLASS_L = 4, 
+	NEW_MOUSE_MODE_MAG_GLASS = 3,
+	NEW_MOUSE_MODE_MAG_GLASS_L = 4,
 	NEW_MOUSE_MODE_SELECT_PDF = 5
 } _NewMouseMode;
 
@@ -154,14 +154,14 @@ enum ImageCopyType
 	IMAGE_TYPE_TIFF_NC = 1, // no compresion
 	IMAGE_TYPE_TIFF_LZW = 2, // LZW compression
 	IMAGE_TYPE_TIFF_PB = 3, // PackBits compression
-	IMAGE_TYPE_JPEG_HIGH = 11, 
-	IMAGE_TYPE_JPEG_MEDIUM = 13, 
+	IMAGE_TYPE_JPEG_HIGH = 11,
+	IMAGE_TYPE_JPEG_MEDIUM = 13,
 	IMAGE_TYPE_JPEG_LOW = 15,
-        IMAGE_TYPE_PICT = 20,  
-	IMAGE_TYPE_PNG = 21, 
+		IMAGE_TYPE_PICT = 20,
+	IMAGE_TYPE_PNG = 21,
 	IMAGE_TYPE_GIF = 22, // not suitable for our purpose?
 	IMAGE_TYPE_BMP = 23, // does not work?
-	IMAGE_TYPE_PDF = 31, 
+	IMAGE_TYPE_PDF = 31,
 	IMAGE_TYPE_EPS = 32
 };
 
@@ -210,14 +210,14 @@ extern NSString *PdfWindowNameKey;
 extern NSString *PdfKitWindowNameKey;
 extern NSString *PdfWindowPosModeKey;
 extern NSString *PdfPageStyleKey; // mitsu 1.29 (O)
-extern NSString *PdfRefreshKey; 
+extern NSString *PdfRefreshKey;
 extern NSString *RefreshTimeKey;
-extern NSString *PdfFileRefreshKey; 
+extern NSString *PdfFileRefreshKey;
 extern NSString *PdfFirstPageStyleKey;
 extern NSString *PdfFitSizeKey; // mitsu 1.29 (O)
 extern NSString *PdfKitFitSizeKey; // mitsu 1.29 (O)
-extern NSString *PdfCopyTypeKey; // mitsu 1.29 (O) 
-extern NSString *PdfExportTypeKey; // mitsu 1.29 (O) 
+extern NSString *PdfCopyTypeKey; // mitsu 1.29 (O)
+extern NSString *PdfExportTypeKey; // mitsu 1.29 (O)
 extern NSString *PdfMouseModeKey; // mitsu 1.29 (O)
 extern NSString *PdfKitMouseModeKey; // mitsu 1.29 (O)
 extern NSString *PdfQuickDragKey; // mitsu 1.29 drag & drop

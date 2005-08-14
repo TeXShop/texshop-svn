@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -60,11 +60,11 @@ NSString *PdfPageStyleKey = @"PdfPageStyle"; // mitsu 1.29 (O)
 NSString *PdfRefreshKey = @"PdfRefresh";
 NSString *RefreshTimeKey = @"RefreshTime";
 NSString *PdfFileRefreshKey = @"PdfFileRefresh";
-NSString *PdfFirstPageStyleKey = @"PdfFirstPageStyle"; 
+NSString *PdfFirstPageStyleKey = @"PdfFirstPageStyle";
 NSString *PdfFitSizeKey = @"PdfFitSize"; // mitsu 1.29 (O)
 NSString *PdfKitFitSizeKey = @"PdfKitFitSize"; // mitsu 1.29 (O)
-NSString *PdfCopyTypeKey = @"PdfCopyType"; // mitsu 1.29 (O) 
-NSString *PdfExportTypeKey = @"PdfExportType"; // mitsu 1.29 (O) 
+NSString *PdfCopyTypeKey = @"PdfCopyType"; // mitsu 1.29 (O)
+NSString *PdfExportTypeKey = @"PdfExportType"; // mitsu 1.29 (O)
 NSString *PdfMouseModeKey = @"PdfMouseMode"; // mitsu 1.29 (O)
 NSString *PdfKitMouseModeKey = @"PdfKitMouseMode"; // mitsu 1.29 (O)
 NSString *PdfQuickDragKey = @"PdfQuickDrag"; // mitsu 1.29 drag & drop
@@ -171,8 +171,8 @@ TSFilterMode		g_shouldFilter;
 int					g_texChar;
 NSDictionary		*g_autocompletionDictionary;
 
-NSArray				*g_taggedTeXSections; 
-NSArray				*g_taggedTagSections; 
+NSArray				*g_taggedTeXSections;
+NSArray				*g_taggedTagSections;
 
 // command completion
 NSString *g_commandCompletionChar = nil;

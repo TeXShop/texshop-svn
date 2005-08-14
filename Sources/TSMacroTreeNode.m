@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,22 +32,22 @@
 // Basic initialization and deallocation
 // ================================================================
 
-- (id)initWithParent:(TSMacroTreeNode*)parent children:(NSArray*)children 
+- (id)initWithParent:(TSMacroTreeNode*)parent children:(NSArray*)children
 {
-    self = [super init];
-    if (self==nil) 
+	self = [super init];
+	if (self==nil)
 		return nil;
-    
-    nodeParent = parent;
+
+	nodeParent = parent;
 	if (children)
 		nodeChildren = [[NSMutableArray arrayWithArray:children] retain];
 	else
 		nodeChildren = nil;
-    
+
 	name = nil;
 	content = nil;
 	key = nil;
-    return self;
+	return self;
 }
 
 - (void)dealloc {
@@ -83,14 +83,14 @@
 // Methods used to manage a node and its children.
 // ================================================================
 
-- (void)setNodeParent:(TSMacroTreeNode*)parent 
+- (void)setNodeParent:(TSMacroTreeNode*)parent
 {
-    nodeParent = parent; 
+	nodeParent = parent;
 }
 
-- (TSMacroTreeNode*)nodeParent 
-{ 
-    return nodeParent; 
+- (TSMacroTreeNode*)nodeParent
+{
+	return nodeParent;
 }
 
 - (BOOL)isAlive	// usually an item is alive if and only if it has nodeParent except forthe root of tree
@@ -98,67 +98,67 @@
 	return (nodeParent != nil);
 }
 
-- (void)addChild:(TSMacroTreeNode*)child 
+- (void)addChild:(TSMacroTreeNode*)child
 {
-    if (!nodeChildren)
+	if (!nodeChildren)
 		nodeChildren = [[NSMutableArray array] retain];
 	if (!child)
 		return;
 	[nodeChildren addObject: child];
-    [child setNodeParent: self];
+	[child setNodeParent: self];
 }
 
-- (void)addChildren:(NSArray*)children 
+- (void)addChildren:(NSArray*)children
 {
-    if (!nodeChildren)
+	if (!nodeChildren)
 		nodeChildren = [[NSMutableArray array] retain];
-    [nodeChildren addObjectsFromArray: children];
-    [children makeObjectsPerformSelector:@selector(setNodeParent:) withObject:self];
+	[nodeChildren addObjectsFromArray: children];
+	[children makeObjectsPerformSelector:@selector(setNodeParent:) withObject:self];
 }
 
-- (void)insertChild:(TSMacroTreeNode*)child atIndex:(int)index 
+- (void)insertChild:(TSMacroTreeNode*)child atIndex:(int)index
 {
-    if (!nodeChildren)
+	if (!nodeChildren)
 		nodeChildren = [[NSMutableArray array] retain];
 	[nodeChildren insertObject:child atIndex:index];
-    [child setNodeParent: self];
+	[child setNodeParent: self];
 }
 
-- (void)insertChildren:(NSArray*)children atIndex:(int)index 
+- (void)insertChildren:(NSArray*)children atIndex:(int)index
 {
-    if (!nodeChildren)
+	if (!nodeChildren)
 		nodeChildren = [[NSMutableArray array] retain];
-    [nodeChildren insertObjectsFromArray: children atIndex: index];
-    [children makeObjectsPerformSelector:@selector(setNodeParent:) withObject:self];
+	[nodeChildren insertObjectsFromArray: children atIndex: index];
+	[children makeObjectsPerformSelector:@selector(setNodeParent:) withObject:self];
 }
 
-- (void)_removeChildrenIdenticalTo:(NSArray*)children 
+- (void)_removeChildrenIdenticalTo:(NSArray*)children
 {
-    if (!children || !nodeChildren)
+	if (!children || !nodeChildren)
 		return;
 	TSMacroTreeNode *child;
-    NSEnumerator *childEnumerator = [children objectEnumerator];
-    [children makeObjectsPerformSelector:@selector(setNodeParent:) withObject:nil];
-    while ((child=[childEnumerator nextObject])) {
-        [nodeChildren removeObjectIdenticalTo:child];
-    }
+	NSEnumerator *childEnumerator = [children objectEnumerator];
+	[children makeObjectsPerformSelector:@selector(setNodeParent:) withObject:nil];
+	while ((child=[childEnumerator nextObject])) {
+		[nodeChildren removeObjectIdenticalTo:child];
+	}
 }
 
-- (void)removeChild:(TSMacroTreeNode*)child 
+- (void)removeChild:(TSMacroTreeNode*)child
 {
-    int index = [self indexOfChild: child];
-    if (index!=NSNotFound) {
-        [self _removeChildrenIdenticalTo: [NSArray arrayWithObject: [self childAtIndex:index]]];
-    }
+	int index = [self indexOfChild: child];
+	if (index!=NSNotFound) {
+		[self _removeChildrenIdenticalTo: [NSArray arrayWithObject: [self childAtIndex:index]]];
+	}
 }
 
-- (void)removeFromParent 
+- (void)removeFromParent
 {
 	if ([self nodeParent])
 		[[self nodeParent] removeChild: self];
 }
 
-- (int)indexOfChild:(TSMacroTreeNode*)child 
+- (int)indexOfChild:(TSMacroTreeNode*)child
 {
 	if (nodeChildren)
 		return [nodeChildren indexOfObject: child];
@@ -166,7 +166,7 @@
 		return NSNotFound;
 }
 
-- (int)indexOfChildIdenticalTo:(TSMacroTreeNode*)child 
+- (int)indexOfChildIdenticalTo:(TSMacroTreeNode*)child
 {
 	if (nodeChildren)
 		return [nodeChildren indexOfObjectIdenticalTo: child];
@@ -174,7 +174,7 @@
 		return NSNotFound;
 }
 
-- (int)numberOfChildren 
+- (int)numberOfChildren
 {
 	if (nodeChildren)
 		return [nodeChildren count];
@@ -182,7 +182,7 @@
 		return 0;
 }
 
-- (NSArray*)children 
+- (NSArray*)children
 {
 	if (nodeChildren)
 		return [NSArray arrayWithArray: nodeChildren];
@@ -190,7 +190,7 @@
 		return [NSArray array];
 }
 
-- (TSMacroTreeNode*)firstChild 
+- (TSMacroTreeNode*)firstChild
 {
 	if (nodeChildren)
 		return [nodeChildren objectAtIndex:0];
@@ -198,7 +198,7 @@
 		return nil;
 }
 
-- (TSMacroTreeNode*)lastChild 
+- (TSMacroTreeNode*)lastChild
 {
 	if (nodeChildren)
 		return [nodeChildren lastObject];
@@ -206,7 +206,7 @@
 		return nil;
 }
 
-- (TSMacroTreeNode*)childAtIndex:(int)index 
+- (TSMacroTreeNode*)childAtIndex:(int)index
 {
 	if (nodeChildren)
 		return [nodeChildren objectAtIndex:index];
@@ -214,38 +214,38 @@
 		return nil;
 }
 
-- (BOOL)isDescendantOfNode:(TSMacroTreeNode*)node 
+- (BOOL)isDescendantOfNode:(TSMacroTreeNode*)node
 {	// returns YES if 'node' is an ancestor.
-    // Walk up the tree, to see if any of our ancestors is 'node'.
-    TSMacroTreeNode *parent = self;
-    while (parent) {
-        if (parent==node) return YES;
-        parent = [parent nodeParent];
-    }
-    return NO;
+	// Walk up the tree, to see if any of our ancestors is 'node'.
+	TSMacroTreeNode *parent = self;
+	while (parent) {
+		if (parent==node) return YES;
+		parent = [parent nodeParent];
+	}
+	return NO;
 }
 
-- (BOOL)isDescendantOfNodeInArray:(NSArray*)nodes 
+- (BOOL)isDescendantOfNodeInArray:(NSArray*)nodes
 {	// returns YES if any 'node' in the array 'nodes' is an ancestor of ours.
-    // For each node in nodes, if node is an ancestor return YES.  If none is an
-    // ancestor, return NO.
-    NSEnumerator *nodeEnum = [nodes objectEnumerator];
-    TSMacroTreeNode *node = nil;
-    while((node=[nodeEnum nextObject])) {
-        if([self isDescendantOfNode:node]) return YES;
-    }
-    return NO;
+	// For each node in nodes, if node is an ancestor return YES.  If none is an
+	// ancestor, return NO.
+	NSEnumerator *nodeEnum = [nodes objectEnumerator];
+	TSMacroTreeNode *node = nil;
+	while((node=[nodeEnum nextObject])) {
+		if([self isDescendantOfNode:node]) return YES;
+	}
+	return NO;
 }
 
-- (void)recursiveSortChildren 
+- (void)recursiveSortChildren
 {
-    [nodeChildren sortUsingSelector:@selector(compare:)];
-    [nodeChildren makeObjectsPerformSelector: @selector(recursiveSortChildren)];
+	[nodeChildren sortUsingSelector:@selector(compare:)];
+	[nodeChildren makeObjectsPerformSelector: @selector(recursiveSortChildren)];
 }
 
-- (NSString*)description 
+- (NSString*)description
 {	// Return something that will be useful for debugging.
-    return [NSString stringWithFormat: @"{%@}", self];
+	return [NSString stringWithFormat: @"{%@}", self];
 }
 
 // Returns the minimum nodes from 'allNodes' required to cover the nodes in 'allNodes'.
@@ -253,28 +253,28 @@
 // the returned array has an ancestor in the returned array.
 
 // There are better ways to compute this, but this implementation should be efficient for our app.
-+ (NSArray *) minimumNodeCoverFromNodesInArray: (NSArray *)allNodes 
++ (NSArray *) minimumNodeCoverFromNodesInArray: (NSArray *)allNodes
 {
-    NSMutableArray *minimumCover = [NSMutableArray array];
-    NSMutableArray *nodeQueue = [NSMutableArray arrayWithArray:allNodes];
-    TSMacroTreeNode *node = nil;
-    while ([nodeQueue count]) {
-        node = [nodeQueue objectAtIndex:0];
-        [nodeQueue removeObjectAtIndex:0];
-        while ( [node nodeParent] && [nodeQueue containsObjectIdenticalTo:[node nodeParent]] ) {
-            [nodeQueue removeObjectIdenticalTo: node];
-            node = [node nodeParent];
-        }
-        if (![node isDescendantOfNodeInArray: minimumCover]) [minimumCover addObject: node];
-        [nodeQueue removeObjectIdenticalTo: node];
-    }
-    return minimumCover;
+	NSMutableArray *minimumCover = [NSMutableArray array];
+	NSMutableArray *nodeQueue = [NSMutableArray arrayWithArray:allNodes];
+	TSMacroTreeNode *node = nil;
+	while ([nodeQueue count]) {
+		node = [nodeQueue objectAtIndex:0];
+		[nodeQueue removeObjectAtIndex:0];
+		while ( [node nodeParent] && [nodeQueue containsObjectIdenticalTo:[node nodeParent]] ) {
+			[nodeQueue removeObjectIdenticalTo: node];
+			node = [node nodeParent];
+		}
+		if (![node isDescendantOfNodeInArray: minimumCover]) [minimumCover addObject: node];
+		[nodeQueue removeObjectIdenticalTo: node];
+	}
+	return minimumCover;
 }
 
-- (NSComparisonResult)compare:(TSMacroTreeNode*)node 
+- (NSComparisonResult)compare:(TSMacroTreeNode*)node
 {	// Return anything, it is expected this will be overridden by subclasses.
-    // For instance, SimpleTree compares names!	//NSOrderedAscending
-    return [[self name] compare: [node name]];
+	// For instance, SimpleTree compares names!	//NSOrderedAscending
+	return [[self name] compare: [node name]];
 }
 
 // ================================================================
@@ -288,11 +288,11 @@
 	if (aContent)
 		[node setContent: aContent];
 	if (keyEquiv)
-		[node setKey: keyEquiv]; 
+		[node setKey: keyEquiv];
 #ifdef DEBUG_TREE
 	PRINT(@"StdNode created", aName);
 #endif
-	return node; 
+	return node;
 }
 
 + (id)submenuNodeWithName: (NSString*)aName
@@ -303,7 +303,7 @@
 #ifdef DEBUG_TREE
 	PRINT(@"SubmenuNode created", aName);
 #endif
-	return node; 
+	return node;
 }
 
 + (id)separatorNode
@@ -329,14 +329,14 @@
 
 - (void)setName: (NSString*)aName
 {
-    if (!name || ![name isEqualToString: aName]) 
+	if (!name || ![name isEqualToString: aName])
 	{
-		[name release]; 
-		name = [aName retain]; 
-    }
+		[name release];
+		name = [aName retain];
+	}
 }
 
-	
+
 - (NSString*)content
 {
 	if (content)
@@ -347,11 +347,11 @@
 
 - (void)setContent:(NSString*)aContent
 {
-    if (!content || ![content isEqualToString: aContent]) 
+	if (!content || ![content isEqualToString: aContent])
 	{
-		[content release]; 
-		content = [aContent retain]; 
-    }
+		[content release];
+		content = [aContent retain];
+	}
 }
 
 
@@ -365,33 +365,33 @@
 
 - (void)setKey: (NSString*)aKey
 {
-    if (!key || ![key isEqualToString: aKey]) 
+	if (!key || ![key isEqualToString: aKey])
 	{
-		[key release]; 
-		key = [aKey retain]; 
-    }
+		[key release];
+		key = [aKey retain];
+	}
 }
 
 
 - (BOOL)isLeaf
 {
-    return (nodeChildren == nil); 
+	return (nodeChildren == nil);
 }
 
 - (BOOL)isGroup
 {
-    return (nodeChildren != nil); 
+	return (nodeChildren != nil);
 }
 
 
 - (BOOL)isExpandable
 {
-    return (nodeChildren != nil);
+	return (nodeChildren != nil);
 }
 
 - (BOOL)isEditable
 {
-    return NO; 
+	return NO;
 }
 
 - (BOOL)isStandardItem // not Group, not Separator
@@ -427,7 +427,7 @@
 
 - (TSMacroTreeNode *)duplicateNode
 {
-	TSMacroTreeNode *newNode = [[[TSMacroTreeNode alloc]  initWithParent: nil 
+	TSMacroTreeNode *newNode = [[[TSMacroTreeNode alloc]  initWithParent: nil
 						children: (nodeChildren)?[NSArray array]:nil] autorelease];
 	[newNode setName: [self name]];
 	if ([self content])
@@ -471,7 +471,7 @@
 	NSString *aName, *aContent, *keyEquiv;
 	NSArray *srcChildren;
 	NSDictionary *srcChild;
-	
+
 	aName = [dict objectForKey: NAME_KEY];
 	if (aName == nil)
 		return nil;
@@ -510,12 +510,12 @@
 	NSEnumerator *enumerator, *keyEnum;
 	id obj, obj2, theKey;
 	TSMacroTreeNode *node, *submenu;
-	
+
 	nodeArray = [NSMutableArray array];
 	if ([propertyList isKindOfClass: [NSDictionary class]])
 	{
 		obj = [propertyList objectForKey: NAME_KEY];
-		if (obj && [obj isKindOfClass: [NSString class]] && 
+		if (obj && [obj isKindOfClass: [NSString class]] &&
 			[obj isEqualToString: @"ROOT"])
 		{
 			obj2 = [propertyList objectForKey: CHILDREN_KEY];
@@ -542,7 +542,7 @@
 		keyEnum = [propertyList keyEnumerator];
 		while ((theKey = [keyEnum nextObject])) {
 			if ([theKey isKindOfClass: [NSString class]] &&
-				((dictArray = [propertyList objectForKey: theKey])) && 
+				((dictArray = [propertyList objectForKey: theKey])) &&
 				[dictArray isKindOfClass: [NSArray class]])
 			{
 				submenu = [TSMacroTreeNode submenuNodeWithName: theKey];
@@ -552,8 +552,8 @@
 				{
 					if ([obj isKindOfClass: [NSString class]])
 					{
-						NSMutableString *nameStr = [NSMutableString stringWithString: 
-							[(NSString *)obj substringToIndex: 
+						NSMutableString *nameStr = [NSMutableString stringWithString:
+							[(NSString *)obj substringToIndex:
 									([(NSString *)obj length]<50)?[(NSString *)obj length]:50]];
 						[nameStr replaceOccurrencesOfString: @"\n" withString: @""
 									options: 0 range: NSMakeRange(0, [nameStr length])];
@@ -577,7 +577,7 @@
 	if ([propertyList isKindOfClass: [NSDictionary class]])
 	{
 		obj = [propertyList objectForKey: NAME_KEY];
-		if (obj && [obj isKindOfClass: [NSString class]] && 
+		if (obj && [obj isKindOfClass: [NSString class]] &&
 			[obj isEqualToString: @"ROOT"])
 		{
 			obj2 = [propertyList objectForKey: CHILDREN_KEY];
@@ -604,7 +604,7 @@
 		keyEnum = [propertyList keyEnumerator];
 		while ((theKey = [keyEnum nextObject])) {
 			if ([theKey isKindOfClass: [NSString class]] &&
-				(array = [propertyList objectForKey: theKey]) && 
+				(array = [propertyList objectForKey: theKey]) &&
 				[array isKindOfClass: [NSArray class]])
 			{
 				submenu = [TSMacroTreeNode submenuNodeWithName: theKey];
@@ -612,8 +612,8 @@
 				enumerator = [array objectEnumerator];
 				while ((obj = [enumerator nextObject])) {
 					if ([obj isKindOfClass: [NSString class]]) {
-						NSMutableString *nameStr = [NSMutableString stringWithString: 
-							[(NSString *)obj substringToIndex: 
+						NSMutableString *nameStr = [NSMutableString stringWithString:
+							[(NSString *)obj substringToIndex:
 									([(NSString *)obj length]<50)?[(NSString *)obj length]:50]];
 						[nameStr replaceOccurrencesOfString: @"\n" withString: @""
 									options: 0 range: NSMakeRange(0, [nameStr length])];
@@ -659,8 +659,8 @@
 
 @implementation NSArray (MyExtensions)
 
-- (BOOL) containsObjectIdenticalTo: (id)obj { 
-    return [self indexOfObjectIdenticalTo: obj]!=NSNotFound; 
+- (BOOL) containsObjectIdenticalTo: (id)obj {
+	return [self indexOfObjectIdenticalTo: obj]!=NSNotFound;
 }
 
 @end
@@ -668,11 +668,11 @@
 @implementation NSMutableArray (MyExtensions)
 
 - (void) insertObjectsFromArray:(NSArray *)array atIndex:(int)index {
-    NSObject *entry = nil;
-    NSEnumerator *enumerator = [array objectEnumerator];
-    while ((entry=[enumerator nextObject])) {
-        [self insertObject:entry atIndex:index++];
-    }
+	NSObject *entry = nil;
+	NSEnumerator *enumerator = [array objectEnumerator];
+	while ((entry=[enumerator nextObject])) {
+		[self insertObject:entry atIndex:index++];
+	}
 }
 
 @end

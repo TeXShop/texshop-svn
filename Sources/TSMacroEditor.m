@@ -1,17 +1,17 @@
 /*
- * TeXShop - TeX editor for Mac OS 
+ * TeXShop - TeX editor for Mac OS
  * Copyright (C) 2000-2005 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -35,19 +35,19 @@
 @implementation TSMacroEditor
 
 static id sharedMacroEditor = nil;
-static TSFilterMode savedFilter = kNoFilterMode; 
+static TSFilterMode savedFilter = kNoFilterMode;
 
-+ (id)sharedInstance 
++ (id)sharedInstance
 {
-    if (sharedMacroEditor == nil) 
-        sharedMacroEditor = [[TSMacroEditor alloc] init];
-    return sharedMacroEditor;
+	if (sharedMacroEditor == nil)
+		sharedMacroEditor = [[TSMacroEditor alloc] init];
+	return sharedMacroEditor;
 }
 
-- (id)init 
+- (id)init
 {
-    if (sharedMacroEditor) 
-        [super dealloc];
+	if (sharedMacroEditor)
+		[super dealloc];
 	else
 	{
 		sharedMacroEditor = [super init];
@@ -58,38 +58,38 @@ static TSFilterMode savedFilter = kNoFilterMode;
 
 - (void)dealloc
 {
-	if (self != sharedMacroEditor) 
+	if (self != sharedMacroEditor)
 		[super dealloc];	// Don't free our shared instance
 }
 
-- (void)awakeFromNib 
+- (void)awakeFromNib
 {
 }
 
 
-- (IBAction)openMacroEditor: (id)sender 
+- (IBAction)openMacroEditor: (id)sender
 {
-    if (!outlineView) 
+	if (!outlineView)
 	{
 		// load TSMacroEditor window
 		[self loadUI];
 		// load tree from macroDictionary
-		TSMacroTreeNode *newRoot = [TSMacroTreeNode nodeFromDictionary: 
+		TSMacroTreeNode *newRoot = [TSMacroTreeNode nodeFromDictionary:
 							[[TSMacroMenuController sharedInstance] macroDictionary]];
 		savedFilter = g_shouldFilter;
-		
+
 		// register for ntification
-		[[NSNotificationCenter defaultCenter] addObserver:self 
-					selector:@selector(outlineViewSelectionChanged:) 
+		[[NSNotificationCenter defaultCenter] addObserver:self
+					selector:@selector(outlineViewSelectionChanged:)
 					name: NSOutlineViewSelectionDidChangeNotification object: outlineView];
-		[[NSNotificationCenter defaultCenter] addObserver:self 
-					selector:@selector(outlineViewItemsChanged:) 
+		[[NSNotificationCenter defaultCenter] addObserver:self
+					selector:@selector(outlineViewItemsChanged:)
 					name: MyOutlineViewAddedItemNotification object: outlineView];
-		[[NSNotificationCenter defaultCenter] addObserver:self 
-					selector:@selector(outlineViewItemsChanged:) 
+		[[NSNotificationCenter defaultCenter] addObserver:self
+					selector:@selector(outlineViewItemsChanged:)
 					name: MyOutlineViewRemovedItemNotification object: outlineView];
-		[[NSNotificationCenter defaultCenter] addObserver:self 
-					selector:@selector(outlineViewItemsChanged:) 
+		[[NSNotificationCenter defaultCenter] addObserver:self
+					selector:@selector(outlineViewItemsChanged:)
 					name: MyOutlineViewAcceptedDropNotification object: outlineView];
 		// set up variables
 		[outlineController setRootOfTree: newRoot]; // one can use [outlineView dataSource] instead
@@ -99,9 +99,9 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		contentTouched = NO;
 		keyTouched = NO;
 		// set up menu items
-		NSMenu *macroMenu = [[[NSApp mainMenu] itemWithTitle: 
+		NSMenu *macroMenu = [[[NSApp mainMenu] itemWithTitle:
 					NSLocalizedString(@"Macros", @"Macros")] submenu];
-		id <NSMenuItem> item = [macroMenu itemWithTitle: 
+		id <NSMenuItem> item = [macroMenu itemWithTitle:
 						NSLocalizedString(@"Open Macro Editor...", @"Open Macro Editor...")];
 		if (item)
 		{
@@ -109,37 +109,37 @@ static TSFilterMode savedFilter = kNoFilterMode;
 			[item setTarget: window];
 			[item setAction: @selector(performClose:)];
 		}
-		item = [macroMenu insertItemWithTitle: 
+		item = [macroMenu insertItemWithTitle:
 					NSLocalizedString(@"Add macros from file...", @"Add macros from file...")
 					action: @selector(readDictionaryToMacroEditor:) keyEquivalent:@"" atIndex: 1];
-		[item setTarget: self];	
-		item = [macroMenu insertItemWithTitle: 
+		[item setTarget: self];
+		item = [macroMenu insertItemWithTitle:
 					NSLocalizedString(@"Save selection to file...", @"Save selection to file...")
 					action: @selector(saveSelection:) keyEquivalent:@"" atIndex: 2];
-		[item setTarget: self];	
+		[item setTarget: self];
 	}
 	[window makeKeyAndOrderFront: nil];
 }
 
-- (void)loadUI 
+- (void)loadUI
 {
-    if (!outlineView) 
+	if (!outlineView)
 	{
-        if (![NSBundle loadNibNamed:@"TSMacroEditor" owner:self])  
+		if (![NSBundle loadNibNamed:@"TSMacroEditor" owner:self])
 		{
-            NSLog(@"Failed to load TSMacroEditor.nib");
-            NSBeep();
+			NSLog(@"Failed to load TSMacroEditor.nib");
+			NSBeep();
 			return;
-        }
+		}
 		// set up window and UI elements
 		// [window setDelegate: self];	// not necessary if it is connected in IB
-		
+
 		[outlineView setTarget: self];
 		[outlineView setDoubleAction: @selector(doMacroTest:)];
 		// custom text view
 		NSScrollView *scrollView = [contentTextView enclosingScrollView];
 		NSSize contentSize = [scrollView contentSize];
-		contentTextView = [[TSTextView alloc] initWithFrame: 
+		contentTextView = [[TSTextView alloc] initWithFrame:
 						NSMakeRect(0, 0, contentSize.width, contentSize.height)];
 		[contentTextView setAutoresizingMask: NSViewWidthSizable];
 		[[contentTextView textContainer] setWidthTracksTextView:YES];
@@ -153,7 +153,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		// text fields
 		[nameField setDelegate: [TSEncodingSupport sharedInstance]];
 		[keyField setDelegate: [TSEncodingSupport sharedInstance]];
-		// set up properties for UI		
+		// set up properties for UI
 		[nameField setEditable: NO];
 		[contentTextView setEditable: NO];
 		[keyField setEditable: NO];
@@ -164,7 +164,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		[controlCheckBox setState: NSOffState];
 		[controlCheckBox setEnabled: NO];
 		[testButton setEnabled: NO];
-		[deleteButton setEnabled: NO];	
+		[deleteButton setEnabled: NO];
 		[duplicateButton setEnabled: NO];
 	}
 }
@@ -172,40 +172,40 @@ static TSFilterMode savedFilter = kNoFilterMode;
 
 // action for Save button
 - (IBAction)savePressed:(id)sender
-{	
-        NSString *pathStr, *defaultPathStr;
-        
-        defaultPathStr = [MacrosPathKey stringByStandardizingPath];
-        defaultPathStr = [defaultPathStr stringByAppendingPathComponent:@"Macros_Latex"];
-        defaultPathStr = [defaultPathStr stringByAppendingPathExtension:@"plist"];
-        
-        pathStr = [MacrosPathKey stringByStandardizingPath];
-        switch (g_macroType) {
-            case TexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Tex"]; break;
-            case LatexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
-            case BibtexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Bibtex"]; break;
-            case IndexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Index"]; break;
-            case MetapostEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Metapost"]; break;
-            case ContextEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Context"]; break;
-            case MetafontEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Metafont"]; break;
-            default: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
-            }
-        pathStr = [pathStr stringByAppendingPathExtension:@"plist"];
-        
-        [window makeFirstResponder: window];// finish editing fields
+{
+		NSString *pathStr, *defaultPathStr;
+
+		defaultPathStr = [MacrosPathKey stringByStandardizingPath];
+		defaultPathStr = [defaultPathStr stringByAppendingPathComponent:@"Macros_Latex"];
+		defaultPathStr = [defaultPathStr stringByAppendingPathExtension:@"plist"];
+
+		pathStr = [MacrosPathKey stringByStandardizingPath];
+		switch (g_macroType) {
+			case TexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Tex"]; break;
+			case LatexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
+			case BibtexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Bibtex"]; break;
+			case IndexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Index"]; break;
+			case MetapostEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Metapost"]; break;
+			case ContextEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Context"]; break;
+			case MetafontEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Metafont"]; break;
+			default: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
+			}
+		pathStr = [pathStr stringByAppendingPathExtension:@"plist"];
+
+		[window makeFirstResponder: window];// finish editing fields
 	//[outlineView deselectAll: sender];
 	[self reflectChangesInEditor: YES];
 	if (dataTouched)	// save only if data was touched
 	{
 		// mitsu 1.29 (U)-- back up old macro file, so that you can recover it manually if needed
 		NS_DURING
-                if ([[NSFileManager defaultManager] fileExistsAtPath:pathStr]) {
+				if ([[NSFileManager defaultManager] fileExistsAtPath:pathStr]) {
 			NSString *backupPath = [pathStr stringByDeletingPathExtension];
 				backupPath = [backupPath stringByAppendingString:@"~"];
 				backupPath = [backupPath stringByAppendingPathExtension:@"plist"];
 			[[NSFileManager defaultManager] removeFileAtPath:backupPath handler:nil];
 			[[NSFileManager defaultManager] copyPath:pathStr toPath:backupPath handler:nil];
-                        }
+						}
 		NS_HANDLER
 		NS_ENDHANDLER
 		// end mitsu 1.29
@@ -227,10 +227,10 @@ static TSFilterMode savedFilter = kNoFilterMode;
 - (IBAction)doMacroTest:(id)sender
 {
 	//[window orderOut: self];
-	// In order to test an AppleScript properly, especially if it refers to the first window, 
-	// it may be better to hide the TSMacroEditor window on "Test".  
-	// On the other hand, users might think that something wrong has happened if the window 
-	// suddenly goes away.  
+	// In order to test an AppleScript properly, especially if it refers to the first window,
+	// it may be better to hide the TSMacroEditor window on "Test".
+	// On the other hand, users might think that something wrong has happened if the window
+	// suddenly goes away.
 	[[TSMacroMenuController sharedInstance] doMacro: [contentTextView string]];
 	//[window makeKeyAndOrderFront:nil]; // get the window back
 }
@@ -239,7 +239,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 // action for nameField
 - (IBAction)nameFieldAction:(id)sender
 {
-    nameTouched = YES;
+	nameTouched = YES;
 	[self reflectChangesInEditor: YES];
 }
 
@@ -263,7 +263,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 
 // action for Shift/Option/Control check box
 - (IBAction)modifiersAction:(id)sender;
-{	
+{
 	keyTouched = YES;
 	[self reflectChangesInEditor: YES];
 }
@@ -290,13 +290,13 @@ static TSFilterMode savedFilter = kNoFilterMode;
 {
 	NSString *contentString;
 	NSArray *selectedNodes = [outlineController selectedNodes];
-	[deleteButton setEnabled: ([selectedNodes count]>0)];	
+	[deleteButton setEnabled: ([selectedNodes count]>0)];
 	[duplicateButton setEnabled: ([selectedNodes count]>0)];
-	
+
 	TSMacroTreeNode *newItem = ([selectedNodes count] == 1)?[selectedNodes objectAtIndex: 0]:nil;
 	if (newItem == previousItem && !forceUpdate)
 		return;	// maybe item was simply dragged and dropped
-	
+
 	if (previousItem)
 	{
 		if (![previousItem isSeparator] && nameTouched)
@@ -309,17 +309,17 @@ static TSFilterMode savedFilter = kNoFilterMode;
 			if (contentTouched)
 			{
 				// note: [NSTextView string] returns currently edited string. make sure to copy it
-				if (savedFilter != kMacJapaneseFilterMode) 
+				if (savedFilter != kMacJapaneseFilterMode)
 					contentString = [NSString stringWithString: [contentTextView string]];
-				else 
+				else
 					contentString = filterYenToBackslash([contentTextView string]);
 				[previousItem setContent: contentString];
 				dataTouched = YES;
 			}
 			if (keyTouched)
 			{
-				[previousItem setKey: getStringFormKeyEquivalent([keyField stringValue], 
-						([shiftCheckBox state] == NSOnState), ([optionCheckBox state] == NSOnState), 
+				[previousItem setKey: getStringFormKeyEquivalent([keyField stringValue],
+						([shiftCheckBox state] == NSOnState), ([optionCheckBox state] == NSOnState),
 						([controlCheckBox state] == NSOnState))];
 				dataTouched = YES;
 			}
@@ -328,7 +328,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 			[outlineView reloadItem: previousItem]; //this causes a problem if the item is dead
 		[previousItem release];
 	}
-	
+
 	[nameField setStringValue: (newItem)?[newItem name]:@""];
 	[nameField setEditable: (newItem && ![newItem isSeparator])?YES:NO];
 	if (newItem && [newItem isStandardItem])
@@ -384,17 +384,17 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		return YES;
 	else	// close button in title bar was pressed or "Close Macro Editor" was chosen fromm menu
 	{
-//		NSBeginAlertSheet(@"Warning", @"Save", @"Don't save", @"Cancel", 
-//				window, self, 
-//				@selector(saveMacrosSheetDidEnd:returnCode:contextInfo:), nil, nil, 
+//		NSBeginAlertSheet(@"Warning", @"Save", @"Don't save", @"Cancel",
+//				window, self,
+//				@selector(saveMacrosSheetDidEnd:returnCode:contextInfo:), nil, nil,
 //				@"Do you want to save macros?");
-                NSBeginAlertSheet(NSLocalizedString(@"Warning", @""),
-                    NSLocalizedString(@"Save", @""), 
-                    NSLocalizedString(@"Don't Save", @""),
-                    NSLocalizedString(@"Cancel", @""), window, self,
-                    @selector(saveMacrosSheetDidEnd:returnCode:contextInfo:),
-                    nil, nil,
-                    NSLocalizedString(@"Do you want to save macros?", @""));
+				NSBeginAlertSheet(NSLocalizedString(@"Warning", @""),
+					NSLocalizedString(@"Save", @""),
+					NSLocalizedString(@"Don't Save", @""),
+					NSLocalizedString(@"Cancel", @""), window, self,
+					@selector(saveMacrosSheetDidEnd:returnCode:contextInfo:),
+					nil, nil,
+					NSLocalizedString(@"Do you want to save macros?", @""));
 		return NO;
 	};
 }
@@ -426,9 +426,9 @@ static TSFilterMode savedFilter = kNoFilterMode;
 	outlineView = nil;
 	window = nil;
 	// restore menu item
-	NSMenu *macroMenu = [[[NSApp mainMenu] itemWithTitle: 
+	NSMenu *macroMenu = [[[NSApp mainMenu] itemWithTitle:
 				NSLocalizedString(@"Macros", @"Macros")] submenu];
-	id <NSMenuItem> item = [macroMenu itemWithTitle: 
+	id <NSMenuItem> item = [macroMenu itemWithTitle:
 					NSLocalizedString(@"Close Macro Editor", @"Close Macro Editor")];
 	if (item)
 	{
@@ -436,11 +436,11 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		[item setTarget: self];
 		[item setAction: @selector(openMacroEditor:)];
 	}
-	item = [macroMenu itemWithTitle: 
+	item = [macroMenu itemWithTitle:
 				NSLocalizedString(@"Add macros from file...", @"Add macros from file...")];
 	if (item)
 		[macroMenu removeItem: item];
-	item = [macroMenu itemWithTitle:  
+	item = [macroMenu itemWithTitle:
 				NSLocalizedString(@"Save selection to file...", @"Save selection to file...")];
 	if (item)
 		[macroMenu removeItem: item];
@@ -452,19 +452,19 @@ static TSFilterMode savedFilter = kNoFilterMode;
 {
 	NSRect outlineFrame = [[outlineView enclosingScrollView] frame];
 	NSRect buttonFrame = [testButton frame];
-	if ((proposedFrameSize.width < outlineFrame.size.width + 110) && 
+	if ((proposedFrameSize.width < outlineFrame.size.width + 110) &&
 		(buttonFrame.origin.x > outlineFrame.origin.x + 100))
 	{
 		[testButton setFrameOrigin: NSMakePoint(outlineFrame.origin.x-3, buttonFrame.origin.y)];
 	}
-	if ((proposedFrameSize.width >= outlineFrame.size.width + 110) && 
+	if ((proposedFrameSize.width >= outlineFrame.size.width + 110) &&
 		(buttonFrame.origin.x <= outlineFrame.origin.x + 100))
 	{
-		[testButton setFrameOrigin: NSMakePoint(outlineFrame.origin.x+outlineFrame.size.width+24, 
+		[testButton setFrameOrigin: NSMakePoint(outlineFrame.origin.x+outlineFrame.size.width+24,
 																		buttonFrame.origin.y)];
 	}
 	// I think there is a bug in Cocoa which requires the fix below.
-	// If one make the window so narrow that the name and content fields disappear, 
+	// If one make the window so narrow that the name and content fields disappear,
 	// then next time they appear, they stick to the right border.
 	NSRect contentBounds = [[window contentView] bounds];	// use this instead of proposedFrameSize
 	NSRect fieldFrame = [nameField frame];
@@ -479,7 +479,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		fieldFrame.size.width = contentBounds.size.width-fieldFrame.origin.x-10;
 		[[contentTextView enclosingScrollView] setFrame:fieldFrame];
 	}
-	// 
+	//
 	return proposedFrameSize;
 }
 
@@ -548,7 +548,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		while ((child = [enumerator nextObject])) {
 			[array addObject: [child makeDictionary]];
 		}
-		propertyList = [NSDictionary dictionaryWithObjectsAndKeys: 
+		propertyList = [NSDictionary dictionaryWithObjectsAndKeys:
 						@"ROOT", NAME_KEY, array, CHILDREN_KEY, nil];
 	}
 	else
@@ -563,12 +563,12 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		[NSException raise: @"XML error" format: @""];
 	// finally write to file
 	pathStr = [[NSString stringWithString: filePath] stringByStandardizingPath];
-	[xmlData writeToFile: pathStr atomically: YES];	
-	
+	[xmlData writeToFile: pathStr atomically: YES];
+
 	NS_HANDLER
-		NSRunAlertPanel(@"Error", [NSString stringWithFormat: 
+		NSRunAlertPanel(@"Error", [NSString stringWithFormat:
 			@"failed to save macros to %@\n%@", filePath, error], nil, nil, nil);
-                if (error) [error release]; // mitsu 1.29 (U) added 
+				if (error) [error release]; // mitsu 1.29 (U) added
 	NS_ENDHANDLER
 }
 
@@ -578,8 +578,8 @@ static TSFilterMode savedFilter = kNoFilterMode;
 	NSSavePanel *aPanel = [NSSavePanel savePanel];
 	[aPanel setRequiredFileType: @"plist"];
 
-	[aPanel beginSheetForDirectory: nil //[MACRO_DATA_PATH stringByDeletingLastPathComponent] 
-				file: @"My macros" modalForWindow:window modalDelegate:self 
+	[aPanel beginSheetForDirectory: nil //[MACRO_DATA_PATH stringByDeletingLastPathComponent]
+				file: @"My macros" modalForWindow:window modalDelegate:self
 				didEndSelector:@selector(savePanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
 
@@ -592,7 +592,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		NSString *filePath = [sheet filename];
 		if (filePath)
 		{
-			NSArray *selectionArray = [TSMacroTreeNode minimumNodeCoverFromNodesInArray: 
+			NSArray *selectionArray = [TSMacroTreeNode minimumNodeCoverFromNodesInArray:
 										[outlineView allSelectedItems]];
 			[self saveNodes: selectionArray toFile: filePath];
 		}
@@ -611,8 +611,8 @@ static TSFilterMode savedFilter = kNoFilterMode;
 	[aPanel setAllowsMultipleSelection: NO];
 	[aPanel setResolvesAliases: YES];
 
-	[aPanel beginSheetForDirectory: nil file: nil types: nil modalForWindow: window 
-		modalDelegate: self didEndSelector: @selector(openPanelDidEnd:returnCode:contextInfo:) 
+	[aPanel beginSheetForDirectory: nil file: nil types: nil modalForWindow: window
+		modalDelegate: self didEndSelector: @selector(openPanelDidEnd:returnCode:contextInfo:)
 		contextInfo:nil];
 }
 
@@ -625,14 +625,14 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		NSArray *array = [sheet filenames];
 		NS_DURING
 			NSData *myData = [NSData dataWithContentsOfFile: [array objectAtIndex: 0]];
-			NSString *aString = [[[NSString alloc] initWithData:myData encoding: 
+			NSString *aString = [[[NSString alloc] initWithData:myData encoding:
 							NSUTF8StringEncoding] autorelease];
 		if (aString)
 			newDict = (NSDictionary *)[aString propertyList];
 		if (newDict)
 		{
 			NSArray *newNodeArray = [TSMacroTreeNode nodeArrayFromPropertyList: newDict];
-			[outlineController addNewDataArrayToSelection: newNodeArray]; 
+			[outlineController addNewDataArrayToSelection: newNodeArray];
 		}
 		NS_HANDLER
 			newDict = nil;
