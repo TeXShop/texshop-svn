@@ -24,11 +24,11 @@
 
 #import "TSDocument.h"
 #import "globals.h"
+#import "TSTextStorage.h"
 
 #define SUD [NSUserDefaults standardUserDefaults]
 
-// FIXME: Try to get rid of the following two functions:
-static BOOL isText1(int c);
+static BOOL isValidTeXCommandChar(int c);
 
 @implementation TSDocument (SyntaxHighlighting)
 
@@ -44,7 +44,8 @@ static BOOL isText1(int c);
 	// [self updateChangeCount: NSChangeDone];
 }
 
-BOOL isText1(int c) {
+BOOL isValidTeXCommandChar(int c)
+{
 	if ((c >= 'A') && (c <= 'Z'))
 		return YES;
 	else if ((c >= 'a') && (c <= 'z'))
@@ -53,91 +54,105 @@ BOOL isText1(int c) {
 		return NO;
 }
 
-// fixColor2 is the old fixcolor, now only used when opening documents
-- (void)fixColor2: (unsigned)from : (unsigned)to
+// Colorize ("perform syntax highlighting") all the characters of attrString in the given range.
+// Can only recolor full lines, so the given range will be extended accordingly before the
+// coloring takes place.
+// This is an auxillary routine which is called by fixColor and fixColor2
+- (void)colorizeStorage:(TSTextStorage *)attrString inRange:(NSRange)range
 {
-	NSRange	colorRange;
 	NSString	*textString;
-	NSColor	*regularColor;
-	long	length, location, final;
-	unsigned	start1, end1;
-	int		theChar;
+	unsigned	length;
+	NSRange		colorRange;
+	unsigned	location;
+	int			theChar;
+	unsigned	aLineStart;
+	unsigned	aLineEnd;
 	unsigned	end;
-
-	// No syntax coloring if the file is not TeX, or if SC is disabled
-	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
-		return;
-
-	// regularColor = [NSColor blackColor];
-	regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey]
-											 green:[SUD floatForKey:foreground_GKey] blue:[SUD floatForKey:foreground_BKey] alpha:1.00];
-
-	textString = [textView string];
-	if (textString == nil) return;
+	
+	// Fetch the underlying string.
+	textString = [attrString string];
 	length = [textString length];
-	// [[textView textStorage] beginEditing];
-	[textStorage beginEditing];
+	if (length == 0)
+		return;
+	
+	// Clip the given range (call it paranoia, if you like :-).
+	if (range.location >= length)
+		return;
+	if (range.location + range.length > length)
+		range.length = length - range.location;
 
+	// Call beginEditing; this allows the text storage to optimze a series of changes to its content and style.
+	[attrString beginEditing];
 
-	colorRange.location = 0;
-	colorRange.length = length;
-	[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
-	location = start1;
-	final = end1;
-	colorRange.location = start1;
-	colorRange.length = end1 - start1;
+	// We only perform coloring for full lines here, so extend the given range to full lines.
+	// Note that aLineStart is the start of *a* line, but not necessarily the same line
+	// for which aLineEnd marks the end! We may span many lines.
+	[textString getLineStart:&aLineStart end:&aLineEnd contentsEnd:nil forRange:range];
 
-	[textView setTextColor: regularColor range: colorRange];
+	// We reset the color of all chars in the given range to the regular color; later, we'll
+	// then only recolor anything which is supposed to have another color.
+	colorRange.location = aLineStart;
+	colorRange.length = aLineEnd - aLineStart;
+	[attrString setTextColor:regularColor range:colorRange];
 
-	// NSLog(@"begin");
-	while (location < final) {
+	// Now we iterate over the whole text and perform the actual recoloring.
+	location = aLineStart;
+	while (location < aLineEnd) {
 		theChar = [textString characterAtIndex: location];
 
 		if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
+			// The three special characters { } $ get an extra color.
 			colorRange.location = location;
 			colorRange.length = 1;
-			[textView setTextColor: markerColor range: colorRange];
-			colorRange.location = colorRange.location + colorRange.length - 1;
-			colorRange.length = 0;
-			[textView setTextColor: regularColor range: colorRange];
+			[attrString setTextColor:markerColor range:colorRange];
 			location++;
 		} else if (theChar == '%') {
+			// Comments are started by %. Everything after that on the same line is a comment.
 			colorRange.location = location;
-			colorRange.length = 0;
-			[textString getLineStart:NULL end:NULL contentsEnd:&end forRange:colorRange];
+			colorRange.length = 1;
+			[textString getLineStart:nil end:nil contentsEnd:&end forRange:colorRange];
 			colorRange.length = (end - location);
-			[textView setTextColor: commentColor range: colorRange];
-			colorRange.location = colorRange.location + colorRange.length - 1;
-			colorRange.length = 0;
-			[textView setTextColor: regularColor range: colorRange];
+			[attrString setTextColor:commentColor range:colorRange];
 			location = end;
 		} else if (theChar == g_texChar) {
+			// A backslash (or a yen): a new TeX command starts here.
+			// There are two cases: Either a sequence of letters A-Za-z follow, and we color all of them.
+			// Or a single non-alpha character follows. Then we color that, too, but nothing else.
 			colorRange.location = location;
 			colorRange.length = 1;
 			location++;
-			if ((location < final) && ([textString characterAtIndex: location] == '%')) {
-				colorRange.length = location - colorRange.location;
+			if ((location < aLineEnd) && (!isValidTeXCommandChar([textString characterAtIndex: location]))) {
 				location++;
-			} else  {
-				while ((location < final) && (isText1([textString characterAtIndex: location]))) {
+				colorRange.length = location - colorRange.location;
+			} else {
+				while ((location < aLineEnd) && (isValidTeXCommandChar([textString characterAtIndex: location]))) {
 					location++;
 					colorRange.length = location - colorRange.location;
 				}
 			}
-			[textView setTextColor: commandColor range: colorRange];
-			colorRange.location = location;
-			colorRange.length = 0;
-			[textView setTextColor: regularColor range: colorRange];
+			[attrString setTextColor:commandColor range:colorRange];
 		} else
 			location++;
 	}
 
-	// [[textView textStorage] endEditing];
-	[textStorage endEditing];
-
-
+	// Tell the text storage that we are done with our changes.
+	[attrString endEditing];
 }
 
+// fixColor2 is the old fixcolor, now only used when opening documents
+- (void)fixColor2: (unsigned)from : (unsigned)to
+{
+	NSRange		colorRange;
+
+	// No syntax coloring if the file is not TeX, or if it is disabled
+	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
+		return;
+	
+	// Simply colorize everything.
+	colorRange.location = 0;
+	colorRange.length = [_textStorage length];
+	[self colorizeStorage:_textStorage inRange:colorRange];
+}
 
 
 - (BOOL)textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString
@@ -151,34 +166,19 @@ BOOL isText1(int c) {
 	// of the code is not aware of this possibility, we better keep this disabled.
 
 	NSRange			matchRange, tagRange;
-	NSString			*textString;
+	NSString		*textString;
 	int				i, j, count, uchar, leftpar, rightpar, aChar;
 	BOOL			done;
 	NSDate			*myDate;
-	unsigned 			start, end, end1;
-	NSMutableAttributedString 	*myAttribString;
-	NSDictionary		*myAttributes;
-	NSColor			*previousColor;
+	unsigned 		start, end, end1;
 
 	fastColor = NO;
 	if (affectedCharRange.length == 0)
 		fastColor = YES;
 	else if (affectedCharRange.length == 1) {
 		aChar = [[textView string] characterAtIndex: affectedCharRange.location];
-		if ((aChar != YEN) && (aChar != BACKSLASH) && (aChar != '%'))
+		if ((aChar != g_texChar) && (aChar != '%'))
 			fastColor = YES;
-		if (aChar == BACKSLASH) {
-			fastColor = YES;
-			myAttribString = [[[NSMutableAttributedString alloc] initWithAttributedString:[textView attributedSubstringFromRange: affectedCharRange]] autorelease];
-			myAttributes = [myAttribString attributesAtIndex: 0 effectiveRange: NULL];
-			// mitsu 1.29 parhaps this (and several others below) can be replaced by
-			// myAttributes = [[textView textStorage] attributesAtIndex:
-			// 					affectedCharRange.location effectiveRange: NULL];
-			// end mitsu 1.29 and myAttribString is not necessary
-			previousColor = [myAttributes objectForKey:NSForegroundColorAttributeName];
-			if (previousColor != commentColor)
-				fastColorBackTeX = YES;
-		}
 	}
 
 	colorStart = affectedCharRange.location;
@@ -241,58 +241,20 @@ BOOL isText1(int c) {
 
 	if (replacementString == nil)
 		return YES;
-	else
-		colorEnd = colorStart + [replacementString length];
+
+	colorEnd = colorStart + [replacementString length];
 
 	if ([replacementString length] != 1)
 		return YES;
 	rightpar = [replacementString characterAtIndex:0];
 
-	// mitsu 1.29 (T4) compare with "inserText:" in TSTextView.m
-#define AUTOCOMPLETE_IN_INSERTTEXT
-#ifndef AUTOCOMPLETE_IN_INSERTTEXT
-	// end mitsu 1.29
-
-
-	// Code added by Greg Landweber for auto-completions of '^', '_', etc.
-	// Should provide a preference setting for users to turn it off!
-	// First, avoid completing \^, \_, \"
-	//  if ([SUD boolForKey:AutoCompleteEnabledKey]) {
-	if (doAutoComplete) {
-		if (rightpar >= 128 ||
-			[textView selectedRange].location == 0 ||
-			[textString characterAtIndex:[textView selectedRange].location - 1 ] != g_texChar ) {
-
-			NSString *completionString = [g_autocompletionDictionary objectForKey:replacementString];
-			if (completionString && (g_shouldFilter != kMacJapaneseFilterMode || [replacementString
-					characterAtIndex:0]!=g_texChar)) {
-				// should really send this as a notification, instead of calling it directly,
-				// or should separate out the code that actually performs the completion
-				// from the code that responds to the notification sent by the LaTeX panel.
-				// mitsu 1.29 (T4)
-				[self insertSpecialNonStandard:completionString
-									   undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
-				//[textView insertSpecialNonStandard:completionString
-				//			undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
-				// original was
-				//    [self doCompletion:[NSNotification notificationWithName:@"" object:completionString]];
-				// end mitsu 1.29
-				return NO;
-			}
-		}
-	}
-
-	// End of code added by Greg Landweber
-	// mitsu 1.29 (T4)
-#endif
-	// end mitsu 1.29
-
-
 	if (rightpar == 0x000a)
 		returnline = YES;
 
-	if (! [SUD boolForKey:ParensMatchingEnabledKey]) return YES;
-	if ((rightpar != '}') &&  (rightpar != ')') &&  (rightpar != ']')) return YES;
+	if (![SUD boolForKey:ParensMatchingEnabledKey])
+		return YES;
+	if ((rightpar != '}') &&  (rightpar != ')') &&  (rightpar != ']'))
+		return YES;
 
 	if (rightpar == '}')
 		leftpar = '{';
@@ -337,345 +299,189 @@ BOOL isText1(int c) {
 
 - (void)fixColor: (unsigned)from : (unsigned)to
 {
-	NSRange			colorRange, newRange, newRange1, lineRange, wordRange;
-	NSString			*textString;
-	NSColor			*regularColor, *previousColor;
-	long			length, location, final;
-	unsigned			start1, end1;
-	int				theChar, previousChar, aChar, i;
-	BOOL			found;
-	unsigned			end;
-	NSMutableAttributedString 	*myAttribString;
-	NSDictionary		*myAttributes;
+	NSRange			colorRange, lineRange, wordRange;
+	NSString		*textString;
+	unsigned		length;
+	unsigned		lineStart, end1;
+	int				theChar, aChar, i;
+	unsigned		end;
+	
+	bool			DONE = NO;
 
-	// No syntax coloring if the file is not TeX, or if SC is disabled
+	// No syntax coloring if the file is not TeX, or if it is disabled
 	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
 		return;
 
-	// regularColor = [NSColor blackColor];
-	regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey]
-											 green:[SUD floatForKey:foreground_GKey] blue:[SUD floatForKey:foreground_BKey] alpha:1.00];
-
-
 	textString = [textView string];
-	if (textString == nil) return;
+	if (textString == nil)
+		return;
 	length = [textString length];
-	if (length == 0) return;
+	if (length == 0)
+		return;
 
 	if (returnline) {
 		colorRange.location = from + 1;
 		colorRange.length = 0;
 	} else {
+		// This is an attempt to be safe: we perform some clipping on the color range.
+		// TODO: Consider replacing this by a NSAssert or so. It *shouldn't* happen, and if it
+		// does anyway, then due to a bug in our code, which we'd like to know about so that we
+		// can fix it... right?
+		if (from >= length)
+			from = length - 1;
+		if (to > length)
+			to = length;
 
-		// This is an attempt to be safe.
-		// However, it should be fine to set colorRange.location = from and colorRange.length = (to - from)
-		if (from < length)
-			colorRange.location = from;
-		else
-			colorRange.location = length - 1;
-
-		if (to < length)
-			colorRange.length = to - colorRange.location;
-		else
-			colorRange.length = length - colorRange.location;
+		colorRange.location = from;
+		colorRange.length = to - from;
 	}
 
 	// We try to color simple character changes directly.
+	// TODO/FIXME: For now disable the fast color mode, it doesn't work quite correct at this point.
+	if (0 && fastColor) {
+		NSColor			*previousColor;
+		NSDictionary	*myAttributes;
+		int				previousChar;
 
-	// Look first at backspaces over anything except a comment character or line feed
-	if (fastColor && (colorRange.length == 0)) {
-		[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
-		if (fastColorBackTeX) {
-			wordRange.location = colorRange.location;
-			wordRange.length = end - wordRange.location;
-			i = colorRange.location + 1;
-			found = NO;
-			while ((i <= end) && (! found)) {
+		fastColor = NO;
+		[_textStorage beginEditing];
+
+		
+		// TODO: Make this work at the start of a line, too!
+		
+		// Look first at backspaces over anything except a comment character or line feed
+		if (colorRange.length == 0) {
+			[textString getLineStart:&lineStart end:nil contentsEnd:&end forRange:colorRange];
+			// We do nothing here if we are at the start of the line, because we need to
+			// check the color of the previous char on the same line, which obviously
+			// wouldn't work for the first char...
+			if (colorRange.location > lineStart) {
+				// FIXME: We currently do not handle this properly: 
+				//   \x{  then x is deleted and we end up with  \{  but the { is colored incorrectly.
+				myAttributes = [_textStorage attributesAtIndex:colorRange.location - 1 effectiveRange: NULL];
+				previousColor = [myAttributes objectForKey:NSForegroundColorAttributeName];
+				if (previousColor == commandColor) { //color rest of word blue
+					for (i = colorRange.location; i < end; ++i) {
+						aChar = [textString characterAtIndex: i];
+						if (!isValidTeXCommandChar(aChar)) {
+							break;
+						}
+					}
+					wordRange.location = colorRange.location;
+					wordRange.length = i - wordRange.location;
+					[_textStorage setTextColor: commandColor range: wordRange];
+				} else if (previousColor == commentColor) { //color rest of line red
+					lineRange.location = colorRange.location;
+					lineRange.length = (end - colorRange.location);
+					[_textStorage setTextColor: commentColor range: lineRange];
+				}
+				DONE = YES;
+			}
+		}
+		// Look next at cases where a single character is added
+		else if ((colorRange.length == 1) && (colorRange.location > 0)) {
+			// FIXME: In the (colorRange.length == 0) case above, we actually checked that we aren't looking
+			// at the first char *in the line*. Here we only check for the first char *in the document*.
+			// Hum....
+			theChar = [textString characterAtIndex: colorRange.location];
+			previousChar = [textString characterAtIndex: (colorRange.location - 1)];
+			myAttributes = [_textStorage attributesAtIndex:colorRange.location - 1 effectiveRange: NULL];
+			previousColor = [myAttributes objectForKey:NSForegroundColorAttributeName];
+			if (previousColor == commentColor) {
+				// The previous character is part of a comment. Hence this new character is
+				// part of the same comment, and so we color it accordingly.
+				[_textStorage setTextColor: commentColor range: colorRange];
+			} else if (theChar == '%') {
+				// When a % is inserted, all chars following are re-colored, since they are now commented out.
+				[textString getLineStart:&lineStart end:&end1 contentsEnd:&end forRange:colorRange];
+				lineRange.location = colorRange.location;
+				lineRange.length = end - colorRange.location;
+				[_textStorage setTextColor: commentColor range: lineRange];
+			} else if (theChar == g_texChar) {
+				// A backslash (or yen) was inserted. Change all subsequent letters [A-Za-z]
+				// to the command color.
+				wordRange.location = colorRange.location;
+				i = wordRange.location + 1;
 				aChar = [textString characterAtIndex: i];
-				if (! isText1(aChar)) {
-					found = YES;
+				if (!isValidTeXCommandChar(aChar)) {
+					// Special case: A backslash plus one non-letter character also form a TeX command!
+					wordRange.length = 2;
+				} else {
+					// Grab as many letters as possible
+					[textString getLineStart:nil end:nil contentsEnd:&end forRange:colorRange];
+					for (; i < end; ++i) {
+						aChar = [textString characterAtIndex: i];
+						if (!isValidTeXCommandChar(aChar)) {
+							break;
+						}
+					}
 					wordRange.length = i - wordRange.location;
 				}
-				i++;
-			}
+				[_textStorage setTextColor: commandColor range: wordRange];
+			} else if (previousColor == commandColor) {
+				// The previous character is part of a TeX command. So far, it was colored using
+				// the commandColor (and possibly some chars after it where, too).
+				// There are two main cases that can occur: Either the new char is a letter
+				// and thus will be part of the command. Then we just color it accordingly.
+				// Or the new char will cut off the command. Then we have to remove the color
+				// from all letters after it.
+				//
+				// Actually there is third case: If the new char is not a letter, but the
+				// char just before it is a backslash, then we color the new char in the command
+				// color, too. This is there to ensure things like \; or \[ are colored correctly.
+				
+				NSColor *remainderColor = regularColor;
+				
+				if (previousChar == g_texChar) {
+					// The new char is not a letter, but is preceeded by a backslash:
+					// We have to color it in the command color, but everything after it
+					// has to be reset to the regular color.
+					[_textStorage setTextColor: commandColor range: colorRange];
+					colorRange.location++;
+					// FIXME: this doesn't work if the next character is { } $
+					
+					// FIXME: The following is wrong if we are at the end of the file!
+					theChar = [textString characterAtIndex: colorRange.location];
+					if ((theChar == '{') || (theChar == '}') || (theChar == '$'))
+						[_textStorage setTextColor: markerColor range: colorRange];
+				} else if (isValidTeXCommandChar(theChar)) {
+					remainderColor = commandColor;
+				} else if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
+					// If the new char is one of {, }, $, then we color it using the marker color
+					// and proceed with the next character
+					[_textStorage setTextColor: markerColor range: colorRange];
+					colorRange.location++;
+				} else {
+					[_textStorage setTextColor: regularColor range: colorRange];
+					colorRange.location++;
+				}
 
-			[textView setTextColor: regularColor range: wordRange];
-
-			fastColor = NO;
-			fastColorBackTeX = NO;
-			return;
-		} else if (colorRange.location > start1) {
-			newRange.location = colorRange.location - 1;
-			newRange.length = 1;
-			myAttribString = [[[NSMutableAttributedString alloc] initWithAttributedString:[textView attributedSubstringFromRange: newRange]] autorelease];
-			myAttributes = [myAttribString attributesAtIndex: 0 effectiveRange: NULL];
-			previousColor = [myAttributes objectForKey:NSForegroundColorAttributeName];
-			if (previousColor == commandColor) { //color rest of word blue
+				// Change all subsequent letters [A-Za-z] back to the regular color.
+				[textString getLineStart:nil end:nil contentsEnd:&end forRange:colorRange];
+				for (i = colorRange.location; i < end; ++i) {
+					aChar = [textString characterAtIndex: i];
+					if (!isValidTeXCommandChar(aChar)) {
+						break;
+					}
+				}
 				wordRange.location = colorRange.location;
-				wordRange.length = end - wordRange.location;
-				i = colorRange.location;
-				found = NO;
-				while ((i <= end) && (! found)) {
-					aChar = [textString characterAtIndex: i];
-					if (! isText1(aChar)) {
-						found = YES;
-						wordRange.length = i - wordRange.location;
-					}
-					i++;
-				}
-				[textView setTextColor: commandColor range: wordRange];
-			} else if (previousColor == commentColor) { //color rest of line red
-				newRange.location = colorRange.location;
-				newRange.length = (end - colorRange.location);
-				[textView setTextColor: commentColor range: newRange];
-			}
-			fastColor = NO;
-			fastColorBackTeX = NO;
-			return;
-		}
-		fastColor = NO;
-		fastColorBackTeX = NO;
-	}
-
-	fastColorBackTeX = NO;
-
-	// Look next at cases when a single character is added
-	if ( fastColor && (colorRange.length == 1) && (colorRange.location > 0)) {
-		theChar = [textString characterAtIndex: colorRange.location];
-		previousChar = [textString characterAtIndex: (colorRange.location - 1)];
-		newRange.location = colorRange.location - 1;
-		newRange.length = colorRange.length;
-		myAttribString = [[[NSMutableAttributedString alloc] initWithAttributedString:[textView attributedSubstringFromRange: newRange]] autorelease];
-		myAttributes = [myAttribString attributesAtIndex: 0 effectiveRange: NULL];
-		previousColor = [myAttributes objectForKey:NSForegroundColorAttributeName];
-		if ((!isText1(theChar)) && (previousChar == g_texChar)) {
-			if (previousColor == commentColor)
-				[textView setTextColor: commentColor range: colorRange];
-			else if (previousColor == commandColor) {
-				[textView setTextColor: commandColor range: colorRange];
-				[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
-				wordRange.location = colorRange.location + 1;
-				wordRange.length = end - wordRange.location;
-				i = colorRange.location + 1;
-				found = NO;
-				while ((i < end) && (! found)) {
-					aChar = [textString characterAtIndex: i];
-					if (! isText1(aChar)) {
-						found = YES;
-						wordRange.length = i - wordRange.location;
-					}
-					i++;
-				}
-				// rest of word black; (word range is range AFTER this char to end of word)
-				[textView setTextColor: regularColor range: wordRange];
-			}
-			else
-				[textView setTextColor: commandColor range: colorRange];
-			fastColor = NO;
-			return;
-		}
-		if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
-			if (previousColor == commentColor)
-				[textView setTextColor: commentColor range: colorRange];
-			else if (previousColor == commandColor) {
-				[textView setTextColor: markerColor range: colorRange];
-				[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
-				wordRange.location = colorRange.location + 1;
-				wordRange.length = end - wordRange.location;
-				i = colorRange.location + 1;
-				found = NO;
-				while ((i < end) && (! found)) {
-					aChar = [textString characterAtIndex: i];
-					if (! isText1(aChar)) {
-						found = YES;
-						wordRange.length = i - wordRange.location;
-					}
-					i++;
-				}
-				// rest of word black; (word range is range AFTER this char to end of word)
-				[textView setTextColor: regularColor range: wordRange];
-			}
-			else
-				[textView setTextColor: markerColor range: colorRange];
-			fastColor = NO;
-			return;
-		}
-		if (theChar == ' ') {
-			if (previousColor == commentColor)
-				[textView setTextColor: commentColor range: colorRange];
-			else if (previousColor == markerColor)
-				[textView setTextColor: regularColor range: colorRange];
-			else if (previousColor == commandColor) {
-				// rest of word black; (wordRange is range to end of word INCLUDING this char)
-				[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
-				wordRange.location = colorRange.location;
-				wordRange.length = end - wordRange.location;
-				i = colorRange.location + 1;
-				found = NO;
-				while ((i < end) && (! found)) {
-					aChar = [textString characterAtIndex: i];
-					if (! isText1(aChar)) {
-						found = YES;
-						wordRange.length = i - wordRange.location;
-					}
-					i++;
-				}
-
-				[textView setTextColor: regularColor range: wordRange];
-			} else
-				[textView setTextColor: regularColor range: colorRange];
-			fastColor = NO;
-			return;
-		}
-		if (theChar == '%') {
-			[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
-			lineRange.location = colorRange.location;
-			lineRange.length = end - colorRange.location;
-			[textView setTextColor: commentColor range: lineRange];
-			fastColor = NO;
-			return;
-		}
-		if (theChar == g_texChar) {
-			if (previousColor == commentColor)
-				[textView setTextColor: commentColor range: colorRange];
-			else {
-				// word Range is rest of word, including this
-				[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
-				wordRange.location = colorRange.location;
-				wordRange.length = end - wordRange.location;
-				i = colorRange.location + 1;
-				found = NO;
-				while ((i < end) && (! found)) {
-					aChar = [textString characterAtIndex: i];
-					if (! isText1(aChar)) {
-						found = YES;
-						wordRange.length = i - wordRange.location;
-					}
-					i++;
-				}
-
-				[textView setTextColor: commandColor range: wordRange];
-			}
-			fastColor = NO;
-			return;
-		}
-
-		if ((theChar != g_texChar) && (theChar != '{') && (theChar != '}') && (theChar != '$') &&
-			(theChar != '%') && (theChar != ' ') && (previousChar != '}') && (previousChar != '{')
-			&& (previousChar != '$') ) {
-			if ((previousColor == commandColor) && (! isText1(theChar))) {
-				[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
-				wordRange.location = colorRange.location;
-				wordRange.length = end - wordRange.location;
-				i = colorRange.location + 1;
-				found = NO;
-				while ((i <= end) && (! found)) {
-					aChar = [textString characterAtIndex: i];
-					if (! isText1(aChar)) {
-						found = YES;
-						wordRange.length = i - wordRange.location;
-					}
-					i++;
-				}
-
-				[textView setTextColor: regularColor range: wordRange];
-			}
-			else if ((previousColor == commandColor) && (! isText1(previousChar)) && (previousChar != g_texChar)) {
-				[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
-				wordRange.location = colorRange.location;
-				wordRange.length = end - wordRange.location;
-				i = colorRange.location + 1;
-				found = NO;
-				while ((i < end) && (! found)) {
-					aChar = [textString characterAtIndex: i];
-					if (! isText1(aChar)) {
-						found = YES;
-						wordRange.length = i - wordRange.location;
-					}
-					i++;
-				}
-
-				[textView setTextColor: regularColor range: wordRange];
-			} else if (previousChar >= ' ')
-				[textView setTextColor: previousColor range: colorRange];
-			else
-				[textView setTextColor: regularColor range: colorRange];
-			fastColor = NO;
-			return;
-		}
-	}
-
-	fastColor = NO;
-
-	// If that trick fails, we work harder.
-	// [[textView textStorage] beginEditing];
-	[textStorage beginEditing];
-
-	[textString getLineStart:&start1 end:&end1 contentsEnd:&end forRange:colorRange];
-	location = start1;
-	final = end1;
-
-	colorRange.location = start1;
-	colorRange.length = end1 - start1;
-
-	// The following code fixes a subtle syntax coloring bug; Koch; Jan 1, 2003
-	if (start1 > 0)
-		newRange1.location = (start1 - 1);
-	else
-		newRange1.location = 0;
-	if (start1 > 0)
-		newRange1.length = end1 - start1 + 1;
-	else
-		newRange1.length = end1 - start1;
-	[textView setTextColor: regularColor range: newRange1];
-	// End of fix
-
-	[textView setTextColor: regularColor range: colorRange];
-
-	while (location < final) {
-		theChar = [textString characterAtIndex: location];
-
-		if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
-			colorRange.location = location;
-			colorRange.length = 1;
-			[textView setTextColor: markerColor range: colorRange];
-			colorRange.location = colorRange.location + colorRange.length - 1;
-			colorRange.length = 0;
-			[textView setTextColor: regularColor range: colorRange];
-			location++;
-		} else if (theChar == '%') {
-			colorRange.location = location;
-			colorRange.length = 0;
-			[textString getLineStart:NULL end:NULL contentsEnd:&end forRange:colorRange];
-			colorRange.length = (end - location);
-			[textView setTextColor: commentColor range: colorRange];
-			colorRange.location = colorRange.location + colorRange.length - 1;
-			colorRange.length = 0;
-			[textView setTextColor: regularColor range: colorRange];
-			location = end;
-		} else if (theChar == g_texChar) {
-			colorRange.location = location;
-			colorRange.length = 1;
-			location++;
-			if ((location < final) && (!isText1([textString characterAtIndex: location]))) {
-				location++;
-				colorRange.length = location - colorRange.location;
+				wordRange.length = i - wordRange.location;
+				[_textStorage setTextColor: remainderColor range: wordRange];
+			} else if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
+				[_textStorage setTextColor: markerColor range: colorRange];
 			} else {
-				while ((location < final) && (isText1([textString characterAtIndex: location]))) {
-					location++;
-					colorRange.length = location - colorRange.location;
-				}
+				[_textStorage setTextColor: regularColor range: colorRange];
 			}
-			[textView setTextColor: commandColor range: colorRange];
-			colorRange.location = location;
-			colorRange.length = 0;
-			[textView setTextColor: regularColor range: colorRange];
-		} else
-			location++;
+			DONE = YES;
+		}
+
+		[_textStorage endEditing];
 	}
 
-		// [[textView textStorage] endEditing];
-		[textStorage endEditing];
+	if (!DONE) {
+		// If that trick fails, we work harder and perform the regular coloring
+		[self colorizeStorage:_textStorage inRange:colorRange];
+	}
 }
 
 
@@ -683,33 +489,15 @@ BOOL isText1(int c) {
 - (void)reColor:(NSNotification *)notification;
 //-----------------------------------------------------------------------------
 {
-	NSString	*textString;
-	long	length;
-	NSRange	theRange;
-	// NSColor     *regularColor;
+	NSRange theRange;
 
-	if (syntaxColoringTimer != nil) {
-		[syntaxColoringTimer invalidate];
-		[syntaxColoringTimer release];
-		syntaxColoringTimer = nil;
+	theRange.location = 0;
+	theRange.length = [_textStorage length];
+	if ([SUD boolForKey:SyntaxColoringEnabledKey]) {
+		[self colorizeStorage:_textStorage inRange:theRange];
+	} else {
+		[_textStorage setTextColor:[NSColor blackColor] range:theRange];
 	}
-
-	textString = [textView string];
-	length = [textString length];
-	if ([SUD boolForKey:SyntaxColoringEnabledKey])
-		[self fixColor :0 :length];
-	else {
-		theRange.location = 0;
-		theRange.length = length;
-		[textView setTextColor: [NSColor blackColor] range: theRange];
-		//regularColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:foreground_RKey]
-		//green:[SUD floatForKey:foreground_GKey] blue:[SUD floatForKey:foreground_BKey] alpha:1.00];
-		//[textView setTextColor: regularColor range: theRange];
-	}
-
-
-	// colorLocation = 0;
-	// syntaxColoringTimer = [[NSTimer scheduledTimerWithTimeInterval: COLORTIME target:self selector:@selector(fixColor1:) 	userInfo:nil repeats:YES] retain];
 }
 
 

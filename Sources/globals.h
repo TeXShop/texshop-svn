@@ -289,6 +289,7 @@ extern NSString *CommandCompletionPathKey; // mitsu 1.29 (P)
 extern NSString *DraggedImagePathKey; // mitsu 1.29 drag & drop
 extern NSString *TSHasBeenUsedKey;
 extern NSString *UserInfoPathKey;
+
 extern NSString *commentredKey;
 extern NSString *commentgreenKey;
 extern NSString *commentblueKey;
@@ -298,7 +299,7 @@ extern NSString *commandblueKey;
 extern NSString *markerredKey;
 extern NSString *markergreenKey;
 extern NSString *markerblueKey;
-extern NSString *tabsKey;
+
 extern NSString *background_RKey;
 extern NSString *background_GKey;
 extern NSString *background_BKey;
@@ -308,6 +309,8 @@ extern NSString *foreground_GKey;
 extern NSString *insertionpoint_RKey;
 extern NSString *insertionpoint_GKey;
 extern NSString *insertionpoint_BKey;
+
+extern NSString *tabsKey;
 extern NSString *WarnForShellEscapeKey;
 extern NSString *ptexUtfOutputEnabledKey; // zenitani 1.35 (C)
 // mitsu 1.29 (O)

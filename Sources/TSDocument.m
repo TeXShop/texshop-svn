@@ -44,6 +44,7 @@
 #import "TSEncodingSupport.h"
 #import "TSMacroMenuController.h"
 #import "TSDocumentController.h"
+#import "TSTextStorage.h"
 
 
 #define SUD [NSUserDefaults standardUserDefaults]
@@ -79,7 +80,6 @@
 	fileIsTex = YES;
 	mSelection = nil;
 	fastColor = NO;
-	fastColorBackTeX = NO;
 	rootDocument = nil;
 	warningGiven = NO;
 	omitShellEscape = NO;
@@ -108,11 +108,6 @@
 
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[[NSNotificationCenter defaultCenter] removeObserver:pdfView];// mitsu 1.29 (O) need to remove here, otherwise updateCurrentPage fails
-	if (syntaxColoringTimer != nil)
-	{
-		[syntaxColoringTimer invalidate];
-		[syntaxColoringTimer release];
-	}
 	if (tagTimer != nil)
 	{
 		[tagTimer invalidate];
@@ -124,11 +119,12 @@
 		pdfRefreshTimer = nil;
 	}
 
+	[regularColor release];
 	[commentColor release];
 	[commandColor release];
 	[markerColor release];
 	[mSelection release];
-	[textStorage release];
+	[_textStorage release];
 
 /* toolbar stuff */
 	[typesetButton release];
@@ -316,14 +312,13 @@
 	length = [_documentContent length];
 	[self setupTags];
 
-	if (([SUD boolForKey:SyntaxColoringEnabledKey]) && (fileIsTex))
-	{
-		colorLocation = 0;
-		[self fixColor2:0 :length];
-		// syntaxColoringTimer = [[NSTimer scheduledTimerWithTimeInterval: COLORTIME target:self selector:@selector(fixColor1:) userInfo:nil repeats:YES] retain];
+	if (fileIsTex && [SUD boolForKey:SyntaxColoringEnabledKey]) {
+		NSRange myRange;
+		myRange.location = 0;
+		myRange.length = [_textStorage length];
+		[self colorizeStorage:_textStorage inRange:myRange];
 	}
 
-	// [_documentContent release];  // mitsu 1.29 memory leak fix; _documentContent is autoreleased
 	_documentContent = nil;
 }
 
@@ -418,15 +413,10 @@
 	[scrollView2 setDocumentView:textView2];
 	[textView2 release];
 
-	textStorage = [textView1 textStorage];
-
-	NSLayoutManager *layoutManager = [textView2 layoutManager];
-	[textStorage addLayoutManager:layoutManager];
-	// For an explanation of the three lines below, see 'setTextView' below
-	layoutManager = [textView1 layoutManager];
-	[textStorage removeLayoutManager:layoutManager];
-	[textStorage addLayoutManager:layoutManager];
-	[textStorage retain];
+	// Create a custom TSTextStorage and make sure the two NSTextViews both use it.
+	_textStorage = [[TSTextStorage alloc] init];
+	[[textView1 layoutManager] replaceTextStorage:_textStorage];
+	[[textView2 layoutManager] replaceTextStorage:_textStorage];
 
 	[scrollView2 retain];
 	[scrollView2 removeFromSuperview];
@@ -443,6 +433,10 @@
 	if ([SUD boolForKey:ShowSyncMarksKey])
 		[syncBox setState:1];
 
+	r = [SUD floatForKey:foreground_RKey];
+	g = [SUD floatForKey:foreground_GKey];
+	b = [SUD floatForKey:foreground_BKey];
+	regularColor = [[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] retain];
 	r = [SUD floatForKey:commandredKey];
 	g = [SUD floatForKey:commandgreenKey];
 	b = [SUD floatForKey:commandblueKey];
@@ -760,28 +754,13 @@
 - (void) setTextView: (id)aView
 {
 	NSRange		theRange;
-	//  NSLayoutManager	*layoutManager;
 
 	textView = aView;
 	if (textView == textView1) {
-		// Koch: June 20, 2003:
-		// WARNING: This strange code fixes a bug when syntax coloring is on/
-		// When the bug is active and the return key is pressed on an empty line,
-		// the first nonempty line below it scrolls down, but remaining lines take a second
-		// to catch up. Strangely, in splitscreen mode, this only affected the top half.
-		// The bottom half scrolled immediately, and typing in the bottom screen scrolled
-		// both halves immediately. Explain that.
-		//   layoutManager = [textView1 layoutManager];
-		//   [textStorage removeLayoutManager:layoutManager];
-		//   [textStorage addLayoutManager:layoutManager];
 		theRange = [textView2 selectedRange];
 		theRange.length = 0;
 		[textView2 setSelectedRange: theRange];
-	}
-	else {
-		//   layoutManager = [textView2 layoutManager];
-		//    [textStorage removeLayoutManager:layoutManager];
-		//    [textStorage addLayoutManager:layoutManager];
+	} else {
 		theRange = [textView1 selectedRange];
 		theRange.length = 0;
 		[textView1 setSelectedRange: theRange];
@@ -1166,13 +1145,6 @@ preference change is cancelled. "*/
 
 - (void)close
 {
-	if (syntaxColoringTimer != nil)
-	{
-		[syntaxColoringTimer invalidate];
-		[syntaxColoringTimer release];
-		syntaxColoringTimer = nil;
-	}
-
 	if (tagTimer != nil)
 	{
 		[tagTimer invalidate];
@@ -2630,10 +2602,10 @@ preference change is cancelled. "*/
 				if (windowIsSplit)
 					[self splitWindow: self];
 				[self setupTags];
-				if (([SUD boolForKey:SyntaxColoringEnabledKey]) && (fileIsTex))
-				{
-					colorLocation = 0;
-					[self fixColor2:0 :length];
+				if (fileIsTex && [SUD boolForKey:SyntaxColoringEnabledKey]) {
+					myRange.location = 0;
+					myRange.length = [_textStorage length];
+					[self colorizeStorage:_textStorage inRange:myRange];
 				}
 			}
 
@@ -2977,7 +2949,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSData			*fontData;
 
 //     NSTextStorage *textStorage = [textView textStorage];
-	NSString *string = [textStorage string];
+	NSString *string = [_textStorage string];
 
 	if ([SUD boolForKey:SaveDocumentFontKey] == NO) {
 		font = [NSFont userFontOfSize:12.0];
@@ -2999,7 +2971,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		myRange.location = 0; myRange.length = 0;
 		// empty files have a space, but the cursor is at the start
 		// [[textView textStorage] replaceCharactersInRange: myRange withString:@" "];
-		[textStorage replaceCharactersInRange: myRange withString:@" "];
+		[_textStorage replaceCharactersInRange: myRange withString:@" "];
 
 		}
 
@@ -3009,10 +2981,10 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSArray *desiredTabStops = tabStopArrayForFontAndTabWidth(font, tabWidth);
 
 	paraStyle = [NSParagraphStyle defaultParagraphStyle];
-	newStyle = [paraStyle mutableCopyWithZone:[textStorage zone]];
+	newStyle = [paraStyle mutableCopyWithZone:[_textStorage zone]];
 	[newStyle setTabStops:desiredTabStops];
 	theRange.location = 0; theRange.length = [string length];
-	[textStorage addAttribute:NSParagraphStyleAttributeName value:newStyle range: theRange];
+	[_textStorage addAttribute:NSParagraphStyleAttributeName value:newStyle range: theRange];
 	[newStyle release];
 
 	if (empty) {

@@ -47,7 +47,7 @@ enum RootCommand
 };
 
 @class MyPDFKitView;
-
+@class TSTextStorage;
 
 @interface TSDocument : NSDocument
 {
@@ -56,7 +56,7 @@ enum RootCommand
 	id			textView2;
 	id			scrollView2;
 	id			splitView;
-	NSTextStorage 	*textStorage;
+	TSTextStorage 	*_textStorage;
 	BOOL		windowIsSplit;
 // endforsplit
 	id			textView;		/*" textView displaying the current TeX source "*/
@@ -127,17 +127,21 @@ enum RootCommand
 	int			errorNumber;
 	int			whichError;
 	int			theScript;		/*" script currently executing; 100, 101, 102 "*/
+	
 	unsigned	colorStart, colorEnd;
-	BOOL		fastColor, fastColorBackTeX;
-	NSTimer		*syntaxColoringTimer;	/*" Timer that repeatedly handles syntax coloring "*/
-	unsigned	colorLocation;
+	BOOL		fastColor;
+	NSColor		*regularColor;
+	NSColor		*commandColor;
+	NSColor		*commentColor;
+	NSColor		*markerColor;
+
 	NSTimer		*tagTimer;		/*" Timer that repeatedly handles tag updates "*/
 	unsigned	tagLocation;
 	unsigned	tagLocationLine;
+
 	BOOL		makeError;
 	BOOL		returnline;
 	SEL			tempSEL;
-	NSColor		*commandColor, *commentColor, *markerColor;
 	id			mSelection;
 	id			gotopageOutlet;
 	id			magnificationOutlet;
@@ -345,7 +349,7 @@ enum RootCommand
 
 - (id) rootDocument;
 
-- (BOOL)checkMasterFile:(NSString *)theSource forTask:(int)task;
+- (BOOL) checkMasterFile:(NSString *)theSource forTask:(int)task;
 - (BOOL) checkRootFile_forTask:(int)task;
 - (void) checkFileLinks:(NSString *)theSource;
 - (void) checkFileLinksA;
@@ -359,11 +363,10 @@ enum RootCommand
 
 @interface TSDocument (SyntaxHighlighting)
 
-- (void) fixColor: (unsigned)from : (unsigned)to;
-// - (void) fixColor1: sender;
-- (void) fixColor2: (unsigned)from :(unsigned)to;
+- (void) colorizeStorage:(TSTextStorage *)attrString inRange:(NSRange)range;
+- (void) fixColor:(unsigned)from :(unsigned)to;
 
 - (void) textDidChange:(NSNotification *)aNotification;
-- (BOOL)textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString;
+- (BOOL) textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString;
 
 @end
