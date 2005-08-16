@@ -1096,7 +1096,8 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 	// of doLatex:.
 	// It might be possible to reunify the two methods again, but for the time being,
 	// I disable it.  (Max Horn, Aug 07 2005)
-	enable =  [super validateMenuItem: toolbarItem];
+	//enable =  [super validateMenuItem: toolbarItem];
+	enable = YES;
 
 	if (fileIsTex) {
 
