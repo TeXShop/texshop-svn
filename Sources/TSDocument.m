@@ -44,7 +44,6 @@
 #import "TSEncodingSupport.h"
 #import "TSMacroMenuController.h"
 #import "TSDocumentController.h"
-#import "TSTextStorage.h"
 
 
 #define SUD [NSUserDefaults standardUserDefaults]
@@ -123,6 +122,12 @@
 	[commentColor release];
 	[commandColor release];
 	[markerColor release];
+
+	[regularColorAttribute release];
+	[commentColorAttribute release];
+	[commandColorAttribute release];
+	[markerColorAttribute release];
+
 	[mSelection release];
 	[_textStorage release];
 
@@ -311,13 +316,7 @@
 	[textView setString: _documentContent];
 	length = [_documentContent length];
 	[self setupTags];
-
-	if (fileIsTex && [SUD boolForKey:SyntaxColoringEnabledKey]) {
-		NSRange myRange;
-		myRange.location = 0;
-		myRange.length = [_textStorage length];
-		[self colorizeStorage:_textStorage inRange:myRange];
-	}
+	[self colorizeAll];
 
 	_documentContent = nil;
 }
@@ -413,8 +412,8 @@
 	[scrollView2 setDocumentView:textView2];
 	[textView2 release];
 
-	// Create a custom TSTextStorage and make sure the two NSTextViews both use it.
-	_textStorage = [[TSTextStorage alloc] init];
+	// Create a custom NSTextStorage and make sure the two NSTextViews both use it.
+	_textStorage = [[NSTextStorage alloc] init];
 	[[textView1 layoutManager] replaceTextStorage:_textStorage];
 	[[textView2 layoutManager] replaceTextStorage:_textStorage];
 
@@ -449,6 +448,11 @@
 	g = [SUD floatForKey:markergreenKey];
 	b = [SUD floatForKey:markerblueKey];
 	markerColor = [[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] retain];
+
+	regularColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:regularColor, NSForegroundColorAttributeName, nil];
+	commandColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:commandColor, NSForegroundColorAttributeName, nil];
+	commentColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:commentColor, NSForegroundColorAttributeName, nil];
+	markerColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:markerColor, NSForegroundColorAttributeName, nil];
 
 	doAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
 	[self fixAutoMenu];
@@ -953,7 +957,15 @@ in other code when an external editor is being used. */
 		selector:@selector(resetTagsMenu:)
 		name:@"NSUndoManagerDidUndoChangeNotification" object:nil];
 
-
+	// Register for notifcations when the text view(s) get scrolled, so that syntax highlighting can be updated.
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(viewBoundsDidChange:)
+												 name:NSViewBoundsDidChangeNotification
+											   object:[scrollView contentView]];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(viewBoundsDidChange:)
+												 name:NSViewBoundsDidChangeNotification
+											   object:[scrollView2 contentView]];
 }
 
 //-----------------------------------------------------------------------------
@@ -2602,11 +2614,7 @@ preference change is cancelled. "*/
 				if (windowIsSplit)
 					[self splitWindow: self];
 				[self setupTags];
-				if (fileIsTex && [SUD boolForKey:SyntaxColoringEnabledKey]) {
-					myRange.location = 0;
-					myRange.length = [_textStorage length];
-					[self colorizeStorage:_textStorage inRange:myRange];
-				}
+				[self colorizeAll];
 			}
 
 			myRange.location = 0;

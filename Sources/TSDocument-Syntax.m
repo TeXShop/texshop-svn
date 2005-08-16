@@ -24,15 +24,47 @@
 
 #import "TSDocument.h"
 #import "globals.h"
-#import "TSTextStorage.h"
 
 #define SUD [NSUserDefaults standardUserDefaults]
 
 static BOOL isValidTeXCommandChar(int c);
 
+static BOOL isValidTeXCommandChar(int c)
+{
+	if ((c >= 'A') && (c <= 'Z'))
+		return YES;
+	else if ((c >= 'a') && (c <= 'z'))
+		return YES;
+	else
+		return NO;
+}
+
+
 @implementation TSDocument (SyntaxHighlighting)
 
-- (void)textDidChange:(NSNotification *)aNotification;
+// TODO: Consider moving the whole syntax coloring code to a separate class.
+// TODO: Do (re)coloring only for the visible parts of the text. To do this:
+//  * when text is changed (recolor only the intersection of the modified lines
+//    and the visible lines)
+//  * when the window/views are resized:
+//     - splitViewDidResizeSubviews:
+//     - viewDidEndLiveResize / viewWillStartLiveResize (note: this doesn't cover drawing *during* the live resize)
+//     - getRectsExposedDuringLiveResize:count:
+//     - NSTextView draw method (but be careful not to recolor  too often!)
+//     - NSViewFrameDidChangeNotification (see setPostsFrameChangedNotifications)
+//  * when scrolling takes places -> NSViewBoundsDidChangeNotification
+//
+//
+//
+
+// Recolor when scrolling takes place
+- (void)viewBoundsDidChange:(NSNotification *)notification
+{
+	[self colorizeVisibleAreaInTextView:[[notification object] documentView]];
+}
+
+
+- (void)textDidChange:(NSNotification *)aNotification
 {
 	[self fixColor :colorStart :colorEnd];
 	if (tagLine)
@@ -44,22 +76,46 @@ static BOOL isValidTeXCommandChar(int c);
 	// [self updateChangeCount: NSChangeDone];
 }
 
-BOOL isValidTeXCommandChar(int c)
+- (void)colorizeAll
 {
-	if ((c >= 'A') && (c <= 'Z'))
-		return YES;
-	else if ((c >= 'a') && (c <= 'z'))
-		return YES;
-	else
-		return NO;
+	NSRange		colorRange;
+
+	// No syntax coloring if the file is not TeX, or if it is disabled
+	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
+		return;
+
+	// Recolor the visible area only.
+	[self colorizeVisibleAreaInTextView:textView1];
+	[self colorizeVisibleAreaInTextView:textView2];
+
+	// Simply colorize everything.
+	colorRange.location = 0;
+	colorRange.length = [_textStorage length];
+//	[self colorizeText:textView1 range:colorRange];
+//	[self colorizeText:textView2 range:colorRange];
 }
 
-// Colorize ("perform syntax highlighting") all the characters of attrString in the given range.
+- (void) colorizeVisibleAreaInTextView:(NSTextView *)aTextView
+{
+	NSLayoutManager *layoutManager;
+	NSRect visibleRect;
+	NSRange visibleRange;
+
+	layoutManager = [aTextView layoutManager];
+	visibleRect = [[[aTextView enclosingScrollView] contentView] documentVisibleRect];
+	visibleRange = [layoutManager glyphRangeForBoundingRect:visibleRect inTextContainer:[aTextView textContainer]];
+	visibleRange = [layoutManager characterRangeForGlyphRange:visibleRange actualGlyphRange:nil];
+
+	[self colorizeText:aTextView range:visibleRange];
+}
+
+// Colorize ("perform syntax highlighting") all the characters in the given range.
 // Can only recolor full lines, so the given range will be extended accordingly before the
 // coloring takes place.
 // This is an auxillary routine which is called by fixColor and fixColor2
-- (void)colorizeStorage:(TSTextStorage *)attrString inRange:(NSRange)range
+- (void)colorizeText:(NSTextView *)aTextView range:(NSRange)range
 {
+	NSLayoutManager *layoutManager;
 	NSString	*textString;
 	unsigned	length;
 	NSRange		colorRange;
@@ -69,20 +125,16 @@ BOOL isValidTeXCommandChar(int c)
 	unsigned	aLineEnd;
 	unsigned	end;
 	
-	// Fetch the underlying string.
-	textString = [attrString string];
+	// Fetch the underlying layout manager and string.
+	layoutManager = [aTextView layoutManager];
+	textString = [aTextView string];
 	length = [textString length];
-	if (length == 0)
-		return;
-	
+
 	// Clip the given range (call it paranoia, if you like :-).
 	if (range.location >= length)
 		return;
 	if (range.location + range.length > length)
 		range.length = length - range.location;
-
-	// Call beginEditing; this allows the text storage to optimze a series of changes to its content and style.
-	[attrString beginEditing];
 
 	// We only perform coloring for full lines here, so extend the given range to full lines.
 	// Note that aLineStart is the start of *a* line, but not necessarily the same line
@@ -93,7 +145,7 @@ BOOL isValidTeXCommandChar(int c)
 	// then only recolor anything which is supposed to have another color.
 	colorRange.location = aLineStart;
 	colorRange.length = aLineEnd - aLineStart;
-	[attrString setTextColor:regularColor range:colorRange];
+	[layoutManager removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:range];
 
 	// Now we iterate over the whole text and perform the actual recoloring.
 	location = aLineStart;
@@ -104,7 +156,7 @@ BOOL isValidTeXCommandChar(int c)
 			// The three special characters { } $ get an extra color.
 			colorRange.location = location;
 			colorRange.length = 1;
-			[attrString setTextColor:markerColor range:colorRange];
+			[layoutManager addTemporaryAttributes:markerColorAttribute forCharacterRange:colorRange];
 			location++;
 		} else if (theChar == '%') {
 			// Comments are started by %. Everything after that on the same line is a comment.
@@ -112,7 +164,7 @@ BOOL isValidTeXCommandChar(int c)
 			colorRange.length = 1;
 			[textString getLineStart:nil end:nil contentsEnd:&end forRange:colorRange];
 			colorRange.length = (end - location);
-			[attrString setTextColor:commentColor range:colorRange];
+			[layoutManager addTemporaryAttributes:commentColorAttribute forCharacterRange:colorRange];
 			location = end;
 		} else if (theChar == g_texChar) {
 			// A backslash (or a yen): a new TeX command starts here.
@@ -130,28 +182,10 @@ BOOL isValidTeXCommandChar(int c)
 					colorRange.length = location - colorRange.location;
 				}
 			}
-			[attrString setTextColor:commandColor range:colorRange];
+			[layoutManager addTemporaryAttributes:commandColorAttribute forCharacterRange:colorRange];
 		} else
 			location++;
 	}
-
-	// Tell the text storage that we are done with our changes.
-	[attrString endEditing];
-}
-
-// fixColor2 is the old fixcolor, now only used when opening documents
-- (void)fixColor2: (unsigned)from : (unsigned)to
-{
-	NSRange		colorRange;
-
-	// No syntax coloring if the file is not TeX, or if it is disabled
-	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
-		return;
-	
-	// Simply colorize everything.
-	colorRange.location = 0;
-	colorRange.length = [_textStorage length];
-	[self colorizeStorage:_textStorage inRange:colorRange];
 }
 
 
@@ -184,7 +218,9 @@ BOOL isValidTeXCommandChar(int c)
 	colorStart = affectedCharRange.location;
 	colorEnd = colorStart;
 
-
+	//
+	// Trigger an update of the tags menu, if necessary
+	//
 	tagRange = [replacementString rangeOfString:@"%:"];
 	if (tagRange.length != 0)
 		tagLine = YES;
@@ -204,12 +240,22 @@ BOOL isValidTeXCommandChar(int c)
 	if (matchRange.length != 0)
 		tagLine = YES;
 
+	// FIXME: The following check is silly. *Evey* line contains a newline, so this check will
+	// simply *always* succeed! Rendering all these careful checks here irrelevant.
+	// OTOH, just removing this will cause lots of bugs related to tagging: For example,
+	// if the user adds a ":" after an existing "%", this code wouldn't notice that there's
+	// now a "%:" on the line. To catch all cases, it is necessary to check for a "%:" in the
+	// textStorage both before the replacement and also after it. Checking replacementString
+	// is rather pointless in most cases.
+
 	// for tagLocationLine (2) Zenitani
 	matchRange = [textString rangeOfString:@"\n" options:0 range:tagRange];
 	if (matchRange.length != 0)
 		tagLine = YES;
 
-	/* code by Anton Leuski */
+	//
+	// Update the list of sections in the tag menu, if enabled
+	//
 	if ([SUD boolForKey: TagSectionsKey]) {
 
 		for(i = 0; i < [g_taggedTeXSections count]; ++i) {
@@ -253,6 +299,7 @@ BOOL isValidTeXCommandChar(int c)
 
 	if (![SUD boolForKey:ParensMatchingEnabledKey])
 		return YES;
+
 	if ((rightpar != '}') &&  (rightpar != ')') &&  (rightpar != ']'))
 		return YES;
 
@@ -268,6 +315,12 @@ BOOL isValidTeXCommandChar(int c)
 	j = 1;
 	count = 1;
 	done = NO;
+
+// TODO / FIXME: Replace the brace highlighting below with something better. See Smultron:
+//   [layoutManager addTemporaryAttributes:[self highlightColour] forCharacterRange:NSMakeRange(cursorLocation, 1)];
+//   [self performSelector:@selector(resetBackgroundColour:) withObject:NSStringFromRange(NSMakeRange(cursorLocation, 1)) afterDelay:0.12];
+
+
 	/* modified Jan 26, 2001, so we don't search entire text */
 	while ((i > 0) && (j < 5000) && (! done)) {
 		i--; j++;
@@ -291,6 +344,7 @@ BOOL isValidTeXCommandChar(int c)
 			[textView setSelectedRange: affectedCharRange];
 		}
 	}
+
 	return YES;
 }
 
@@ -299,23 +353,15 @@ BOOL isValidTeXCommandChar(int c)
 
 - (void)fixColor: (unsigned)from : (unsigned)to
 {
-	NSRange			colorRange, lineRange, wordRange;
-	NSString		*textString;
+	NSRange			colorRange;
 	unsigned		length;
-	unsigned		lineStart, end1;
-	int				theChar, aChar, i;
-	unsigned		end;
-	
 	bool			DONE = NO;
 
 	// No syntax coloring if the file is not TeX, or if it is disabled
 	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
 		return;
 
-	textString = [textView string];
-	if (textString == nil)
-		return;
-	length = [textString length];
+	length = [_textStorage length];
 	if (length == 0)
 		return;
 
@@ -337,14 +383,23 @@ BOOL isValidTeXCommandChar(int c)
 	}
 
 	// We try to color simple character changes directly.
-	// TODO/FIXME: For now disable the fast color mode, it doesn't work quite correct at this point.
-	if (0 && fastColor) {
+	// FIXME: Temporarily disabled
+#if 0
+	if (fastColor) {
+	
+		NSRange			lineRange;
+		NSRange			wordRange;
+		unsigned		lineStart, end1;
+		int				theChar, aChar, i;
+		unsigned		end;
+		NSString		*textString;
 		NSColor			*previousColor;
 		NSDictionary	*myAttributes;
 		int				previousChar;
 
 		fastColor = NO;
 		[_textStorage beginEditing];
+		textString = [_textStorage string];
 
 		
 		// TODO: Make this work at the start of a line, too!
@@ -477,10 +532,12 @@ BOOL isValidTeXCommandChar(int c)
 
 		[_textStorage endEditing];
 	}
+#endif
 
 	if (!DONE) {
 		// If that trick fails, we work harder and perform the regular coloring
-		[self colorizeStorage:_textStorage inRange:colorRange];
+		[self colorizeText:textView1 range:colorRange];
+//		[self colorizeText:textView2 range:colorRange];
 	}
 }
 
@@ -489,14 +546,15 @@ BOOL isValidTeXCommandChar(int c)
 - (void)reColor:(NSNotification *)notification;
 //-----------------------------------------------------------------------------
 {
-	NSRange theRange;
-
-	theRange.location = 0;
-	theRange.length = [_textStorage length];
 	if ([SUD boolForKey:SyntaxColoringEnabledKey]) {
-		[self colorizeStorage:_textStorage inRange:theRange];
+		[self colorizeAll];
 	} else {
-		[_textStorage setTextColor:[NSColor blackColor] range:theRange];
+		NSRange theRange;
+
+		theRange.location = 0;
+		theRange.length = [_textStorage length];
+		[textView1 removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:theRange];
+//		[textView2 removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:theRange];
 	}
 }
 

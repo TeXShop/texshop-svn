@@ -47,7 +47,6 @@ enum RootCommand
 };
 
 @class MyPDFKitView;
-@class TSTextStorage;
 
 @interface TSDocument : NSDocument
 {
@@ -56,7 +55,7 @@ enum RootCommand
 	id			textView2;
 	id			scrollView2;
 	id			splitView;
-	TSTextStorage 	*_textStorage;
+	NSTextStorage 	*_textStorage;
 	BOOL		windowIsSplit;
 // endforsplit
 	id			textView;		/*" textView displaying the current TeX source "*/
@@ -67,7 +66,7 @@ enum RootCommand
 	id			pdfKitWindow;
 	id			outputWindow;		/*" window displaying the output of the running TeX process "*/
 	id			outputText;		/*" text displaying the output of the running TeX process "*/
-	NSTextField		*texCommand;		/*" connected to the command textField on the errors panel "*/
+	IBOutlet NSTextField		*texCommand;		/*" connected to the command textField on the errors panel "*/
 	id			popupButton;		/*" popupButton displaying all the TeX templates "*/
 	id			projectPanel;
 	id			projectName;
@@ -134,6 +133,11 @@ enum RootCommand
 	NSColor		*commandColor;
 	NSColor		*commentColor;
 	NSColor		*markerColor;
+	
+	NSDictionary		*regularColorAttribute;
+	NSDictionary		*commandColorAttribute;
+	NSDictionary		*commentColorAttribute;
+	NSDictionary		*markerColorAttribute;
 
 	NSTimer		*tagTimer;		/*" Timer that repeatedly handles tag updates "*/
 	unsigned	tagLocation;
@@ -363,10 +367,14 @@ enum RootCommand
 
 @interface TSDocument (SyntaxHighlighting)
 
-- (void) colorizeStorage:(TSTextStorage *)attrString inRange:(NSRange)range;
-- (void) fixColor:(unsigned)from :(unsigned)to;
+- (void)colorizeText:(NSTextView *)aTextView range:(NSRange)aRange;
+- (void)fixColor:(unsigned)from :(unsigned)to;
+- (void)colorizeAll;
+- (void)colorizeVisibleAreaInTextView:(NSTextView *)aTextView;
 
-- (void) textDidChange:(NSNotification *)aNotification;
-- (BOOL) textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString;
+- (void)textDidChange:(NSNotification *)aNotification;
+- (BOOL)textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString;
+
+- (void)viewBoundsDidChange:(NSNotification *)notification;
 
 @end
