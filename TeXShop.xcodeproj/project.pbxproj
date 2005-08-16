@@ -240,8 +240,6 @@
 		40FEB2970540E7FA006370DB /* Macros_Context.plist in Resources */ = {isa = PBXBuildFile; fileRef = 40FEB2960540E7FA006370DB /* Macros_Context.plist */; };
 		40FF5D9D06D5674C00426CC9 /* XeLaTeX.engine in Resources */ = {isa = PBXBuildFile; fileRef = 40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */; };
 		40FF5DA806D567C600426CC9 /* XeTeX.engine in Resources */ = {isa = PBXBuildFile; fileRef = 40FF5DA706D567C600426CC9 /* XeTeX.engine */; };
-		5209FB6308B0F92100C8E2DE /* TSTextStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = 5209FB6108B0F92100C8E2DE /* TSTextStorage.h */; };
-		5209FB6408B0F92100C8E2DE /* TSTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5209FB6208B0F92100C8E2DE /* TSTextStorage.m */; };
 		520C2EEB08AE92850010B1F8 /* TSDocument-Jobs.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEA08AE92850010B1F8 /* TSDocument-Jobs.m */; };
 		520C2EF008AE984C0010B1F8 /* TSDocument-RootFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEE08AE984C0010B1F8 /* TSDocument-RootFile.m */; };
 		520C2EF108AE984C0010B1F8 /* TSDocument-Syntax.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */; };
@@ -425,8 +423,6 @@
 		40FEB2960540E7FA006370DB /* Macros_Context.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = Macros_Context.plist; sourceTree = "<group>"; };
 		40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = XeLaTeX.engine; sourceTree = "<group>"; };
 		40FF5DA706D567C600426CC9 /* XeTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = XeTeX.engine; sourceTree = "<group>"; };
-		5209FB6108B0F92100C8E2DE /* TSTextStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSTextStorage.h; sourceTree = "<group>"; };
-		5209FB6208B0F92100C8E2DE /* TSTextStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSTextStorage.m; sourceTree = "<group>"; };
 		520C2EEA08AE92850010B1F8 /* TSDocument-Jobs.m */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Jobs.m"; sourceTree = "<group>"; };
 		520C2EEE08AE984C0010B1F8 /* TSDocument-RootFile.m */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-RootFile.m"; sourceTree = "<group>"; };
 		520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Syntax.m"; sourceTree = "<group>"; };
@@ -969,8 +965,6 @@
 				00CFF0EE000AD0B87F000001 /* TSTextEditorWindow.m */,
 				F510E36D03916F340100009E /* TSTextView.h */,
 				F510E36E03916F340100009E /* TSTextView.m */,
-				5209FB6108B0F92100C8E2DE /* TSTextStorage.h */,
-				5209FB6208B0F92100C8E2DE /* TSTextStorage.m */,
 			);
 			name = Text;
 			sourceTree = "<group>";
@@ -1117,7 +1111,6 @@
 				40839129060963C800266FAB /* TextFinder.h in Headers */,
 				40CD913807E4CE6C00DE6448 /* MyPDFKitView.h in Headers */,
 				5217898608A7FAD600FC1D44 /* NSString-Extras.h in Headers */,
-				5209FB6308B0F92100C8E2DE /* TSTextStorage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1441,7 +1434,6 @@
 				520C2EEB08AE92850010B1F8 /* TSDocument-Jobs.m in Sources */,
 				520C2EF008AE984C0010B1F8 /* TSDocument-RootFile.m in Sources */,
 				520C2EF108AE984C0010B1F8 /* TSDocument-Syntax.m in Sources */,
-				5209FB6408B0F92100C8E2DE /* TSTextStorage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
