@@ -71,14 +71,18 @@
 	errorNumber = 0;
 	whichError = 0;
 	makeError = NO;
+
 	colorStart = 0;
 	colorEnd = 0;
-	returnline = NO;
+	regularColorAttribute = 0;
+	commandColorAttribute = 0;
+	commentColorAttribute = 0;
+	markerColorAttribute = 0;
+
 	tagLine = NO;
 	texRep = nil;
 	fileIsTex = YES;
 	mSelection = nil;
-	fastColor = NO;
 	rootDocument = nil;
 	warningGiven = NO;
 	omitShellEscape = NO;
@@ -117,11 +121,6 @@
 		[pdfRefreshTimer release];
 		pdfRefreshTimer = nil;
 	}
-
-	[regularColor release];
-	[commentColor release];
-	[commandColor release];
-	[markerColor release];
 
 	[regularColorAttribute release];
 	[commentColorAttribute release];
@@ -169,12 +168,12 @@
 
 - (void)printShowingPrintPanel:(BOOL)flag
 {
-	id			printView;
+	id				printView;
 	NSPrintOperation	*printOperation;
 	NSString		*imagePath;
 	NSString		*theSource;
-	id			aRep;
-	int			result;
+	id				aRep;
+	int				result;
 	
 	if (_documentType == isTeX) {
 		
@@ -336,12 +335,12 @@
 	NSColor		*backgroundColor, *insertionpointColor;
 
 	backgroundColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:background_RKey]
-												green:  [SUD floatForKey:background_GKey]
+												green: [SUD floatForKey:background_GKey]
 												 blue: [SUD floatForKey:background_BKey]
 												alpha:1.0];
 
 	insertionpointColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:insertionpoint_RKey]
-													green:  [SUD floatForKey:insertionpoint_GKey]
+													green: [SUD floatForKey:insertionpoint_GKey]
 													 blue: [SUD floatForKey:insertionpoint_BKey]
 													alpha:1.0];
 
@@ -369,7 +368,6 @@
 	NSRange		myRange;
 	BOOL		imageFound;
 	NSString		*theFileName;
-	float		r, g, b;
 	int			defaultcommand;
 	NSSize		contentSize;
 	NSDictionary	*myAttributes;
@@ -431,27 +429,7 @@
 	if ([SUD boolForKey:ShowSyncMarksKey])
 		[syncBox setState:1];
 
-	r = [SUD floatForKey:foreground_RKey];
-	g = [SUD floatForKey:foreground_GKey];
-	b = [SUD floatForKey:foreground_BKey];
-	regularColor = [[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] retain];
-	r = [SUD floatForKey:commandredKey];
-	g = [SUD floatForKey:commandgreenKey];
-	b = [SUD floatForKey:commandblueKey];
-	commandColor = [[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] retain];
-	r = [SUD floatForKey:commentredKey];
-	g = [SUD floatForKey:commentgreenKey];
-	b = [SUD floatForKey:commentblueKey];
-	commentColor = [[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] retain];
-	r = [SUD floatForKey:markerredKey];
-	g = [SUD floatForKey:markergreenKey];
-	b = [SUD floatForKey:markerblueKey];
-	markerColor = [[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] retain];
-
-	regularColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:regularColor, NSForegroundColorAttributeName, nil];
-	commandColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:commandColor, NSForegroundColorAttributeName, nil];
-	commentColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:commentColor, NSForegroundColorAttributeName, nil];
-	markerColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:markerColor, NSForegroundColorAttributeName, nil];
+	[self setupColors];
 
 	doAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
 	[self fixAutoMenu];
@@ -652,12 +630,12 @@
 					whichEngine = i - 1;
 				}
 			}
-				if (! done) {
-					[programButton selectItemWithTitle: @"LaTeX"];
-					[programButtonEE selectItemWithTitle: @"LaTeX"];
-					whichEngine = LatexEngine;	// just remember the default command
-				}
-				break;
+			if (!done) {
+				[programButton selectItemWithTitle: @"LaTeX"];
+				[programButtonEE selectItemWithTitle: @"LaTeX"];
+				whichEngine = LatexEngine;	// just remember the default command
+			}
+			break;
 	}
 	[self fixMacroMenu];
 
@@ -965,6 +943,16 @@ in other code when an external editor is being used. */
 											 selector:@selector(viewBoundsDidChange:)
 												 name:NSViewBoundsDidChangeNotification
 											   object:[scrollView2 contentView]];
+
+	// Register for resizing
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(viewFrameDidChange:)
+												 name:NSViewFrameDidChangeNotification
+											   object:textView1];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(viewFrameDidChange:)
+												 name:NSViewFrameDidChangeNotification
+											   object:textView2];
 }
 
 //-----------------------------------------------------------------------------
@@ -1108,7 +1096,7 @@ in other code when an external editor is being used. */
 		font = [NSUnarchiver unarchiveObjectWithData:fontData];
 		[textView setFont:font];
 	}
-		[self fixUpTabs];
+	[self fixUpTabs];
 }
 
 - (void)ExternalEditorChange:(NSNotification *)notification
@@ -1380,138 +1368,6 @@ preference change is cancelled. "*/
 	[NSApp endSheet: pagenumberPanel returnCode: 0];
 }
 
-//-----------------------------------------------------------------------------
-- (void) fixTemplate: (id) theDictionary;
-//-----------------------------------------------------------------------------
-
-{
-	NSRange		oldRange;
-	NSString		*oldString, *newString;
-	NSUndoManager	*myManager;
-	NSMutableDictionary	*myDictionary;
-	NSNumber		*theLocation, *theLength;
-	unsigned		from, to;
-
-	oldRange.location = [[theDictionary objectForKey: @"oldLocation"] unsignedIntValue];
-	oldRange.length = [[theDictionary objectForKey: @"oldLength"] unsignedIntValue];
-	newString = [theDictionary objectForKey: @"oldString"];
-	oldString = [[textView string] substringWithRange: oldRange];
-	[textView replaceCharactersInRange: oldRange withString: newString];
-
-	myManager = [textView undoManager];
-	myDictionary = [NSMutableDictionary dictionaryWithCapacity: 3];
-	theLocation = [NSNumber numberWithInt: oldRange.location];
-	theLength = [NSNumber numberWithInt: [newString length]];
-	[myDictionary setObject: oldString forKey: @"oldString"];
-	[myDictionary setObject: theLocation forKey: @"oldLocation"];
-	[myDictionary setObject: theLength forKey: @"oldLength"];
-	[myManager registerUndoWithTarget:self selector:@selector(fixTemplate:) object: myDictionary];
-	[myManager setActionName:NSLocalizedString(@"Template", @"Template")];
-	from = oldRange.location;
-	to = from + [newString length];
-	[self fixColor: from :to];
-	[self setupTags];
-
-}
-
-
-// Modified by Martin Heusse
-// Modified by Seiji Zenitani (Jan 31, 2003)
-//==================================================================
-- (void) doTemplate: sender
-//-----------------------------------------------------------------------------
-{
-	NSString		*nameString, *oldString;
-	id			theItem;
-	unsigned		from, to;
-	NSRange		myRange;
-	NSUndoManager	*myManager;
-	NSMutableDictionary	*myDictionary;
-	NSNumber		*theLocation, *theLength;
-	id			myData;
-	NSStringEncoding	theEncoding;
-
-	NSRange 		NewlineRange;
-	int 		i, numTabs, numSpaces=0;
-	NSMutableString	*templateString, *indentString = [NSMutableString stringWithString:@"\n"];
-
-/*
-	theItem = [sender selectedItem];
-*/
-	// for submenu items
-	if ([sender isKindOfClass: [NSMenuItem class]])
-	{
-		nameString = [(NSMenuItem *)sender representedObject];
-	}
-	// for popup button
-	else
-	{
-		theItem = [sender selectedItem];
-		if ( theItem != nil ){
-			nameString = [TexTemplatePathKey stringByStandardizingPath];
-			nameString = [nameString stringByAppendingPathComponent:[theItem title]];
-			nameString = [nameString stringByAppendingPathExtension:@"tex"];
-		}else{
-			return;
-		}
-	}
-
-	// if ( theItem != nil )
-	if ( [[NSFileManager defaultManager] fileExistsAtPath: nameString] )
-	{
-/*
-		// The lines are moved (S. Zenitani, Jan 31, 2003)
-		nameString = [TexTemplatePathKey stringByStandardizingPath];
-		nameString = [nameString stringByAppendingPathComponent:[theItem title]];
-		nameString = [nameString stringByAppendingPathExtension:@"tex"];
-*/
-		theEncoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
-		myData = [NSData dataWithContentsOfFile:nameString];
-		templateString = [[[NSMutableString alloc] initWithData:myData encoding:theEncoding] autorelease];
-
-		// check and rebuild the trailing string...
-		numTabs = [self textViewCountTabs:textView andSpaces:(int *)&numSpaces];
-		for (i = 0; i < numTabs; i++)
-			[indentString appendString:@"\t"];
-		for (i = 0; i < numSpaces; i++)
-			[indentString appendString:@" "];
-
-		// modify the template string and add the tabs & spaces...
-		NewlineRange = [templateString rangeOfString: @"\n"
-											 options: NSBackwardsSearch
-											   range: NSMakeRange(0,[templateString length])];
-		while(NewlineRange.location > 0 && NewlineRange.location != NSNotFound){
-			// NSLog(@"%d", NewlineRange.location);
-			[templateString replaceCharactersInRange: NewlineRange withString: indentString];
-			NewlineRange = [templateString rangeOfString:@"\n"
-												 options: NSBackwardsSearch
-												   range: NSMakeRange(0,NewlineRange.location)];
-		}
-
-		if (templateString != nil)
-		{
-			myRange = [textView selectedRange];
-			oldString = [[textView string] substringWithRange: myRange];
-			[textView replaceCharactersInRange:myRange withString:templateString];
-
-			myManager = [textView undoManager];
-			myDictionary = [NSMutableDictionary dictionaryWithCapacity: 3];
-			theLocation = [NSNumber numberWithUnsignedInt: myRange.location];
-			theLength = [NSNumber numberWithUnsignedInt: [templateString length]];
-			[myDictionary setObject: oldString forKey: @"oldString"];
-			[myDictionary setObject: theLocation forKey: @"oldLocation"];
-			[myDictionary setObject: theLength forKey: @"oldLength"];
-			[myManager registerUndoWithTarget:self selector:@selector(fixTemplate:) object: myDictionary];
-			 [myManager setActionName:NSLocalizedString(@"Template", @"Template")];
-
-			from = myRange.location;
-			to = from + [templateString length];
-			[self fixColor:from :to];
-			[self setupTags];
-		}
-	}
-}
-
 - (void) printSource: sender;
 {
 
@@ -1683,6 +1539,139 @@ preference change is cancelled. "*/
 	if (result == 0) {
 		line = [lineBox intValue];
 		[self toLine: line];
+	}
+}
+
+#pragma mark Templates
+
+//-----------------------------------------------------------------------------
+- (void) fixTemplate: (id) theDictionary;
+//-----------------------------------------------------------------------------
+{
+	NSRange		oldRange;
+	NSString		*oldString, *newString;
+	NSUndoManager	*myManager;
+	NSMutableDictionary	*myDictionary;
+	NSNumber		*theLocation, *theLength;
+	unsigned		from, to;
+
+	oldRange.location = [[theDictionary objectForKey: @"oldLocation"] unsignedIntValue];
+	oldRange.length = [[theDictionary objectForKey: @"oldLength"] unsignedIntValue];
+	newString = [theDictionary objectForKey: @"oldString"];
+	oldString = [[textView string] substringWithRange: oldRange];
+	[textView replaceCharactersInRange: oldRange withString: newString];
+
+	myManager = [textView undoManager];
+	myDictionary = [NSMutableDictionary dictionaryWithCapacity: 3];
+	theLocation = [NSNumber numberWithInt: oldRange.location];
+	theLength = [NSNumber numberWithInt: [newString length]];
+	[myDictionary setObject: oldString forKey: @"oldString"];
+	[myDictionary setObject: theLocation forKey: @"oldLocation"];
+	[myDictionary setObject: theLength forKey: @"oldLength"];
+	[myManager registerUndoWithTarget:self selector:@selector(fixTemplate:) object: myDictionary];
+	[myManager setActionName:NSLocalizedString(@"Template", @"Template")];
+	from = oldRange.location;
+	to = from + [newString length];
+	[self fixColor: from :to];
+	[self setupTags];
+
+}
+
+
+// Modified by Martin Heusse
+// Modified by Seiji Zenitani (Jan 31, 2003)
+//==================================================================
+- (void) doTemplate: sender
+//-----------------------------------------------------------------------------
+{
+	NSString		*nameString, *oldString;
+	id			theItem;
+	unsigned		from, to;
+	NSRange		myRange;
+	NSUndoManager	*myManager;
+	NSMutableDictionary	*myDictionary;
+	NSNumber		*theLocation, *theLength;
+	id			myData;
+	NSStringEncoding	theEncoding;
+
+	NSRange 		NewlineRange;
+	int 		i, numTabs, numSpaces=0;
+	NSMutableString	*templateString, *indentString = [NSMutableString stringWithString:@"\n"];
+
+/*
+	theItem = [sender selectedItem];
+*/
+	// for submenu items
+	if ([sender isKindOfClass: [NSMenuItem class]])
+	{
+		nameString = [(NSMenuItem *)sender representedObject];
+	}
+	// for popup button
+	else
+	{
+		theItem = [sender selectedItem];
+		if ( theItem != nil ){
+			nameString = [TexTemplatePathKey stringByStandardizingPath];
+			nameString = [nameString stringByAppendingPathComponent:[theItem title]];
+			nameString = [nameString stringByAppendingPathExtension:@"tex"];
+		}else{
+			return;
+		}
+	}
+
+	// if ( theItem != nil )
+	if ( [[NSFileManager defaultManager] fileExistsAtPath: nameString] )
+	{
+/*
+		// The lines are moved (S. Zenitani, Jan 31, 2003)
+		nameString = [TexTemplatePathKey stringByStandardizingPath];
+		nameString = [nameString stringByAppendingPathComponent:[theItem title]];
+		nameString = [nameString stringByAppendingPathExtension:@"tex"];
+*/
+		theEncoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
+		myData = [NSData dataWithContentsOfFile:nameString];
+		templateString = [[[NSMutableString alloc] initWithData:myData encoding:theEncoding] autorelease];
+
+		// check and rebuild the trailing string...
+		numTabs = [self textViewCountTabs:textView andSpaces:(int *)&numSpaces];
+		for (i = 0; i < numTabs; i++)
+			[indentString appendString:@"\t"];
+		for (i = 0; i < numSpaces; i++)
+			[indentString appendString:@" "];
+
+		// modify the template string and add the tabs & spaces...
+		NewlineRange = [templateString rangeOfString: @"\n"
+											 options: NSBackwardsSearch
+											   range: NSMakeRange(0,[templateString length])];
+		while(NewlineRange.location > 0 && NewlineRange.location != NSNotFound){
+			// NSLog(@"%d", NewlineRange.location);
+			[templateString replaceCharactersInRange: NewlineRange withString: indentString];
+			NewlineRange = [templateString rangeOfString:@"\n"
+												 options: NSBackwardsSearch
+												   range: NSMakeRange(0,NewlineRange.location)];
+		}
+
+		if (templateString != nil)
+		{
+			myRange = [textView selectedRange];
+			oldString = [[textView string] substringWithRange: myRange];
+			[textView replaceCharactersInRange:myRange withString:templateString];
+
+			myManager = [textView undoManager];
+			myDictionary = [NSMutableDictionary dictionaryWithCapacity: 3];
+			theLocation = [NSNumber numberWithUnsignedInt: myRange.location];
+			theLength = [NSNumber numberWithUnsignedInt: [templateString length]];
+			[myDictionary setObject: oldString forKey: @"oldString"];
+			[myDictionary setObject: theLocation forKey: @"oldLocation"];
+			[myDictionary setObject: theLength forKey: @"oldLength"];
+			[myManager registerUndoWithTarget:self selector:@selector(fixTemplate:) object: myDictionary];
+			 [myManager setActionName:NSLocalizedString(@"Template", @"Template")];
+
+			from = myRange.location;
+			to = from + [templateString length];
+			[self fixColor:from :to];
+			[self setupTags];
+		}
 	}
 }
 
@@ -1865,6 +1854,152 @@ preference change is cancelled. "*/
 		tagTimer = nil;
 	}
 
+}
+
+- (BOOL)textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString
+{
+	// FIXME/TODO: Implementing this delegate method but not its close relative
+	// textView:shouldChangeTextInRanges:replacementStrings: (notice the plural-s)
+	// effectively disables multi-selection mode on 10.4 (triggered by pressing Cmd),
+	// and also the nifty block selection feature (which is triggererd by Alt). Of
+	// course we already map Cmd-Clicking to something else anyway.
+	// Still, at least block selections would be useful for our users. But until the rest
+	// of the code is not aware of this possibility, we better keep this disabled.
+
+	NSRange			matchRange, tagRange;
+	NSString		*textString;
+	int				i, j, count, uchar, leftpar, rightpar;
+	BOOL			done;
+	NSDate			*myDate;
+	unsigned 		start, end, end1;
+
+	// Record the modified range (for the syntax coloring code).
+	colorStart = affectedCharRange.location;
+	colorEnd = colorStart + [replacementString length];
+
+	//
+	// Trigger an update of the tags menu, if necessary
+	//
+	tagRange = [replacementString rangeOfString:@"%:"];
+	if (tagRange.length != 0)
+		tagLine = YES;
+
+	// added by S. Zenitani -- "\n" increments tagLocationLine
+	tagRange = [replacementString rangeOfString:@"\n"];
+	if (tagRange.length != 0)
+		tagLine = YES;
+	// end
+
+
+	textString = [textView string];
+	[textString getLineStart:&start end:&end contentsEnd:&end1 forRange:affectedCharRange];
+	tagRange.location = start;
+	tagRange.length = end - start;
+	matchRange = [textString rangeOfString:@"%:" options:0 range:tagRange];
+	if (matchRange.length != 0)
+		tagLine = YES;
+
+	// FIXME: The following check is silly. *Evey* line contains a newline, so this check will
+	// simply *always* succeed! Rendering all these careful checks here irrelevant.
+	// OTOH, just removing this will cause lots of bugs related to tagging: For example,
+	// if the user adds a ":" after an existing "%", this code wouldn't notice that there's
+	// now a "%:" on the line. To catch all cases, it is necessary to check for a "%:" in the
+	// textStorage both before the replacement and also after it. Checking replacementString
+	// is rather pointless in most cases.
+
+	// for tagLocationLine (2) Zenitani
+	matchRange = [textString rangeOfString:@"\n" options:0 range:tagRange];
+	if (matchRange.length != 0)
+		tagLine = YES;
+
+	//
+	// Update the list of sections in the tag menu, if enabled
+	//
+	if ([SUD boolForKey: TagSectionsKey]) {
+
+		for (i = 0; i < [g_taggedTeXSections count]; ++i) {
+			tagRange = [replacementString rangeOfString:[g_taggedTeXSections objectAtIndex:i]];
+			if (tagRange.length != 0) {
+				tagLine = YES;
+				break;
+			}
+		}
+
+		if (!tagLine) {
+
+			textString = [textView string];
+			[textString getLineStart:&start end:&end
+						 contentsEnd:&end1 forRange:affectedCharRange];
+			tagRange.location	= start;
+			tagRange.length		= end - start;
+
+			for (i = 0; i < [g_taggedTeXSections count]; ++i) {
+				matchRange = [textString rangeOfString: [g_taggedTeXSections objectAtIndex:i] options:0 range:tagRange];
+				if (matchRange.length != 0) {
+					tagLine = YES;
+					break;
+				}
+			}
+
+		}
+	}
+
+	if (replacementString == nil)
+		return YES;
+
+
+	if ([replacementString length] != 1)
+		return YES;
+	rightpar = [replacementString characterAtIndex:0];
+
+	if ([SUD boolForKey:ParensMatchingEnabledKey]) {
+		if ((rightpar != '}') &&  (rightpar != ')') &&  (rightpar != ']'))
+			return YES;
+
+		if (rightpar == '}')
+			leftpar = '{';
+		else if (rightpar == ')')
+			leftpar = '(';
+		else
+			leftpar = '[';
+
+		textString = [textView string];
+		i = affectedCharRange.location;
+		j = 1;
+		count = 1;
+		done = NO;
+
+	// TODO / FIXME: Replace the brace highlighting below with something better. See Smultron:
+	//   [layoutManager addTemporaryAttributes:[self highlightColour] forCharacterRange:NSMakeRange(cursorLocation, 1)];
+	//   [self performSelector:@selector(resetBackgroundColour:) withObject:NSStringFromRange(NSMakeRange(cursorLocation, 1)) afterDelay:0.12];
+
+
+		/* modified Jan 26, 2001, so we don't search entire text */
+		while ((i > 0) && (j < 5000) && (! done)) {
+			i--; j++;
+			uchar = [textString characterAtIndex:i];
+			if (uchar == rightpar)
+				count++;
+			else if (uchar == leftpar)
+				count--;
+			if (count == 0) {
+				done = YES;
+				matchRange.location = i;
+				matchRange.length = 1;
+				/* koch: here 'affinity' and 'stillSelecting' are necessary,
+					else the wrong range is selected. */
+				[textView setSelectedRange: matchRange
+								  affinity: NSSelectByCharacter stillSelecting: YES];
+				[textView display];
+				myDate = [NSDate date];
+				/* Koch: Jan 26, 2001: changed -0.15 to -0.075 to speed things up */
+				while ([myDate timeIntervalSinceNow] > - 0.075);
+				[textView setSelectedRange: affectedCharRange];
+			}
+		}
+	}
+
+	return YES;
 }
 
 

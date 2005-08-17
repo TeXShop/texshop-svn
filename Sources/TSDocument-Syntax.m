@@ -23,6 +23,7 @@
 #import "UseMitsu.h"
 
 #import "TSDocument.h"
+#import "TSTextView.h"
 #import "globals.h"
 
 #define SUD [NSUserDefaults standardUserDefaults]
@@ -39,81 +40,30 @@ static BOOL isValidTeXCommandChar(int c)
 		return NO;
 }
 
-
+/*
+ * Syntax highlighting for TSDocument is implemented in the following code.
+ * The general approach is this: We color ranges of text by using temporary
+ * attributes of the layout manager(s) associated to our text view(s).
+ * This is a lot faster than using plain text attributes (for example, regular
+ * attributes cause the layout to be invalidated when they are changed,
+ * which leads to a major slow down).
+ * The core of this is in method colorizeText:range: which parses the text
+ * applies syntax coloring to everything in the given range.
+ *
+ * For efficiency, we only actively colorize text which is visible. We colorize
+ * in response to textDidChange:, to catch text typed by the user.
+ * We also track changes to the text view (resizing, scrolling) and re-color
+ * the visible text when any of those events occurs via colorizeVisibleAreaInTextView:.
+ *
+ * TODO: Consider moving the whole syntax coloring code to a separate class.
+ */
 @implementation TSDocument (SyntaxHighlighting)
 
-// TODO: Consider moving the whole syntax coloring code to a separate class.
-// TODO: Do (re)coloring only for the visible parts of the text. To do this:
-//  * when text is changed (recolor only the intersection of the modified lines
-//    and the visible lines)
-//  * when the window/views are resized:
-//     - splitViewDidResizeSubviews:
-//     - viewDidEndLiveResize / viewWillStartLiveResize (note: this doesn't cover drawing *during* the live resize)
-//     - getRectsExposedDuringLiveResize:count:
-//     - NSTextView draw method (but be careful not to recolor  too often!)
-//     - NSViewFrameDidChangeNotification (see setPostsFrameChangedNotifications)
-//  * when scrolling takes places -> NSViewBoundsDidChangeNotification
-//
-//
-//
-
-// Recolor when scrolling takes place
-- (void)viewBoundsDidChange:(NSNotification *)notification
-{
-	[self colorizeVisibleAreaInTextView:[[notification object] documentView]];
-}
-
-
-- (void)textDidChange:(NSNotification *)aNotification
-{
-	[self fixColor :colorStart :colorEnd];
-	if (tagLine)
-		[self setupTags];
-	colorStart = 0;
-	colorEnd = 0;
-	returnline = NO;
-	tagLine = NO;
-	// [self updateChangeCount: NSChangeDone];
-}
-
-- (void)colorizeAll
-{
-	NSRange		colorRange;
-
-	// No syntax coloring if the file is not TeX, or if it is disabled
-	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
-		return;
-
-	// Recolor the visible area only.
-	[self colorizeVisibleAreaInTextView:textView1];
-	[self colorizeVisibleAreaInTextView:textView2];
-
-	// Simply colorize everything.
-	colorRange.location = 0;
-	colorRange.length = [_textStorage length];
-//	[self colorizeText:textView1 range:colorRange];
-//	[self colorizeText:textView2 range:colorRange];
-}
-
-- (void) colorizeVisibleAreaInTextView:(NSTextView *)aTextView
-{
-	NSLayoutManager *layoutManager;
-	NSRect visibleRect;
-	NSRange visibleRange;
-
-	layoutManager = [aTextView layoutManager];
-	visibleRect = [[[aTextView enclosingScrollView] contentView] documentVisibleRect];
-	visibleRange = [layoutManager glyphRangeForBoundingRect:visibleRect inTextContainer:[aTextView textContainer]];
-	visibleRange = [layoutManager characterRangeForGlyphRange:visibleRange actualGlyphRange:nil];
-
-	[self colorizeText:aTextView range:visibleRange];
-}
 
 // Colorize ("perform syntax highlighting") all the characters in the given range.
 // Can only recolor full lines, so the given range will be extended accordingly before the
 // coloring takes place.
-// This is an auxillary routine which is called by fixColor and fixColor2
-- (void)colorizeText:(NSTextView *)aTextView range:(NSRange)range
+- (void)colorizeText:(TSTextView *)aTextView range:(NSRange)range
 {
 	NSLayoutManager *layoutManager;
 	NSString	*textString;
@@ -145,7 +95,7 @@ static BOOL isValidTeXCommandChar(int c)
 	// then only recolor anything which is supposed to have another color.
 	colorRange.location = aLineStart;
 	colorRange.length = aLineEnd - aLineStart;
-	[layoutManager removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:range];
+	[layoutManager removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:colorRange];
 
 	// Now we iterate over the whole text and perform the actual recoloring.
 	location = aLineStart;
@@ -188,174 +138,116 @@ static BOOL isValidTeXCommandChar(int c)
 	}
 }
 
-
-- (BOOL)textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString
+// Load the color definitions from the config system
+- (void)setupColors
 {
-	// FIXME/TODO: Implementing this delegate method but not its close relative
-	// textView:shouldChangeTextInRanges:replacementStrings: (notice the plural-s)
-	// effectively disables multi-selection mode on 10.4 (triggered by pressing Cmd),
-	// and also the nifty block selection feature (which is triggererd by Alt). Of
-	// course we already map Cmd-Clicking to something else anyway.
-	// Still, at least block selections would be useful for our users. But until the rest
-	// of the code is not aware of this possibility, we better keep this disabled.
+	float		r, g, b;
+	NSColor		*color;
 
-	NSRange			matchRange, tagRange;
-	NSString		*textString;
-	int				i, j, count, uchar, leftpar, rightpar, aChar;
-	BOOL			done;
-	NSDate			*myDate;
-	unsigned 		start, end, end1;
+	//
+	// Free the old text attributes
+	//
+	[regularColorAttribute release];
+	[commandColorAttribute release];
+	[commentColorAttribute release];
+	[markerColorAttribute release];
 
-	fastColor = NO;
-	if (affectedCharRange.length == 0)
-		fastColor = YES;
-	else if (affectedCharRange.length == 1) {
-		aChar = [[textView string] characterAtIndex: affectedCharRange.location];
-		if ((aChar != g_texChar) && (aChar != '%'))
-			fastColor = YES;
+
+	//
+	// Setup the new ones. Note that only color and underline attributes are supported!
+	//
+	r = [SUD floatForKey:foreground_RKey];
+	g = [SUD floatForKey:foreground_GKey];
+	b = [SUD floatForKey:foreground_BKey];
+	color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
+	regularColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+
+	r = [SUD floatForKey:commandredKey];
+	g = [SUD floatForKey:commandgreenKey];
+	b = [SUD floatForKey:commandblueKey];
+	color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
+	commandColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+
+	r = [SUD floatForKey:commentredKey];
+	g = [SUD floatForKey:commentgreenKey];
+	b = [SUD floatForKey:commentblueKey];
+	color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
+	commentColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+
+	r = [SUD floatForKey:markerredKey];
+	g = [SUD floatForKey:markergreenKey];
+	b = [SUD floatForKey:markerblueKey];
+	color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
+	markerColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+}
+
+// This method is invoked when the syntax highlighting preferences are changed.
+// It either colorizes the whole text or removes all the coloring.
+- (void)reColor:(NSNotification *)notification;
+{
+	if ([SUD boolForKey:SyntaxColoringEnabledKey]) {
+		[self colorizeAll];
+	} else {
+		NSRange theRange;
+
+		theRange.location = 0;
+		theRange.length = [_textStorage length];
+		[[textView1 layoutManager] removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:theRange];
+		[[textView2 layoutManager] removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:theRange];
 	}
+}
 
-	colorStart = affectedCharRange.location;
-	colorEnd = colorStart;
+// Recolor when scrolling takes place
+- (void)viewBoundsDidChange:(NSNotification *)notification
+{
+	[self colorizeVisibleAreaInTextView:[[notification object] documentView]];
+}
 
-	//
-	// Trigger an update of the tags menu, if necessary
-	//
-	tagRange = [replacementString rangeOfString:@"%:"];
-	if (tagRange.length != 0)
-		tagLine = YES;
+// Recolor when resizing
+- (void)viewFrameDidChange:(NSNotification *)notification
+{
+	[self colorizeVisibleAreaInTextView:[notification object]];
+}
 
-	// added by S. Zenitani -- "\n" increments tagLocationLine
-	tagRange = [replacementString rangeOfString:@"\n"];
-	if (tagRange.length != 0)
-		tagLine = YES;
-	// end
+// Recolor when typing / text is inserted...
+- (void)textDidChange:(NSNotification *)aNotification
+{
+//	[self colorizeAll];
+	[self fixColor :colorStart :colorEnd];
+	if (tagLine)
+		[self setupTags];
+	colorStart = 0;
+	colorEnd = 0;
+	tagLine = NO;
+	// [self updateChangeCount: NSChangeDone];
+}
 
+- (void)colorizeAll
+{
+	// No syntax coloring if the file is not TeX, or if it is disabled
+	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
+		return;
 
-	textString = [textView string];
-	[textString getLineStart:&start end:&end contentsEnd:&end1 forRange:affectedCharRange];
-	tagRange.location = start;
-	tagRange.length = end - start;
-	matchRange = [textString rangeOfString:@"%:" options:0 range:tagRange];
-	if (matchRange.length != 0)
-		tagLine = YES;
+	// Recolor the visible area only.
+	[self colorizeVisibleAreaInTextView:textView1];
+	[self colorizeVisibleAreaInTextView:textView2];
+}
 
-	// FIXME: The following check is silly. *Evey* line contains a newline, so this check will
-	// simply *always* succeed! Rendering all these careful checks here irrelevant.
-	// OTOH, just removing this will cause lots of bugs related to tagging: For example,
-	// if the user adds a ":" after an existing "%", this code wouldn't notice that there's
-	// now a "%:" on the line. To catch all cases, it is necessary to check for a "%:" in the
-	// textStorage both before the replacement and also after it. Checking replacementString
-	// is rather pointless in most cases.
+- (void) colorizeVisibleAreaInTextView:(TSTextView *)aTextView
+{
+	// No syntax coloring if the file is not TeX, or if it is disabled
+	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
+		return;
 
-	// for tagLocationLine (2) Zenitani
-	matchRange = [textString rangeOfString:@"\n" options:0 range:tagRange];
-	if (matchRange.length != 0)
-		tagLine = YES;
-
-	//
-	// Update the list of sections in the tag menu, if enabled
-	//
-	if ([SUD boolForKey: TagSectionsKey]) {
-
-		for(i = 0; i < [g_taggedTeXSections count]; ++i) {
-			tagRange = [replacementString rangeOfString:[g_taggedTeXSections objectAtIndex:i]];
-			if (tagRange.length != 0) {
-				tagLine = YES;
-				break;
-			}
-		}
-
-		if (!tagLine) {
-
-			textString = [textView string];
-			[textString getLineStart:&start end:&end
-						 contentsEnd:&end1 forRange:affectedCharRange];
-			tagRange.location	= start;
-			tagRange.length		= end - start;
-
-			for(i = 0; i < [g_taggedTeXSections count]; ++i) {
-				matchRange = [textString rangeOfString: [g_taggedTeXSections objectAtIndex:i] options:0 range:tagRange];
-				if (matchRange.length != 0) {
-					tagLine = YES;
-					break;
-				}
-			}
-
-		}
-	}
-
-	if (replacementString == nil)
-		return YES;
-
-	colorEnd = colorStart + [replacementString length];
-
-	if ([replacementString length] != 1)
-		return YES;
-	rightpar = [replacementString characterAtIndex:0];
-
-	if (rightpar == 0x000a)
-		returnline = YES;
-
-	if (![SUD boolForKey:ParensMatchingEnabledKey])
-		return YES;
-
-	if ((rightpar != '}') &&  (rightpar != ')') &&  (rightpar != ']'))
-		return YES;
-
-	if (rightpar == '}')
-		leftpar = '{';
-	else if (rightpar == ')')
-		leftpar = '(';
-	else
-		leftpar = '[';
-
-	textString = [textView string];
-	i = affectedCharRange.location;
-	j = 1;
-	count = 1;
-	done = NO;
-
-// TODO / FIXME: Replace the brace highlighting below with something better. See Smultron:
-//   [layoutManager addTemporaryAttributes:[self highlightColour] forCharacterRange:NSMakeRange(cursorLocation, 1)];
-//   [self performSelector:@selector(resetBackgroundColour:) withObject:NSStringFromRange(NSMakeRange(cursorLocation, 1)) afterDelay:0.12];
-
-
-	/* modified Jan 26, 2001, so we don't search entire text */
-	while ((i > 0) && (j < 5000) && (! done)) {
-		i--; j++;
-		uchar = [textString characterAtIndex:i];
-		if (uchar == rightpar)
-			count++;
-		else if (uchar == leftpar)
-			count--;
-		if (count == 0) {
-			done = YES;
-			matchRange.location = i;
-			matchRange.length = 1;
-			/* koch: here 'affinity' and 'stillSelecting' are necessary,
-				else the wrong range is selected. */
-			[textView setSelectedRange: matchRange
-							  affinity: NSSelectByCharacter stillSelecting: YES];
-			[textView display];
-			myDate = [NSDate date];
-			/* Koch: Jan 26, 2001: changed -0.15 to -0.075 to speed things up */
-			while ([myDate timeIntervalSinceNow] > - 0.075);
-			[textView setSelectedRange: affectedCharRange];
-		}
-	}
-
-	return YES;
+	[self colorizeText:aTextView range:[aTextView visibleCharacterRange]];
 }
 
 
 // This is the main syntax coloring routine, used for everything except opening documents
-
 - (void)fixColor: (unsigned)from : (unsigned)to
 {
 	NSRange			colorRange;
 	unsigned		length;
-	bool			DONE = NO;
 
 	// No syntax coloring if the file is not TeX, or if it is disabled
 	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])
@@ -365,197 +257,23 @@ static BOOL isValidTeXCommandChar(int c)
 	if (length == 0)
 		return;
 
-	if (returnline) {
-		colorRange.location = from + 1;
-		colorRange.length = 0;
-	} else {
-		// This is an attempt to be safe: we perform some clipping on the color range.
-		// TODO: Consider replacing this by a NSAssert or so. It *shouldn't* happen, and if it
-		// does anyway, then due to a bug in our code, which we'd like to know about so that we
-		// can fix it... right?
-		if (from >= length)
-			from = length - 1;
-		if (to > length)
-			to = length;
+	// This is an attempt to be safe: we perform some clipping on the color range.
+	// TODO: Consider replacing this by a NSAssert or so. It *shouldn't* happen, and if it
+	// does anyway, then due to a bug in our code, which we'd like to know about so that we
+	// can fix it... right?
+	if (from >= length)
+		from = length - 1;
+	if (to > length)
+		to = length;
 
-		colorRange.location = from;
-		colorRange.length = to - from;
-	}
-
-	// We try to color simple character changes directly.
-	// FIXME: Temporarily disabled
-#if 0
-	if (fastColor) {
+	colorRange.location = from;
+	colorRange.length = to - from;
 	
-		NSRange			lineRange;
-		NSRange			wordRange;
-		unsigned		lineStart, end1;
-		int				theChar, aChar, i;
-		unsigned		end;
-		NSString		*textString;
-		NSColor			*previousColor;
-		NSDictionary	*myAttributes;
-		int				previousChar;
+	// TODO: Consider intersecting the range with the visible range ...
 
-		fastColor = NO;
-		[_textStorage beginEditing];
-		textString = [_textStorage string];
-
-		
-		// TODO: Make this work at the start of a line, too!
-		
-		// Look first at backspaces over anything except a comment character or line feed
-		if (colorRange.length == 0) {
-			[textString getLineStart:&lineStart end:nil contentsEnd:&end forRange:colorRange];
-			// We do nothing here if we are at the start of the line, because we need to
-			// check the color of the previous char on the same line, which obviously
-			// wouldn't work for the first char...
-			if (colorRange.location > lineStart) {
-				// FIXME: We currently do not handle this properly: 
-				//   \x{  then x is deleted and we end up with  \{  but the { is colored incorrectly.
-				myAttributes = [_textStorage attributesAtIndex:colorRange.location - 1 effectiveRange: NULL];
-				previousColor = [myAttributes objectForKey:NSForegroundColorAttributeName];
-				if (previousColor == commandColor) { //color rest of word blue
-					for (i = colorRange.location; i < end; ++i) {
-						aChar = [textString characterAtIndex: i];
-						if (!isValidTeXCommandChar(aChar)) {
-							break;
-						}
-					}
-					wordRange.location = colorRange.location;
-					wordRange.length = i - wordRange.location;
-					[_textStorage setTextColor: commandColor range: wordRange];
-				} else if (previousColor == commentColor) { //color rest of line red
-					lineRange.location = colorRange.location;
-					lineRange.length = (end - colorRange.location);
-					[_textStorage setTextColor: commentColor range: lineRange];
-				}
-				DONE = YES;
-			}
-		}
-		// Look next at cases where a single character is added
-		else if ((colorRange.length == 1) && (colorRange.location > 0)) {
-			// FIXME: In the (colorRange.length == 0) case above, we actually checked that we aren't looking
-			// at the first char *in the line*. Here we only check for the first char *in the document*.
-			// Hum....
-			theChar = [textString characterAtIndex: colorRange.location];
-			previousChar = [textString characterAtIndex: (colorRange.location - 1)];
-			myAttributes = [_textStorage attributesAtIndex:colorRange.location - 1 effectiveRange: NULL];
-			previousColor = [myAttributes objectForKey:NSForegroundColorAttributeName];
-			if (previousColor == commentColor) {
-				// The previous character is part of a comment. Hence this new character is
-				// part of the same comment, and so we color it accordingly.
-				[_textStorage setTextColor: commentColor range: colorRange];
-			} else if (theChar == '%') {
-				// When a % is inserted, all chars following are re-colored, since they are now commented out.
-				[textString getLineStart:&lineStart end:&end1 contentsEnd:&end forRange:colorRange];
-				lineRange.location = colorRange.location;
-				lineRange.length = end - colorRange.location;
-				[_textStorage setTextColor: commentColor range: lineRange];
-			} else if (theChar == g_texChar) {
-				// A backslash (or yen) was inserted. Change all subsequent letters [A-Za-z]
-				// to the command color.
-				wordRange.location = colorRange.location;
-				i = wordRange.location + 1;
-				aChar = [textString characterAtIndex: i];
-				if (!isValidTeXCommandChar(aChar)) {
-					// Special case: A backslash plus one non-letter character also form a TeX command!
-					wordRange.length = 2;
-				} else {
-					// Grab as many letters as possible
-					[textString getLineStart:nil end:nil contentsEnd:&end forRange:colorRange];
-					for (; i < end; ++i) {
-						aChar = [textString characterAtIndex: i];
-						if (!isValidTeXCommandChar(aChar)) {
-							break;
-						}
-					}
-					wordRange.length = i - wordRange.location;
-				}
-				[_textStorage setTextColor: commandColor range: wordRange];
-			} else if (previousColor == commandColor) {
-				// The previous character is part of a TeX command. So far, it was colored using
-				// the commandColor (and possibly some chars after it where, too).
-				// There are two main cases that can occur: Either the new char is a letter
-				// and thus will be part of the command. Then we just color it accordingly.
-				// Or the new char will cut off the command. Then we have to remove the color
-				// from all letters after it.
-				//
-				// Actually there is third case: If the new char is not a letter, but the
-				// char just before it is a backslash, then we color the new char in the command
-				// color, too. This is there to ensure things like \; or \[ are colored correctly.
-				
-				NSColor *remainderColor = regularColor;
-				
-				if (previousChar == g_texChar) {
-					// The new char is not a letter, but is preceeded by a backslash:
-					// We have to color it in the command color, but everything after it
-					// has to be reset to the regular color.
-					[_textStorage setTextColor: commandColor range: colorRange];
-					colorRange.location++;
-					// FIXME: this doesn't work if the next character is { } $
-					
-					// FIXME: The following is wrong if we are at the end of the file!
-					theChar = [textString characterAtIndex: colorRange.location];
-					if ((theChar == '{') || (theChar == '}') || (theChar == '$'))
-						[_textStorage setTextColor: markerColor range: colorRange];
-				} else if (isValidTeXCommandChar(theChar)) {
-					remainderColor = commandColor;
-				} else if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
-					// If the new char is one of {, }, $, then we color it using the marker color
-					// and proceed with the next character
-					[_textStorage setTextColor: markerColor range: colorRange];
-					colorRange.location++;
-				} else {
-					[_textStorage setTextColor: regularColor range: colorRange];
-					colorRange.location++;
-				}
-
-				// Change all subsequent letters [A-Za-z] back to the regular color.
-				[textString getLineStart:nil end:nil contentsEnd:&end forRange:colorRange];
-				for (i = colorRange.location; i < end; ++i) {
-					aChar = [textString characterAtIndex: i];
-					if (!isValidTeXCommandChar(aChar)) {
-						break;
-					}
-				}
-				wordRange.location = colorRange.location;
-				wordRange.length = i - wordRange.location;
-				[_textStorage setTextColor: remainderColor range: wordRange];
-			} else if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
-				[_textStorage setTextColor: markerColor range: colorRange];
-			} else {
-				[_textStorage setTextColor: regularColor range: colorRange];
-			}
-			DONE = YES;
-		}
-
-		[_textStorage endEditing];
-	}
-#endif
-
-	if (!DONE) {
-		// If that trick fails, we work harder and perform the regular coloring
-		[self colorizeText:textView1 range:colorRange];
-//		[self colorizeText:textView2 range:colorRange];
-	}
-}
-
-
-//-----------------------------------------------------------------------------
-- (void)reColor:(NSNotification *)notification;
-//-----------------------------------------------------------------------------
-{
-	if ([SUD boolForKey:SyntaxColoringEnabledKey]) {
-		[self colorizeAll];
-	} else {
-		NSRange theRange;
-
-		theRange.location = 0;
-		theRange.length = [_textStorage length];
-		[textView1 removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:theRange];
-//		[textView2 removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:theRange];
-	}
+	// Colorize the range
+	[self colorizeText:textView1 range:colorRange];
+	[self colorizeText:textView2 range:colorRange];
 }
 
 

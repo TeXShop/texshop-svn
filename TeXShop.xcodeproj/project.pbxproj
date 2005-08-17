@@ -404,8 +404,8 @@
 		40AA2B8203C79AF800000009 /* TSEncodingSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSEncodingSupport.m; sourceTree = "<group>"; };
 		40B1DDC706EB6E540083A311 /* altpdftex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = altpdftex; sourceTree = "<group>"; };
 		40B275F603EF6F9D00000009 /* split.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = split.tiff; sourceTree = "<group>"; };
-		40B7DEA9057139E2002872F2 /* TSDocumentScripting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSDocumentScripting.h; sourceTree = "<group>"; };
-		40B7DEAA057139E2002872F2 /* TSDocumentScripting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSDocumentScripting.m; sourceTree = "<group>"; };
+		40B7DEA9057139E2002872F2 /* TSDocumentScripting.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TSDocumentScripting.h; sourceTree = "<group>"; };
+		40B7DEAA057139E2002872F2 /* TSDocumentScripting.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TSDocumentScripting.m; sourceTree = "<group>"; };
 		40BA4A4704B54E5500000B3B /* split1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = split1.png; sourceTree = "<group>"; };
 		40CD913407E4CE6C00DE6448 /* MyPDFKitView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyPDFKitView.h; sourceTree = "<group>"; };
 		40CD913507E4CE6C00DE6448 /* MyPDFKitView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyPDFKitView.m; sourceTree = "<group>"; };
@@ -423,9 +423,9 @@
 		40FEB2960540E7FA006370DB /* Macros_Context.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = Macros_Context.plist; sourceTree = "<group>"; };
 		40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = XeLaTeX.engine; sourceTree = "<group>"; };
 		40FF5DA706D567C600426CC9 /* XeTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = XeTeX.engine; sourceTree = "<group>"; };
-		520C2EEA08AE92850010B1F8 /* TSDocument-Jobs.m */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Jobs.m"; sourceTree = "<group>"; };
-		520C2EEE08AE984C0010B1F8 /* TSDocument-RootFile.m */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-RootFile.m"; sourceTree = "<group>"; };
-		520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Syntax.m"; sourceTree = "<group>"; };
+		520C2EEA08AE92850010B1F8 /* TSDocument-Jobs.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Jobs.m"; sourceTree = "<group>"; };
+		520C2EEE08AE984C0010B1F8 /* TSDocument-RootFile.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-RootFile.m"; sourceTree = "<group>"; };
+		520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Syntax.m"; sourceTree = "<group>"; };
 		5217898408A7FAD600FC1D44 /* NSString-Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Extras.h"; sourceTree = "<group>"; };
 		5217898508A7FAD600FC1D44 /* NSString-Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Extras.m"; sourceTree = "<group>"; };
 		525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OpenHandCursor.tiff; sourceTree = "<group>"; };

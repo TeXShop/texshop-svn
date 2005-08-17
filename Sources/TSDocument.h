@@ -46,20 +46,21 @@ enum RootCommand
 	RootForTrashAUX = 6
 };
 
+@class TSTextView;
 @class MyPDFKitView;
 
 @interface TSDocument : NSDocument
 {
 	// forsplit
-	id			textView1;
-	id			textView2;
-	id			scrollView2;
-	id			splitView;
+	IBOutlet TSTextView		*textView1;
+	IBOutlet TSTextView		*textView2;
+	IBOutlet NSScrollView	*scrollView2;
+	IBOutlet NSSplitView	*splitView;
 	NSTextStorage 	*_textStorage;
 	BOOL		windowIsSplit;
 // endforsplit
-	id			textView;		/*" textView displaying the current TeX source "*/
-	id			scrollView;		/*" scrollView for textView"*/
+	IBOutlet TSTextView		*textView;		/*" textView displaying the current TeX source "*/
+	IBOutlet NSScrollView	*scrollView;		/*" scrollView for textView"*/
 	id			pdfView;		/*" view displaying the current preview "*/
 	id			textWindow;		/*" window displaying the current document "*/
 	id			pdfWindow;		/*" window displaying the current pdf preview "*/
@@ -128,12 +129,6 @@ enum RootCommand
 	int			theScript;		/*" script currently executing; 100, 101, 102 "*/
 	
 	unsigned	colorStart, colorEnd;
-	BOOL		fastColor;
-	NSColor		*regularColor;
-	NSColor		*commandColor;
-	NSColor		*commentColor;
-	NSColor		*markerColor;
-	
 	NSDictionary		*regularColorAttribute;
 	NSDictionary		*commandColorAttribute;
 	NSDictionary		*commentColorAttribute;
@@ -144,7 +139,6 @@ enum RootCommand
 	unsigned	tagLocationLine;
 
 	BOOL		makeError;
-	BOOL		returnline;
 	SEL			tempSEL;
 	id			mSelection;
 	id			gotopageOutlet;
@@ -367,14 +361,10 @@ enum RootCommand
 
 @interface TSDocument (SyntaxHighlighting)
 
-- (void)colorizeText:(NSTextView *)aTextView range:(NSRange)aRange;
+- (void)setupColors;
+
 - (void)fixColor:(unsigned)from :(unsigned)to;
 - (void)colorizeAll;
-- (void)colorizeVisibleAreaInTextView:(NSTextView *)aTextView;
-
-- (void)textDidChange:(NSNotification *)aNotification;
-- (BOOL)textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString;
-
-- (void)viewBoundsDidChange:(NSNotification *)notification;
+- (void)colorizeVisibleAreaInTextView:(TSTextView *)aTextView;
 
 @end

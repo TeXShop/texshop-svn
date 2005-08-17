@@ -869,12 +869,29 @@
 }
 
 
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem {
+- (BOOL)validateMenuItem:(NSMenuItem *)anItem
+{
 
 	if ([anItem action] == @selector(registerForCommandCompletion:))
 		return (g_canRegisterCommandCompletion && ([self selectedRange].length > 0));
 
 	return [super validateMenuItem: anItem];
+}
+
+// Compute the range of characters visible in this text view (a range into the
+// NSTextStorage of this view).
+- (NSRange)visibleCharacterRange
+{
+	NSLayoutManager *layoutManager;
+	NSRect visibleRect;
+	NSRange visibleRange;
+
+	layoutManager = [self layoutManager];
+	visibleRect = [[[self enclosingScrollView] contentView] documentVisibleRect];
+	visibleRange = [layoutManager glyphRangeForBoundingRect:visibleRect inTextContainer:[self textContainer]];
+	visibleRange = [layoutManager characterRangeForGlyphRange:visibleRange actualGlyphRange:nil];
+	
+	return visibleRange;
 }
 
 @end
