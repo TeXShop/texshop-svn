@@ -48,8 +48,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 {
 	if (sharedMacroEditor)
 		[super dealloc];
-	else
-	{
+	else {
 		sharedMacroEditor = [super init];
 		previousItem = nil;
 	}
@@ -69,8 +68,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 
 - (IBAction)openMacroEditor: (id)sender
 {
-	if (!outlineView)
-	{
+	if (!outlineView) {
 		// load TSMacroEditor window
 		[self loadUI];
 		// load tree from macroDictionary
@@ -123,10 +121,8 @@ static TSFilterMode savedFilter = kNoFilterMode;
 
 - (void)loadUI
 {
-	if (!outlineView)
-	{
-		if (![NSBundle loadNibNamed:@"TSMacroEditor" owner:self])
-		{
+	if (!outlineView) {
+		if (![NSBundle loadNibNamed:@"TSMacroEditor" owner:self]) {
 			NSLog(@"Failed to load TSMacroEditor.nib");
 			NSBeep();
 			return;
@@ -173,48 +169,47 @@ static TSFilterMode savedFilter = kNoFilterMode;
 // action for Save button
 - (IBAction)savePressed:(id)sender
 {
-		NSString *pathStr, *defaultPathStr;
-
-		defaultPathStr = [MacrosPathKey stringByStandardizingPath];
-		defaultPathStr = [defaultPathStr stringByAppendingPathComponent:@"Macros_Latex"];
-		defaultPathStr = [defaultPathStr stringByAppendingPathExtension:@"plist"];
-
-		pathStr = [MacrosPathKey stringByStandardizingPath];
-		switch (g_macroType) {
-			case TexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Tex"]; break;
-			case LatexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
-			case BibtexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Bibtex"]; break;
-			case IndexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Index"]; break;
-			case MetapostEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Metapost"]; break;
-			case ContextEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Context"]; break;
-			case MetafontEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Metafont"]; break;
-			default: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
-			}
-		pathStr = [pathStr stringByAppendingPathExtension:@"plist"];
-
-		[window makeFirstResponder: window];// finish editing fields
-	//[outlineView deselectAll: sender];
-	[self reflectChangesInEditor: YES];
-	if (dataTouched)	// save only if data was touched
-	{
-		// mitsu 1.29 (U)-- back up old macro file, so that you can recover it manually if needed
-		NS_DURING
-				if ([[NSFileManager defaultManager] fileExistsAtPath:pathStr]) {
-			NSString *backupPath = [pathStr stringByDeletingPathExtension];
-				backupPath = [backupPath stringByAppendingString:@"~"];
-				backupPath = [backupPath stringByAppendingPathExtension:@"plist"];
-			[[NSFileManager defaultManager] removeFileAtPath:backupPath handler:nil];
-			[[NSFileManager defaultManager] copyPath:pathStr toPath:backupPath handler:nil];
-						}
-		NS_HANDLER
-		NS_ENDHANDLER
-		// end mitsu 1.29
-		// save the node data to a file
-		[self saveNodes: [outlineController rootOfTree] toFile: pathStr];
-		// reload macros
-		[[TSMacroMenuController sharedInstance] reloadMacros: self];
+	NSString *pathStr, *defaultPathStr;
+	
+	defaultPathStr = [MacrosPathKey stringByStandardizingPath];
+	defaultPathStr = [defaultPathStr stringByAppendingPathComponent:@"Macros_Latex"];
+	defaultPathStr = [defaultPathStr stringByAppendingPathExtension:@"plist"];
+	
+	pathStr = [MacrosPathKey stringByStandardizingPath];
+	switch (g_macroType) {
+		case TexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Tex"]; break;
+		case LatexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
+		case BibtexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Bibtex"]; break;
+		case IndexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Index"]; break;
+		case MetapostEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Metapost"]; break;
+		case ContextEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Context"]; break;
+		case MetafontEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Metafont"]; break;
+		default: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
 	}
-	[window close];
+	pathStr = [pathStr stringByAppendingPathExtension:@"plist"];
+	
+	[window makeFirstResponder: window];// finish editing fields
+										//[outlineView deselectAll: sender];
+		[self reflectChangesInEditor: YES];
+		if (dataTouched) {	// save only if data was touched
+			// mitsu 1.29 (U)-- back up old macro file, so that you can recover it manually if needed
+			NS_DURING
+				if ([[NSFileManager defaultManager] fileExistsAtPath:pathStr]) {
+					NSString *backupPath = [pathStr stringByDeletingPathExtension];
+					backupPath = [backupPath stringByAppendingString:@"~"];
+					backupPath = [backupPath stringByAppendingPathExtension:@"plist"];
+					[[NSFileManager defaultManager] removeFileAtPath:backupPath handler:nil];
+					[[NSFileManager defaultManager] copyPath:pathStr toPath:backupPath handler:nil];
+				}
+				NS_HANDLER
+					NS_ENDHANDLER
+					// end mitsu 1.29
+					// save the node data to a file
+					[self saveNodes: [outlineController rootOfTree] toFile: pathStr];
+					// reload macros
+					[[TSMacroMenuController sharedInstance] reloadMacros: self];
+		}
+				[window close];
 }
 
 // action for Cancel button
@@ -253,8 +248,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 - (IBAction)keyFieldAction:(id)sender
 {
 	NSString *key = [keyField stringValue];
-	if ([key length]>1)
-	{
+	if ([key length] > 1) {
 		[keyField setStringValue: [key substringToIndex: 1]];
 	}
 	keyTouched = YES;
@@ -290,24 +284,20 @@ static TSFilterMode savedFilter = kNoFilterMode;
 {
 	NSString *contentString;
 	NSArray *selectedNodes = [outlineController selectedNodes];
-	[deleteButton setEnabled: ([selectedNodes count]>0)];
-	[duplicateButton setEnabled: ([selectedNodes count]>0)];
-
+	[deleteButton setEnabled: ([selectedNodes count] > 0)];
+	[duplicateButton setEnabled: ([selectedNodes count] > 0)];
+	
 	TSMacroTreeNode *newItem = ([selectedNodes count] == 1)?[selectedNodes objectAtIndex: 0]:nil;
 	if (newItem == previousItem && !forceUpdate)
 		return;	// maybe item was simply dragged and dropped
-
-	if (previousItem)
-	{
-		if (![previousItem isSeparator] && nameTouched)
-		{
+	
+	if (previousItem) {
+		if (![previousItem isSeparator] && nameTouched) {
 			[previousItem setName: [nameField stringValue]];
 			dataTouched = YES;
 		}
-		if ([previousItem isStandardItem])
-		{
-			if (contentTouched)
-			{
+		if ([previousItem isStandardItem]) {
+			if (contentTouched) {
 				// note: [NSTextView string] returns currently edited string. make sure to copy it
 				if (savedFilter != kMacJapaneseFilterMode)
 					contentString = [NSString stringWithString: [contentTextView string]];
@@ -319,8 +309,8 @@ static TSFilterMode savedFilter = kNoFilterMode;
 			if (keyTouched)
 			{
 				[previousItem setKey: getStringFormKeyEquivalent([keyField stringValue],
-						([shiftCheckBox state] == NSOnState), ([optionCheckBox state] == NSOnState),
-						([controlCheckBox state] == NSOnState))];
+																 ([shiftCheckBox state] == NSOnState), ([optionCheckBox state] == NSOnState),
+																 ([controlCheckBox state] == NSOnState))];
 				dataTouched = YES;
 			}
 		}
@@ -328,11 +318,10 @@ static TSFilterMode savedFilter = kNoFilterMode;
 			[outlineView reloadItem: previousItem]; //this causes a problem if the item is dead
 		[previousItem release];
 	}
-
+	
 	[nameField setStringValue: (newItem)?[newItem name]:@""];
 	[nameField setEditable: (newItem && ![newItem isSeparator])?YES:NO];
-	if (newItem && [newItem isStandardItem])
-	{
+	if (newItem && [newItem isStandardItem]) {
 		contentString = [newItem content]?[newItem content]:@"";
 		if (g_shouldFilter == kMacJapaneseFilterMode)
 			contentString = filterBackslashToYen(contentString);
@@ -351,9 +340,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		[controlCheckBox setState: (hasKeyEquiv && (modifier & NSControlKeyMask))?NSOnState:NSOffState];
 		[controlCheckBox setEnabled: YES];
 		[testButton setEnabled: YES];
-	}
-	else
-	{
+	} else {
 		[contentTextView setString: @""];
 		[contentTextView setEditable: NO];
 		[keyField setStringValue: @""];
@@ -370,7 +357,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 	nameTouched = NO;
 	contentTouched = NO;
 	keyTouched = NO;
-//	[outlineView reloadData];// this caused a crash if a node and its child are selected and the disclosure triangle is pressed
+	//	[outlineView reloadData];// this caused a crash if a node and its child are selected and the disclosure triangle is pressed
 }
 
 // delegate method for window
@@ -382,8 +369,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 	[outlineView deselectAll: sender];
 	if (!dataTouched)	// data was not changed
 		return YES;
-	else	// close button in title bar was pressed or "Close Macro Editor" was chosen fromm menu
-	{
+	else {	// close button in title bar was pressed or "Close Macro Editor" was chosen fromm menu
 //		NSBeginAlertSheet(@"Warning", @"Save", @"Don't save", @"Cancel",
 //				window, self,
 //				@selector(saveMacrosSheetDidEnd:returnCode:contextInfo:), nil, nil,
@@ -402,8 +388,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 // handler for "Save Macros?" sheet
 - (void) saveMacrosSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
-	switch(returnCode)
-	{
+	switch (returnCode) {
 		case NSAlertDefaultReturn:
 			[self savePressed: self];
 			break;
@@ -430,8 +415,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 				NSLocalizedString(@"Macros", @"Macros")] submenu];
 	id <NSMenuItem> item = [macroMenu itemWithTitle:
 					NSLocalizedString(@"Close Macro Editor", @"Close Macro Editor")];
-	if (item)
-	{
+	if (item) {
 		[item setTitle: NSLocalizedString(@"Open Macro Editor...", @"Open Macro Editor...")];
 		[item setTarget: self];
 		[item setAction: @selector(openMacroEditor:)];
@@ -453,13 +437,11 @@ static TSFilterMode savedFilter = kNoFilterMode;
 	NSRect outlineFrame = [[outlineView enclosingScrollView] frame];
 	NSRect buttonFrame = [testButton frame];
 	if ((proposedFrameSize.width < outlineFrame.size.width + 110) &&
-		(buttonFrame.origin.x > outlineFrame.origin.x + 100))
-	{
+		(buttonFrame.origin.x > outlineFrame.origin.x + 100)) {
 		[testButton setFrameOrigin: NSMakePoint(outlineFrame.origin.x-3, buttonFrame.origin.y)];
 	}
 	if ((proposedFrameSize.width >= outlineFrame.size.width + 110) &&
-		(buttonFrame.origin.x <= outlineFrame.origin.x + 100))
-	{
+		(buttonFrame.origin.x <= outlineFrame.origin.x + 100)) {
 		[testButton setFrameOrigin: NSMakePoint(outlineFrame.origin.x+outlineFrame.size.width+24,
 																		buttonFrame.origin.y)];
 	}
@@ -468,14 +450,12 @@ static TSFilterMode savedFilter = kNoFilterMode;
 	// then next time they appear, they stick to the right border.
 	NSRect contentBounds = [[window contentView] bounds];	// use this instead of proposedFrameSize
 	NSRect fieldFrame = [nameField frame];
-	if (fieldFrame.size.width > contentBounds.size.width-fieldFrame.origin.x-10 && fieldFrame.size.width > 0)
-	{
+	if (fieldFrame.size.width > contentBounds.size.width-fieldFrame.origin.x-10 && fieldFrame.size.width > 0) {
 		fieldFrame.size.width = contentBounds.size.width-fieldFrame.origin.x-10;
 		[nameField setFrame:fieldFrame];
 	}
 	fieldFrame = [[contentTextView enclosingScrollView] frame];	// don't forget to apply it to the scroll view
-	if (fieldFrame.size.width > contentBounds.size.width-fieldFrame.origin.x-10 && fieldFrame.size.width > 0)
-	{
+	if (fieldFrame.size.width > contentBounds.size.width-fieldFrame.origin.x-10 && fieldFrame.size.width > 0) {
 		fieldFrame.size.width = contentBounds.size.width-fieldFrame.origin.x-10;
 		[[contentTextView enclosingScrollView] setFrame:fieldFrame];
 	}
@@ -495,18 +475,14 @@ static TSFilterMode savedFilter = kNoFilterMode;
 	NSString *string;
 	// FIXME/TODO: Instead of using savedFilter, register for notification
 	// when the encoding changes
-	if (g_shouldFilter != savedFilter) // if the encoding was changed while TSMacroEditor is open...
-	{
-		if (g_shouldFilter == kMacJapaneseFilterMode)
-		{
+	if (g_shouldFilter != savedFilter) { // if the encoding was changed while TSMacroEditor is open...
+		if (g_shouldFilter == kMacJapaneseFilterMode) {
 			string = [contentTextView string];
 			string = filterBackslashToYen(string);
 			[contentTextView setDelegate: nil]; // to avoid sending a message "text changed"
 			[contentTextView setString: string];
 			[contentTextView setDelegate: self];
-		}
-		else if(savedFilter == kMacJapaneseFilterMode)
-		{
+		} else if(savedFilter == kMacJapaneseFilterMode) {
 			string = [contentTextView string];
 			string = filterYenToBackslash(string);
 			[contentTextView setDelegate: nil]; // to avoid sending a message "text changed"
@@ -520,11 +496,9 @@ static TSFilterMode savedFilter = kNoFilterMode;
 // set up menu items' enable/disable
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem
 {
-	if ([anItem action] == @selector(saveSelection:))
-	{
+	if ([anItem action] == @selector(saveSelection:)) {
 		return ([[outlineView allSelectedItems] count] > 0);
-	}
-	else
+	} else
 		return YES;
 }
 
@@ -535,13 +509,10 @@ static TSFilterMode savedFilter = kNoFilterMode;
 	NSString *pathStr, *error;
 	NSData *xmlData;
 
-	if ([nodes isKindOfClass: [TSMacroTreeNode class]])
-	{
+	if ([nodes isKindOfClass: [TSMacroTreeNode class]]) {
 		propertyList = [nodes makeDictionary];
 		[propertyList setObject: @"ROOT" forKey: NAME_KEY];
-	}
-	else if ([nodes isKindOfClass: [NSArray class]])
-	{
+	} else if ([nodes isKindOfClass: [NSArray class]]) {
 		NSMutableArray *array = [NSMutableArray array];
 		NSEnumerator *enumerator = [nodes objectEnumerator];
 		TSMacroTreeNode *child;
@@ -550,8 +521,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 		}
 		propertyList = [NSDictionary dictionaryWithObjectsAndKeys:
 						@"ROOT", NAME_KEY, array, CHILDREN_KEY, nil];
-	}
-	else
+	} else
 		return;
 	// convert to XML in UTF8 format
 	NS_DURING
@@ -586,12 +556,10 @@ static TSFilterMode savedFilter = kNoFilterMode;
 // handler for savePanel for macros saving
 - (void)savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo
 {
-	if (returnCode == NSOKButton)
-	{
+	if (returnCode == NSOKButton) {
 		NS_DURING
 		NSString *filePath = [sheet filename];
-		if (filePath)
-		{
+		if (filePath) {
 			NSArray *selectionArray = [TSMacroTreeNode minimumNodeCoverFromNodesInArray:
 										[outlineView allSelectedItems]];
 			[self saveNodes: selectionArray toFile: filePath];
@@ -620,20 +588,18 @@ static TSFilterMode savedFilter = kNoFilterMode;
 - (void)openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo
 {
 	NSDictionary *newDict = nil;
-	if (returnCode == NSOKButton)
-	{
+	if (returnCode == NSOKButton) {
 		NSArray *array = [sheet filenames];
 		NS_DURING
 			NSData *myData = [NSData dataWithContentsOfFile: [array objectAtIndex: 0]];
 			NSString *aString = [[[NSString alloc] initWithData:myData encoding:
 							NSUTF8StringEncoding] autorelease];
-		if (aString)
-			newDict = (NSDictionary *)[aString propertyList];
-		if (newDict)
-		{
-			NSArray *newNodeArray = [TSMacroTreeNode nodeArrayFromPropertyList: newDict];
-			[outlineController addNewDataArrayToSelection: newNodeArray];
-		}
+			if (aString)
+				newDict = (NSDictionary *)[aString propertyList];
+			if (newDict) {
+				NSArray *newNodeArray = [TSMacroTreeNode nodeArrayFromPropertyList: newDict];
+				[outlineController addNewDataArrayToSelection: newNodeArray];
+			}
 		NS_HANDLER
 			newDict = nil;
 		NS_ENDHANDLER
