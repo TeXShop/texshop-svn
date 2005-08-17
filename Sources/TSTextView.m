@@ -456,15 +456,10 @@
 // added by mitsu --(A) g_texChar filtering
 - (void)insertText:(id)aString
 {
-	NSString *newString = aString;
-
-#define AUTOCOMPLETE_IN_INSERTTEXT
-#ifdef AUTOCOMPLETE_IN_INSERTTEXT
 	// AutoCompletion
 	// Code added by Greg Landweber for auto-completions of '^', '_', etc.
 	// First, avoid completing \^, \_, \"
-	if ([aString length] == 1 &&  [_document isDoAutoCompleteEnabled])
-	{
+	if ([aString length] == 1 &&  [_document isDoAutoCompleteEnabled]) {
 		if ([aString characterAtIndex:0] >= 128 ||
 			[self selectedRange].location == 0 ||
 			[[self string] characterAtIndex:[self selectedRange].location - 1 ] != g_texChar )
@@ -473,19 +468,15 @@
 			if ( completionString &&
 				(!g_shouldFilter || [aString characterAtIndex:0] != YEN)) // avoid completing yen
 			{
-#define ALLOW_UNDO_AUTOCOMPLETION
-#ifdef ALLOW_UNDO_AUTOCOMPLETION
 				[_document insertSpecialNonStandard:completionString
 						undoKey: NSLocalizedString(@"Autocompletion", @"Autocompletion")];
 				return;
-#else
-				newString = completionString;
-#endif //ALLOW_UNDO_AUTOCOMPLETION
 			}
 		}
 	}
 	// End of code added by Greg Landweber
-#endif //AUTOCOMPLETE_IN_INSERTTEXT
+
+	NSString *newString = aString;
 
 	// Filtering for Japanese
 	if (g_shouldFilter == kMacJapaneseFilterMode) {
@@ -495,16 +486,12 @@
 	}
 
 	// zenitani 1.35 (A) -- normalizing newline character for regular expression
-	long MacVersion;
-	if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
-		if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030))
-			newString = [OGRegularExpression replaceNewlineCharactersInString:newString
-					withCharacter:OgreLfNewlineCharacter];
+	if ([SUD boolForKey:ConvertLFKey]) {
+		newString = [OGRegularExpression replaceNewlineCharactersInString:newString
+				withCharacter:OgreLfNewlineCharacter];
 	}
 
-
 	[super insertText: newString];
-
 }
 
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard type:(NSString *)type
@@ -537,17 +524,14 @@
 				string = filterYenToBackslash(string);
 
 			// zenitani 1.35 (A) -- normalizing newline character for regular expression
-			long MacVersion;
-			if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
-				if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030))
-					string = [OGRegularExpression replaceNewlineCharactersInString:string
-							withCharacter:OgreLfNewlineCharacter];
+			if ([SUD boolForKey:ConvertLFKey]) {
+				string = [OGRegularExpression replaceNewlineCharactersInString:string
+						withCharacter:OgreLfNewlineCharacter];
 			}
 
 			// Replace the text--imitate what happens in ordinary editing
 			NSRange	selectedRange = [self selectedRange];
-			if ([self shouldChangeTextInRange:selectedRange replacementString:string])
-			{
+			if ([self shouldChangeTextInRange:selectedRange replacementString:string]) {
 				[self replaceCharactersInRange:selectedRange withString:string];
 				[self didChangeText];
 			}
@@ -605,6 +589,10 @@
 // so the code can be reused in other applications???
 - (void)keyDown:(NSEvent *)theEvent
 {
+	// FIXME: Using static variables like this is *EVIL*
+	// It will simply not work correctly when using more than one window/view (which we frequently do)!
+	// TODO: Convert all of these static stack variables to member variables.
+	
 	static BOOL wasCompleted = NO; // was completed on last keyDown
 	static BOOL latexSpecial = NO; // was last time LaTeX Special?  \begin{...}
 	static NSString *originalString = nil; // string before completion, starts at replaceLocation
@@ -620,9 +608,9 @@
 	NSCharacterSet *charSet;
 	unichar c;
 
-		if ([[theEvent characters] isEqualToString: g_commandCompletionChar] &&
-			(([theEvent modifierFlags] & NSAlternateKeyMask) == 0) &&
-			![self hasMarkedText] && g_commandCompletionList)
+	if ([[theEvent characters] isEqualToString: g_commandCompletionChar] &&
+		(([theEvent modifierFlags] & NSAlternateKeyMask) == 0) &&
+		![self hasMarkedText] && g_commandCompletionList)
 
 	  //  if ([[theEvent characters] isEqualToString: g_commandCompletionChar] && (![self hasMarkedText]) && g_commandCompletionList)
 	{
@@ -683,32 +671,26 @@
 						wasCompleted = NO;
 						return; // no other completion is possible
 					}
-				}
-				else // this shouldn't happen
-				{
+				} else { // this shouldn't happen
 					[[self undoManager] redo];
 					selectedLocation = [self selectedRange].location;
 					[originalString release];
 					wasCompleted = NO;
 				}
-			}
-			else // probably there were other operations such as cut/paste/Macros which changed text
-			{
+			} else { // probably there were other operations such as cut/paste/Macros which changed text
 				[originalString release];
 				wasCompleted = NO;
 			}
 			[currentString release];
 		}
 
-		if (!wasCompleted && !latexSpecial)
-		{
+		if (!wasCompleted && !latexSpecial) {
 			// determine the word to complete--search for word boundary
 			charSet = [NSCharacterSet characterSetWithCharactersInString:
 						[NSString stringWithFormat: @"\n \t.,;;{}()%C", g_texChar]];
 			foundRange = [textString rangeOfCharacterFromSet:charSet
 						options:NSBackwardsSearch range:NSMakeRange(0,selectedLocation)];
-			if (foundRange.location != NSNotFound)
-			{
+			if (foundRange.location != NSNotFound) {
 				if (foundRange.location + 1 == selectedLocation)
 					return; // no string to match
 				c = [textString characterAtIndex: foundRange.location];
@@ -716,9 +698,7 @@
 					replaceLocation = foundRange.location; // include these characters for search
 				else
 					replaceLocation = foundRange.location + 1;
-			}
-			else
-			{
+			} else {
 				if (selectedLocation == 0)
 					return; // no string to match
 				replaceLocation = 0; // start from the beginning
@@ -730,17 +710,14 @@
 		}
 
 		// try to find a completion candidate
-		if (!latexSpecial) // ordinary case -- find from the list
-		{
-			while (YES) // look for a candidate which is not equal to originalString
-			{
-				if ([theEvent modifierFlags] && wasCompleted)
-				{	// backward
+		if (!latexSpecial) { // ordinary case -- find from the list
+			while (YES) { // look for a candidate which is not equal to originalString
+				if ([theEvent modifierFlags] && wasCompleted) {
+					// backward
 					searchRange.location = 0;
 					searchRange.length = completionListLocation-1;
-				}
-				else
-				{	// forward
+				} else {
+					// forward
 					searchRange.location = completionListLocation;
 					searchRange.length = [g_commandCompletionList length] - completionListLocation;
 				}
@@ -750,14 +727,11 @@
 						options: ([theEvent modifierFlags]?NSBackwardsSearch:0)
 						range: searchRange];
 
-				if (foundRange.location == NSNotFound) // a completion candidate was not found
-				{
+				if (foundRange.location == NSNotFound) { // a completion candidate was not found
 					foundCandidate = NO;
 					break;
-				}
-				else // found a completion candidate-- create replacement string
-				{
-										foundCandidate = YES;
+				} else { // found a completion candidate-- create replacement string
+					foundCandidate = YES;
 					// get the whole line
 					foundRange.location ++; // eliminate first LF
 					foundRange.length--;
@@ -768,8 +742,7 @@
 					// check if there is ":="
 					spaceRange = [foundString rangeOfString: @":="
 								options: 0 range: NSMakeRange(0, [foundString length])];
-					if (spaceRange.location != NSNotFound)
-					{
+					if (spaceRange.location != NSNotFound) {
 						spaceRange.location += 2;
 						spaceRange.length = [foundString length]-spaceRange.location;
 						foundString = [foundString substringWithRange: spaceRange]; //string after first space
@@ -786,21 +759,17 @@
 						break;		// continue search if newString is equal to originalString
 				}
 			}
-		}
-		else // LaTeX Special -- just add \end and copy of {...}
-		{
+		} else { // LaTeX Special -- just add \end and copy of {...}
 			foundCandidate = YES;
-			if (!wasCompleted)
-			{
+			if (!wasCompleted) {
 				originalString = [[NSString stringWithString: @""] retain];
 				replaceLocation = selectedLocation;
 				newString = [NSMutableString stringWithFormat: @"\n%Cend%@\n",
 									g_texChar, latexString];
 				insRange.location = 0;
 				completionListLocation = NSNotFound; // just to remember that it wasn't completed
-			}
-			else
-			{	// reuse the current string
+			} else {
+				// reuse the current string
 				newString = [NSMutableString stringWithFormat: @"%@\n%Cend%@\n",
 									currentString, g_texChar, latexString];
 				insRange.location = [currentString length];
@@ -808,8 +777,7 @@
 			}
 		}
 
-		if (foundCandidate) // found a completion candidate
-		{
+		if (foundCandidate) { // found a completion candidate
 			// replace the text
 			replaceRange.location = replaceLocation;
 			replaceRange.length = selectedLocation-replaceLocation;
@@ -824,8 +792,7 @@
 			//		length:[newString length]
 			//		key:NSLocalizedString(@"Completion", @"Completion")];
 			// clean up
-			if (_document)
-			{
+			if (_document) {
 				from = replaceLocation;
 				to = from + [newString length];
 				[_document fixColor:from :to];
@@ -844,17 +811,13 @@
 			else
 				textLocation = replaceLocation+[newString length];
 			[self setSelectedRange: NSMakeRange(textLocation,0)];
-		}
-		else // candidate was not found
-		{
+		} else { // candidate was not found
 			[originalString release];
 			originalString = currentString = nil;
 			wasCompleted = NO;
 		}
 		return;
-	}
-	else if (wasCompleted) // we are not doing the completion
-	{
+	} else if (wasCompleted) { // we are not doing the completion
 		[originalString release];
 		[currentString release];
 		originalString = currentString = nil;

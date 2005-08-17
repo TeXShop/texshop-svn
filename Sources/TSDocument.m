@@ -151,17 +151,18 @@
 	[super dealloc];
 }
 
-- (id) pdfView;
+- (id) pdfView
 {
 	return pdfView;
 }
 
-- (id) pdfKitView;
+- (id) pdfKitView
 {
 	return myPDFKitView;
 }
 
-- (NSString *)windowNibName {
+- (NSString *)windowNibName
+{
 	// Override returning the nib file name of the document
 	return @"TSDocument";
 }
@@ -264,12 +265,12 @@
 
 }
 
-- (void) saveForStatistics: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo;
+- (void)saveForStatistics: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo
 {
 	[self showStatistics:self];
 }
 
-- (void)updateStatistics: sender;
+- (void)updateStatistics: sender
 {
 	SEL		saveForStatistics;
 
@@ -285,14 +286,14 @@
 	BOOL            isDirectory;
 	unsigned        i;
 
-	fm       = [ NSFileManager defaultManager ];
-	basePath = [ EnginePathKey stringByStandardizingPath ];
-	fileList = [ fm directoryContentsAtPath: basePath ];
-	for( i=0; i<[fileList count]; i++ ) {
-		title = [ fileList objectAtIndex: i ];
-		path  = [ basePath stringByAppendingPathComponent: title ];
-		if( [fm fileExistsAtPath:path isDirectory: &isDirectory] ){
-			if ((!isDirectory ) && ( [ [[title pathExtension] lowercaseString] isEqualToString: @"engine"] )) {
+	fm       = [NSFileManager defaultManager];
+	basePath = [EnginePathKey stringByStandardizingPath];
+	fileList = [fm directoryContentsAtPath: basePath];
+	for (i=0; i < [fileList count]; i++) {
+		title = [fileList objectAtIndex: i];
+		path  = [basePath stringByAppendingPathComponent: title];
+		if ([fm fileExistsAtPath:path isDirectory: &isDirectory]) {
+			if (!isDirectory && ( [ [[title pathExtension] lowercaseString] isEqualToString: @"engine"] )) {
 				title = [title stringByDeletingPathExtension];
 				[programButton addItemWithTitle: title];
 				[programButtonEE addItemWithTitle: title];
@@ -304,13 +305,11 @@
 - (void)installStringIntoTextEdit
 {
 	// zenitani 1.35 (A) -- normalizing newline character for regular expression
-	long			MacVersion;
 	unsigned		length;
 
-	if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
-		if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030))
-			_documentContent = [OGRegularExpression replaceNewlineCharactersInString:_documentContent
-															  withCharacter:OgreLfNewlineCharacter];
+	if ([SUD boolForKey:ConvertLFKey]) {
+		_documentContent = [OGRegularExpression replaceNewlineCharactersInString:_documentContent
+														  withCharacter:OgreLfNewlineCharacter];
 	}
 
 	[textView setString: _documentContent];

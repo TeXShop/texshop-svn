@@ -59,7 +59,6 @@
 	NSDictionary *factoryDefaults;
 //	OgreTextFinder *theFinder;
 	id theFinder;
-	long	MacVersion;
 
 	// documentsHaveLoaded = NO;
 
@@ -175,13 +174,8 @@
 	// end mitsu 1.29
 #endif
 
-		if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr) {
-
-			if (([SUD boolForKey:ConvertLFKey]) && (MacVersion >= 0x1030) && ([SUD boolForKey:UseOgreKitKey] == TRUE))
-				   theFinder = [OgreTextFinder sharedTextFinder];
-				else
-					theFinder = [TextFinder sharedInstance];
-		}
+		if ([SUD boolForKey:UseOgreKitKey])
+			theFinder = [OgreTextFinder sharedTextFinder];
 		else
 			theFinder = [TextFinder sharedInstance];
 

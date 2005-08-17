@@ -1805,6 +1805,8 @@
 		{
 			// new routine which creates image by directly calling drawRect
 			// TODO / FIXME: MyPDFKitView currently does *not* implement imageFromRect:!
+			// Hence I am disabling this code for now.
+#if 0
 			image = [self imageFromRect: mySelectedRect];
 
 			if (image)
@@ -1815,6 +1817,7 @@
 				bitmap = [[[NSBitmapImageRep alloc] initWithData:
 										[image TIFFRepresentation]] autorelease];
 			}
+#endif
 		}
 		// color mapping
 		if (bitmap && [SUD boolForKey:PdfColorMapKey])
@@ -2068,6 +2071,8 @@
 	else // quick drag for PDF & EPS
 	{
 		// TODO / FIXME: MyPDFKitView currently does *not* implement imageFromRect:!
+		// Hence I am disabling this code for now.
+#if 0
 		image = [self imageFromRect: mySelectedRect];
 		if (image)
 		{
@@ -2076,6 +2081,7 @@
 			[self dragImage:image at:mySelectedRect.origin offset:dragOffset
 					event:theEvent pasteboard:pboard source:self slideBack:YES];
 		}
+#endif
 	}
 }
 
