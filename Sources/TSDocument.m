@@ -100,6 +100,8 @@
 
 	_encoding = [[TSDocumentController sharedDocumentController] encoding];
 
+	_textStorage = [[NSTextStorage alloc] init];
+
 	return self;
 }
 
@@ -263,7 +265,6 @@
 	[textView2 release];
 
 	// Create a custom NSTextStorage and make sure the two NSTextViews both use it.
-	_textStorage = [[NSTextStorage alloc] init];
 	[[textView1 layoutManager] replaceTextStorage:_textStorage];
 	[[textView2 layoutManager] replaceTextStorage:_textStorage];
 
@@ -428,8 +429,6 @@
 
 	if (_externalEditor)
 		[self setHasUndoManager: NO];  // so reporting no changes does not lead to error messages
-	else if (_documentContent != nil)
-		[self installStringIntoTextEdit];
 
 	texTask = nil;
 	bibTask = nil;
@@ -714,20 +713,21 @@ in other code when an external editor is being used. */
 	}
 
 
-
-	_documentContent = [[[NSString alloc] initWithData:myData encoding:_encoding] autorelease];
-	if (!_documentContent) {
+	NSString *content;
+	content = [[[NSString alloc] initWithData:myData encoding:_encoding] autorelease];
+	if (!content) {
 		_badEncoding = _encoding;
 		showBadEncodingDialog = YES;
-		_documentContent = [[[NSString alloc] initWithData:myData encoding:NSMacOSRomanStringEncoding] autorelease];
+		content = [[[NSString alloc] initWithData:myData encoding:NSMacOSRomanStringEncoding] autorelease];
 	}
 
-	if (_documentContent) {
+	if (content) {
 		if ([SUD boolForKey:ConvertLFKey]) {
 			// zenitani 1.35 (A) -- normalizing newline character for regular expression
-			_documentContent = [OGRegularExpression replaceNewlineCharactersInString:_documentContent
+			content = [OGRegularExpression replaceNewlineCharactersInString:content
 															  withCharacter:OgreLfNewlineCharacter];
 		}
+		[[_textStorage mutableString] setString:content];
 
 		return YES;
 	} else {
@@ -757,9 +757,15 @@ in other code when an external editor is being used. */
 	BOOL	value;
 
 	value = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
-	if ((value) && (_documentContent != nil))
-		[self installStringIntoTextEdit];
+	if (value) {
+		[self setupTags];
+		[self colorizeAll];
+	}
+	
+	// FIXME: Is the following even needed? Changin the textstorage should trigger a redraw anyway,
+	// shouldn't it? But if we do have to call this, shouldn't we also do the same for textView2?
 	[textView setNeedsDisplayInRect: [textView bounds]];
+	
 	return value;
 }
 
@@ -804,8 +810,7 @@ in other code when an external editor is being used. */
 		[printOperation setShowPanels:flag];
 		[printOperation runOperation];
 		[printView release];
-	}
-	else if (_documentType == isTeX)
+	} else if (_documentType == isTeX)
 		result = [NSApp runModalForWindow: printRequestPanel];
 }
 
@@ -816,12 +821,9 @@ in other code when an external editor is being used. */
 
 - (void)close
 {
-	if (tagTimer != nil)
-	{
-		[tagTimer invalidate];
-		[tagTimer release];
-		tagTimer = nil;
-	}
+	[tagTimer invalidate];
+	[tagTimer release];
+	tagTimer = nil;
 
 	[_pdfRefreshTimer invalidate];
 	[_pdfRefreshTimer release];
@@ -986,15 +988,6 @@ in other code when an external editor is being used. */
 			}
 		}
 	}
-}
-
-- (void)installStringIntoTextEdit
-{
-	[textView setString: _documentContent];
-	_documentContent = nil;
-
-	[self setupTags];
-	[self colorizeAll];
 }
 
 // forsplit
@@ -3010,53 +3003,47 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSMutableParagraphStyle 	*newStyle;
 	NSFont			*font = nil;
 	NSData			*fontData;
-
-//     NSTextStorage *textStorage = [textView textStorage];
+	
 	NSString *string = [_textStorage string];
-
+	
 	if ([SUD boolForKey:SaveDocumentFontKey] == NO) {
 		font = [NSFont userFontOfSize:12.0];
-		}
-	else {
+	} else {
 		fontData = [SUD objectForKey:DocumentFontKey];
 		if (fontData != nil) {
 			font = [NSUnarchiver unarchiveObjectWithData:fontData];
 			[textView setFont:font];
-			}
-		else
+		} else
 			font = [NSFont userFontOfSize:12.0];
-		}
-
+	}
+	
 	// I cannot figure out how to set the tabs if there is no text, so in that
 	// case I insert text and later remove it; Koch, 11/28/2002
 	if ([string length] == 0) {
 		empty = YES;
 		myRange.location = 0; myRange.length = 0;
 		// empty files have a space, but the cursor is at the start
-		// [[textView textStorage] replaceCharactersInRange: myRange withString:@" "];
 		[_textStorage replaceCharactersInRange: myRange withString:@" "];
-
-		}
-
-
+	}
+	
 	tabWidth = [SUD integerForKey: tabsKey];
-
+	
 	NSArray *desiredTabStops = tabStopArrayForFontAndTabWidth(font, tabWidth);
-
+	
 	paraStyle = [NSParagraphStyle defaultParagraphStyle];
 	newStyle = [paraStyle mutableCopyWithZone:[_textStorage zone]];
 	[newStyle setTabStops:desiredTabStops];
 	theRange.location = 0; theRange.length = [string length];
 	[_textStorage addAttribute:NSParagraphStyleAttributeName value:newStyle range: theRange];
 	[newStyle release];
-
+	
 	if (empty) {
 		myRange.location = 0; myRange.length = 1;
-//        [[textView textStorage] replaceCharactersInRange: myRange withString:@""]; //was "\b"
-		}
-
-   [textView setFont:font];
-
+		//        [[textView textStorage] replaceCharactersInRange: myRange withString:@""]; //was "\b"
+	}
+	
+	[textView setFont:font];
+	
 }
 
 // added by mitsu --(J) Typeset command, (D) Tags and (H) Macro

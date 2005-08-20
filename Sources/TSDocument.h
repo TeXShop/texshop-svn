@@ -109,7 +109,6 @@ enum RootCommand
 	NSFileHandle	*readHandle;
 	NSPipe		*inputPipe;
 	NSPipe		*outputPipe;
-	NSString		*_documentContent;		/*" temporarily holds the content of the tex document (during loading only) "*/
 	NSTask		*texTask;
 	NSTask		*bibTask;
 	NSTask		*indexTask;
@@ -254,7 +253,6 @@ enum RootCommand
 - (void)trashAUX;
 - (void)tryBadEncodingDialog: (NSWindow *)theWindow;
 - (BOOL)fromKit;
-- (void)installStringIntoTextEdit;
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError;
 - (void)doBackForward: (id)sender;
 - (void)doBack: (id)sender;
