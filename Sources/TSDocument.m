@@ -87,10 +87,10 @@
 	warningGiven = NO;
 	omitShellEscape = NO;
 	taskDone = YES;
-	pdfDate = nil;
-	pdfRefreshTimer = nil;
+	_pdfLastModDate = nil;
+	_pdfRefreshTimer = nil;
 	typesetContinuously = NO;
-	tryAgain = NO;
+	_pdfRefreshTryAgain = NO;
 	useTempEngine = NO;
 	callingWindow = nil;
 	_badEncoding = 0;
@@ -116,11 +116,10 @@
 		[tagTimer invalidate];
 		[tagTimer release];
 	}
-	if (pdfRefreshTimer != nil) {
-		[pdfRefreshTimer invalidate];
-		[pdfRefreshTimer release];
-		pdfRefreshTimer = nil;
-	}
+
+	[_pdfRefreshTimer invalidate];
+	[_pdfRefreshTimer release];
+	_pdfRefreshTimer = nil;
 
 	[regularColorAttribute release];
 	[commentColorAttribute release];
@@ -145,7 +144,7 @@
 	[macroButtonEE release];
 	[mouseModeMatrix release]; // mitsu 1.29 (O)
 
-	[pdfDate release];
+	[_pdfLastModDate release];
 
 	[super dealloc];
 }
@@ -185,62 +184,31 @@
 	return @"TSDocument";
 }
 
-- (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
-{
-	BOOL	value;
 
-	value = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
-	if ((value) && (_documentContent != nil))
-		[self installStringIntoTextEdit];
-	[textView setNeedsDisplayInRect: [textView bounds]];
-	return value;
-}
-
-- (void)printShowingPrintPanel:(BOOL)flag
+// this method gives a name "Untitled-n" for new documents
+-(NSString *)displayName
 {
-	id				printView;
-	NSPrintOperation	*printOperation;
-	NSString		*imagePath;
-	NSString		*theSource;
-	id				aRep;
-	int				result;
-	
-	if (_documentType == isTeX) {
-		
-		if (!_externalEditor) {
-			theSource = [[self textView] string];
-			if ([self checkMasterFile:theSource forTask:RootForPrinting])
-				return;
-			if ([self checkRootFile_forTask:RootForPrinting])
-				return;
+	if ([self fileName] == nil) // file is a new one
+	{
+		NSString *displayString = [super displayName];
+		if (displayString == nil) // these two lines fix a Panther problem
+			return displayString;
+		else {
+			NSMutableString *newString = [NSMutableString stringWithString: displayString];
+			[newString replaceOccurrencesOfString: @" " withString: @"-"
+										  options: 0 range: NSMakeRange(0, [newString length])];
+			// mitsu 1.29 (V)
+			if ([[[[[NSBundle mainBundle] pathForResource:@"MainMenu" ofType:@"nib"]
+				stringByDeletingLastPathComponent] lastPathComponent]
+				isEqualToString: @"Japanese.lproj"] && [newString length]==5)
+				[newString appendString: @"-1"];
+			// end mitsu 1.29
+			return newString;
 		}
-		
-		imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
 	}
-	else if (_documentType == isPDF)
-		imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-	else if ((_documentType == isJPG) || (_documentType == isTIFF))
-		imagePath = [self fileName];
-	else
-		imagePath = [self fileName];
-	
-	aRep = nil;
-	if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
-		if ((_documentType == isTeX) || (_documentType == isPDF))
-			aRep = [NSPDFImageRep imageRepWithContentsOfFile: imagePath];
-		else if (_documentType == isJPG || _documentType == isTIFF)
-			aRep = [NSImageRep imageRepWithContentsOfFile: imagePath];
-		if (aRep == nil)
-			return;
-		printView = [[TSPrintView alloc] initWithImageRep: aRep];
-		printOperation = [NSPrintOperation printOperationWithView:printView printInfo: [self printInfo]];
-		[printOperation setShowPanels:flag];
-		[printOperation runOperation];
-		[printView release];
-	}
-	else if (_documentType == isTeX)
-		result = [NSApp runModalForWindow: printRequestPanel];
+	return [super displayName];
 }
+
 
 // FIXME/TODO: Obviously windowControllerDidLoadNib is *way* too big. Need to simplify it,
 // and possibly move code to other functions.
@@ -391,15 +359,14 @@
 
 			if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
 				myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
-				pdfDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
+				_pdfLastModDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
 			}
 
 			[pdfKitWindow setTitle: [[self fileName] lastPathComponent]];
 			// [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4;
 			// supposed to allow command click of window title to lead to file, but doesn't
 			_documentType = isPDF;
-		}
-		else if (([fileExtension isEqualToString: @"jpg"]) ||
+		} else if (([fileExtension isEqualToString: @"jpg"]) ||
 				 ([fileExtension isEqualToString: @"jpeg"]) ||
 				 ([fileExtension isEqualToString: @"JPG"])) {
 			imageFound = YES;
@@ -409,8 +376,7 @@
 			_documentType = isJPG;
 			[previousButton setEnabled:NO];
 			[nextButton setEnabled:NO];
-		}
-		else if (([fileExtension isEqualToString: @"tiff"]) ||
+		} else if (([fileExtension isEqualToString: @"tiff"]) ||
 				 ([fileExtension isEqualToString: @"tif"])) {
 			imageFound = YES;
 			texRep = [[NSBitmapImageRep imageRepWithContentsOfFile: imagePath] retain];
@@ -419,8 +385,7 @@
 			_documentType = isTIFF;
 			[previousButton setEnabled:NO];
 			[nextButton setEnabled:NO];
-		}
-		else if (([fileExtension isEqualToString: @"dvi"]) ||
+		} else if (([fileExtension isEqualToString: @"dvi"]) ||
 				 ([fileExtension isEqualToString: @"ps"]) ||
 				 ([fileExtension isEqualToString:@"eps"]))
 		{
@@ -440,8 +405,8 @@
 				[pdfKitWindow setTitle: [imagePath lastPathComponent]];
 				[pdfKitWindow makeKeyAndOrderFront: self];
 				if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
-					pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey]
-																		target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
+					_pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey]
+																		target:self selector:@selector(refreshPDFWindow:) userInfo:nil repeats:YES] retain];
 				}
 			} else {
 				[pdfView setImageType: _documentType];
@@ -452,8 +417,8 @@
 				[pdfWindow makeKeyAndOrderFront: self];
 
 				if ((_documentType == isPDF) && ([SUD boolForKey: PdfFileRefreshKey] == YES) && ([SUD boolForKey:PdfRefreshKey] == YES)) {
-					pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey]
-																		target:self selector:@selector(refreshPDFGraphicWindow:) userInfo:nil repeats:YES] retain];
+					_pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey]
+																		target:self selector:@selector(refreshPDFWindow:) userInfo:nil repeats:YES] retain];
 				}
 			}
 			return;
@@ -461,19 +426,17 @@
 	}
 	/* end of images */
 
-	if (_externalEditor || _documentContent != nil) {
-		if (_externalEditor)
-			[self setHasUndoManager: NO];  // so reporting no changes does not lead to error messages
-		else
-			[self installStringIntoTextEdit];
+	if (_externalEditor)
+		[self setHasUndoManager: NO];  // so reporting no changes does not lead to error messages
+	else if (_documentContent != nil)
+		[self installStringIntoTextEdit];
 
-		texTask = nil;
-		bibTask = nil;
-		indexTask = nil;
-		metaFontTask = nil;
-		detexTask = nil;
-		detexPipe = nil;
-	}
+	texTask = nil;
+	bibTask = nil;
+	indexTask = nil;
+	metaFontTask = nil;
+	detexTask = nil;
+	detexPipe = nil;
 
 	if (!_externalEditor) {
 		myRange.location = 0;
@@ -538,7 +501,7 @@
 
 		PDFfromKit = YES;
 		myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
-		pdfDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
+		_pdfLastModDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
 
 		[myPDFKitView showWithPath: imagePath];
 		[pdfKitWindow setRepresentedFilename: imagePath];
@@ -559,7 +522,7 @@
 
 	if (_externalEditor && ([SUD boolForKey: PdfRefreshKey] == YES)) {
 
-		pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] target:self selector:@selector(refreshPDFWindow:) userInfo:nil repeats:YES] retain];
+		_pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey] target:self selector:@selector(refreshPDFWindow:) userInfo:nil repeats:YES] retain];
 
 	}
 
@@ -569,7 +532,7 @@
 		if (texName && [[NSFileManager defaultManager] fileExistsAtPath:texName]) {
 			myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: texName traverseLink:NO];
 			NSDate *texDate = [myAttributes objectForKey:NSFileModificationDate];
-			if ((pdfDate == nil) || ([texDate compare:pdfDate] == NSOrderedDescending))
+			if ((_pdfLastModDate == nil) || ([texDate compare:_pdfLastModDate] == NSOrderedDescending))
 				[self doTypeset:self];
 		}
 	}
@@ -758,20 +721,19 @@ in other code when an external editor is being used. */
 		showBadEncodingDialog = YES;
 		_documentContent = [[[NSString alloc] initWithData:myData encoding:NSMacOSRomanStringEncoding] autorelease];
 	}
-	return YES;
+
+	if (_documentContent) {
+		if ([SUD boolForKey:ConvertLFKey]) {
+			// zenitani 1.35 (A) -- normalizing newline character for regular expression
+			_documentContent = [OGRegularExpression replaceNewlineCharactersInString:_documentContent
+															  withCharacter:OgreLfNewlineCharacter];
+		}
+
+		return YES;
+	} else {
+		return NO;
+	}
 }
-
-// The default save operations clear the "document edited symbol" but
-// do not reset the undo stack, and then later the symbol gets out of sync.
-// This seems like a bug; it is fixed by the code below. RMK: 6/22/01
-
-// On December 30, 2002, Max Horn complained about this fix. I removed it,
-// and things seem to be fine. So for now I'll stick with eliminating the
-// fix!
-
-// On January 10, 2003, I reimplemented the code, because the December fix
-// produced the original "out of sync" bugs. In particular, the program would
-// quit without asking if it should save changed files!
 
 - (BOOL)writeToFile:(NSString *)fileName ofType:(NSString *)docType
 {
@@ -780,13 +742,71 @@ in other code when an external editor is being used. */
 
 	result = [super writeToFile:fileName ofType:docType];
 	if (result) {
-		//[[textView undoManager] removeAllActions];
+		// We register a dummy undo operation here, to make sure that the undo stack
+		// is properly synced to the actual editing state of the document.
 		myManager = [self undoManager];
 		[myManager registerUndoWithTarget:self selector:@selector(doNothing:) object: nil];
 		[myManager setActionName:NSLocalizedString(@"Save Spot", @"Save Spot")];
 		[[textWindow undoManager] undo];
 	}
 	return result;
+}
+
+- (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
+{
+	BOOL	value;
+
+	value = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
+	if ((value) && (_documentContent != nil))
+		[self installStringIntoTextEdit];
+	[textView setNeedsDisplayInRect: [textView bounds]];
+	return value;
+}
+
+- (void)printShowingPrintPanel:(BOOL)flag
+{
+	id				printView;
+	NSPrintOperation	*printOperation;
+	NSString		*imagePath;
+	NSString		*theSource;
+	id				aRep;
+	int				result;
+	
+	if (_documentType == isTeX) {
+		
+		if (!_externalEditor) {
+			theSource = [[self textView] string];
+			if ([self checkMasterFile:theSource forTask:RootForPrinting])
+				return;
+			if ([self checkRootFile_forTask:RootForPrinting])
+				return;
+		}
+		
+		imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+	}
+	else if (_documentType == isPDF)
+		imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+	else if ((_documentType == isJPG) || (_documentType == isTIFF))
+		imagePath = [self fileName];
+	else
+		imagePath = [self fileName];
+	
+	aRep = nil;
+	if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
+		if ((_documentType == isTeX) || (_documentType == isPDF))
+			aRep = [NSPDFImageRep imageRepWithContentsOfFile: imagePath];
+		else if (_documentType == isJPG || _documentType == isTIFF)
+			aRep = [NSImageRep imageRepWithContentsOfFile: imagePath];
+		if (aRep == nil)
+			return;
+		printView = [[TSPrintView alloc] initWithImageRep: aRep];
+		printOperation = [NSPrintOperation printOperationWithView:printView printInfo: [self printInfo]];
+		[printOperation setShowPanels:flag];
+		[printOperation runOperation];
+		[printView release];
+	}
+	else if (_documentType == isTeX)
+		result = [NSApp runModalForWindow: printRequestPanel];
 }
 
 - (BOOL)keepBackupFile
@@ -802,11 +822,11 @@ in other code when an external editor is being used. */
 		[tagTimer release];
 		tagTimer = nil;
 	}
-	if (pdfRefreshTimer != nil) {
-		[pdfRefreshTimer invalidate];
-		[pdfRefreshTimer release];
-		pdfRefreshTimer = nil;
-	}
+
+	[_pdfRefreshTimer invalidate];
+	[_pdfRefreshTimer release];
+	_pdfRefreshTimer = nil;
+
 	[pdfWindow close];
 	/* The next line fixes a crash bug in Jaguar; see notifyActiveTextWindowClosed for
 	a description. */
@@ -846,32 +866,6 @@ in other code when an external editor is being used. */
 		[[NSApp delegate] finishCommandCompletionConfigure];
 }
 
-// added by mitsu --(K) "Unititled-n" for new window
-// this method gives a name "Untitled-n" for new documents
--(NSString *)displayName
-{
-	if ([self fileName] == nil) // file is a new one
-	{
-		NSString *displayString = [super displayName];
-		if (displayString == nil) // these two lines fix a Panther problem
-			return displayString;
-		else {
-			NSMutableString *newString = [NSMutableString stringWithString: displayString];
-			[newString replaceOccurrencesOfString: @" " withString: @"-"
-										  options: 0 range: NSMakeRange(0, [newString length])];
-			// mitsu 1.29 (V)
-			if ([[[[[NSBundle mainBundle] pathForResource:@"MainMenu" ofType:@"nib"]
-				stringByDeletingLastPathComponent] lastPathComponent]
-				isEqualToString: @"Japanese.lproj"] && [newString length]==5)
-				[newString appendString: @"-1"];
-			// end mitsu 1.29
-			return newString;
-		}
-	}
-	return [super displayName];
-}
-// end addition
-
 
 #pragma mark Statistics dialog
 
@@ -881,25 +875,24 @@ in other code when an external editor is being used. */
 	NSDate          *myDate;
 	NSString        *enginePath, *myFileName, *tetexBinPath;
 	NSMutableArray  *args;
-
+	
 	[statisticsPanel setTitle:[self displayName]];
 	[statisticsPanel makeKeyAndOrderFront:self];
-
+	
 	myFileName = [self fileName];
 	if (! myFileName)
 		return;
-
+	
 	if (detexTask != nil) {
 		[detexTask terminate];
 		myDate = [NSDate date];
 		while (([detexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
 		[detexTask release];
-		if (detexPipe)
-			[detexPipe release];
+		[detexPipe release];
 		detexTask = nil;
 		detexPipe = nil;
 	}
-
+	
 	detexTask = [[NSTask alloc] init];
 	[detexTask setCurrentDirectoryPath: [myFileName stringByDeletingLastPathComponent]];
 	[detexTask setEnvironment: g_environment];
@@ -916,16 +909,12 @@ in other code when an external editor is being used. */
 		[detexTask setLaunchPath:enginePath];
 		[detexTask setArguments:args];
 		[detexTask launch];
-	}
-	else {
-		if (detexPipe) {
-			[detexPipe release];
-			detexPipe = nil;
-		}
-		[detexTask release];
+	} else {
+		if (detexPipe)
+			[detexTask release];
 		detexTask = nil;
 	}
-
+	
 }
 
 - (void)saveForStatistics: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo
@@ -1001,20 +990,11 @@ in other code when an external editor is being used. */
 
 - (void)installStringIntoTextEdit
 {
-	// zenitani 1.35 (A) -- normalizing newline character for regular expression
-	unsigned		length;
-
-	if ([SUD boolForKey:ConvertLFKey]) {
-		_documentContent = [OGRegularExpression replaceNewlineCharactersInString:_documentContent
-														  withCharacter:OgreLfNewlineCharacter];
-	}
-
 	[textView setString: _documentContent];
-	length = [_documentContent length];
+	_documentContent = nil;
+
 	[self setupTags];
 	[self colorizeAll];
-
-	_documentContent = nil;
 }
 
 // forsplit
@@ -2276,8 +2256,9 @@ preference change is cancelled. "*/
 	int syncMethod = [SUD integerForKey:SyncMethodKey];
 	if ((syncMethod == SEARCHONLY) || (syncMethod == SEARCHFIRST)) {
 		result = [self doNewPreviewSyncWithFilename:fileName andLine:line andCharacterIndex:index andTextView:aTextView];
-		if (result) return;
-		}
+		if (result)
+			return;
+	}
 	if (syncMethod == SEARCHONLY)
 		return;
 	// get .sync file
@@ -2286,7 +2267,7 @@ preference change is cancelled. "*/
 	NSString *infoFile = [[fileName1 stringByDeletingPathExtension] stringByAppendingPathExtension: @"pdfsync"];
 	if (![fileManager fileExistsAtPath: infoFile])
 		return;
-
+	
 /*
 	// worry that the user has tex + ghostscript and the sync file is out of date
 	// to do that, test the date of mydoc.pdf and mydoc.pdfsync
@@ -2337,64 +2318,60 @@ preference change is cancelled. "*/
 			expectedFileName = [expectedFileName stringByDeletingPathExtension];
 			expectedString = @"(";
 			expectedString = [expectedString stringByAppendingString:expectedFileName];
-			}
-		else
+		} else
 			return;
-
+		
 		myRange = [syncInfo rangeOfString: expectedString];
-
-		if (myRange.location == NSNotFound)
-			{
+		
+		if (myRange.location == NSNotFound) {
 			expectedString = @"(./";
 			expectedString = [expectedString stringByAppendingString:expectedFileName];
 			myRange = [syncInfo rangeOfString: expectedString];
 			if (myRange.location == NSNotFound)
 				return;
-			}
-
+		}
+		
 		NS_DURING
-		[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+			[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
 		NS_HANDLER
-		return;
+			return;
 		NS_ENDHANDLER
 		syncInfo = [syncInfo substringFromIndex: end];
-
-	// now search for matching ')'
-
+		
+		// now search for matching ')'
+		
 		myRange.location = 0;
 		myRange.length = 1;
 		skipping = NO;
 		skipdepth = 0;
 		found = NO;
-		while ((! found) && (myRange.location < stringlength)) {
-		NS_DURING
-		[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
-		NS_HANDLER
-		return;
-		NS_ENDHANDLER
-		if (skipping) {
-			if ([syncInfo characterAtIndex: start] == ')') {
-				skipdepth--;
-				if (skipdepth == 0)
-					skipping = NO;
+		while (!found && (myRange.location < stringlength)) {
+			NS_DURING
+				[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+			NS_HANDLER
+				return;
+			NS_ENDHANDLER
+			if (skipping) {
+				if ([syncInfo characterAtIndex: start] == ')') {
+					skipdepth--;
+					if (skipdepth == 0)
+						skipping = NO;
 				}
-			}
-		else if ([syncInfo characterAtIndex: start] == '(') {
-			skipping = YES;
-			skipdepth++;
-			}
-		else if ([syncInfo characterAtIndex: start] == ')')
-			found = YES;
-		myRange.location = end;
+			} else if ([syncInfo characterAtIndex: start] == '(') {
+				skipping = YES;
+				skipdepth++;
+			} else if ([syncInfo characterAtIndex: start] == ')')
+				found = YES;
+			myRange.location = end;
 		}
-
-		if (! found)
+		
+		if (!found)
 			return;
-
+		
 		myRange.length = myRange.location;
 		myRange.location = 0;
 		syncInfo = [syncInfo substringWithRange: myRange];
-		}
+	}
 
 
 	// Search through syncInfo to find the first "l" line greater than or equal
@@ -2406,44 +2383,40 @@ preference change is cancelled. "*/
 
 	myRange.location = 0;
 	myRange.length = 1;
-	found = NO;
 	synclineFound = NO;
 	skipping = NO;
 	skipdepth = 0;
-	while ((! found) && (myRange.location < stringlength)) {
+	while (myRange.location < stringlength) {
 		NS_DURING
-		[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+			[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
 		NS_HANDLER
-		return;
+			return;
 		NS_ENDHANDLER
 		if (skipping) {
 			if ([syncInfo characterAtIndex: start] == ')') {
 				skipdepth--;
 				if (skipdepth == 0)
 					skipping = NO;
-				}
 			}
-		else if ([syncInfo characterAtIndex: start] == '(') {
+		} else if ([syncInfo characterAtIndex: start] == '(') {
 			skipping = YES;
 			skipdepth++;
-			}
-		else
-			if([syncInfo characterAtIndex: start] == 'l') {
+		} else if ([syncInfo characterAtIndex: start] == 'l') {
 			newRange.location = start;
 			newRange.length = end - start;
 			keyLine = [syncInfo substringWithRange: newRange];
 			// NSLog(keyLine);
-
+			
 			searchResultRange = [keyLine rangeOfCharacterFromSet: [NSCharacterSet decimalDigitCharacterSet]];
 			if (searchResultRange.location == NSNotFound)
 				return;
 			newRange.location = searchResultRange.location;
 			newRange.length = [keyLine length] - newRange.location;
 			keyLine = [keyLine substringWithRange: newRange];
-		   //  NSLog(keyLine);
-		   // NSLog(@" ");
+			//  NSLog(keyLine);
+			// NSLog(@" ");
 			syncNumber = [keyLine intValue]; // number of entry
-
+			
 			searchResultRange = [keyLine rangeOfString: @" "];
 			if (searchResultRange.location == NSNotFound)
 				return;
@@ -2459,57 +2432,57 @@ preference change is cancelled. "*/
 			syncLine = [keyLine intValue]; //line number of entry
 			synclineFound = YES;
 			if (syncLine >= line)
-				found = YES;
-			}
-		myRange.location = end;
+				break;
 		}
+		myRange.location = end;
+	}
 
-
+	
 	if (!synclineFound)
 		return;
-
-
+	
+	
 	// now syncNumber is the entry number of the item we want. We must next find the
 	// entry "p syncNumber * *". This number will follow a page number, "s pageNumber"
 	// and this pageNumber is the number we want
-
+	
 	// the technique is to go through the .pdfsync file line by line. If a line starts with "s" we
 	// record that page number. If a line starts with "p number *  *" or "p* number * *" we see if number = syncNumber.
 	// If so, then the current page number is the one we want. If we don't find it, we just return
-
+	
 	// But if the entry comes at the start of the file, it will not follow a page number.
 	// So we must search for the first page in the syncInfo file and then back up one page
-
+	
 	// Debugging has caused me to discover that some "l" lines in the pdfsync file have no matching
 	// "p" lines. So this code starts with an "l" line with a given syncNumber, and then iterates
 	// the search 20 times with higher and higher syncNumbers before giving up
-
-	 NS_DURING
+	
+	NS_DURING
 		syncInfo = [NSString stringWithContentsOfFile:infoFile];
 	NS_HANDLER
 		return;
 	NS_ENDHANDLER
-
+	
 	// remove the first two lines
 	myRange.location = 0;
 	myRange.length = 1;
 	NS_DURING
-	[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+		[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
 	NS_HANDLER
-	return;
+		return;
 	NS_ENDHANDLER
 	syncInfo = [syncInfo substringFromIndex: end];
 	NS_DURING
-	[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+		[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
 	NS_HANDLER
-	return;
+		return;
 	NS_ENDHANDLER
 	syncInfo = [syncInfo substringFromIndex: end];
-
-
+	
+	
 	found = NO;
 	int i = 0;
-	while ((!found) && (i < 20))    {
+	while (!found && (i < 20)) {
 		i++;
 		pdfPage = -1;
 		stringlength = [syncInfo length];
@@ -2519,42 +2492,40 @@ preference change is cancelled. "*/
 		found = NO;
 		while ((! found) && (myRange.location < stringlength)) {
 			NS_DURING
-			[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+				[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
 			NS_HANDLER
-			return;
+				return;
 			NS_ENDHANDLER
 			if ([syncInfo characterAtIndex: start] == 's') {
 				newRange.location = start + 1;
 				newRange.length = end - start - 1;
 				NS_DURING
-				keyLine = [syncInfo substringWithRange: newRange];
+					keyLine = [syncInfo substringWithRange: newRange];
 				NS_HANDLER
-				return;
+					return;
 				NS_ENDHANDLER
 				pdfPage = [keyLine intValue];
 				pdfPage--;
-				}
-			else if ([syncInfo characterAtIndex:start] == 'p') {
+			} else if ([syncInfo characterAtIndex:start] == 'p') {
 				if ([syncInfo characterAtIndex:(start + 1)] == ' ') {
 					newRange.location = start + 1;
 					newRange.length = end - start - 1;
-					}
-				else {
+				} else {
 					newRange.location = start + 2;
 					newRange.length = end - start - 2;
-					}
+				}
 				NS_DURING
-				keyLine = [syncInfo substringWithRange: newRange];
+					keyLine = [syncInfo substringWithRange: newRange];
 				NS_HANDLER
-				return;
+					return;
 				NS_ENDHANDLER
 				if ([keyLine intValue] == syncNumber)
 					found = YES;
-				}
-			myRange.location = end;
 			}
-		syncNumber++;
+			myRange.location = end;
 		}
+		syncNumber++;
+	}
 
 	if (!found)
 		return;
@@ -2581,7 +2552,6 @@ preference change is cancelled. "*/
 	NSArray				*myPages;
 	PDFPage				*thePage;
 	NSRect				selectionBounds;
-	BOOL				found;
 
 // I now try a new method. We will pick a string of length 10, first surrounding the text where
 // the click occurred. If it isn't found, we'll back up 5 characters at a time for 20 times, repeating
@@ -2589,7 +2559,6 @@ preference change is cancelled. "*/
 // search. If we still get nothing, we'll declare a failure.
 
 	searchWindow = 10;
-	found = NO;
 
 	theText = [aTextView string];
 	length = [theText length];
@@ -2598,7 +2567,7 @@ preference change is cancelled. "*/
 	testIndex = theIndex;
 	numberOfTests = 1;
 
-	while ((! found) && (numberOfTests < 20) && (testIndex >= 0)) {
+	while ((numberOfTests < 20) && (testIndex >= 0)) {
 
 		// get surrounding letters back and forward
 		if (testIndex >= searchWindow)
@@ -2618,12 +2587,7 @@ preference change is cancelled. "*/
 
 	// search for this in the pdf
 		searchResults = [[myPDFKitView document] findString: searchText withOptions: NSCaseInsensitiveSearch];
-		if ([searchResults count] > 0) {
-			if ([searchResults count] == 1)
-				found = YES;
-			}
-
-		if (found) {
+		if ([searchResults count] == 1) {
 			mySelection = [searchResults objectAtIndex:0];
 			myPages = [mySelection pages];
 			if ([myPages count] == 0)
@@ -2642,7 +2606,7 @@ preference change is cancelled. "*/
 
 	testIndex = theIndex + 5;
 	numberOfTests = 2;
-	while ((! found) && (numberOfTests < 20) && (testIndex < length)) {
+	while ((numberOfTests < 20) && (testIndex < length)) {
 
 		// get surrounding letters back and forward
 		if (testIndex > searchWindow)
@@ -2662,12 +2626,7 @@ preference change is cancelled. "*/
 
 	// search for this in the pdf
 		searchResults = [[myPDFKitView document] findString: searchText withOptions: NSCaseInsensitiveSearch];
-		if ([searchResults count] > 0) {
-			if ([searchResults count] == 1)
-				found = YES;
-			}
-
-		if (found) {
+		if ([searchResults count] == 1) {
 			mySelection = [searchResults objectAtIndex:0];
 			myPages = [mySelection pages];
 			if ([myPages count] == 0)
@@ -2690,53 +2649,29 @@ preference change is cancelled. "*/
 //=============================================================================
 // nofification methods
 //=============================================================================
-- (void) refreshPDFGraphicWindow:(NSTimer *)timer;
+
+// Reload the PDF file associated with this document (if any). This method is called
+// at regular intervals by _pdfRefreshTimer.
+- (void) refreshPDFWindow:(NSTimer *)timer
 {
-	NSString		*imagePath;
-	NSDate              *newDate;
-	NSDictionary        *myAttributes;
-	BOOL                front;
+	NSString		*pdfPath;
+	NSDate			*newDate;
+	NSDictionary	*myAttributes;
+	BOOL			front;
 
-
-	imagePath = [self fileName];
-
-
-	if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath] && [[NSFileManager defaultManager] isReadableFileAtPath: imagePath]) {
-		myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
+	pdfPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+	
+	// Check whether a PDF version of this document exists 
+	if ([[NSFileManager defaultManager] fileExistsAtPath: pdfPath] && [[NSFileManager defaultManager] isReadableFileAtPath: pdfPath]) {
+		// The PDF exists. Now check whether its modification date changed.
+		myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: pdfPath traverseLink:NO];
 		newDate = [myAttributes objectForKey:NSFileModificationDate];
-		if ((pdfDate == nil) || ([newDate compare:pdfDate] == NSOrderedDescending) || tryAgain) {
-
-			tryAgain = NO;
-			if (pdfDate != nil) [pdfDate release];
-			[newDate retain];
-			pdfDate = newDate;
-
-			front = [SUD boolForKey: BringPdfFrontOnAutomaticUpdateKey];
-			[self refreshPDFAndBringFront: front];
-		}
-	}
-}
-
-
-- (void) refreshPDFWindow:(NSTimer *)timer;
-{
-	NSString		*imagePath;
-	NSDate              *newDate;
-	NSDictionary        *myAttributes;
-	BOOL                front;
-	
-	
-	imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-	
-	if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath] && [[NSFileManager defaultManager] isReadableFileAtPath: imagePath]) {
-		myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
-		newDate = [myAttributes objectForKey:NSFileModificationDate];
-		if ((pdfDate == nil) || ([newDate compare:pdfDate] == NSOrderedDescending) || tryAgain) {
+		if ((_pdfLastModDate == nil) || ([newDate compare:_pdfLastModDate] == NSOrderedDescending) || _pdfRefreshTryAgain) {
 			
-			tryAgain = NO;
-			if (pdfDate != nil) [pdfDate release];
+			_pdfRefreshTryAgain = NO;
 			[newDate retain];
-			pdfDate = newDate;
+			[_pdfLastModDate release];
+			_pdfLastModDate = newDate;
 			
 			front = [SUD boolForKey: BringPdfFrontOnAutomaticUpdateKey];
 			[self refreshPDFAndBringFront: front];
@@ -2747,22 +2682,24 @@ preference change is cancelled. "*/
 
 // the next routine is used by applescript; the previous routine should be
 // rewritten to use this code
-- (void)refreshPDFAndBringFront:(BOOL)front;
+- (void)refreshPDFAndBringFront:(BOOL)front
 {
 	NSPDFImageRep	*tempRep;
-	NSString		*imagePath;
+	NSString		*pdfPath;
 
-	imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+	pdfPath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
 
-	if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
-		tempRep = [NSPDFImageRep imageRepWithContentsOfFile: imagePath];
-		if ((tempRep == nil) || ([tempRep pageCount] == 0))
-			tryAgain = YES;
-		else {
+	if ([[NSFileManager defaultManager] fileExistsAtPath: pdfPath]) {
+		tempRep = [NSPDFImageRep imageRepWithContentsOfFile: pdfPath];
+		if ((tempRep == nil) || ([tempRep pageCount] == 0)) {
+			// Loading the PDF failed for some reason (e.g. maybe it is still being written),
+			// so we should retry loading it a in a bit.
+			_pdfRefreshTryAgain = YES;
+		} else {
 			PDFfromKit = YES;
-			[myPDFKitView reShowWithPath: imagePath];
-			[pdfKitWindow setRepresentedFilename: imagePath];
-			[pdfKitWindow setTitle: [imagePath lastPathComponent]];
+			[myPDFKitView reShowWithPath: pdfPath];
+			[pdfKitWindow setRepresentedFilename: pdfPath];
+			[pdfKitWindow setTitle: [pdfPath lastPathComponent]];
 			if (front) {
 				[pdfKitWindow makeKeyAndOrderFront: self];
 			}
@@ -2771,9 +2708,8 @@ preference change is cancelled. "*/
 }
 
 // the next routine is used by applescript
-- (void)refreshTEXT;
+- (void)refreshTEXT
 {
-	unsigned           length;
 	NSString		*textPath;
 	NSRange            myRange;
 
@@ -2782,13 +2718,11 @@ preference change is cancelled. "*/
 	if ([[NSFileManager defaultManager] fileExistsAtPath: textPath]) {
 
 		NSData *myData = [NSData dataWithContentsOfFile:textPath];
-		NSString *theString = [[[NSString alloc] initWithData:myData encoding:_encoding] autorelease];
+		NSString *theString = [[NSString alloc] initWithData:myData encoding:_encoding];
 
-		if (theString != nil)
-		{
+		if (theString != nil) {
 			[textView setString: theString];
-			length = [theString length];
-
+			[theString release];
 			if (fileIsTex) {
 				if (windowIsSplit)
 					[self splitWindow: self];
@@ -2813,8 +2747,7 @@ preference change is cancelled. "*/
 	if (([aNotification object] == projectPanel) ||
 		([aNotification object] == requestWindow) ||
 		([aNotification object] == linePanel) ||
-		([aNotification object] == printRequestPanel))
-	{
+		([aNotification object] == printRequestPanel)) {
 		finalResult = myPrefResult;
 		if (finalResult == 2) finalResult = 0;
 		[NSApp stopModalWithCode: finalResult];
@@ -2852,20 +2785,17 @@ preference change is cancelled. "*/
 				searchString = @"l.";
 				lineRange.location = 0;
 				lineRange.length = 1;
-				while (lineRange.location < myLength)
-				{
+				while (lineRange.location < myLength) {
 					[newOutput getLineStart: &start end: &end contentsEnd: &irrelevant forRange: lineRange];
 					lineRange.location = end;
 					searchRange.location = start;
 					searchRange.length = end - start;
 					tempString = [newOutput substringWithRange: searchRange];
 					myRange = [tempString rangeOfString: searchString];
-					if ((myRange.location = 1) && (myRange.length > 0))
-					{
+					if ((myRange.location = 1) && (myRange.length > 0)) {
 						numberOutput = [tempString substringFromIndex:(myRange.location + 1)];
 						error = [numberOutput intValue];
-						if ((error > 0) && (errorNumber < NUMBEROFERRORS))
-						{
+						if ((error > 0) && (errorNumber < NUMBEROFERRORS)) {
 							errorLine[errorNumber] = error;
 							errorNumber++;
 							[outputWindow makeKeyAndOrderFront: self];
@@ -2881,12 +2811,9 @@ preference change is cancelled. "*/
 			[newOutput release];
 			[readHandle readInBackgroundAndNotify];
 		}
-	}
-
-	else if (myFileHandle == detexHandle) {
+	} else if (myFileHandle == detexHandle) {
 		detexData = [[aNotification userInfo] objectForKey:@"NSFileHandleNotificationDataItem"];
-		if ([detexData length])
-			{
+		if ([detexData length]) {
 			detexString = [[NSString alloc] initWithData: detexData encoding: NSMacOSRomanStringEncoding];
 			NSScanner *myScanner = [NSScanner scannerWithString:detexString];
 			result = [myScanner scanInt: &lineCount];
@@ -2955,41 +2882,6 @@ preference change is cancelled. "*/
 	}
 
 	return NO;
-}
-
-
-//-----------------------------------------------------------------------------
-- (void) fixTyping: (id) theDictionary;
-//-----------------------------------------------------------------------------
-
-{
-	NSRange		oldRange;
-	NSString		*oldString, *newString;
-	NSUndoManager	*myManager;
-	NSMutableDictionary	*myDictionary;
-	NSNumber		*theLocation, *theLength;
-	unsigned		from, to;
-
-	oldRange.location = [[theDictionary objectForKey: @"oldLocation"] unsignedIntValue];
-	oldRange.length = [[theDictionary objectForKey: @"oldLength"] unsignedIntValue];
-	newString = [theDictionary objectForKey: @"oldString"];
-	oldString = [[textView string] substringWithRange: oldRange];
-	[textView replaceCharactersInRange: oldRange withString: newString];
-
-	myManager = [textView undoManager];
-	myDictionary = [NSMutableDictionary dictionaryWithCapacity: 3];
-	theLocation = [NSNumber numberWithInt: oldRange.location];
-	theLength = [NSNumber numberWithInt: [newString length]];
-	[myDictionary setObject: oldString forKey: @"oldString"];
-	[myDictionary setObject: theLocation forKey: @"oldLocation"];
-	[myDictionary setObject: theLength forKey: @"oldLength"];
-	[myManager registerUndoWithTarget:self selector:@selector(fixTyping:) object: myDictionary];
-	[myManager setActionName:NSLocalizedString(@"Typing", @"Typing")];
-	from = oldRange.location;
-	to = from + [newString length];
-	[self fixColor: from :to];
-	[self setupTags];
-
 }
 
 - (void)doCompletion:(NSNotification *)notification

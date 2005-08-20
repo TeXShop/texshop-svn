@@ -1041,15 +1041,10 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem;
 {
-	id		documentWindow;
-	
-	if (([anItem action] == @selector(displayLatexPanel:)) 
-	 || ([anItem action] == @selector(displayMatrixPanel:))) {
-		documentWindow = [[TSWindowManager sharedInstance] activeTextWindow];
-		return [documentWindow isKeyWindow];
+	if ([anItem action] == @selector(displayLatexPanel:)) {
+		return [[NSApp mainWindow] isKindOfClass:[TSTextEditorWindow class]];
 	} else if ([anItem action] == @selector(displayMatrixPanel:)) {
-		documentWindow = [[TSWindowManager sharedInstance] activeTextWindow];
-		return [documentWindow isKeyWindow];
+		return [[NSApp mainWindow] isKindOfClass:[TSTextEditorWindow class]];
 	} else
 		return YES;
 }

@@ -109,7 +109,7 @@ enum RootCommand
 	NSFileHandle	*readHandle;
 	NSPipe		*inputPipe;
 	NSPipe		*outputPipe;
-	NSString		*_documentContent;		/*" holds the content of the tex document "*/
+	NSString		*_documentContent;		/*" temporarily holds the content of the tex document (during loading only) "*/
 	NSTask		*texTask;
 	NSTask		*bibTask;
 	NSTask		*indexTask;
@@ -164,10 +164,12 @@ enum RootCommand
 	BOOL		warningGiven;
 	BOOL		omitShellEscape;
 	BOOL		withLatex;
-	NSDate              *pdfDate;
-	NSTimer             *pdfRefreshTimer;
+
+	NSDate              *_pdfLastModDate;
+	NSTimer             *_pdfRefreshTimer;
+	BOOL                _pdfRefreshTryAgain;
+
 	BOOL                typesetContinuously;
-	BOOL                tryAgain;
 	int                 tempEngine;
 	BOOL                useTempEngine;
 	BOOL                realEngine;
