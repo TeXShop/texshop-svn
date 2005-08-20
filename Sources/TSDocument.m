@@ -1869,7 +1869,6 @@ preference change is cancelled. "*/
 	NSRange			matchRange, tagRange;
 	NSString		*textString;
 	int				i, j, count, uchar, leftpar, rightpar;
-	BOOL			done;
 	NSDate			*myDate;
 	unsigned 		start, end, end1;
 
@@ -1877,6 +1876,10 @@ preference change is cancelled. "*/
 	colorStart = affectedCharRange.location;
 	colorEnd = colorStart + [replacementString length];
 
+#if 1
+// FIXME HACK: Always rebuild the tags menu when things change...
+	tagLine = YES;
+#else
 	//
 	// Trigger an update of the tags menu, if necessary
 	//
@@ -1899,8 +1902,8 @@ preference change is cancelled. "*/
 	if (matchRange.length != 0)
 		tagLine = YES;
 
-	// FIXME: The following check is silly. *Evey* line contains a newline, so this check will
-	// simply *always* succeed! Rendering all these careful checks here irrelevant.
+	// FIXME: The following check is silly. *Every* line contains a newline, so the check will
+	// *always* succeed! And thus we regenerate the tags menu after each key press...
 	// OTOH, just removing this will cause lots of bugs related to tagging: For example,
 	// if the user adds a ":" after an existing "%", this code wouldn't notice that there's
 	// now a "%:" on the line. To catch all cases, it is necessary to check for a "%:" in the
@@ -1943,6 +1946,7 @@ preference change is cancelled. "*/
 
 		}
 	}
+#endif
 
 	if (replacementString == nil)
 		return YES;
@@ -1967,15 +1971,10 @@ preference change is cancelled. "*/
 		i = affectedCharRange.location;
 		j = 1;
 		count = 1;
-		done = NO;
-
-	// TODO / FIXME: Replace the brace highlighting below with something better. See Smultron:
-	//   [layoutManager addTemporaryAttributes:[self highlightColour] forCharacterRange:NSMakeRange(cursorLocation, 1)];
-	//   [self performSelector:@selector(resetBackgroundColour:) withObject:NSStringFromRange(NSMakeRange(cursorLocation, 1)) afterDelay:0.12];
 
 
 		/* modified Jan 26, 2001, so we don't search entire text */
-		while ((i > 0) && (j < 5000) && (! done)) {
+		while ((i > 0) && (j < 5000)) {
 			i--; j++;
 			uchar = [textString characterAtIndex:i];
 			if (uchar == rightpar)
@@ -1983,18 +1982,24 @@ preference change is cancelled. "*/
 			else if (uchar == leftpar)
 				count--;
 			if (count == 0) {
-				done = YES;
 				matchRange.location = i;
 				matchRange.length = 1;
 				/* koch: here 'affinity' and 'stillSelecting' are necessary,
 					else the wrong range is selected. */
 				[textView setSelectedRange: matchRange
 								  affinity: NSSelectByCharacter stillSelecting: YES];
+
+	// TODO / FIXME: Replace the brace highlighting below with something better. See Smultron:
+	//   [layoutManager addTemporaryAttributes:[self highlightColour] forCharacterRange:NSMakeRange(cursorLocation, 1)];
+	//   [self performSelector:@selector(resetBackgroundColour:) withObject:NSStringFromRange(NSMakeRange(cursorLocation, 1)) afterDelay:0.12];
+
 				[textView display];
 				myDate = [NSDate date];
 				/* Koch: Jan 26, 2001: changed -0.15 to -0.075 to speed things up */
 				while ([myDate timeIntervalSinceNow] > - 0.075);
 				[textView setSelectedRange: affectedCharRange];
+				
+				break;
 			}
 		}
 	}
