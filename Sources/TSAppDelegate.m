@@ -35,6 +35,8 @@
 #import "OgreKit/OgreTextFinder.h"
 #import "TextFinder.h"
 
+@class TSTextEditorWindow;
+
 #ifdef MITSU_PDF
 // mitsu 1.29 (O)
 #import "MyPDFView.h"
@@ -150,8 +152,7 @@
 							NSLocalizedString(@"Preview", @"Preview")] submenu];
 	id <NSMenuItem> item = [previewMenu itemWithTitle:
 							NSLocalizedString(@"Copy Format", @"format")];
-	if (item)
-	{
+	if (item) {
 		NSMenu *formatMenu = [item submenu];
 		item = [formatMenu itemWithTag: imageCopyType];
 		[item setState: NSOnState];
@@ -164,8 +165,7 @@
 	NSFileManager	*fileManager = [NSFileManager defaultManager];
 	NSString *draggedImageFolder = [[DraggedImagePathKey stringByStandardizingPath]
 										stringByDeletingLastPathComponent];
-	if (!([fileManager fileExistsAtPath: draggedImageFolder]))
-	{
+	if (!([fileManager fileExistsAtPath: draggedImageFolder])) {
 		NS_DURING
 			[fileManager createDirectoryAtPath: draggedImageFolder attributes:nil];
 		NS_HANDLER
@@ -217,22 +217,21 @@ Copies %fileName to %directory. This method takes care that no files are overwri
 	NSFileManager *fileManager;
 	NSString *destFileName;
 	BOOL result;
-
+	
 	fileManager = [NSFileManager defaultManager];
 	destFileName = [[directory stringByStandardizingPath] stringByAppendingPathComponent:[fileName lastPathComponent]];
 	if (cutExt)
 		destFileName = [destFileName stringByDeletingPathExtension];
-
+	
 	// check if that file already exists
-	if ([fileManager fileExistsAtPath:destFileName isDirectory:NULL] == NO)
-			{
-			NS_DURING
+	if ([fileManager fileExistsAtPath:destFileName isDirectory:NULL] == NO) {
+		NS_DURING
 			// file doesn't exist -> copy it
 			result = [fileManager copyPath:fileName toPath:destFileName handler:nil];
-			NS_HANDLER
+		NS_HANDLER
 			;
-			NS_ENDHANDLER
-			}
+		NS_ENDHANDLER
+	}
 }
 
 /*" %{This method is not to be called from outside of this class.}
@@ -300,8 +299,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	// if preferences folder doesn't exist already...
 
 	// First create TeXShop directory if it does not exist
-	if (!([fileManager fileExistsAtPath: [[TexTemplatePathKey stringByStandardizingPath] stringByDeletingLastPathComponent]]))
-	{
+	if (!([fileManager fileExistsAtPath: [[TexTemplatePathKey stringByStandardizingPath] stringByDeletingLastPathComponent]])) {
 		// create the necessary directories
 			NS_DURING
 			{
@@ -321,8 +319,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 
 
 	// Next create Templates folder
-	if (!([fileManager fileExistsAtPath: [TexTemplatePathKey stringByStandardizingPath]]))
-	{
+	if (!([fileManager fileExistsAtPath: [TexTemplatePathKey stringByStandardizingPath]])) {
 		// create the necessary directories
 			NS_DURING
 				// create ~/Library/TeXShop/Templates
@@ -382,8 +379,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	// The code below is copied from Sarah Chambers' code
 
 	// if Scripts folder doesn't exist already...
-	if (!([fileManager fileExistsAtPath: [ScriptsPathKey stringByStandardizingPath]]))
-	{
+	if (!([fileManager fileExistsAtPath: [ScriptsPathKey stringByStandardizingPath]])) {
 
 		// create the necessary directories
 		NS_DURING
@@ -405,13 +401,11 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	scriptPath = [scriptPath stringByAppendingPathExtension:@"scpt"];
 	if (! [fileManager fileExistsAtPath: scriptPath]) {
 		NS_DURING
-		{
 			result = NO;
 			fileName = [[NSBundle mainBundle] pathForResource:@"setname" ofType:@"scpt"];
 			if (fileName) {
 				result = [fileManager copyPath:fileName toPath:scriptPath handler:nil];
 			}
-		}
 		NS_HANDLER
 			result = NO;
 			reason = [localException reason];
@@ -438,8 +432,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	// The code below is copied from Sarah Chambers' code
 
 	// if Binary folder doesn't exist already...
-	if (!([fileManager fileExistsAtPath: [BinaryPathKey stringByStandardizingPath]]))
-	{
+	if (!([fileManager fileExistsAtPath: [BinaryPathKey stringByStandardizingPath]])) {
 
 		// create the necessary directories
 		NS_DURING
@@ -478,8 +471,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	// The code below is copied from Sarah Chambers' code
 
 	// if Binary folder doesn't exist already...
-	if (!([fileManager fileExistsAtPath: [EnginePathKey stringByStandardizingPath]]))
-	{
+	if (!([fileManager fileExistsAtPath: [EnginePathKey stringByStandardizingPath]])) {
 
 		// create the necessary directories
 		NS_DURING
@@ -517,8 +509,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	// The code below is copied from Sarah Chambers' code
 
 	// if Keyboard folder doesn't exist already...
-	if (!([fileManager fileExistsAtPath: [AutoCompletionPathKey stringByStandardizingPath]]))
-	{
+	if (!([fileManager fileExistsAtPath: [AutoCompletionPathKey stringByStandardizingPath]])) {
 
 		// create the necessary directories
 		NS_DURING
@@ -540,13 +531,11 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	autoCompletionPath = [autoCompletionPath stringByAppendingPathExtension:@"plist"];
 	if (! [fileManager fileExistsAtPath: autoCompletionPath]) {
 		NS_DURING
-		{
 			result = NO;
 			fileName = [[NSBundle mainBundle] pathForResource:@"autocompletion" ofType:@"plist"];
 			if (fileName) {
 				result = [fileManager copyPath:fileName toPath:autoCompletionPath handler:nil];
 			}
-		}
 		NS_HANDLER
 			result = NO;
 			reason = [localException reason];
@@ -570,8 +559,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	// The code below is copied from Sarah Chambers' code
 
 	// if Keyboard folder doesn't exist already...
-	if (!([fileManager fileExistsAtPath: [LatexPanelPathKey stringByStandardizingPath]]))
-	{
+	if (!([fileManager fileExistsAtPath: [LatexPanelPathKey stringByStandardizingPath]])) {
 
 		// create the necessary directories
 		NS_DURING
@@ -593,12 +581,10 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	completionPath = [completionPath stringByAppendingPathExtension:@"plist"];
 	if (! [fileManager fileExistsAtPath: completionPath]) {
 		NS_DURING
-		{
 			result = NO;
 			fileName = [[NSBundle mainBundle] pathForResource:@"completion" ofType:@"plist"];
 			if (fileName)
 				result = [fileManager copyPath:fileName toPath:completionPath handler:nil];
-		}
 		NS_HANDLER
 			result = NO;
 			reason = [localException reason];
@@ -646,12 +632,10 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	if (! [fileManager fileExistsAtPath: matrixPath])
 	{
 		NS_DURING
-		{
 			result = NO;
 			fileName = [[NSBundle mainBundle] pathForResource:@"matrixpanel_1" ofType:@"plist"];
 			if (fileName)
 				result = [fileManager copyPath:fileName toPath:matrixPath handler:nil];
-		}
 		NS_HANDLER
 			result = NO;
 			reason = [localException reason];
@@ -676,8 +660,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	// The code below is copied from Sarah Chambers' code
 
 	// if Keyboard folder doesn't exist already...
-	if (!([fileManager fileExistsAtPath: [MenuShortcutsPathKey stringByStandardizingPath]]))
-	{
+	if (!([fileManager fileExistsAtPath: [MenuShortcutsPathKey stringByStandardizingPath]])) {
 
 		// create the necessary directories
 		NS_DURING
@@ -697,15 +680,12 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	keyEquivalentsPath = [MenuShortcutsPathKey stringByStandardizingPath];
 	keyEquivalentsPath = [keyEquivalentsPath stringByAppendingPathComponent:@"KeyEquivalents"];
 	keyEquivalentsPath = [keyEquivalentsPath stringByAppendingPathExtension:@"plist"];
-	if (! [fileManager fileExistsAtPath: keyEquivalentsPath])
-	{
+	if (! [fileManager fileExistsAtPath: keyEquivalentsPath]) {
 		NS_DURING
-		{
 			result = NO;
 			fileName = [[NSBundle mainBundle] pathForResource:@"KeyEquivalents" ofType:@"plist"];
 			if (fileName)
 				result = [fileManager copyPath:fileName toPath:keyEquivalentsPath handler:nil];
-		}
 		NS_HANDLER
 			result = NO;
 			reason = [localException reason];
@@ -730,9 +710,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	// The code below is copied from Sarah Chambers' code
 
 	// if Keyboard folder doesn't exist already...
-	if (!([fileManager fileExistsAtPath: [MacrosPathKey stringByStandardizingPath]]))
-	{
-
+	if (!([fileManager fileExistsAtPath: [MacrosPathKey stringByStandardizingPath]])) {
 		// create the necessary directories
 		NS_DURING
 			// create ~/Library/TeXShop/Templates
@@ -751,21 +729,17 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	macrosPath = [MacrosPathKey stringByStandardizingPath];
 	macrosPath = [macrosPath stringByAppendingPathComponent:@"Macros_Latex"];
 	macrosPath = [macrosPath stringByAppendingPathExtension:@"plist"];
-	if (! [fileManager fileExistsAtPath: macrosPath])
-	{
+	if (! [fileManager fileExistsAtPath: macrosPath]) {
 		NS_DURING
-		{
 			result = NO;
 			fileName = [[NSBundle mainBundle] pathForResource:@"Macros_Latex" ofType:@"plist"];
 			if (fileName)
 				result = [fileManager copyPath:fileName toPath:macrosPath handler:nil];
-		}
 		NS_HANDLER
 			result = NO;
 			reason = [localException reason];
 		NS_ENDHANDLER
-		if (!result)
-		{
+		if (!result) {
 			NSRunAlertPanel(@"Error", reason, @"Couldn't Create Macros_Latex plist", nil, nil);
 			return;
 		}
@@ -776,12 +750,10 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	macrosPath = [macrosPath stringByAppendingPathExtension:@"plist"];
 	if (! [fileManager fileExistsAtPath: macrosPath]) {
 		NS_DURING
-		{
 			result = NO;
 			fileName = [[NSBundle mainBundle] pathForResource:@"Macros_Context" ofType:@"plist"];
 			if (fileName)
 				result = [fileManager copyPath:fileName toPath:macrosPath handler:nil];
-		}
 		NS_HANDLER
 			result = NO;
 			reason = [localException reason];
@@ -799,15 +771,14 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	NSString 	*completionPath, *folderPath, *fileName, *extension, *bundlePath, *reason;
 	NSFileManager	*fileManager;
 	BOOL		result;
-
+	
 	completionPath = [filePath stringByStandardizingPath];
 	folderPath = [completionPath stringByDeletingLastPathComponent];
 	fileName = [[filePath lastPathComponent] stringByDeletingPathExtension];
 	extension = [filePath pathExtension];
-
+	
 	fileManager = [NSFileManager defaultManager];
-	if (!([fileManager fileExistsAtPath: folderPath]))
-	{
+	if (!([fileManager fileExistsAtPath: folderPath])) {
 		// create the necessary directories
 		NS_DURING
 			result = [fileManager createDirectoryAtPath: folderPath attributes:nil];
@@ -815,16 +786,14 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 			result = NO;
 			reason = [localException reason];
 		NS_ENDHANDLER
-		if (!result)
-		{
+		if (!result) {
 			NSRunAlertPanel(@"Error", reason,
-				[NSString stringWithFormat: @"Couldn't Create folder:\n%@", folderPath], nil, nil);
+							[NSString stringWithFormat: @"Couldn't Create folder:\n%@", folderPath], nil, nil);
 			return;
 		}
 	}
 	// now see if the file is inside; if not, copy it from the program folder
-	if (! [fileManager fileExistsAtPath: completionPath])
-	{
+	if (! [fileManager fileExistsAtPath: completionPath]) {
 		NS_DURING
 			result = NO;
 			bundlePath = [[NSBundle mainBundle] pathForResource:fileName ofType:extension];
@@ -834,10 +803,9 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 			result = NO;
 			reason = [localException reason];
 		NS_ENDHANDLER
-		if (!result)
-		{
+		if (!result) {
 			NSRunAlertPanel(@"Error", reason,
-				[NSString stringWithFormat: @"Couldn't Create file:\n%@", filePath], nil, nil);
+							[NSString stringWithFormat: @"Couldn't Create file:\n%@", filePath], nil, nil);
 			return;
 		}
 	}
@@ -852,7 +820,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 - (void) finishAutoCompletionConfigure
 {
 	NSString	*autocompletionPath;
-
+	
 	autocompletionPath = [AutoCompletionPathKey stringByStandardizingPath];
 	autocompletionPath = [autocompletionPath stringByAppendingPathComponent:@"autocompletion"];
 	autocompletionPath = [autocompletionPath stringByAppendingPathExtension:@"plist"];
@@ -877,9 +845,9 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	id			key, key1, key2, object;
 	unsigned int	mask;
 	int			value;
-
-	 // The code below is copied from Sarah Chambers' code
-
+	
+	// The code below is copied from Sarah Chambers' code
+	
 	shortcutsPath = [MenuShortcutsPathKey stringByStandardizingPath];
 	shortcutsPath = [shortcutsPath stringByAppendingPathComponent:@"KeyEquivalents"];
 	shortcutsPath = [shortcutsPath stringByAppendingPathExtension:@"plist"];
@@ -896,7 +864,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 			theMenu = [[mainMenu itemWithTitle: key] submenu];
 		else
 			theMenu = [[mainMenu itemAtIndex: (value - 1)] submenu];
-
+		
 		if (theMenu && menuDictionary) {
 			menuItemsEnumerator = [menuDictionary keyEnumerator];
 			while ((key1 = [menuItemsEnumerator nextObject])) {
@@ -916,8 +884,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 						else
 							theMenuItem = [subMenu itemAtIndex: (value - 1)];
 						object = [object objectForKey: key2];
-						if ([object isKindOfClass: [NSArray class]])
-							{
+						if ([object isKindOfClass: [NSArray class]]) {
 							theChar = [object objectAtIndex: 0];
 							mask = NSCommandKeyMask;
 							if ([[object objectAtIndex: 1] boolValue])
@@ -926,24 +893,22 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 								mask = (mask | NSControlKeyMask);
 							[theMenuItem setKeyEquivalent: theChar];
 							[theMenuItem setKeyEquivalentModifierMask: mask];
-							}
 						}
 					}
-				else if ([object isKindOfClass: [NSArray class]])
-					{
+				} else if ([object isKindOfClass: [NSArray class]]) {
 					theChar = [object objectAtIndex: 0];
 					mask = (NSCommandKeyMask | NSFunctionKeyMask);
 					if ([[object objectAtIndex: 1] boolValue])
 						mask = (mask | NSAlternateKeyMask);
 					if ([[object objectAtIndex: 2] boolValue])
-					mask = (mask | NSControlKeyMask);
+						mask = (mask | NSControlKeyMask);
 					[theMenuItem setKeyEquivalent: theChar];
 					[theMenuItem setKeyEquivalentModifierMask: mask];
-					}
 				}
 			}
 		}
-
+	}
+	
 }
 
 // mitsu 1.29 (P)
@@ -1005,36 +970,37 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	NSDocumentController	*myController;
 	BOOL			externalEditor;
 	NSOpenPanel			*myPanel;
-
+	
 	externalEditor = [SUD boolForKey:UseExternalEditorKey];
 	myController = [NSDocumentController sharedDocumentController];
 	myPanel = [NSOpenPanel openPanel];
-
+	
 	if (externalEditor)
 		forPreview = NO;
 	else
 		forPreview = YES;
-
-/* This code restricts files to tex files */
-	myArray = [NSArray arrayWithObjects:@"tex",
-										@"TEX",
-										@"txt",
-										@"TXT",
-										@"bib",
-										@"mp",
-										@"ins",
-										@"dtx",
-										@"mf",
-					nil];
+	
+	/* This code restricts files to tex files */
+	myArray = [NSArray arrayWithObjects:
+		@"tex",
+		@"TEX",
+		@"txt",
+		@"TXT",
+		@"bib",
+		@"mp",
+		@"ins",
+		@"dtx",
+		@"mf",
+		nil];
 	i = [myController runModalOpenPanel: myPanel forTypes: myArray];
 	fileArray = [myPanel filenames];
 	if (fileArray) {
 		for(i = 0; i < [fileArray count]; ++i) {
 			NSString*  myName = [fileArray objectAtIndex:i];
 			[myController openDocumentWithContentsOfFile: myName display: YES];
-			}
 		}
-
+	}
+	
 	if (externalEditor)
 		forPreview = YES;
 	else
@@ -1053,11 +1019,10 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	if ([[sender title] isEqualToString:NSLocalizedString(@"LaTeX Panel...", @"LaTeX Panel...")]) {
 		[[TSLaTeXPanelController sharedInstance] showWindow:self];
 		[sender setTitle:NSLocalizedString(@"Close LaTeX Panel", @"Close LaTeX Panel")];
-		}
-	else {
+	} else {
 		[[TSLaTeXPanelController sharedInstance] hideWindow:self];
 		[sender setTitle:NSLocalizedString(@"LaTeX Panel...", @"LaTeX Panel...")];
-		}
+	}
 }
 
 // begin MatrixPanel Addition by Jonas 1.32 Nov 28 03
@@ -1066,8 +1031,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 	if ([[sender title] isEqualToString:NSLocalizedString(@"Matrix Panel...", @"Matrix Panel...")]) {
 		[[TSMatrixPanelController sharedInstance] showWindow:self];
 		[sender setTitle:NSLocalizedString(@"Close Matrix Panel", @"Close Matrix Panel")];
-	}
-	else {
+	} else {
 		[[TSMatrixPanelController sharedInstance] hideWindow:self];
 		[sender setTitle:NSLocalizedString(@"Matrix Panel...", @"Matrix Panel...")];
 	}
@@ -1078,61 +1042,23 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem;
 {
 	id		documentWindow;
-
-	if ([anItem action] == @selector(displayLatexPanel:)) {
-		documentWindow = [[TSWindowManager sharedInstance] activeDocumentWindow];
-		if (documentWindow == nil)
-			return NO;
-		else if ([documentWindow isKeyWindow])
-			return YES;
-		else
-			return NO;
-		}
-	 else if ([anItem action] == @selector(displayMatrixPanel:)) {
-		documentWindow = [[TSWindowManager sharedInstance] activeDocumentWindow];
-		if (documentWindow == nil)
-			return NO;
-		else if ([documentWindow isKeyWindow])
-			return YES;
-		else
-			return NO;
-	}
-	else
+	
+	if (([anItem action] == @selector(displayLatexPanel:)) 
+	 || ([anItem action] == @selector(displayMatrixPanel:))) {
+		documentWindow = [[TSWindowManager sharedInstance] activeTextWindow];
+		return [documentWindow isKeyWindow];
+	} else if ([anItem action] == @selector(displayMatrixPanel:)) {
+		documentWindow = [[TSWindowManager sharedInstance] activeTextWindow];
+		return [documentWindow isKeyWindow];
+	} else
 		return YES;
 }
-
-/*
-- (void)showConfiguration:(id)sender
-{
-	NSString	*configFilePath;
-
-	configFilePath = [[NSBundle mainBundle] pathForResource:@"Configuration" ofType:@"rtf"];
-   [[NSWorkspace sharedWorkspace] openFile:configFilePath  withApplication:@"TextEdit"];
-}
-
-- (void)showMacrosHelp:(id)sender
-{
-	NSString	*configFilePath;
-
-	configFilePath = [[NSBundle mainBundle] pathForResource:@"MacrosHelp" ofType:@"rtf"];
-   [[NSWorkspace sharedWorkspace] openFile:configFilePath  withApplication:@"TextEdit"];
-}
-*/
 
 - (void)dealloc
 {
 	[g_autocompletionDictionary release];
 	[super dealloc];
 }
-
-/* I interprete comments from Anton Leuski as saying that this is not
-necessary */
-/*
-- (void)dealloc
-{
-	[super dealloc];
-}
-*/
 
 // mitsu 1.29 (P)
 - (void)openCommandCompletionList: (id)sender

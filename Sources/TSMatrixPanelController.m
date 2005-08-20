@@ -43,11 +43,18 @@ static id _sharedInstance = nil;
 	return _sharedInstance;
 }
 
-- (void)dealloc {
+- (id)init
+{
+	if ((self = [super init])) {
+		shown = NO;
+	}
+	return self;
+}
+
+- (void)dealloc
+{
 	[myMatrix release];
 	[arrayMatrix release];
- //   [draggedRows release];
- //   draggedRows=nil;
 	myMatrix = nil;
 	arrayMatrix = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -55,84 +62,55 @@ static id _sharedInstance = nil;
 	[super dealloc];
 }
 
-- (id)init
+- (MatrixData *)theMatrix
 {
-	id result;
-	result = [super init];
-	shown = NO;
-	return result;
-}
-
-- (MatrixData *) theMatrix{
 	return myMatrix;
 }
-- (NSArray*)draggedRows{return draggedRows;}
+
+- (NSArray*)draggedRows
+{
+	return draggedRows;
+}
 
 -(void)awakeFromNib
 {
 	NSArray *upArray;
 	NSArray *downArray;
-//    NSString* matrixAutosaveName=@"matrixpanel";
-  //  NSRulerMarker *lastRowMarker;
 	[hstep setMaxValue:MATSIZE];
 	[vstep setMaxValue:MATSIZE];
 	myMatrix=[[MatrixData alloc]init];
 	int j;
-	for ( j=0;j<MATSIZE;j++) {
+	for (j = 0; j < MATSIZE; j++) {
 		[myMatrix addRow];
 	}
-
+	
 	while ([myMatrix colCount]<MATSIZE) {
-	[myMatrix addCol];
-	MatrixTableColumn *newcol;
-	newcol=[[MatrixTableColumn alloc] initWithIdentifier:[[NSNumber numberWithInt:[myMatrix colCount]-1] stringValue]];
-	[[newcol headerCell] setStringValue:[[NSNumber numberWithInt:[myMatrix colCount]] stringValue]];
-	[newcol setMinWidth:40];
-	[newcol setWidth:60];
-	//[[newcol dataCell] setDrawsBackground:NO];
-	//[[newcol inactiveDataCell] setDrawsBackground:NO];
+		[myMatrix addCol];
+		MatrixTableColumn *newcol;
+		newcol = [[MatrixTableColumn alloc] initWithIdentifier:[[NSNumber numberWithInt:[myMatrix colCount]-1] stringValue]];
+		[[newcol headerCell] setStringValue:[[NSNumber numberWithInt:[myMatrix colCount]] stringValue]];
+		[newcol setMinWidth:40];
+		[newcol setWidth:60];
+		[matrixtable addTableColumn:newcol];
+	}
 
-	//[[newcol dataCellForRow:0] setEnabled:NO];
-	[matrixtable addTableColumn:newcol];
-	}
-	/*for( j=0;j<[myMatrix rowCount];j++) {
-		for( k=0;k<[myMatrix colCount];k++) {
-			[myMatrix replaceObjectInRow:j inCol:k withObject:[[NSNumber numberWithInt:j*40+k] stringValue]];
-	}
-	//[[[[matrixtable tableColumns] objectAtIndex:0] dataCell] setEditable:NO];
-	}*/
 	[myMatrix setActRows:3];
 	[myMatrix setActCols:3];
-   /* for (i=0; i< [matrixtable numberOfColumns];i++){
-	if (i>=[myMatrix actCols]) [[[matrixtable tableColumns] objectAtIndex:i] setDataCell:[[InactiveTextFieldCell alloc] init]];
-	else [[[matrixtable tableColumns] objectAtIndex:i] setDataCell:[[ActiveTextFieldCell alloc] init]];
-	}*/
-
-/*    for ( i=0; i<[[matrixtable tableColumns] count];i++) {
-	id ident=[[[matrixtable tableColumns] objectAtIndex:i] identifier];
-	}
-*/
-
+	
 	upArray = [NSArray arrayWithObjects:[NSNumber numberWithFloat:2.0], nil];
 	downArray = [NSArray arrayWithObjects:[NSNumber numberWithFloat:.5], nil];
-
-
-
+		
 	[NSRulerView registerUnitWithName:@"Rows" abbreviation:@"rw"
-						unitToPointsConversionFactor:19 stepUpCycle:upArray stepDownCycle:downArray];
-
+		 unitToPointsConversionFactor:19 stepUpCycle:upArray stepDownCycle:downArray];
+	
 	[mtscrv setHasVerticalRuler:YES];
 	[mtscrv setRulersVisible:YES];
 	[[mtscrv verticalRulerView] setMeasurementUnits:@"Rows"];
-   // lastRowMarker=[[NSRulerMarker alloc] initWithRulerView:[mtscrv verticalRulerView] markerLocation:4*19 image:<#(NSImage *)image#> imageOrigin:<#(NSPoint)imageOrigin#>]
-   // [[mtscrv verticalRulerView] addMarker:[NSRulerMarker ]
 
-
- //   [matrixtable setAutosaveName:matrixAutosaveName];
 	[matrixtable setAutosaveTableColumns:TRUE];
 	[matrixtable setVerticalMotionCanBeginDrag:NO];
 	[matrixtable registerForDraggedTypes:[NSArray arrayWithObjects:MatPboardType, nil]];
-
+	
 	[matrixtable reloadData];
 }
 
@@ -143,15 +121,15 @@ static id _sharedInstance = nil;
 	NSDictionary	*matrixDictionary;
 
 
-	NSBundle *myBundle=[NSBundle mainBundle];
+	NSBundle *myBundle = [NSBundle mainBundle];
 
 	matrixPath = [MatrixPanelPathKey stringByStandardizingPath];
 	matrixPath = [matrixPath stringByAppendingPathComponent:@"matrixpanel_1"];
 	matrixPath = [matrixPath stringByAppendingPathExtension:@"plist"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: matrixPath])
-		matrixDictionary=[NSDictionary dictionaryWithContentsOfFile:matrixPath];
+		matrixDictionary = [NSDictionary dictionaryWithContentsOfFile:matrixPath];
 	else
-		matrixDictionary=[NSDictionary dictionaryWithContentsOfFile:
+		matrixDictionary = [NSDictionary dictionaryWithContentsOfFile:
 			[myBundle pathForResource:@"matrixpanel_1" ofType:@"plist"]];
 
 	[super windowDidLoad];
@@ -170,46 +148,40 @@ static id _sharedInstance = nil;
 	// [self window] is actually an NSPanel, so it responds to the message below
 	[(NSPanel *)[self window] setBecomesKeyOnlyIfNeeded: NO];
 
-	arrayMatrix=[[NSArray alloc] initWithArray:[matrixDictionary objectForKey:@"Matrix" ]];
+	arrayMatrix = [[NSArray alloc] initWithArray:[matrixDictionary objectForKey:@"Matrix" ]];
 
-	notifcenter=[NSNotificationCenter defaultCenter];
+	notifcenter = [NSNotificationCenter defaultCenter];
 }
 
 - (int)numberOfRowsInTableView:(NSTableView *)tableView
 {
-	int i=[myMatrix rowCount];
-	return i;
+	return [myMatrix rowCount];
 }
 
 // Mandatory tableview data source method
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row
 {
-
 	NSString  *theValue, *colid;
-	colid=[tableColumn identifier];
+	colid = [tableColumn identifier];
 	NSParameterAssert(row >= 0 && row < [myMatrix rowCount]);
 	if ([colid isEqualToString:@"col"]) {
 		return [NSNumber numberWithInt:row+1];
-	}
-	else {
-
+	} else {
 		theValue = [myMatrix objectInRow:row inCol:[colid intValue]];
 		return theValue;
 	}
 
 }
-- (void)tableViewColumnDidMove:(NSNotification *)aNotification {
+- (void)tableViewColumnDidMove:(NSNotification *)aNotification
+{
 	[matrixtable reloadData];
 	[matrixtable setNeedsDisplay];
 }
-- (void)tableView:(NSTableView *)tv setObjectValue:(id)objectValue forTableColumn:(NSTableColumn *)tc row:(int)row {
+
+- (void)tableView:(NSTableView *)tv setObjectValue:(id)objectValue forTableColumn:(NSTableColumn *)tc row:(int)row
+{
 	[myMatrix replaceObjectInRow:row inCol:[[tc identifier] intValue] withObject:objectValue];
-//        [[matrixRows objectAtIndex:row] setValue:objectValue forKey:[tc identifier]];
-
 }
-
-//- (BOOL)tableView:(NSTableView *)tv shouldEditTableColumn:(NSTableColumn *)tc row:(int)row
-//{    return NO; }
 
 	// when a drag-and-drop operation comes through, and a filename is being dropped on the table,
 	// we need to tell the table where to put the new filename (right at the end of the table).
@@ -217,24 +189,23 @@ static id _sharedInstance = nil;
 - (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op
 {
 	[tv setDropRow:row dropOperation:NSTableViewDropAbove];
-	return     [info draggingSourceOperationMask];
-
-
+	return [info draggingSourceOperationMask];
 }
 
--(BOOL) tableView:(NSTableView*)tv writeRows:(NSArray*)rows toPasteboard:(NSPasteboard *)pboard {
+- (BOOL) tableView:(NSTableView*)tv writeRows:(NSArray*)rows toPasteboard:(NSPasteboard *)pboard
+{
 	int i;
-	NSMutableArray *j=[NSMutableArray array];
+	NSMutableArray *j = [NSMutableArray array];
 	[pboard declareTypes:[NSArray arrayWithObject:MatPboardType] owner:self];
-	//[pboard setData:[NSData data] forType:MatPboardType];
-	for (i=0;i<[rows count];i++) {
-	[j addObject:[myMatrix myRowAtIndex:[[rows objectAtIndex:i] intValue]]];
+	
+	for (i = 0; i < [rows count]; i++) {
+		[j addObject:[myMatrix myRowAtIndex:[[rows objectAtIndex:i] intValue]]];
 	}
 	[pboard setPropertyList:j forType:MatPboardType];
-	draggedRows=j;
-
+	draggedRows = j;
+	
 	return YES;
-
+	
 }
 
 
@@ -250,32 +221,30 @@ static id _sharedInstance = nil;
 	NSString *availableType;
 	NSArray *_draggedrows;
 	NSMutableArray *matRow;
-	NSMutableIndexSet* indset=[NSMutableIndexSet indexSet];
+	NSMutableIndexSet* indset = [NSMutableIndexSet indexSet];
 	int i;
-
+	
 	// find the best match of the types we'll accept and what's actually on the pasteboard
 	availableType=[myPasteboard availableTypeFromArray:typeArray];
 	// In the file format type that we're working with, get all data on the pasteboard
 	_draggedrows=[myPasteboard propertyListForType:availableType];
-
-	for (i=0;i<[_draggedrows count];i++)
-	{
-		matRow=[_draggedrows objectAtIndex:i];
-	if (row> [[myMatrix rows] indexOfObjectIdenticalTo:[[[[info draggingSource] dataSource] draggedRows] objectAtIndex:i]]) row--;
-	[[myMatrix rows] removeObjectIdenticalTo:[[[[info draggingSource] dataSource] draggedRows] objectAtIndex:i]];
-
+	
+	for (i = 0; i < [_draggedrows count]; i++) {
+		matRow = [_draggedrows objectAtIndex:i];
+		if (row > [[myMatrix rows] indexOfObjectIdenticalTo:[[[[info draggingSource] dataSource] draggedRows] objectAtIndex:i]])
+			row--;
+		[[myMatrix rows] removeObjectIdenticalTo:[[[[info draggingSource] dataSource] draggedRows] objectAtIndex:i]];
+		
 		[[myMatrix rows] insertObject:matRow atIndex:row+i];
 	}
-	for (i=0;i<[_draggedrows count];i++)
-	{        matRow=[_draggedrows objectAtIndex:i];
-
+	for (i = 0; i < [_draggedrows count]; i++) {
+		matRow = [_draggedrows objectAtIndex:i];
 		[indset addIndex:[[myMatrix rows] indexOfObjectIdenticalTo:matRow]];
-
 	}
-
+	
 	[matrixtable reloadData];
 	[matrixtable selectRowIndexes:indset byExtendingSelection:NO];
-
+	
 	return YES;
 }
 
@@ -283,107 +252,88 @@ static id _sharedInstance = nil;
 
 - (IBAction)resizeMatrix:(id)sender
 {
-	int ival;
-	ival=[sender intValue];
-	if (ival>MATSIZE) ival=MATSIZE;
-	if (ival<1) ival=1;
-	if ((sender==hstep)||(sender==htf))
-	{
-		while ((ival!=[myMatrix actCols]) && (ival<=MATSIZE) && (ival>0))
-	{
-			if (ival>[myMatrix actCols])
-		{
-				//[myMatrix addCol];
-		[myMatrix setActCols:[myMatrix actCols]+1];
+	int ival = [sender intValue];
+	if (ival > MATSIZE)
+		ival = MATSIZE;
+	else if (ival < 1)
+		ival = 1;
 
+	if ((sender == hstep) || (sender == htf)) {
+		while ((ival != [myMatrix actCols]) && (ival <= MATSIZE) && (ival > 0)) {
+			if (ival > [myMatrix actCols]) {
+				[myMatrix setActCols:[myMatrix actCols]+1];
+			} else {
+				[myMatrix setActCols:[myMatrix actCols]-1];
+				
 			}
-		else
-		{
-		[myMatrix setActCols:[myMatrix actCols]-1];
-
 		}
-	}
-
-	if (sender==hstep) [htf setIntValue:[myMatrix actCols]]; else {
-		[hstep setIntValue:[myMatrix actCols]];
-		[htf setIntValue:[myMatrix actCols]];
-	}
-
-	}
-	else if ((sender==vstep)||(sender==vtf))
-	{
-
-	while ((ival!=[myMatrix actRows]) && (ival<=MATSIZE) && (ival>0))
-	{
-		if (ival>[myMatrix actRows])
-		{
-		[myMatrix setActRows:[myMatrix actRows]+1];
-
-		//[myMatrix addRow];
-		}
+		
+		if (sender == hstep)
+			[htf setIntValue:[myMatrix actCols]];
 		else {
-		[myMatrix setActRows:[myMatrix actRows]-1];
-
-//		[myMatrix removeLastRow];
+			[hstep setIntValue:[myMatrix actCols]];
+			[htf setIntValue:[myMatrix actCols]];
 		}
-
+		
+	} else if ((sender == vstep) || (sender == vtf)) {
+		
+		while ((ival != [myMatrix actRows]) && (ival <= MATSIZE) && (ival > 0)) {
+			if (ival > [myMatrix actRows]) {
+				[myMatrix setActRows:[myMatrix actRows]+1];
+			} else {
+				[myMatrix setActRows:[myMatrix actRows]-1];
+			}
+		}
+		
+		if (sender == vstep)
+			[vtf setIntValue:[myMatrix actRows]];
+		else {
+			[vstep setIntValue:[myMatrix actRows]];
+			[vtf setIntValue:[myMatrix actRows]];
+		}
+		
 	}
-
-	if (sender==vstep)  [vtf setIntValue:[myMatrix actRows]]; else {
-		[vstep setIntValue:[myMatrix actRows]];
-		[vtf setIntValue:[myMatrix actRows]];
-	}
-
-	}
-	//   [matrixtable setBackgroundColor:[NSColor colorWithCalibratedWhite:1 alpha:.9]];
 	[matrixtable reloadData];
-
-
-	//    [rowtable reloadData];
-
-
 }
 
--(IBAction)insertMatrix:(id)sender
+- (IBAction)insertMatrix:(id)sender
 {
+	NSMutableString *insertion = [NSMutableString stringWithCapacity:200];
+	int i, j;
+	int brstyleop = [[brselop selectedCell] tag];
+	int brstylecl = [[brselcl selectedCell] tag];
+	int environment = [[envsel selectedCell] tag];
+	int tablenv = ([chbfig state] == NSOnState);
+	int drawborder = ([borderbutton state] == NSOnState);
+	int drawgrid = ([gridbutton state] == NSOnState);
+	int hsize = [myMatrix actCols];
+	int vsize = [myMatrix actRows];
 
-	int hsize,vsize,i,j,
-	brstyleop=[[brselop selectedCell] tag],
-	brstylecl=[[brselcl selectedCell] tag],
-	environment=[[envsel selectedCell] tag],
-	tablenv=[chbfig state]==NSOnState,
-	drawborder=[borderbutton state]==NSOnState,
-	drawgrid=[gridbutton state]==NSOnState;
-	hsize =(int) [myMatrix actCols];
-	vsize =(int) [myMatrix actRows];
-	NSMutableString *insertion=[NSMutableString stringWithCapacity:200];
-
-	if (environment==0) {
-		if ((brstyleop==4)&&(brstylecl==4)) {
-		}else {
+	if (environment == 0) {
+		if ((brstyleop == 4) && (brstylecl == 4)) {
+		} else {
 			[insertion appendString:[arrayMatrix objectAtIndex:6]];
-			if (brstyleop==0) {
+			if (brstyleop == 0) {
 				[insertion appendString:[arrayMatrix objectAtIndex:8]];
-			} else if (brstyleop==1) {
+			} else if (brstyleop == 1) {
 				[insertion appendString:[arrayMatrix objectAtIndex:10]];
-			} else if (brstyleop==2) {
+			} else if (brstyleop == 2) {
 				[insertion appendString:[arrayMatrix objectAtIndex:12]];
-			} else if (brstyleop==3) {
+			} else if (brstyleop == 3) {
 				[insertion appendString:[arrayMatrix objectAtIndex:14]];
-			} else if (brstyleop==5) {
-				//if ((brstylecl!=5)&&(brstylecl!=4))
+			} else if (brstyleop == 5) {
 				[insertion appendString:[arrayMatrix objectAtIndex:15]];
 				[insertion appendString:[brtfop stringValue]];
-			} else if (brstyleop==4) {
+			} else if (brstyleop == 4) {
 				[insertion appendString:[arrayMatrix objectAtIndex:15]];
-			} else if (brstylecl==6) {
+			} else if (brstylecl == 6) {
 				[insertion appendString:[arrayMatrix objectAtIndex:16]];
 			}
 
 		}
 	}
 
-	if (environment==0) {
+	if (environment == 0) {
 		[insertion appendString:[arrayMatrix objectAtIndex:0]];
 	} else {
 		if (tablenv) {
@@ -407,7 +357,7 @@ static id _sharedInstance = nil;
 	if (drawborder)
 		[insertion appendString:[arrayMatrix objectAtIndex:19]];
 
-	for ( j = 0; j < vsize; j++) {
+	for (j = 0; j < vsize; j++) {
 		for (i = 0; i < hsize; i++) {
 			[insertion appendString:[myMatrix objectInRow:j inCol:[[[[matrixtable tableColumns] objectAtIndex:i] identifier] intValue] ]];
 			if (i < hsize-1)
@@ -435,25 +385,24 @@ static id _sharedInstance = nil;
 
 	}
 
-	if (environment==0) {
-		if ((brstyleop==4) && (brstylecl==4)) {
+	if (environment == 0) {
+		if ((brstyleop == 4) && (brstylecl == 4)) {
 		} else {
 			[insertion appendString:[arrayMatrix objectAtIndex:7]];
-			if (brstylecl==0) {
+			if (brstylecl == 0) {
 				[insertion appendString:[arrayMatrix objectAtIndex:9]];
-			} else if (brstylecl==1) {
+			} else if (brstylecl == 1) {
 				[insertion appendString:[arrayMatrix objectAtIndex:11]];
-			} else if (brstylecl==2) {
+			} else if (brstylecl == 2) {
 				[insertion appendString:[arrayMatrix objectAtIndex:13]];
-			} else if (brstylecl==3) {
+			} else if (brstylecl == 3) {
 				[insertion appendString:[arrayMatrix objectAtIndex:14]];
-			} else if (brstylecl==5) {
-				//if ((brstyleop!=4)&&(brstyleop!=5))
+			} else if (brstylecl == 5) {
 				[insertion appendString:[arrayMatrix objectAtIndex:15]];
 				[insertion appendString:[brtfcl stringValue]];
-			} else if (brstylecl==4) {
+			} else if (brstylecl == 4) {
 				[insertion appendString:[arrayMatrix objectAtIndex:15]];
-			} else if (brstylecl==6) {
+			} else if (brstylecl == 6) {
 				[insertion appendString:[arrayMatrix objectAtIndex:16]];
 			}
 		}
@@ -462,8 +411,9 @@ static id _sharedInstance = nil;
 	[notifcenter postNotificationName:@"matrixpanel" object:insertion];
 }
 
-- (IBAction)envselChange:(id)sender{
-	if([[sender selectedCell] tag]==1) {
+- (IBAction)envselChange:(id)sender
+{
+	if ([[sender selectedCell] tag] == 1) {
 		[brselcl setEnabled:NO];
 		[brselop setEnabled:NO];
 		[brtfcl setEnabled:NO];
@@ -479,15 +429,16 @@ static id _sharedInstance = nil;
 	}
 }
 
-- (IBAction)brselChange:(id)sender {
-	if ([[sender selectedCell] tag]==5) {
-		if (sender==brselop) {
+- (IBAction)brselChange:(id)sender
+{
+	if ([[sender selectedCell] tag] == 5) {
+		if (sender == brselop) {
 			[brtfop setEnabled:YES];
 		} else {
 			[brtfcl setEnabled:YES];
 		}
 	} else {
-		if (sender==brselop) {
+		if (sender == brselop) {
 			[brtfop setEnabled:NO];
 		} else {
 			[brtfcl setEnabled:NO];
@@ -495,42 +446,45 @@ static id _sharedInstance = nil;
 	}
 }
 
-- (IBAction)resetMatrix:(id)sender{
-	int i,j,action;
-	int mwdth,mhght;
+- (IBAction)resetMatrix:(id)sender
+{
+	int i, j, action;
+	int mwdth, mhght;
 	mwdth = [myMatrix colCount];
 	mhght = [myMatrix rowCount];
-
-	if (sender==matmod) {
-		action=[[sender selectedCell] tag];
-		if (action==2) {
-			for (i=0; i<mhght;i++) for (j=0;j<mwdth ;j++)
-			{
-				[myMatrix replaceObjectInRow:i inCol:j withObject:@"0"];
+	
+	if (sender == matmod) {
+		action = [[sender selectedCell] tag];
+		if (action == 2) {
+			for (i = 0; i < mhght; i++) {
+				for (j = 0; j < mwdth; j++) {
+					[myMatrix replaceObjectInRow:i inCol:j withObject:@"0"];
+				}
 			}
-		} else if (action==0) {
-			for (i=0; i<mhght;i++) for (j=0;j<mwdth ;j++)
-			{
-				[myMatrix replaceObjectInRow:i inCol:j withObject:@" "];
+		} else if (action == 0) {
+			for (i = 0; i < mhght; i++) {
+				for (j = 0; j < mwdth; j++) {
+					[myMatrix replaceObjectInRow:i inCol:j withObject:@" "];
+				}
 			}
 		} else {
-			for (i=0; i<mhght;i++) for (j=0;j<mwdth ;j++)
-			{
-				[myMatrix replaceObjectInRow:i inCol:j withObject:@"0"];
+			for (i = 0; i < mhght; i++) {
+				for (j = 0; j < mwdth; j++) {
+					[myMatrix replaceObjectInRow:i inCol:j withObject:@"0"];
+				}
 			}
-				for(i=0;(i<mwdth)&&(i<mhght);i++)
-
-					[myMatrix replaceObjectInRow:i inCol:[[[[matrixtable tableColumns]objectAtIndex:i] identifier] intValue] withObject:@"1"];
-
+			for(i = 0; (i < mwdth) && (i < mhght); i++)
+				[myMatrix replaceObjectInRow:i inCol:[[[[matrixtable tableColumns]objectAtIndex:i] identifier] intValue] withObject:@"1"];
+			
 		}
 	}
-			[matrixtable reloadData];
-
+	[matrixtable reloadData];
+	
 }
 
 
 
-- (void)documentWindowDidBecomeKey:(NSNotification *)note
+- (void)textWindowDidBecomeKey:(NSNotification *)note
 {
 	// if matrix panel is hidden, show it
 	if (shown)
@@ -568,101 +522,137 @@ static id _sharedInstance = nil;
 	float	x, y;
 
 	myFrame = [[self window] frame];
-	x = myFrame.origin.x; y = myFrame.origin.y;
+	x = myFrame.origin.x;
+	y = myFrame.origin.y;
 	[[NSUserDefaults standardUserDefaults] setFloat:x forKey:MPanelOriginXKey];
 	[[NSUserDefaults standardUserDefaults] setFloat:y forKey:MPanelOriginYKey];
 	// [[self window] saveFrameUsingName:@"theLatexPanel"];
 }
 
-
-
 @end
+
+
 
 @implementation MatrixData
 
--(id) init {
-	self = [super init];
-	if (self) {
-		rows=[[NSMutableArray alloc] init];
+-(id) init
+{
+	if ((self = [super init])) {
+		rows = [[NSMutableArray alloc] init];
+		activeRows = 0;
+		activeCols = 0;
 	}
-	activeRows=0;
-	activeCols=0;
 	return self;
 }
-- (NSMutableArray*)rows{return rows;}
 
-- (int)actRows {
+- (void)dealloc
+{
+	[rows release];
+	[super dealloc];
+}
+
+- (NSMutableArray*)rows
+{
+	return rows;
+}
+
+- (int)actRows
+{
 	return activeRows;
 }
--(void)setActRows:(int)num {
+
+-(void)setActRows:(int)num
+{
 	activeRows=num;
 }
-- (int)actCols {
+
+- (int)actCols
+{
 	return activeCols;
 }
--(void)setActCols:(int)num {
-	activeCols=num;
+
+-(void)setActCols:(int)num
+{
+	activeCols = num;
 }
 
--(id)myRowAtIndex:(unsigned)row {
+-(id)myRowAtIndex:(unsigned)row
+{
 	return [[rows objectAtIndex:row]retain];
 }
 
--(int)rowCount {
+-(int)rowCount
+{
 	return [rows count];
 }
--(int)colCount {
-	if ([self rowCount]==0) return 0; else
+
+-(int)colCount
+{
+	if ([self rowCount]==0)
+		return 0;
 	return [[self myRowAtIndex:0] count];
 }
 
--(id)objectInRow:(unsigned)row inCol:(unsigned)col{
+-(id)objectInRow:(unsigned)row inCol:(unsigned)col
+{
 	return [[self myRowAtIndex:row] objectAtIndex:col];
 }
+
 -(void)replaceObjectInRow:(unsigned)row inCol:(unsigned)col withObject:(id) anObj{
 	[[self myRowAtIndex:row] replaceObjectAtIndex:col withObject:anObj];
 }
--(void)addRow{
+
+-(void)addRow
+{
 	int i;
 	[rows addObject:[[NSMutableArray arrayWithCapacity:[self colCount]]retain]];
-	for (i=[[rows objectAtIndex:[rows count]-1] count];i<[self colCount];i++) {
+	for (i = [[rows objectAtIndex:[rows count]-1] count]; i < [self colCount]; i++) {
 		[[rows objectAtIndex:[rows count]-1] addObject:@"0"];
 	}
 	activeRows++;
 
 }
 
-- (void)insertRow:(NSMutableArray*)row atIndex:(int)ind {
+- (void)insertRow:(NSMutableArray*)row atIndex:(int)ind
+{
 	[rows insertObject:row atIndex:ind];
 }
 
-- (void)removeRow:(id )row {
+- (void)removeRow:(id )row
+{
 	[rows removeObject:row];
 }
-- (void)removeRowIdenticalTo:(id)row{
+
+- (void)removeRowIdenticalTo:(id)row
+{
 	[rows removeObjectIdenticalTo:row];
 }
 
-- (void)removeRowAtIndex:(unsigned int )ind {
+- (void)removeRowAtIndex:(unsigned int )ind
+{
 	[rows removeObjectAtIndex:ind];
 }
 
-
--(void)addCol{
+-(void)addCol
+{
 	int i;
-	for (i=0;i<[self rowCount];i++) {
-		[[self myRowAtIndex:i] addObject:@"0"];
+	for (i = 0; i < [self rowCount]; i++) {
+ 		[[self myRowAtIndex:i] addObject:@"0"];
 	}
 	activeCols++;
 }
--(void)removeLastCol{
+
+-(void)removeLastCol
+{
 	int i;
-	for (i=0;i<[self rowCount];i++) {
+	for (i = 0; i < [self rowCount]; i++) {
 		[[self myRowAtIndex:i] removeLastObject];
 	}
 	activeCols--;
 }
--(void)removeLastRow {
+
+-(void)removeLastRow
+{
 	[rows removeLastObject];
 	activeRows--;
 }

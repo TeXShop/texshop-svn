@@ -26,12 +26,9 @@
 
 #import "TSWindowManager.h"
 #import "globals.h"
-// added by mitsu --(J+) Check mark in "Typeset" menu
+
 #import "TSDocument.h"
-// end addition
-#ifdef MITSU_PDF
 #import "MyPDFView.h"
-#endif
 
 @implementation TSWindowManager
 /*"
@@ -71,14 +68,16 @@ static id _sharedInstance = nil;
 	[super dealloc];
 }
 
-/*" This method is registered with the NotificationCenter and will be sent whenever a document window becomes key. We register this document window here so when TSPreferences needs this information when setting the window position it will be available.
+/*" This method is registered with the NotificationCenter and will be sent whenever a
+    document window becomes key. We register this document window here so when TSPreferences
+	needs this information when setting the window position it will be available.
 "*/
 //-----------------------------------------------------------------------------
-- (void)documentWindowDidBecomeKey:(NSNotification *)note
+- (void)textWindowDidBecomeKey:(NSNotification *)note
 //-----------------------------------------------------------------------------
 {
 	// do not retain the window here!
-	_activeDocumentWindow = [note object];
+	_activeTextWindow = [note object];
 
 	// Update check mark in "Typeset" menu
 	[self checkProgramMenuItem: [[[note object] document] whichEngine] checked: YES];
@@ -122,9 +121,9 @@ static id _sharedInstance = nil;
 	document active notification is received after all of the above calls.
 
 */
-- (void)closeActiveDocument
+- (void)notifyActiveTextWindowClosed
 {
-	_activeDocumentWindow = nil;
+	_activeTextWindow = nil;
 }
 
 /*" This method is registered with the NotificationCenter and will be called when a document window will be closed.
@@ -133,16 +132,16 @@ static id _sharedInstance = nil;
 - (void)documentWindowWillClose:(NSNotification *)note
 //-----------------------------------------------------------------------------
 {
-	_activeDocumentWindow = nil;
+	_activeTextWindow = nil;
 }
 
 /*" Returns the active document window or nil if no document window is active.
 "*/
 //-----------------------------------------------------------------------------
-- (NSWindow *)activeDocumentWindow
+- (NSWindow *)activeTextWindow
 //-----------------------------------------------------------------------------
 {
-	return _activeDocumentWindow;
+	return _activeTextWindow;
 }
 
 //-----------------------------------------------------------------------------
@@ -153,7 +152,6 @@ static id _sharedInstance = nil;
 	if ([doc documentType] == isTeX)
 		[self checkProgramMenuItem: [doc whichEngine] checked: flag];
 
-#ifdef MITSU_PDF
 	// Update menu item Preview=>Display Format/Magnification
 	if ([doc documentType] == isTeX || [doc documentType] == isPDF)
 	{
@@ -168,7 +166,6 @@ static id _sharedInstance = nil;
 		item = [menu itemWithTag:[[doc pdfView] resizeOption]];
 		[item setState: flag ? NSOnState : NSOffState];
 	}
-#endif
 }
 
 
@@ -179,7 +176,7 @@ static id _sharedInstance = nil;
 //-----------------------------------------------------------------------------
 {
 	// do not retain the window here!
-	_activePdfWindow = [note object];
+	_activePDFWindow = [note object];
 
 	[self setPdfWindowWithDocument:[[note object] document] isActive:YES];
 }
@@ -190,15 +187,15 @@ static id _sharedInstance = nil;
 - (void)pdfWindowWillClose:(NSNotification *)note
 //-----------------------------------------------------------------------------
 {
-	_activePdfWindow = nil;
+	_activePDFWindow = nil;
 
 }
 
 //-----------------------------------------------------------------------------
-- (NSWindow *)activePdfWindow
+- (NSWindow *)activePDFWindow
 //-----------------------------------------------------------------------------
 {
-	return _activePdfWindow;
+	return _activePDFWindow;
 }
 
 //-----------------------------------------------------------------------------

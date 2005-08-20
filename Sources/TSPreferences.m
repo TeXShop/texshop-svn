@@ -264,7 +264,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 {
 	NSWindow	*activeWindow;
 
-	activeWindow = [[TSWindowManager sharedInstance] activeDocumentWindow];
+	activeWindow = [[TSWindowManager sharedInstance] activeTextWindow];
 
 	if (activeWindow != nil) {
 		[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD stringForKey:DocumentWindowFixedPosKey] forKey:DocumentWindowFixedPosKey];
@@ -336,7 +336,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 	// added by mitsu --(G) TSEncodingSupport
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"EncodingChangedNotification" object:self];
 	encodingTouched = YES;
-	NSWindow	*activeWindow = [[TSWindowManager sharedInstance] activeDocumentWindow];
+	NSWindow	*activeWindow = [[TSWindowManager sharedInstance] activeTextWindow];
 
 	if ((activeWindow != nil) && (! [value isEqualToString:oldValue]))
 		NSBeginCriticalAlertSheet(nil, nil, nil, nil,
@@ -481,7 +481,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 {
 	NSWindow	*activeWindow;
 
-	activeWindow = [[TSWindowManager sharedInstance] activePdfWindow];
+	activeWindow = [[TSWindowManager sharedInstance] activePDFWindow];
 
 	if (activeWindow != nil) {
 		[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD stringForKey:PdfWindowFixedPosKey] forKey:PdfWindowFixedPosKey];
@@ -505,7 +505,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 	TSPreviewWindow	*activeWindow;
 	double	mag, magnification;
 
-	activeWindow = (TSPreviewWindow *)[[TSWindowManager sharedInstance] activePdfWindow];
+	activeWindow = (TSPreviewWindow *)[[TSWindowManager sharedInstance] activePDFWindow];
 
 	// The comment below fixes a bug; magnification didn't take if no pdf window open
 	//   if (activeWindow != nil)

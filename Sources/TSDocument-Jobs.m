@@ -92,13 +92,12 @@
 	whichError = 0;
 	makeError = error;
 
-	if (! externalEditor)
+	if (!_externalEditor)
 		[self checkFileLinksA];
 
-	if ((externalEditor) || (! [self isDocumentEdited])) {
+	if (_externalEditor || (! [self isDocumentEdited])) {
 		[self saveFinished: self didSave:YES contextInfo:nil];
-	}
-	else {
+	} else {
 		[self saveDocumentWithDelegate: self didSaveSelector: @selector(saveFinished:didSave:contextInfo:) contextInfo: nil];
 	}
 }
@@ -123,8 +122,7 @@
 	if (texTask != nil) {
 		if (theScript == 101) {
 			kill( -[texTask processIdentifier], SIGTERM);
-		}
-		else
+		} else
 			[texTask terminate];
 		myDate = [NSDate date];
 		while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
@@ -169,14 +167,13 @@
 	[self fixMacroMenu];
 	// end addition
 
-	if (! externalEditor)
+	if (!_externalEditor)
 		[self checkFileLinksA];
 
 
-	if ((externalEditor) || (! [self isDocumentEdited])) {
+	if (_externalEditor || (! [self isDocumentEdited])) {
 		[self saveFinished: self didSave:YES contextInfo:nil];
-	}
-	else {
+	} else {
 		saveFinished = @selector(saveFinished:didSave:contextInfo:);
 		[self saveDocumentWithDelegate: self didSaveSelector: saveFinished contextInfo: nil];
 	}
@@ -229,8 +226,7 @@
 						middleString = [NSString stringWithString: myString];
 						inMiddle = YES;
 					}
-				}
-				else {
+				} else {
 					[args addObject: myString];
 				}
 			}
@@ -245,7 +241,7 @@
 
 - (void) convertDocument;
 {
-	NSFileManager       *fileManager;
+	NSFileManager	*fileManager;
 	NSString		*myFileName;
 	NSMutableArray	*args;
 	NSDictionary	*myAttributes;
@@ -256,10 +252,10 @@
 	NSString		*gsPath;
 	NSString		*tetexBinPath;
 	NSString		*epstopdfPath;
-	BOOL		writeable, result;
+	BOOL			writeable, result;
 	NSString		*reason;
 	NSString		*argumentString;
-	NSString            *tempDestinationString;
+	NSString           *tempDestinationString;
 
 	myFileName = [self fileName];
 	if ([myFileName length] > 0) {
@@ -317,8 +313,7 @@
 				argumentString = [[NSString stringWithString:@" --tex-path "]
 					stringByAppendingString: [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath]];
 				enginePath = [enginePath stringByAppendingString: argumentString];
-			}
-			else
+			} else
 				enginePath = [[SUD stringForKey:LatexGSCommandKey] stringByExpandingTildeInPath];
 			if (([SUD integerForKey:DistillerCommandKey] == 1) && (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_2))
 				enginePath = [enginePath stringByAppendingString: @" --distiller /usr/bin/pstopdf"];
@@ -329,8 +324,7 @@
 			enginePath = [self separate:enginePath into: args];
 			if ([SUD boolForKey:SavePSEnabledKey])
 				[args addObject: [NSString stringWithString:@"--keep-psfile"]];
-		}
-		else if ([[myFileName pathExtension] isEqualToString:@"ps"]) {
+		} else if ([[myFileName pathExtension] isEqualToString:@"ps"]) {
 			enginePath = [[NSBundle mainBundle] pathForResource:@"ps2pdfwrap" ofType:nil];
 			if (([SUD integerForKey:DistillerCommandKey] == 1) && (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_2))
 				[args addObject: [NSString stringWithString:@"Panther"]];
@@ -338,8 +332,7 @@
 				[args addObject: [NSString stringWithString:@"Ghostscript"]];
 			gsPath = [[SUD stringForKey:GSBinPathKey] stringByExpandingTildeInPath];
 			[args addObject: gsPath];
-		}
-		else if  ([[myFileName pathExtension] isEqualToString:@"eps"]) {
+		} else if  ([[myFileName pathExtension] isEqualToString:@"eps"]) {
 			enginePath = [[NSBundle mainBundle] pathForResource:@"epstopdfwrap" ofType:nil];
 			if (([SUD integerForKey:DistillerCommandKey] == 1) && (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_2))
 				[args addObject: [NSString stringWithString:@"Panther"]];
@@ -353,8 +346,7 @@
 			// [args addObject: [[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil]];
 		}
 
-		if ((! writeable) && ([[myFileName pathExtension] isEqualToString:@"dvi"]))
-		{
+		if ((! writeable) && ([[myFileName pathExtension] isEqualToString:@"dvi"])) {
 			/*
 			 NSString *fixedPathString = [NSString stringWithString:@""];
 			 NSArray *myArray = [[myFileName stringByStandardizingPath] componentsSeparatedByString:@"/"];
@@ -374,8 +366,7 @@
 			 [args addObject: fixedPathString];
 			 */
 			[args addObject: [myFileName  stringByStandardizingPath]]; // this seems to be required when the directory isn't writable
-		}
-		else
+		} else
 			[args addObject: [sourcePath lastPathComponent]]; //this allows spaces in folder names
 
 		if (enginePath != nil) {
@@ -390,8 +381,7 @@
 			[texTask setLaunchPath:enginePath];
 			[texTask setArguments:args];
 			[texTask launch];
-		}
-		else {
+		} else {
 			[inputPipe release];
 			[texTask release];
 			texTask = nil;
@@ -419,10 +409,7 @@
 	NSData          *myData;
 
 
-	if (useTempEngine)
-		whichEngineLocal = tempEngine;
-	else
-		whichEngineLocal = whichEngine;
+	whichEngineLocal = (useTempEngine ? tempEngine : whichEngine);
 
 	if (whichEngineLocal == LatexEngine)
 		withLatex = YES;
@@ -430,7 +417,7 @@
 		withLatex = NO;
 	theScript = whichScript;
 
-	if (! externalEditor)
+	if (!_externalEditor)
 		theSource = [[self textView] string];
 	else {
 		myData = [NSData dataWithContentsOfFile:[self fileName]];
@@ -446,7 +433,7 @@
 		return;
 	}
 
-	if (! externalEditor)
+	if (!_externalEditor)
 		[self checkFileLinks:theSource];
 
 	// New Stuff
@@ -692,10 +679,7 @@
 	BOOL                fixPath;
 	int                 whichEngineLocal;
 
-	if (useTempEngine)
-		whichEngineLocal = tempEngine;
-	else
-		whichEngineLocal = whichEngine;
+	whichEngineLocal = useTempEngine ? tempEngine : whichEngine;
 
 	fixPath = YES;
 	continuous = typesetContinuously;
@@ -714,66 +698,63 @@
 		if ([[NSFileManager defaultManager] fileExistsAtPath: imagePath]) {
 			myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
 			startDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
-		}
-		else
+		} else
 			startDate = nil;
 		
 		sourcePath = myFileName;
 		
 		
-
+		
 		args = [NSMutableArray array];
-
+		
 		outputPipe = [[NSPipe pipe] retain];
 		readHandle = [outputPipe fileHandleForReading];
 		[readHandle readInBackgroundAndNotify];
 		inputPipe = [[NSPipe pipe] retain];
 		writeHandle = [inputPipe fileHandleForWriting];
-
+		
 		[outputText setSelectable: YES];
 		[outputText selectAll:self];
 		[outputText replaceCharactersInRange: [outputText selectedRange] withString:@""];
 		[texCommand setStringValue:@""];
 		[outputText setSelectable: NO];
 		typesetStart = NO;
-	   // The following command produces an unwanted tex input event for reasons
-	   //     I do not understand; the event will be discarded because typesetStart = NO
-	   //     and it is received before tex output to the console occurs.
-	   //     RMK; 7/3/2001.
+		// The following command produces an unwanted tex input event for reasons
+		//     I do not understand; the event will be discarded because typesetStart = NO
+		//     and it is received before tex output to the console occurs.
+		//     RMK; 7/3/2001.
 		[outputWindow makeFirstResponder: texCommand];
-
-
-	   // [outputWindow setTitle: [[[[self fileName] lastPathComponent] stringByDeletingPathExtension]
-	   //         stringByAppendingString:@" console"]];
+		
+		
+		// [outputWindow setTitle: [[[[self fileName] lastPathComponent] stringByDeletingPathExtension]
+		//         stringByAppendingString:@" console"]];
 		[outputWindow setTitle: [[[imagePath lastPathComponent] stringByDeletingPathExtension]
 			stringByAppendingString:@" console"]];
 		if ([SUD boolForKey:ConsoleBehaviorKey]) {
 			if (![outputWindow isVisible])
 				[outputWindow orderBack: self];
 			[outputWindow makeKeyWindow];
-			}
-		else
+		} else
 			[outputWindow makeKeyAndOrderFront: self];
-
-
-
-	 //   if (whichEngine < 5)
-		if ((whichEngineLocal == TexEngine) || (whichEngineLocal == LatexEngine) || (whichEngineLocal == MetapostEngine) || (whichEngineLocal == ContextEngine))
-		{
+		
+		
+		
+		//   if (whichEngine < 5)
+		if ((whichEngineLocal == TexEngine) || (whichEngineLocal == LatexEngine) || (whichEngineLocal == MetapostEngine) || (whichEngineLocal == ContextEngine)) {
 			NSString* enginePath;
 			NSString* myEngine;
 			if ((theScript == 101) && ([SUD boolForKey:SavePSEnabledKey])
-		//        && (whichEngine != 2)   && (whichEngine != 4))
+				//        && (whichEngine != 2)   && (whichEngine != 4))
 				&& (whichEngineLocal != MetapostEngine) && (whichEngineLocal != ContextEngine))
-				[args addObject: [NSString stringWithString:@"--keep-psfile"]];
-
+					[args addObject: [NSString stringWithString:@"--keep-psfile"]];
+			
 			if (texTask != nil) {
 				[texTask terminate];
 				[texTask release];
 				texTask = nil;
-				}
+			}
 			texTask = [[NSTask alloc] init];
-
+			
 			if (whichEngineLocal == ContextEngine) {
 				if (theScript == 100) {
 					enginePath = [[NSBundle mainBundle] pathForResource:@"contextwrap" ofType:nil];
@@ -829,18 +810,18 @@
 							myEngine = [myEngine stringByAppendingString:@" --interaction=nonstopmode "];
 						}
 							
-						if (omitShellEscape) {
-							aRange = [myEngine rangeOfString:@"--shell-escape"];
-							if (aRange.location == NSNotFound)
-								warningGiven = YES;
-							else {
-								NSString* myEngineFirst = [myEngine substringToIndex: aRange.location];
-								here = aRange.location + aRange.length;
-								NSString* myEngineLast = [myEngine substringFromIndex: here];
-								myEngine = [myEngineFirst stringByAppendingString: myEngineLast];
+							if (omitShellEscape) {
+								aRange = [myEngine rangeOfString:@"--shell-escape"];
+								if (aRange.location == NSNotFound)
+									warningGiven = YES;
+								else {
+									NSString* myEngineFirst = [myEngine substringToIndex: aRange.location];
+									here = aRange.location + aRange.length;
+									NSString* myEngineLast = [myEngine substringFromIndex: here];
+									myEngine = [myEngineFirst stringByAppendingString: myEngineLast];
+								}
 							}
-						}
-						break;
+							break;
 						
 					case 101:
 						if (continuous) {
@@ -881,129 +862,128 @@
 								myEngine = [[SUD stringForKey:TexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
 						}
 							
-							break;
+						break;
 						
 				}
 			}
-
-
-		  //  if ((whichEngine != 2) && (whichEngine != 3) && (whichEngine != 4)) {
+			
+			
+			//  if ((whichEngine != 2) && (whichEngine != 3) && (whichEngine != 4)) {
 			if ((whichEngineLocal != MetapostEngine) && (whichEngineLocal != ContextEngine)) {
-
+				
 				enginePath = [self separate:myEngine into:args];
 			}
-
+			
 			// Koch: Feb 20; this allows spaces everywhere in path except
 			// file name itself
 			[args addObject: [sourcePath lastPathComponent]];
-
+			
 			/*
-			if ((enginePath != nil) && ([[NSFileManager defaultManager] fileExistsAtPath: enginePath])) {
-				[texTask setCurrentDirectoryPath: [sourcePath stringByDeletingLastPathComponent]];
-				[texTask setEnvironment: g_environment];
-				[texTask setLaunchPath:enginePath];
-				[texTask setArguments:args];
-				[texTask setStandardOutput: outputPipe];
-				[texTask setStandardError: outputPipe];
-				[texTask setStandardInput: inputPipe];
-				[texTask launch];
-
-			}
-			else {
-			*/
+			 if ((enginePath != nil) && ([[NSFileManager defaultManager] fileExistsAtPath: enginePath])) {
+				 [texTask setCurrentDirectoryPath: [sourcePath stringByDeletingLastPathComponent]];
+				 [texTask setEnvironment: g_environment];
+				 [texTask setLaunchPath:enginePath];
+				 [texTask setArguments:args];
+				 [texTask setStandardOutput: outputPipe];
+				 [texTask setStandardError: outputPipe];
+				 [texTask setStandardInput: inputPipe];
+				 [texTask launch];
+				 
+			 }
+			 else {
+				 */
 			if ([self startTask: texTask running: enginePath withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal] == FALSE) {
 				[inputPipe release];
 				[outputPipe release];
 				[texTask release];
 				texTask = nil;
 			}
-		} else if (whichEngineLocal == BibtexEngine) {
-			NSString* bibPath = [sourcePath stringByDeletingPathExtension];
-			// Koch: ditto; allow spaces in path
-			[args addObject: [bibPath lastPathComponent]];
-
-			if (bibTask != nil) {
-				[bibTask terminate];
-				[bibTask release];
-				bibTask = nil;
+			 } else if (whichEngineLocal == BibtexEngine) {
+				 NSString* bibPath = [sourcePath stringByDeletingPathExtension];
+				 // Koch: ditto; allow spaces in path
+				 [args addObject: [bibPath lastPathComponent]];
+				 
+				 if (bibTask != nil) {
+					 [bibTask terminate];
+					 [bibTask release];
+					 bibTask = nil;
+				 }
+				 bibTask = [[NSTask alloc] init];
+				 
+				 NSString* bibtexEngineString;
+				 switch ([SUD integerForKey:BibtexCommandKey]) {
+					 case 0: bibtexEngineString = @"bibtex"; break;
+					 case 1: bibtexEngineString = @"jbibtex"; break;
+					 default: bibtexEngineString = @"bibtex"; break;
+				 }
+				 [self startTask: bibTask running: bibtexEngineString withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal];
+			 } else if (whichEngineLocal == IndexEngine) {
+				 NSString* indexPath = [sourcePath stringByDeletingPathExtension];
+				 // Koch: ditto, spaces in path
+				 [args addObject: [indexPath lastPathComponent]];
+				 
+				 if (indexTask != nil) {
+					 [indexTask terminate];
+					 [indexTask release];
+					 indexTask = nil;
+				 }
+				 indexTask = [[NSTask alloc] init];
+				 [self startTask: indexTask running: @"makeindex" withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal];
+			 } else if (whichEngineLocal == MetafontEngine) {
+				 NSString* metaFontPath = [sourcePath stringByDeletingPathExtension];
+				 // Koch: ditto, spaces in path
+				 [args addObject: [metaFontPath lastPathComponent]];
+				 
+				 if (metaFontTask != nil) {
+					 [metaFontTask terminate];
+					 [metaFontTask release];
+					 metaFontTask = nil;
+				 }
+				 metaFontTask = [[NSTask alloc] init];
+				 [self startTask: metaFontTask running: @"mf" withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal];
+			 } else if (whichEngineLocal >= UserEngine) {
+				 NSString* userEngineName = [[[programButton itemAtIndex:(whichEngineLocal - 1)] title] stringByAppendingString:@".engine"];
+				 NSString* userEnginePath = [[EnginePathKey stringByAppendingString:@"/"] stringByAppendingString: userEngineName];
+				 // NSString* userPath = [sourcePath stringByDeletingPathExtension];
+				 // Koch: ditto, spaces in path
+				 // [args addObject: [userPath lastPathComponent]];
+				 [args addObject: [sourcePath lastPathComponent]];
+				 
+				 if (texTask != nil) {
+					 [texTask terminate];
+					 [texTask release];
+					 texTask = nil;
+				 }
+				 texTask = [[NSTask alloc] init];
+				 
+				 if ([self startTask: texTask running: userEnginePath withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal] == FALSE) {
+					 [inputPipe release];
+					 [outputPipe release];
+					 [texTask release];
+					 texTask = nil;
+				 }
+			 }
 			}
-			 bibTask = [[NSTask alloc] init];
-
-			 NSString* bibtexEngineString;
-			 switch ([SUD integerForKey:BibtexCommandKey]) {
-					case 0: bibtexEngineString = @"bibtex"; break;
-					case 1: bibtexEngineString = @"jbibtex"; break;
-					default: bibtexEngineString = @"bibtex"; break;
-					}
-			[self startTask: bibTask running: bibtexEngineString withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal];
-		} else if (whichEngineLocal == IndexEngine) {
-			NSString* indexPath = [sourcePath stringByDeletingPathExtension];
-			// Koch: ditto, spaces in path
-			[args addObject: [indexPath lastPathComponent]];
-
-			if (indexTask != nil) {
-				[indexTask terminate];
-				[indexTask release];
-				indexTask = nil;
-			}
-			indexTask = [[NSTask alloc] init];
-			[self startTask: indexTask running: @"makeindex" withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal];
-		} else if (whichEngineLocal == MetafontEngine) {
-			NSString* metaFontPath = [sourcePath stringByDeletingPathExtension];
-			// Koch: ditto, spaces in path
-			[args addObject: [metaFontPath lastPathComponent]];
-
-			if (metaFontTask != nil) {
-				[metaFontTask terminate];
-				[metaFontTask release];
-				metaFontTask = nil;
-			}
-			metaFontTask = [[NSTask alloc] init];
-			[self startTask: metaFontTask running: @"mf" withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal];
-		} else if (whichEngineLocal >= UserEngine) {
-			NSString* userEngineName = [[[programButton itemAtIndex:(whichEngineLocal - 1)] title] stringByAppendingString:@".engine"];
-			NSString* userEnginePath = [[EnginePathKey stringByAppendingString:@"/"] stringByAppendingString: userEngineName];
-			// NSString* userPath = [sourcePath stringByDeletingPathExtension];
-			// Koch: ditto, spaces in path
-			// [args addObject: [userPath lastPathComponent]];
-			[args addObject: [sourcePath lastPathComponent]];
-
-			if (texTask != nil) {
-				[texTask terminate];
-				[texTask release];
-				texTask = nil;
-			}
-			texTask = [[NSTask alloc] init];
-
-			if ([self startTask: texTask running: userEnginePath withArgs: args inDirectoryContaining: sourcePath withEngine:whichEngineLocal] == FALSE) {
-				[inputPipe release];
-				[outputPipe release];
-				[texTask release];
-				texTask = nil;
-				}
-		}
-	}
 	useTempEngine = NO;
 }
 
 
 -(void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
-   switch(returnCode) {
-
-	case NSAlertDefaultReturn:
-		warningGiven = YES;
-		[self completeSaveFinished];
-		break;
-
-	case NSAlertAlternateReturn: // this says omit --shell-escape
-		warningGiven = YES;
-		omitShellEscape = YES;
-		[self completeSaveFinished];
-		break;
-
-	case NSAlertOtherReturn:
-		break;
+	switch (returnCode) {
+		case NSAlertDefaultReturn:
+			warningGiven = YES;
+			[self completeSaveFinished];
+			break;
+			
+		case NSAlertAlternateReturn: // this says omit --shell-escape
+			warningGiven = YES;
+			omitShellEscape = YES;
+			[self completeSaveFinished];
+			break;
+			
+		case NSAlertOtherReturn:
+			break;
 	}
 }
 
@@ -1029,11 +1009,6 @@
 
 - (void) doUser: (int)theEngine
 {
-// added by mitsu --(J++) Program popup button indicating Program name
-	// [programButton selectItemWithTitle: @"LaTeX"];
-	// [programButtonEE selectItemWithTitle: @"LaTeX"];
-// end addition
-
 	[programButton selectItemAtIndex:(theEngine - 1)];
 	[programButtonEE selectItemAtIndex:(theEngine - 1)];
 	whichEngine = theEngine;

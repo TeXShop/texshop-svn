@@ -25,7 +25,8 @@
 #import <AppKit/AppKit.h>
 
 
-@interface TSLaTeXPanelController : NSWindowController {
+@interface TSLaTeXPanelController : NSWindowController
+{
 	IBOutlet id environbuttonmatrix;
 	IBOutlet id functionsbuttonmatrix;
 	IBOutlet id greekbuttonmatrix;

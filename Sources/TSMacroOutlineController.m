@@ -56,26 +56,25 @@
 
 @implementation TSMacroOutlineController
 
-static TSMacroOutlineController *sharedOutlineViewController = nil;
+static TSMacroOutlineController *_sharedOutlineViewController = nil;
 
 + (TSMacroOutlineController *)sharedInstance
 {
-	if (sharedOutlineViewController == nil)
-		sharedOutlineViewController = [[[TSMacroOutlineController alloc] init] autorelease];
-	return sharedOutlineViewController;
+	if (_sharedOutlineViewController == nil)
+		_sharedOutlineViewController = [[[TSMacroOutlineController alloc] init] autorelease];
+	return _sharedOutlineViewController;
 }
 
 - (id)init
 {
-	if (sharedOutlineViewController)
+	if (_sharedOutlineViewController)
 		[super dealloc];
-	else
-	{
-		sharedOutlineViewController = [super init];
+	else {
+		_sharedOutlineViewController = [super init];
 		rootOfTree = nil; //[[TSMacroTreeNode alloc] init];
 		draggedNodes = nil;
 	}
-	return sharedOutlineViewController;
+	return _sharedOutlineViewController;
 }
 
 - (void)dealloc
@@ -85,7 +84,7 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 	if (draggedNodes)
 		[draggedNodes release];
 	[super dealloc];
-	sharedOutlineViewController = nil;
+	_sharedOutlineViewController = nil;
 }
 
 - (void)awakeFromNib
@@ -111,12 +110,11 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 
 - (void)setRootOfTree: (TSMacroTreeNode *)newRootOfTree
 {
-	if (rootOfTree)
-		[rootOfTree release];
-	rootOfTree = (newRootOfTree)?[newRootOfTree retain]:nil;
+	[newRootOfTree retain];
+	[rootOfTree release];
+	rootOfTree = newRootOfTree;
 	draggedNodes = nil;
-	if (outlineView)
-		[outlineView reloadData];
+	[outlineView reloadData];
 }
 
 - (TSMacroTreeNode *)rootOfTree
@@ -157,40 +155,29 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 {
 	int childIndex = 0, newRow = 0;
 	NSArray *selectedNodes = [self selectedNodes];
-//    TSMacroTreeNode *selectedNode = ([selectedNodes count] ? [selectedNodes objectAtIndex:0] : rootOfTree); // this was changed to the following
 	TSMacroTreeNode *selectedNode = ([selectedNodes count] ? [selectedNodes lastObject] : rootOfTree);
 	TSMacroTreeNode *parentNode = nil;
-
-	if ([selectedNode isGroup])
-	{
+	
+	if ([selectedNode isGroup]) {
 		parentNode = selectedNode;
 		childIndex = [parentNode numberOfChildren]; // it was 0;
 		[outlineView expandItem: selectedNode];
-	}
-	else
-	{
+	} else {
 		parentNode = [selectedNode nodeParent];
-		childIndex = [parentNode indexOfChildIdenticalTo:selectedNode]+1;
+		childIndex = [parentNode indexOfChildIdenticalTo:selectedNode] + 1;
 	}
-
+	
 	[parentNode insertChild: newChild atIndex: childIndex];
 	[outlineView reloadData];
-
+	
 	newRow = [outlineView rowForItem: newChild];
-	if (newRow>=0)
+	if (newRow >= 0)
 		[outlineView selectRow: newRow byExtendingSelection: NO];
-	if (newRow>=0)
-	{
-		//if ([newChild isGroup])
-		//	[outlineView editColumn:0 row:newRow withEvent:nil select:YES];	// this will make it editable
-	}
-	//if ([outlineView action] && [outlineView target])	// to send the action on new item
-	//	[outlineView sendAction: [outlineView action] to: [outlineView target]];
-
+	
 #ifdef MyOutlineViewAddedItemNotification
 	// notify that item was added -- custom notification
 	[[NSNotificationCenter defaultCenter] postNotificationName: MyOutlineViewAddedItemNotification
-					object: outlineView];
+														object: outlineView];
 #endif
 }
 
@@ -198,32 +185,22 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 {
 	int childIndex = 0; //, newRow = 0;
 	NSArray *selectedNodes = [self selectedNodes];
-//    TSMacroTreeNode *selectedNode = ([selectedNodes count] ? [selectedNodes objectAtIndex:0] : rootOfTree); // this was changed to the following
 	TSMacroTreeNode *selectedNode;
 	TSMacroTreeNode *parentNode = nil;
 
-	if ([selectedNodes count]==0)
-	{
+	if ([selectedNodes count] == 0) {
 		parentNode = rootOfTree;
 		childIndex = [rootOfTree numberOfChildren];
-	}
-	else
-	{
+	} else {
 		selectedNode = [selectedNodes lastObject];
 		parentNode = [selectedNode nodeParent];
-		childIndex = [parentNode indexOfChildIdenticalTo:selectedNode]+1;
+		childIndex = [parentNode indexOfChildIdenticalTo:selectedNode] + 1;
 	}
 
 	[parentNode insertChildren: newChildren atIndex: childIndex];
 	[outlineView reloadData];
 
 	[outlineView selectItems: newChildren byExtendingSelection: NO];
-//    newRow = [outlineView rowForItem: [newChildren objectAtIndex: 0]];
-//    if (newRow>=0)
-//	{
-		//if ([newChild isGroup])
-		//	[outlineView editColumn:0 row:newRow withEvent:nil select:YES];	// this will make it editable
-//	}
 
 #ifdef MyOutlineViewAddedItemNotification
 	// notify that item was added -- custom notification
@@ -237,6 +214,7 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 	NSArray *selection = [self selectedNodes];
 	if ([selection count] == 0)
 		return;
+
 	// Tell all of the selected nodes to remove themselves from the model.
 	[selection makeObjectsPerformSelector: @selector(removeFromParent)];
 	[outlineView deselectAll:nil];
@@ -302,17 +280,13 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 	NODE_INFO(@"ObjValue", item);
 #endif
 
-	if([[tableColumn identifier] isEqualToString: COLUMNID_NAME])
-	{
+	if([[tableColumn identifier] isEqualToString: COLUMNID_NAME]) {
 		if ([(TSMacroTreeNode*)item isSeparator])
 			objectValue = @"";
-		else
-		{
+		else {
 			objectValue = [(TSMacroTreeNode*)item name];
 		}
-	}
-	else if([[tableColumn identifier] isEqualToString: COLUMNID_KEY])
-	{
+	} else if([[tableColumn identifier] isEqualToString: COLUMNID_KEY]) {
 		objectValue = getMenuItemString([(TSMacroTreeNode*)item key]);
 	}
 	return objectValue;
@@ -321,12 +295,9 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 // Optional method: needed to allow editing.
 - (void)outlineView:(NSOutlineView *)olv setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	if([[tableColumn identifier] isEqualToString: COLUMNID_NAME])
-	{
+	if([[tableColumn identifier] isEqualToString: COLUMNID_NAME]) {
 		[(TSMacroTreeNode*)item setName: object];
-	}
-	else if ([[tableColumn identifier] isEqualToString: COLUMNID_KEY])
-	{
+	} else if ([[tableColumn identifier] isEqualToString: COLUMNID_KEY]) {
 		[(TSMacroTreeNode*)item setKey: object];
 	}
 
@@ -350,21 +321,15 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 
 - (void)outlineView: (NSOutlineView *)olv willDisplayCell: (NSCell *)cell forTableColumn: (NSTableColumn *)tableColumn item: (id)item
 {
-	if ([[tableColumn identifier] isEqualToString: COLUMNID_NAME])
-	{
+	if ([[tableColumn identifier] isEqualToString: COLUMNID_NAME]) {
 		//if (item && [(TSMacroTreeNode*)item iconRep]) // when there is an icon
 		//	[(ImageAndTextCell*)cell setImage: [(TSMacroTreeNode*)item iconRep]];
 		//else
-		if (item && [item isSeparator])
-		{
-
+		if ([item isSeparator]) {
 			[(ImageAndTextCell*)cell setImage: [NSImage imageNamed: SEPARATOR_IMAGE]];
-		}
-		else
+		} else
 			[(ImageAndTextCell*)cell setImage: nil];
-	}
-	else if ([[tableColumn identifier] isEqualToString: COLUMNID_KEY])
-	{
+	} else if ([[tableColumn identifier] isEqualToString: COLUMNID_KEY]) {
 		// Don't do anything unusual for the kind column.
 	}
 }
@@ -389,15 +354,12 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 	NSString *draggedString = ([draggedNodes count]>0)?([[draggedNodes objectAtIndex: 0] content]):@"";
 	if (!draggedString)
 		draggedString = @"";	// content may be nil?
-	if (g_shouldFilter == kMacJapaneseFilterMode)
-	{
+	if (g_shouldFilter == kMacJapaneseFilterMode) {
 		if ([SUD boolForKey:@"ConvertToBackslash"]) // this case isn't necessary?
 			draggedString = filterYenToBackslash(draggedString);
 		else
 			draggedString = filterBackslashToYen(draggedString);
-	}
-	else if (g_shouldFilter == kOtherJapaneseFilterMode)
-	{
+	} else if (g_shouldFilter == kOtherJapaneseFilterMode) {
 		if ([SUD boolForKey:@"ConvertToYen"])
 			draggedString = filterBackslashToYen(draggedString);
 		else	// this case shouldn't be necessary
@@ -414,13 +376,10 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 	TSMacroTreeNode *targetNode = item;
 	BOOL targetNodeIsValid = YES;
 
-	if (onlyAcceptDropOnRoot)
-	{
+	if (onlyAcceptDropOnRoot) {
 		targetNode = nil;
 		childIndex = NSOutlineViewDropOnItemIndex;
-	}
-	else
-	{
+	} else {
 		BOOL isOnDropTypeProposal = childIndex==NSOutlineViewDropOnItemIndex;
 
 		// Refuse if: dropping "on" the view itself unless we have no data in the view.
@@ -438,8 +397,7 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 			targetNodeIsValid = NO;
 
 		// Check to make sure we don't allow a node to be inserted into one of its descendants!
-		if (targetNodeIsValid && ([info draggingSource]==outlineView) && [[info draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObject: DragDropSimplePboardType]] != nil)
-		{
+		if (targetNodeIsValid && ([info draggingSource]==outlineView) && [[info draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObject: DragDropSimplePboardType]] != nil) {
 			NSArray *_draggedNodes = [[[info draggingSource] dataSource] draggedNodes];
 			targetNodeIsValid = ![targetNode isDescendantOfNodeInArray: _draggedNodes];
 		}
@@ -451,51 +409,46 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 	return targetNodeIsValid ? NSDragOperationGeneric : NSDragOperationNone;
 }
 
-- (void)_performDropOperation:(id <NSDraggingInfo>)info onNode:(TSMacroTreeNode*)parentNode atIndex:(int)childIndex
+- (void)performDropOperation:(id <NSDraggingInfo>)info onNode:(TSMacroTreeNode*)parentNode atIndex:(int)childIndex
 {
 	// Helper method to insert dropped data into the model.
 	NSPasteboard * pboard = [info draggingPasteboard];
 	NSMutableArray * itemsToSelect = nil;
-
+	
 	// Do the appropriate thing depending on whether the data is DragDropSimplePboardType or NSStringPboardType.
-	if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:DragDropSimplePboardType, nil]] != nil)
-	{
+	if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:DragDropSimplePboardType, nil]] != nil) {
 		TSMacroOutlineController *dragDataSource = [[info draggingSource] dataSource];
 		NSArray *_draggedNodes = [TSMacroTreeNode minimumNodeCoverFromNodesInArray: [dragDataSource draggedNodes]];
 		NSEnumerator *draggedNodesEnum = [_draggedNodes objectEnumerator];
 		TSMacroTreeNode *_draggedNode = nil, *_draggedNodeParent = nil;
-
-	itemsToSelect = [NSMutableArray arrayWithArray:[self selectedNodes]];
-
-		while ((_draggedNode = [draggedNodesEnum nextObject]))
-		{
+		
+		itemsToSelect = [NSMutableArray arrayWithArray:[self selectedNodes]];
+		
+		while ((_draggedNode = [draggedNodesEnum nextObject])) {
 			_draggedNodeParent = (TSMacroTreeNode *)[_draggedNode nodeParent];
 			if (parentNode==_draggedNodeParent && [parentNode indexOfChild: _draggedNode]<childIndex)
 				childIndex--;
 			[_draggedNodeParent removeChild: _draggedNode];
 		}
 		[parentNode insertChildren: _draggedNodes atIndex: childIndex];
-	}
-	else if ([pboard availableTypeFromArray:[NSArray arrayWithObject: NSStringPboardType]])
-	{
+	} else if ([pboard availableTypeFromArray:[NSArray arrayWithObject: NSStringPboardType]]) {
 		NSString *string = [pboard stringForType: NSStringPboardType];
 		NSString *tempStr = string;
 		if (g_shouldFilter == kMacJapaneseFilterMode)
 			tempStr = filterBackslashToYen(string);
 		else if (g_shouldFilter == kOtherJapaneseFilterMode)
 			tempStr = filterYenToBackslash(string);
-		NSMutableString *nameStr = [NSMutableString stringWithString:
-							[tempStr substringToIndex: ([tempStr length]<50)?[tempStr length]:50]];
+		NSMutableString *nameStr = [[tempStr substringToIndex: MIN([tempStr length], 50)] mutableCopy];
 		[nameStr replaceOccurrencesOfString: @"\n" withString: @""
 									options: 0 range: NSMakeRange(0, [nameStr length])];
 		if (g_shouldFilter)	// we only use backslashes
 			string = filterYenToBackslash(string);
 		TSMacroTreeNode *newItem = [TSMacroTreeNode nodeWithName: nameStr content: string key: nil];
-
+		
 		itemsToSelect = [NSMutableArray arrayWithObject: newItem];
 		[parentNode insertChild: newItem atIndex:childIndex++];
 	}
-
+	
 	[outlineView reloadData];
 	[outlineView selectItems: itemsToSelect byExtendingSelection: NO];
 }
@@ -505,18 +458,15 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 	TSMacroTreeNode * 		parentNode = nil;
 
 	// Determine the parent to insert into and the child index to insert at.
-	if ([(TSMacroTreeNode*)targetItem isLeaf])
-	{
-		parentNode = (TSMacroTreeNode*)(childIndex==NSOutlineViewDropOnItemIndex ? [targetItem nodeParent] : targetItem);
-		childIndex = (childIndex==NSOutlineViewDropOnItemIndex ? [[targetItem nodeParent] indexOfChild: targetItem]+1 : 0);
-	}
-	else
-	{
-		parentNode = (targetItem)?targetItem:rootOfTree;
-		childIndex = (childIndex==NSOutlineViewDropOnItemIndex?0:childIndex);
+	if ([(TSMacroTreeNode*)targetItem isLeaf]) {
+		parentNode = (childIndex == NSOutlineViewDropOnItemIndex ? [targetItem nodeParent] : targetItem);
+		childIndex = (childIndex == NSOutlineViewDropOnItemIndex ? [[targetItem nodeParent] indexOfChild: targetItem] + 1 : 0);
+	} else {
+		parentNode = (targetItem ? targetItem : rootOfTree);
+		childIndex = (childIndex == NSOutlineViewDropOnItemIndex ? 0 : childIndex);
 	}
 
-	[self _performDropOperation:info onNode:parentNode atIndex:childIndex];
+	[self performDropOperation:info onNode:parentNode atIndex:childIndex];
 
 #ifdef MyOutlineViewAcceptedDropNotification
 	// notify that item was moved or dropped -- custom notification
@@ -531,13 +481,15 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 
 @implementation NSOutlineView (MyExtensions)
 
-- (id)selectedItem { return [self itemAtRow: [self selectedRow]]; }
+- (id)selectedItem {
+	return [self itemAtRow: [self selectedRow]];
+}
 
 - (NSArray*)allSelectedItems {
 	NSMutableArray *items = [NSMutableArray array];
 	NSEnumerator *selectedRows = [self selectedRowEnumerator];
 	NSNumber *selRow = nil;
-	while( (selRow = [selectedRows nextObject]) ) {
+	while ((selRow = [selectedRows nextObject])) {
 		if ([self itemAtRow:[selRow intValue]])
 			[items addObject: [self itemAtRow:[selRow intValue]]];
 	}
@@ -546,10 +498,12 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 
 - (void)selectItems:(NSArray*)items byExtendingSelection:(BOOL)extend {
 	int i;
-	if (extend==NO) [self deselectAll:nil];
-	for (i=0;i<[items count];i++) {
+	if (extend == NO)
+		[self deselectAll:nil];
+	for (i = 0; i < [items count]; i++) {
 		int row = [self rowForItem:[items objectAtIndex:i]];
-		if(row>=0) [self selectRow: row byExtendingSelection:YES];
+		if(row >= 0)
+			[self selectRow: row byExtendingSelection:YES];
 	}
 }
 
@@ -562,11 +516,9 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem
 {
 	if ([anItem action] == @selector(delete:))
-	{
 		return ([[self allSelectedItems] count] > 0);
-	}
-	else
-		return YES;
+
+	return YES;
 }
 
 @end
@@ -575,8 +527,10 @@ static TSMacroOutlineController *sharedOutlineViewController = nil;
 @implementation MyOutlineView
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {
-	if (isLocal) return NSDragOperationEvery;
-	else return NSDragOperationCopy;
+	if (isLocal)
+		return NSDragOperationEvery;
+	else
+		return NSDragOperationCopy;
 }
 
 @end

@@ -26,15 +26,15 @@
 
 @interface TSWindowManager : NSObject
 {
-	NSWindow		*_activeDocumentWindow;
-	NSWindow 		*_activePdfWindow;
+	NSWindow		*_activeTextWindow;
+	NSWindow 		*_activePDFWindow;
 }
 
 + (id)sharedInstance;
 
-- (NSWindow *)activeDocumentWindow;
-- (NSWindow *)activePdfWindow;
-- (void)closeActiveDocument;
+- (NSWindow *)activeTextWindow;
+- (NSWindow *)activePDFWindow;
+- (void)notifyActiveTextWindowClosed;	// FIXME: Get rid of this
 
 // added by mitsu --(J+) check mark in "Typeset" menu
 - (void)checkProgramMenuItem: (int)programID checked: (BOOL)flag;

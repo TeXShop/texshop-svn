@@ -66,6 +66,7 @@
 
 @end
 
+
 @interface NSOutlineView (MyExtensions)
 
 - (NSArray*)allSelectedItems;
@@ -73,11 +74,15 @@
 
 @end
 
-@interface MyOutlineView : NSOutlineView {
+
+@interface MyOutlineView : NSOutlineView
+{
 }
 @end
 
-@interface ImageAndTextCell : NSTextFieldCell {
+
+@interface ImageAndTextCell : NSTextFieldCell
+{
 @private
 	NSImage	*image;
 }

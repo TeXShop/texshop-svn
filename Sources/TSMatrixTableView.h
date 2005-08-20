@@ -30,22 +30,21 @@
 
 @end
 
+// TODO: Try to get rid of this class
 @interface InactiveTextFieldCell : NSTextFieldCell
 -(id)init;
 @end
 
+// TODO: Try to get rid of this class
 @interface ActiveTextFieldCell : NSTextFieldCell
 -(id)init;
 @end
 
 @interface MatrixTableColumn : NSTableColumn
 {
-
 	NSCell *_inactiveDataCell;
-	unsigned int activeRows;
 }
 -(id)init;
 -(id)initWithIdentifier:(id)identifier;
--(id)inactiveDataCell;
 @end
 

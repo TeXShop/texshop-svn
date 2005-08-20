@@ -453,8 +453,10 @@ extern NSPanel *pageNumberWindow;
 #ifdef MITSU_PDF
 
 		// mitsu 1.29 (O)
-	if ([anItem action] == @selector(changePageStyle:)) // @selector(changePDFViewSize:))
+	if ([anItem action] == @selector(changePageStyle:)) {
+		
 		return (([myDocument documentType] == isTeX) || ([myDocument documentType] == isPDF));
+	}
 
 	if ([anItem action] == @selector(copy:) || [anItem action] == @selector(saveSelectionToFile:))
 		return ([[myDocument pdfView] hasSelection]);

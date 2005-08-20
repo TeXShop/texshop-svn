@@ -39,12 +39,12 @@
 
 @interface TSMacroTreeNode : NSObject {
 // basic tree parameters
-	TSMacroTreeNode *nodeParent;
-	NSMutableArray *nodeChildren;
+	TSMacroTreeNode *_nodeParent;
+	NSMutableArray *_nodeChildren;
 // specific to this implementation
-	NSString *name;
-	NSString *content;
-	NSString *key;
+	NSString *_name;
+	NSString *_content;
+	NSString *_key;
 }
 
 - (id)initWithParent:(TSMacroTreeNode*)parent children:(NSArray*)children;

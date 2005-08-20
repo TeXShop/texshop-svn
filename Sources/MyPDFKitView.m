@@ -1755,7 +1755,6 @@
 	NSRect mySelectedRect;
 	NSData *data = nil;
 	NSBitmapImageRep *bitmap = nil;
-	NSImage *image = nil;
 	NSBitmapImageFileType fileType;
 	NSDictionary *dict;
 	NSColor *foreColor, *backColor, *oldBackColor;
@@ -1807,10 +1806,9 @@
 			// TODO / FIXME: MyPDFKitView currently does *not* implement imageFromRect:!
 			// Hence I am disabling this code for now.
 #if 0
-			image = [self imageFromRect: mySelectedRect];
+			NSImage *image = [self imageFromRect: mySelectedRect];
 
-			if (image)
-			{
+			if (image) {
 				[image setScalesWhenResized: NO];
 				[image setSize: NSMakeSize(floor(selRectWindow.size.width),
 											floor(selRectWindow.size.height))];
@@ -1820,33 +1818,26 @@
 #endif
 		}
 		// color mapping
-		if (bitmap && [SUD boolForKey:PdfColorMapKey])
-		{
-			if ([SUD stringForKey:PdfFore_RKey])
-			{
+		if (bitmap && [SUD boolForKey:PdfColorMapKey]) {
+			if ([SUD stringForKey:PdfFore_RKey]) {
 				foreColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:PdfFore_RKey]
 					green: [SUD floatForKey:PdfFore_GKey] blue: [SUD floatForKey:PdfFore_BKey]
 					alpha: [SUD floatForKey:PdfFore_AKey]];
-			}
-			else
+			} else
 				foreColor = [NSColor colorWithCalibratedRed:0 green:0 blue:0 alpha:1];
-			if ([SUD stringForKey:PdfBack_RKey])
-			{
+			if ([SUD stringForKey:PdfBack_RKey]) {
 				backColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:PdfBack_RKey]
 					green: [SUD floatForKey:PdfBack_GKey] blue: [SUD floatForKey:PdfBack_BKey]
 					alpha: [SUD floatForKey:PdfBack_AKey]];
-			}
-			else
+			} else
 				backColor = [NSColor colorWithCalibratedRed:1 green:1 blue:1 alpha:1];
 			int colorParam1 = [SUD integerForKey:PdfColorParam1Key];
 			// call transformColor() below to map the colors
 			bitmap = transformColor(bitmap, foreColor, backColor, colorParam1);
 		}
 		// convert to the specified format
-		if (bitmap && type != IMAGE_TYPE_PICT)
-		{
-			switch (type)
-			{
+		if (bitmap && type != IMAGE_TYPE_PICT) {
+			switch (type) {
 				case IMAGE_TYPE_TIFF_NC:
 					fileType = NSTIFFFileType;
 					dict = [NSDictionary  dictionaryWithObjectsAndKeys:
@@ -1902,16 +1893,12 @@
 							NSImageCompressionFactor, nil];
 			}
 			data = [bitmap representationUsingType: fileType properties: dict];
-		}
-		else if (bitmap && type == IMAGE_TYPE_PICT)
-		{
+		} else if (bitmap && type == IMAGE_TYPE_PICT) {
 			data = getPICTDataFromBitmap(bitmap);
 		}
 		else
 			data = nil;
-	}
-	else // IMAGE_TYPE_PDF or IMAGE_TYPE_EPS
-	{
+	} else { // IMAGE_TYPE_PDF or IMAGE_TYPE_EPS
 		// BE CAREFUL: dataWithPDFInsideRect may crash!
 		// if the magnification is not 100%, there seems to be an inconsistency between
 		// the bounds and the size.  to avoid this problem change the size of selectedRect.
@@ -1977,8 +1964,7 @@
 // save the image data from selected rectangle to a file
 - (void)saveSelctionPanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 {
-	if (returnCode == NSFileHandlingPanelOKButton && [sheet filename])
-	{
+	if (returnCode == NSFileHandlingPanelOKButton && [sheet filename]) {
 		NSData *data = nil;
 		NSNumber *aNumber;
 
@@ -1987,8 +1973,8 @@
 
 		data = [self imageDataFromSelectionType: [SUD integerForKey: PdfExportTypeKey]];
 
-		if ([SUD integerForKey: PdfExportTypeKey] == IMAGE_TYPE_PICT)
-		{	// PICT file needs to start with 512 bytes 0's
+		if ([SUD integerForKey: PdfExportTypeKey] == IMAGE_TYPE_PICT) {
+			// PICT file needs to start with 512 bytes 0's
 			NSMutableData *pictData = [NSMutableData dataWithLength: 512];//initialized by 0's
 			[pictData appendData: data];
 			data = pictData;
@@ -2013,8 +1999,7 @@
 	savePanel = (NSSavePanel *)[sender window];
 	[savePanel setRequiredFileType: extensionForType(imageExportType)];// mitsu 1.29 drag & drop
 
-	if (imageExportType != [SUD integerForKey: PdfExportTypeKey])
-	{
+	if (imageExportType != [SUD integerForKey: PdfExportTypeKey]) {
 		[SUD setInteger:imageExportType forKey:PdfExportTypeKey];
 	}
 }
@@ -2049,11 +2034,9 @@
 							NSFilenamesPboardType, nil] owner:self];
 
 	if (!((imageCopyType == IMAGE_TYPE_PDF || imageCopyType == IMAGE_TYPE_EPS)
-		&& [SUD boolForKey: PdfQuickDragKey]))
-	{
+		&& [SUD boolForKey: PdfQuickDragKey])) {
 		data = [self imageDataFromSelectionType: imageCopyType];
-		if (data)
-		{
+		if (data) {
 			[pboard setData:data forType:dataType];
 			filePath = [[DraggedImagePathKey stringByStandardizingPath]
 					stringByAppendingPathExtension: extensionForType(imageCopyType)];
@@ -2061,21 +2044,17 @@
 				[pboard setPropertyList:[NSArray arrayWithObject: filePath]
 									forType:NSFilenamesPboardType];
 			image = [[[NSImage alloc] initWithData: data] autorelease];
-			if (image)
-			{
+			if (image) {
 				[self dragImage:image at:mySelectedRect.origin offset:dragOffset
 					event:theEvent pasteboard:pboard source:self slideBack:YES];
 			}
 		}
-	}
-	else // quick drag for PDF & EPS
-	{
+	} else { // quick drag for PDF & EPS
 		// TODO / FIXME: MyPDFKitView currently does *not* implement imageFromRect:!
 		// Hence I am disabling this code for now.
 #if 0
 		image = [self imageFromRect: mySelectedRect];
-		if (image)
-		{
+		if (image) {
 			//[self pasteboard:pboard provideDataForType:dataType];
 			//[self pasteboard:pboard provideDataForType:NSFilenamesPboardType];
 			[self dragImage:image at:mySelectedRect.origin offset:dragOffset
@@ -2101,17 +2080,13 @@
 	if ([type isEqualToString: NSTIFFPboardType] ||
 		[type isEqualToString: NSPICTPboardType] ||
 		[type isEqualToString: NSPDFPboardType] ||
-		[type isEqualToString: NSPostScriptPboardType])
-	{
+		[type isEqualToString: NSPostScriptPboardType]) {
 		data = [self imageDataFromSelectionType: imageCopyType];
 		if (data)
 			[pboard setData:data forType:type];
-	}
-	else if ([type isEqualToString: NSFilenamesPboardType])
-	{
+	} else if ([type isEqualToString: NSFilenamesPboardType]) {
 		data = [self imageDataFromSelectionType: imageCopyType];
-		if (data)
-		{
+		if (data) {
 			filePath = [[DraggedImagePathKey stringByStandardizingPath]
 						stringByAppendingPathExtension: extensionForType(imageCopyType)];
 			if ([data writeToFile: filePath atomically: NO])
@@ -2212,8 +2187,7 @@
 				if (([manager fileExistsAtPath: filePathNew isDirectory:&isDir]) && (!isDir)) {
 					[sourceFiles insertObject: filePathNew atIndex: currentIndex];
 					currentIndex++;
-					}
-				else {
+				} else {
 					filePath = [[rootPath stringByAppendingString:@"/"] stringByAppendingString: filePath];
 					filePath = [filePath stringByStandardizingPath];
 					// add this to the array
@@ -2358,8 +2332,7 @@
 							stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 						theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForKey: encodingString];
 					}
-				}
-				else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
+				} else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
 					encodingRange = [testString rangeOfString:@"%&encoding="];
 					if (encodingRange.location != NSNotFound) {
 						done = YES;
@@ -2415,8 +2388,7 @@
 
 		foundOne = NO;
 		foundMoreThanOne = NO;
-		for (i = 0; i < (numberOfFiles + 1); i++)
-		{
+		for (i = 0; i < numberOfFiles + 1; i++) {
 			if (foundMoreThanOne)
 				break;
 			maskRange.location = 0;
@@ -2442,8 +2414,7 @@
 				myTextView = [myDocument textView];
 				myTextWindow = [myDocument textWindow];
 				[myDocument setTextSelectionYellow: YES];
-			}
-			else {
+			} else {
 				newDocument = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfFile:[sourceFiles objectAtIndex:(foundIndex - 1)] display:YES];
 				myTextView = [newDocument textView];
 				myTextWindow = [newDocument textWindow];
@@ -2515,8 +2486,7 @@
 			if (foundIndex == 0) {
 				myTextView = [myDocument textView];
 				myTextWindow = [myDocument textWindow];
-			}
-			else {
+			} else {
 				newDocument = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfFile:[sourceFiles objectAtIndex:(foundIndex - 1)] display:YES];
 				myTextView = [newDocument textView];
 				myTextWindow = [newDocument textWindow];
@@ -2543,49 +2513,50 @@
 
 }
 
+// TODO: This method is way too big and should be split up / simplified
 - (void)doSync: (NSEvent *)theEvent
 {
-		NSFileManager	*fileManager;
-		NSNumber        *thePageNumber;
-		NSString        *syncInfo, *pageSearchString, *valueString;
-		NSString        *searchString;
-		NSString        *searchOpenString, *searchCloseString;
-		NSRange         searchOpenRange, searchCloseRange, myRange;
-		NSRange         searchOpenResultRange, searchCloseResultRange;
-		NSRange         searchRange, searchResultRange;
-		NSRange         smallerRange;
-		NSString        *includeFileName;
-		NSString        *keyLine;
-		int             pageNumber;
-		NSRange         pageRangeStart;
-		NSRange         pageRangeEnd;
-		NSRange         remainingRange;
-		NSRange         thisRange, newRange, foundRange;
-		NSNumber        *anotherNumber;
-		int             aNumber;
-		int             syncNumber, oldSyncNumber, x, oldx, y, oldy;
-		BOOL            found, done;
-		unsigned        theStart, theEnd, theContentsEnd;
-		NSString        *newFileName, *theExtension;
-		TSDocument      *newDocument;
-		unsigned        start, end, irrelevant;
-		BOOL			result;
-
+	NSFileManager	*fileManager;
+	NSNumber        *thePageNumber;
+	NSString        *syncInfo, *pageSearchString, *valueString;
+	NSString        *searchString;
+	NSString        *searchOpenString, *searchCloseString;
+	NSRange         searchOpenRange, searchCloseRange, myRange;
+	NSRange         searchOpenResultRange, searchCloseResultRange;
+	NSRange         searchRange, searchResultRange;
+	NSRange         smallerRange;
+	NSString        *includeFileName;
+	NSString        *keyLine;
+	int             pageNumber;
+	NSRange         pageRangeStart;
+	NSRange         pageRangeEnd;
+	NSRange         remainingRange;
+	NSRange         thisRange, newRange, foundRange;
+	NSNumber        *anotherNumber;
+	int             aNumber;
+	int             syncNumber, oldSyncNumber, x, oldx, y, oldy;
+	BOOL            found;
+	unsigned        theStart, theEnd, theContentsEnd;
+	NSString        *newFileName, *theExtension;
+	TSDocument      *newDocument;
+	unsigned        start, end, irrelevant;
+	BOOL			result;
+	
 	int syncMethod = [SUD integerForKey:SyncMethodKey];
-
+	
 	if ((syncMethod == SEARCHONLY) || (syncMethod == SEARCHFIRST)) {
 		result = [self doNewSync: theEvent];
 		if (result)
 			return;
-		}
+	}
 	if (syncMethod == SEARCHONLY)
 		return;
-
+	
 	includeFileName = nil;
-
+	
 	// The code below finds the page number, and the position of the click
 	// in view coordinates.
-
+	
 	NSPoint windowPosition = [theEvent locationInWindow];
 	NSPoint kitPosition = [self convertPoint: windowPosition fromView:nil];
 	PDFPage *thePage = [self pageForPoint: kitPosition nearest:YES];
@@ -2593,81 +2564,81 @@
 		return;
 	NSPoint viewPosition = [self convertPoint: kitPosition toPage: thePage];
 	pageNumber = [[self document] indexForPage: thePage];
-/*
-	if (pageStyle == PDF_SINGLE_PAGE_STYLE)
-		pageNumber = [myRep currentPage];
-	else {
-		pageNumber = [self pageNumberForPoint:viewPosition];
-		NSPoint originPoint = [self pointForPage: pageNumber];
-		viewPosition.x = viewPosition.x - originPoint.x;
-		viewPosition.y = viewPosition.y - originPoint.y;
-		if (viewPosition.x < 0)
-			viewPosition.x = 0;
-		if (viewPosition.y < 0)
-			viewPosition.y = 0;
-		}
-*/
-
+	/*
+	 if (pageStyle == PDF_SINGLE_PAGE_STYLE)
+	 pageNumber = [myRep currentPage];
+	 else {
+		 pageNumber = [self pageNumberForPoint:viewPosition];
+		 NSPoint originPoint = [self pointForPage: pageNumber];
+		 viewPosition.x = viewPosition.x - originPoint.x;
+		 viewPosition.y = viewPosition.y - originPoint.y;
+		 if (viewPosition.x < 0)
+			 viewPosition.x = 0;
+		 if (viewPosition.y < 0)
+			 viewPosition.y = 0;
+	 }
+	 */
+	
 	pageNumber++;
-
+	
 	// logInt = viewPosition.x;
 	// logNumber = [NSNumber numberWithInt: logInt];
 	// NSLog([logNumber stringValue]);
-
+	
 	// logInt = viewPosition.y;
 	// logNumber = [NSNumber numberWithInt: logInt];
 	// NSLog([logNumber stringValue]);
-
+	
 	// now convert to pdf coordinates
 	int tempY = viewPosition.y - 14;
 	// int yValue = viewPosition.y * 65536;
 	int yValue = tempY * 65536;
-
+	
 	// now see if the sync file exists
 	fileManager = [NSFileManager defaultManager];
 	NSString *fileName = [myDocument fileName];
 	NSString *infoFile = [[fileName stringByDeletingPathExtension] stringByAppendingPathExtension: @"pdfsync"];
 	if (![fileManager fileExistsAtPath: infoFile])
 		return;
-
-/*
-	// worry that the user has tex + ghostscript and the sync file is out of date
-	// to do that, test the date of mydoc.pdf and mydoc.pdfsync
-	NSString *pdfName = [[fileName stringByDeletingPathExtension] stringByAppendingString: @".pdf"];
-	NSDictionary *fattrs = [fileManager fileAttributesAtPath: pdfName traverseLink:NO];
-	pdfDate = [fattrs objectForKey:NSFileModificationDate];
-	fattrs = [fileManager fileAttributesAtPath: infoFile traverseLink:NO];
-	pdfsyncDate = [fattrs objectForKey:NSFileModificationDate];
-	if ([pdfDate timeIntervalSince1970] > [pdfsyncDate timeIntervalSince1970])
-		return;
-*/
-
+	
+	/*
+	 // worry that the user has tex + ghostscript and the sync file is out of date
+	 // to do that, test the date of mydoc.pdf and mydoc.pdfsync
+	 NSString *pdfName = [[fileName stringByDeletingPathExtension] stringByAppendingString: @".pdf"];
+	 NSDictionary *fattrs = [fileManager fileAttributesAtPath: pdfName traverseLink:NO];
+	 pdfDate = [fattrs objectForKey:NSFileModificationDate];
+	 fattrs = [fileManager fileAttributesAtPath: infoFile traverseLink:NO];
+	 pdfsyncDate = [fattrs objectForKey:NSFileModificationDate];
+	 if ([pdfDate timeIntervalSince1970] > [pdfsyncDate timeIntervalSince1970])
+	 return;
+	 */
+	
 	// get the contents of the sync file as a string
 	NS_DURING
 		syncInfo = [NSString stringWithContentsOfFile:infoFile];
 	NS_HANDLER
 		return;
 	NS_ENDHANDLER
-
+	
 	if (! syncInfo)
 		return;
-
+	
 	// remove the first two lines
 	myRange.location = 0;
 	myRange.length = 1;
 	NS_DURING
-	[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+		[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
 	NS_HANDLER
-	return;
+		return;
 	NS_ENDHANDLER
 	syncInfo = [syncInfo substringFromIndex: end];
 	NS_DURING
-	[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+		[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
 	NS_HANDLER
-	return;
+		return;
 	NS_ENDHANDLER
 	syncInfo = [syncInfo substringFromIndex: end];
-
+	
 	// find the page number in syncInfo and return if it is not there
 	thePageNumber = [NSNumber numberWithInt: pageNumber];
 	pageSearchString = [[NSString stringWithString:@"s "] stringByAppendingString: [thePageNumber stringValue]];
@@ -2677,9 +2648,9 @@
 	[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: pageRangeStart];
 	if (pageRangeStart.location != start)
 		return;
-
+	
 	////////////////////////////////////
-
+	
 	// Search backward to the previous page number, if one exists
 	// Search forward to the next page number, if one exists
 	// Replace syncInfo by the information between these two numbers
@@ -2691,11 +2662,11 @@
 		smallerRange.location = pageRangeStart.location;
 		smallerRange.length = [syncInfo length] - pageRangeStart.location;
 		NS_DURING
-		syncInfo = [syncInfo substringWithRange: smallerRange];
+			syncInfo = [syncInfo substringWithRange: smallerRange];
 		NS_HANDLER
-		return;
+			return;
 		NS_ENDHANDLER
-		}
+	}
 	pageNumber = pageNumber + 2;
 	thePageNumber = [NSNumber numberWithInt: pageNumber];
 	pageSearchString = [[NSString stringWithString:@"s "] stringByAppendingString: [thePageNumber stringValue]];
@@ -2704,55 +2675,55 @@
 		smallerRange.location = 0;
 		smallerRange.length = pageRangeEnd.location;
 		NS_DURING
-		syncInfo = [syncInfo substringWithRange: smallerRange];
+			syncInfo = [syncInfo substringWithRange: smallerRange];
 		NS_HANDLER
-		return;
+			return;
 		NS_ENDHANDLER
-		}
-
+	}
+	
 	// Search backwards to any line starting with "p ". Remove this first stuff.
 	// Ignore lines beginning with "p* ".
 	pageNumber = pageNumber - 1;
 	thePageNumber = [NSNumber numberWithInt: pageNumber];
 	pageSearchString = [[NSString stringWithString:@"s "] stringByAppendingString: [thePageNumber stringValue]];
 	pageRangeStart = [syncInfo rangeOfString: pageSearchString];
-
+	
 	if (pageRangeStart.location == NSNotFound)
 		return;
 	[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: pageRangeStart];
 	if (pageRangeStart.location != start)
 		return;
-
+	
 	searchString = [NSString stringWithString:@"p "];
 	searchRange.location = 0; searchRange.length = pageRangeStart.location;
-
+	
 	searchResultRange = [syncInfo rangeOfString: searchString options:NSBackwardsSearch range: searchRange];
 	if (!(searchResultRange.location == NSNotFound)) {
 		NS_DURING
-		[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: searchResultRange];
+			[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: searchResultRange];
 		NS_HANDLER
-		return;
+			return;
 		NS_ENDHANDLER
 		if (theStart != searchResultRange.location)
 			return;
 		smallerRange.location = theEnd;
 		smallerRange.length = [syncInfo length] - theEnd;
 		NS_DURING
-		syncInfo = [syncInfo substringWithRange: smallerRange];
+			syncInfo = [syncInfo substringWithRange: smallerRange];
 		NS_HANDLER
-		return;
+			return;
 		NS_ENDHANDLER
-		}
-
+	}
+	
 	// Now syncInfo contains exactly the required information for the given page
 	// and nothing more. (Also if includeFileName is not nil, it contains the name
 	// of the include file being examined --- NOT NOW)
-
+	
 	// Search  for "p 15 683402 6834958" to find the first
 	// element whose y-coordinate is lower than the y-coordinate of the click
 	// Back up one element and use the first number to find the corresponding
 	// line number; select that line
-
+	
 	found = YES;
 	syncNumber = -1;
 	x = 0; y = 0;
@@ -2762,95 +2733,95 @@
 		oldSyncNumber = syncNumber;
 		oldx = x; oldy = y;
 		if (remainingRange.length < 0)
-			{found = NO; break;}
+		{found = NO; break;}
 		searchResultRange = [syncInfo rangeOfString: @"p " options: NSLiteralSearch range: remainingRange];
 		if (searchResultRange.location == NSNotFound)
-			{found = NO; break;}
-
+		{found = NO; break;}
+		
 		NS_DURING
-		[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: searchResultRange];
+			[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: searchResultRange];
 		NS_HANDLER
-		return;
+			return;
 		NS_ENDHANDLER
 		remainingRange.location = theEnd + 1;
 		remainingRange.length = [syncInfo length] - remainingRange.location;
 		if (theStart == searchResultRange.location) {
-
-
+			
+			
 			newRange.location = theStart;
 			newRange.length = theEnd - theStart;
 			NS_DURING
-			keyLine = [syncInfo substringWithRange: newRange];
+				keyLine = [syncInfo substringWithRange: newRange];
 			NS_HANDLER
-			return;
+				return;
 			NS_ENDHANDLER
-
+			
 			searchResultRange = [keyLine rangeOfCharacterFromSet: [NSCharacterSet decimalDigitCharacterSet]];
 			newRange.location = searchResultRange.location;
 			newRange.length = [keyLine length] - newRange.location;
 			NS_DURING
-			keyLine = [keyLine substringWithRange: newRange];
+				keyLine = [keyLine substringWithRange: newRange];
 			NS_HANDLER
-			return;
+				return;
 			NS_ENDHANDLER
 			syncNumber = [keyLine intValue]; // number of entry
-
+			
 			searchResultRange = [keyLine rangeOfString: @" "];
 			if (searchResultRange.location == NSNotFound)
 				return;
 			newRange.location = searchResultRange.location;
 			newRange.length = [keyLine length] - newRange.location;
 			NS_DURING
-			keyLine = [keyLine substringWithRange: newRange];
+				keyLine = [keyLine substringWithRange: newRange];
 			NS_HANDLER
-			return;
+				return;
 			NS_ENDHANDLER
 			searchResultRange = [keyLine rangeOfCharacterFromSet: [NSCharacterSet decimalDigitCharacterSet]];
 			newRange.location = searchResultRange.location;
 			newRange.length = [keyLine length] - newRange.location;
 			NS_DURING
-			keyLine = [keyLine substringWithRange: newRange];
+				keyLine = [keyLine substringWithRange: newRange];
 			NS_HANDLER
-			return;
+				return;
 			NS_ENDHANDLER
 			x = [keyLine intValue];
-
+			
 			searchResultRange = [keyLine rangeOfString: @" "];
 			if (searchResultRange.location == NSNotFound)
 				return;
 			newRange.location = searchResultRange.location;
 			newRange.length = [keyLine length] - newRange.location;
 			NS_DURING
-			keyLine = [keyLine substringWithRange: newRange];
+				keyLine = [keyLine substringWithRange: newRange];
 			NS_HANDLER
-			return;
+				return;
 			NS_ENDHANDLER
 			y = [keyLine intValue];
-			}
 		}
+	}
 	while (found && (y > yValue));
-
+	
 	if ((oldSyncNumber < 0) && (syncNumber < 0))
 		return;
-
+	
 	if (oldSyncNumber < 0)
 		oldSyncNumber = syncNumber;
-
+	
 	anotherNumber = [NSNumber numberWithInt: oldSyncNumber];
 	pageSearchString = [[NSString stringWithString:@"l "] stringByAppendingString: [anotherNumber stringValue]];
 	/*
+	 pageRangeStart = [syncInfo rangeOfString: pageSearchString];
+	 if (pageRangeStart.location == NSNotFound) {
+		 syncInfo = [NSString stringWithContentsOfFile:infoFile];
+		 pageRangeStart = [syncInfo rangeOfString: pageSearchString];
+	 }
+	 */
+	syncInfo = [NSString stringWithContentsOfFile:infoFile];
 	pageRangeStart = [syncInfo rangeOfString: pageSearchString];
-	if (pageRangeStart.location == NSNotFound) {
-		syncInfo = [NSString stringWithContentsOfFile:infoFile];
-		pageRangeStart = [syncInfo rangeOfString: pageSearchString];
-		}
-	*/
-		syncInfo = [NSString stringWithContentsOfFile:infoFile];
-		pageRangeStart = [syncInfo rangeOfString: pageSearchString];
 	NS_DURING
-	[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: pageRangeStart];
+		[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: pageRangeStart];
 	NS_HANDLER
-	return;
+		return;
 	NS_ENDHANDLER
 	newRange.location = theStart;
 	newRange.length = (theEnd - theStart);
@@ -2863,40 +2834,39 @@
 	newRange.location = thisRange.location + 1;
 	newRange.length = theEnd - newRange.location;
 	NS_DURING
-	valueString = [syncInfo substringWithRange: newRange];
+		valueString = [syncInfo substringWithRange: newRange];
 	NS_HANDLER
-	return;
+		return;
 	NS_ENDHANDLER
-
+	
 	aNumber = [valueString intValue];
-
+	
 	// at this point, we know the line number containing the click, but we must still find the
 	// name of the file which contains that line. So we search backward from found range, for
 	// ( without a matching later ). If we found one, then it will give the name of the
 	// file. Otherwise the file is the current file.
-
+	
 	NSRange         lineRange, oneLineRange;
 	NSString        *theLine, *theFile;
 	NSMutableArray  *theStack;
 	int             stackPointer;
-
+	
 	searchCloseString = [NSString stringWithString:@")"];
 	searchOpenString = [NSString stringWithString:@"("];
-
-	done = NO;
+	
 	theStack = [NSMutableArray arrayWithCapacity: 10];
 	stackPointer = -1;
-
+	
 	lineRange.location = 0;
 	lineRange.length = 1;
-	while ((! done) && (lineRange.location <= foundRange.location)) {
-
+	while (lineRange.location <= foundRange.location) {
+		
 		searchCloseRange.location = lineRange.location; searchCloseRange.length = foundRange.location - lineRange.location;
 		searchCloseResultRange = [syncInfo rangeOfString: searchCloseString options:0 range: searchCloseRange];
 		searchOpenRange.location = lineRange.location; searchOpenRange.length = foundRange.location - lineRange.location;
 		searchOpenResultRange = [syncInfo rangeOfString: searchOpenString options:0 range: searchOpenRange];
 		if ((searchOpenResultRange.location == NSNotFound) && (searchCloseResultRange.location == NSNotFound))
-			done = YES;
+			break;
 		else if (searchOpenResultRange.location == NSNotFound)
 			lineRange.location = searchCloseResultRange.location;
 		else if (searchCloseResultRange.location == NSNotFound)
@@ -2905,89 +2875,42 @@
 			lineRange.location = searchOpenResultRange.location;
 		else
 			lineRange.location = searchCloseResultRange.location;
-
-
-		if (! done) {
-			NS_DURING
+		
+		NS_DURING
 			[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: &theContentsEnd forRange: lineRange];
-			NS_HANDLER
+		NS_HANDLER
 			return;
-			NS_ENDHANDLER
-
-			lineRange.location = theEnd;
-			oneLineRange.location = theStart;
-			oneLineRange.length = theContentsEnd - theStart;
-			if (oneLineRange.length >= 1) {
-				theLine = [syncInfo substringWithRange: oneLineRange];
-				if ([theLine characterAtIndex:0] == '(') {
-					stackPointer++;
-					oneLineRange.location++;
-					oneLineRange.length--;
-					if (oneLineRange.length > 0) {
-						theFile = [syncInfo substringWithRange: oneLineRange];
-						[theStack insertObject:theFile atIndex: stackPointer];
-						}
-					}
-				else if ([theLine characterAtIndex:0] == ')') {
-					if (stackPointer >= 0)
-						stackPointer--;
-					}
-
+		NS_ENDHANDLER
+		
+		lineRange.location = theEnd;
+		oneLineRange.location = theStart;
+		oneLineRange.length = theContentsEnd - theStart;
+		if (oneLineRange.length >= 1) {
+			theLine = [syncInfo substringWithRange: oneLineRange];
+			if ([theLine characterAtIndex:0] == '(') {
+				stackPointer++;
+				oneLineRange.location++;
+				oneLineRange.length--;
+				if (oneLineRange.length > 0) {
+					theFile = [syncInfo substringWithRange: oneLineRange];
+					[theStack insertObject:theFile atIndex: stackPointer];
 				}
+			} else if ([theLine characterAtIndex:0] == ')') {
+				if (stackPointer >= 0)
+					stackPointer--;
 			}
+			
 		}
-
+	}
+	
 	includeFileName = nil;
 	if (stackPointer >= 0)
 		includeFileName = [theStack objectAtIndex: stackPointer];
-
-
-/*
-	done = NO;
-	searchCloseString = [NSString stringWithString:@")"];
-	searchOpenString = [NSString stringWithString:@"("];
-
-	while (! done) {
-
-		searchCloseRange.location = 0; searchCloseRange.length = foundRange.location;
-		searchCloseResultRange = [syncInfo rangeOfString: searchCloseString options:NSBackwardsSearch range: searchCloseRange];
-
-		searchOpenRange.location = 0; searchOpenRange.length = foundRange.location;
-		searchOpenResultRange = [syncInfo rangeOfString: searchOpenString options:NSBackwardsSearch range: searchOpenRange];
-
-		if (searchOpenResultRange.location == NSNotFound) {
-			done = YES;
-			includeFileName = nil;
-			}
-
-		else if ((searchCloseResultRange.location == NSNotFound) ||
-				(searchCloseResultRange.location < searchOpenResultRange.location)) {
-			done = YES;
-			 NS_DURING
-			[syncInfo getLineStart: &theStart end: &theEnd contentsEnd: nil forRange: searchOpenResultRange];
-			NS_HANDLER
-			return;
-			NS_ENDHANDLER
-			smallerRange.location = theStart + 1;
-			smallerRange.length = theEnd - theStart - 2;
-			NS_DURING
-			includeFileName = [syncInfo substringWithRange: smallerRange];
-			NS_HANDLER
-			return;
-			NS_ENDHANDLER
-			}
-
-		else {
-			foundRange.location = searchOpenResultRange.location - 1;
-			}
-		}
-*/
-
+	
 	if (includeFileName == nil) {
 		[myDocument toLine:aNumber];
 		[[myDocument  textWindow] makeKeyAndOrderFront:self];
-		}
-	else {
+	} else {
 		newFileName = [[[myDocument fileName] stringByDeletingLastPathComponent] stringByAppendingString:@"/"];
 		newFileName = [newFileName stringByAppendingString: includeFileName];
 		theExtension = [newFileName pathExtension];
@@ -2998,7 +2921,7 @@
 		newDocument = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfFile:includeFileName display:YES];
 		[newDocument toLine:aNumber];
 		[[newDocument textWindow] makeKeyAndOrderFront:self];
-		}
+	}
 }
 
 
@@ -3224,50 +3147,40 @@
 	float magWidth, magHeight, magOffsetX, magOffsetY;
 	int originalLevel, currentLevel;
 	float magScale; 	//0.4	// you may want to change this
-
+	
 	postNote = [[self documentView] postsBoundsChangedNotifications];
 	[[self documentView] setPostsBoundsChangedNotifications: NO];
-
+	
 	oldBounds = [[self documentView] bounds];
 	cursorVisible = YES;
 	originalLevel = level+[theEvent clickCount];
-
+	
 	//[self cleanupMarquee: NO];
 	[[self window] discardCachedImage]; // make sure not use the cached image
-
+	
 	do {
-		if ([theEvent type]==NSLeftMouseDragged || [theEvent type]==NSLeftMouseDown || [theEvent type]==NSFlagsChanged)
-		{
+		if ([theEvent type]==NSLeftMouseDragged || [theEvent type]==NSLeftMouseDown || [theEvent type]==NSFlagsChanged) {
 			// set up the size and magScale
-			if ([theEvent type]==NSLeftMouseDown || [theEvent type]==NSFlagsChanged)
-			{
+			if ([theEvent type]==NSLeftMouseDown || [theEvent type]==NSFlagsChanged) {
 				currentLevel = originalLevel+(([theEvent modifierFlags] & NSAlternateKeyMask)?1:0);
-				if (currentLevel <= 1)
-				{
+				if (currentLevel <= 1) {
 					magWidth = 150; magHeight = 100;
 					magOffsetX = magWidth/2; magOffsetY = magHeight/2;
-				}
-				else if (currentLevel == 2)
-				{
+				} else if (currentLevel == 2) {
 					magWidth = 380; magHeight = 250;
 					magOffsetX = magWidth/2; magOffsetY = magHeight/2;
-				}
-				else // currentLevel >= 3 // need to cache the image
-				{
+				} else { // currentLevel >= 3 // need to cache the image
 					[[self window] restoreCachedImage];
 					[[self window] cacheImageInRect:[self convertRect:[self visibleRect] toView: nil]];
 				}
-				if (!([theEvent modifierFlags] & NSShiftKeyMask))
-				{
+				if (!([theEvent modifierFlags] & NSShiftKeyMask)) {
 					if ([theEvent modifierFlags] & NSCommandKeyMask)
 						magScale = 0.25; 	// x4
 					else if ([theEvent modifierFlags] & NSControlKeyMask)
 						magScale = 0.66666; // x1.5
 					else
 						magScale = 0.4; 	// x2.5
-				}
-				else // shrink the image with shift key -- can be very slow
-				{
+				} else { // shrink the image with shift key -- can be very slow
 					if ([theEvent modifierFlags] & NSCommandKeyMask)
 						magScale = 4.0; 	// /4
 					else if ([theEvent modifierFlags] & NSControlKeyMask)
@@ -3277,59 +3190,51 @@
 				}
 			}
 			// get Mouse location and check if it is with the view's rect
-
+			
 			if (!([theEvent type]==NSFlagsChanged))
 				mouseLocWindow = [theEvent locationInWindow];
 			mouseLocView = [self convertPoint: mouseLocWindow fromView:nil];
 			mouseLocDocumentView = [[self documentView] convertPoint: mouseLocWindow fromView:nil];
 			// check if the mouse is in the rect
-
-			if([self mouse:mouseLocView inRect:[self visibleRect]])
-			{
-				if (cursorVisible)
-				{
+			
+			if([self mouse:mouseLocView inRect:[self visibleRect]]) {
+				if (cursorVisible) {
 					[NSCursor hide];
 					cursorVisible = NO;
 				}
 				// define rect for magnification in window coordinate
-				if (currentLevel >= 3) // mitsu 1.29 (S5) set magRectWindow here
-				{
+				if (currentLevel >= 3) { // mitsu 1.29 (S5) set magRectWindow here
 					magRectWindow = [self convertRect:[self visibleRect] toView:nil];
-				}
-				else // currentLevel <= 2
-				{
+				} else { // currentLevel <= 2
 					magRectWindow = NSMakeRect(mouseLocWindow.x-magOffsetX, mouseLocWindow.y-magOffsetY,
-											magWidth, magHeight);
+											   magWidth, magHeight);
 					// restore the cached image in order to clear the rect
 					[[self window] restoreCachedImage];
 					[[self window] cacheImageInRect:
 						NSIntersectionRect(NSInsetRect(magRectWindow, -2, -2),
-						[[self superview] convertRect:[[self superview] bounds]
-						toView:nil])]; // mitsu 1.29b
+										   [[self superview] convertRect:[[self superview] bounds]
+																  toView:nil])]; // mitsu 1.29b
 				}
 				// draw marquee
 				if (selRectTimer)
 					[self updateMarquee: nil];
-
+				
 				// resize bounds around mouseLocView
 				newBounds = NSMakeRect(mouseLocDocumentView.x+magScale*(oldBounds.origin.x-mouseLocDocumentView.x),
-								mouseLocDocumentView.y+magScale*(oldBounds.origin.y-mouseLocDocumentView.y),
-								magScale*(oldBounds.size.width), magScale*(oldBounds.size.height));
-
+									   mouseLocDocumentView.y+magScale*(oldBounds.origin.y-mouseLocDocumentView.y),
+									   magScale*(oldBounds.size.width), magScale*(oldBounds.size.height));
+				
 				// mitsu 1.29 (S1) fix for rotated view
-
+				
 				[[self documentView] setBounds: newBounds];
-				 magRectView = NSInsetRect([self convertRect:magRectWindow fromView:nil],1,1);
+				magRectView = NSInsetRect([self convertRect:magRectWindow fromView:nil],1,1);
 				[self displayRect: magRectView]; // this flushes the buffer
-				// reset bounds
+												 // reset bounds
 				[[self documentView] setBounds: oldBounds];
-
-			}
-			else // mouse is not in the rect
-			{
-				// show cursor
-				if (!cursorVisible)
-				{
+				
+			} else { // mouse is not in the rect
+					 // show cursor
+				if (!cursorVisible) {
 					[NSCursor unhide];
 					cursorVisible = YES;
 				}
@@ -3343,21 +3248,19 @@
 				else
 					[[self window] discardCachedImage];
 			}
-		}
-		else if ([theEvent type]==NSLeftMouseUp)
-		{
+		} else if ([theEvent type] == NSLeftMouseUp) {
 			break;
 		}
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask |
-				NSLeftMouseDraggedMask | NSFlagsChangedMask];
+			NSLeftMouseDraggedMask | NSFlagsChangedMask];
 	} while (YES);
-
+	
 	[[self window] restoreCachedImage];
 	[[self window] flushWindow];
 	[NSCursor unhide];
 	[[self documentView] setPostsBoundsChangedNotifications: postNote];
 	[self flagsChanged: theEvent]; // update cursor
-	// recache the image around marquee for quicker response
+								   // recache the image around marquee for quicker response
 	oldVisibleRect.size.width = 0;
 	[self cleanupMarquee: NO];
 	[self recacheMarquee];
@@ -3368,7 +3271,7 @@
 - (void)flagsChanged:(NSEvent *)theEvent
 {
 	if (([theEvent modifierFlags] & NSCommandKeyMask) && (!([theEvent modifierFlags] & NSAlternateKeyMask)))
-				currentMouseMode = NEW_MOUSE_MODE_SELECT_TEXT;
+		currentMouseMode = NEW_MOUSE_MODE_SELECT_TEXT;
 	else if ([theEvent modifierFlags] & NSControlKeyMask)
 		currentMouseMode = NEW_MOUSE_MODE_SCROLL;
 	else if ([theEvent modifierFlags] & NSCommandKeyMask)
@@ -3377,7 +3280,7 @@
 		currentMouseMode = MOUSE_MODE_MAG_GLASS;
 	else
 		currentMouseMode = mouseMode;
-
+	
 	[[self window] invalidateCursorRectsForView: self]; // this updates the cursor rects
 }
 
@@ -3441,33 +3344,28 @@
 - (void)keyDown:(NSEvent *)theEvent;
 {
 	NSString	*theKey;
+	unichar		key;
 
 	theKey = [theEvent characters];
-
-	if (([theKey characterAtIndex:0] == NSLeftArrowFunctionKey) && ([theEvent modifierFlags] & NSCommandKeyMask))
-	{
+	if ([theKey length] >= 1)
+		key = [theKey characterAtIndex:0];
+	else
+		key = 0;
+	
+	if ((key == NSLeftArrowFunctionKey) && ([theEvent modifierFlags] & NSCommandKeyMask)) {
 		[self previousPage:self];
-		return;
-	}
-
-	if (([theKey characterAtIndex:0] == NSRightArrowFunctionKey) && ([theEvent modifierFlags] & NSCommandKeyMask))
-	{
+	} else if ((key == NSRightArrowFunctionKey) && ([theEvent modifierFlags] & NSCommandKeyMask)) {
 		[self nextPage:self];
-		return;
-	}
-
-	if ((([theKey characterAtIndex:0] == NSLeftArrowFunctionKey) || ([theKey characterAtIndex:0] == NSRightArrowFunctionKey))
+	} else if (((key == NSLeftArrowFunctionKey) || (key == NSRightArrowFunctionKey))
 		&& (! [[[[self documentView] enclosingScrollView] horizontalScroller] isEnabled])
 		) {
-		if ([theKey characterAtIndex:0] == NSLeftArrowFunctionKey)
+		if (key == NSLeftArrowFunctionKey)
 			[self previousPage:self];
 		else
 			[self nextPage:self];
-		return;
-	}
-	else
+	} else {
 		[super keyDown:theEvent];
+	}
 }
-
 
 @end

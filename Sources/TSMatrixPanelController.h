@@ -50,10 +50,6 @@
 	NSMutableArray	    *draggedRows;
 
 	MatrixData *myMatrix;
-	//NSMutableArray *myRows;
-
-
-
 }
 + (id)sharedInstance;
 
@@ -68,6 +64,7 @@
 
 @end
 
+
 @interface MatrixData : NSObject {
 	NSMutableArray    *rows;
 	int activeRows;
@@ -78,7 +75,7 @@
 - (int)colCount;
 - (id)objectInRow:(unsigned)row inCol:(unsigned)col;
 - (id)myRowAtIndex:(unsigned)row;
--(void)replaceObjectInRow:(unsigned)row inCol:(unsigned)col withObject:(id) anObj;
+- (void)replaceObjectInRow:(unsigned)row inCol:(unsigned)col withObject:(id) anObj;
 - (void)addRow;
 - (void)insertRow:(NSMutableArray*)row atIndex:(int)ind;
 - (void)removeRowAtIndex:(unsigned int)ind;
@@ -89,8 +86,8 @@
 - (void)removeLastRow;
 - (int)actRows;
 - (NSMutableArray*)rows;
--(void)setActRows:(int)num;
+- (void)setActRows:(int)num;
 - (int)actCols;
--(void)setActCols:(int)num;
+- (void)setActCols:(int)num;
 
 @end

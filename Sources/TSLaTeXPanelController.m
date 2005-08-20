@@ -40,10 +40,10 @@ static id _sharedInstance = nil;
 
 - (id)init
 {
-	id result;
-	result = [super init];
-	shown = NO;
-	return result;
+	if ((self = [super init])) {
+		shown = NO;
+	}
+	return self;
 }
 
 - (void)dealloc
@@ -56,9 +56,8 @@ static id _sharedInstance = nil;
 	[arrayInternational release];
 	[arrayMath release];
 	[arraySymbols release];
-	// added by G.K.
 	[arrayCustomized release];
-	// end add
+
 	[super dealloc];
 }
 
@@ -220,7 +219,7 @@ static id _sharedInstance = nil;
 }
 // end add
 
-- (void)documentWindowDidBecomeKey:(NSNotification *)note
+- (void)textWindowDidBecomeKey:(NSNotification *)note
 {
 	// if latex panel is hidden, show it
 	if (shown)

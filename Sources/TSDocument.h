@@ -155,7 +155,7 @@ enum RootCommand
 	IBOutlet NSMenu 	*mouseModeMenuKit; // mitsu 1.29 (O)
 	IBOutlet NSMenu 	*magnificationMenu; // mitsu 1.29 test
 
-	BOOL		externalEditor;
+	BOOL		_externalEditor;
 // added by mitsu --(H) Macro menu; macroButton
 	id			macroButton;		/*" pull-down list for macros "*/
 	id                  macroButtonEE;          /*" same in pdf window "*/
