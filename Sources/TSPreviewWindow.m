@@ -111,67 +111,67 @@ extern NSPanel *pageNumberWindow;
 
 
 
-- (void) runPageLayout: sender;
+- (void) runPageLayout: sender
 {
 	[myDocument runPageLayout: sender];
 }
 
-- (void) printDocument: sender;
+- (void) printDocument: sender
 {
 	[myDocument printDocument: sender];
 }
 
-- (void) printSource: sender;
+- (void) printSource: sender
 {
 	[myDocument printSource: sender];
 }
 
-- (void) doTypeset: sender;
+- (void) doTypeset: sender
 {
 	[myDocument doTypeset: sender];
 }
 
-- (void) flipShowSync: sender;
+- (void) flipShowSync: sender
 {
 	[myDocument flipShowSync: sender];
 }
 
-- (void) doTex: sender;
+- (void) doTex: sender
 {
 	[myDocument doTex: sender];
 }
 
-- (void) doLatex: sender;
+- (void) doLatex: sender
 {
 	[myDocument doLatex: sender];
 }
 
-- (void) doBibtex: sender;
+- (void) doBibtex: sender
 {
 	[myDocument doBibtex: sender];
 }
 
-- (void) doIndex: sender;
+- (void) doIndex: sender
 {
 	[myDocument doIndex: sender];
 }
 
-- (void) doMetapost: sender;
+- (void) doMetapost: sender
 {
 	[myDocument doMetapost: sender];
 }
 
-- (void) doContext: sender;
+- (void) doContext: sender
 {
 	[myDocument doContext: sender];
 }
 
-- (void) doMetaFont: sender;
+- (void) doMetaFont: sender
 {
 	[myDocument doMetaFont: sender];
 }
 
-- (void) previousPage: sender;
+- (void) previousPage: sender
 {
 	if ([myDocument fromKit])
 		[[myDocument pdfKitView] previousPage: sender];
@@ -187,22 +187,22 @@ extern NSPanel *pageNumberWindow;
 }
 
 
-- (void) doChooseMethod: sender;
+- (void) doChooseMethod: sender
 {
 	[myDocument doChooseMethod: sender];
 }
 
-- (void) doError: sender;
+- (void) doError: sender
 {
 	[myDocument doError: sender];
 }
 
-- (void) setProjectFile: sender;
+- (void) setProjectFile: sender
 {
 	[myDocument setProjectFile: sender];
 }
 
-- (void) rotateClockwise: sender;
+- (void) rotateClockwise: sender
 {
 	if ([myDocument fromKit])
 		[[myDocument pdfKitView] rotateClockwise: sender];
@@ -211,7 +211,7 @@ extern NSPanel *pageNumberWindow;
 	}
 }
 
-- (void) rotateCounterclockwise: sender;
+- (void) rotateCounterclockwise: sender
 {
 	if ([myDocument fromKit])
 		[[myDocument pdfKitView] rotateCounterclockwise: sender];
@@ -229,7 +229,7 @@ extern NSPanel *pageNumberWindow;
 		[[myDocument pdfView] firstPage: sender];
 }
 
-- (void) lastPage: sender;
+- (void) lastPage: sender
 {
 	if ([myDocument fromKit])
 		[[myDocument pdfKitView] lastPage: sender];
@@ -237,28 +237,28 @@ extern NSPanel *pageNumberWindow;
 		[[myDocument pdfView] lastPage: sender];
 }
 
-- (void) up: sender;
+- (void) up: sender
 {
 	if (![myDocument fromKit]) {
 		[[myDocument pdfView] up: sender];
 	}
 }
 
-- (void) down: sender;
+- (void) down: sender
 {
 	if (![myDocument fromKit]) {
 		[[myDocument pdfView] down: sender];
 	}
 }
 
-- (void) top: sender;
+- (void) top: sender
 {
 	if (![myDocument fromKit]) {
 		[[myDocument pdfView] top: sender];
 	}
 }
 
-- (void) bottom: sender;
+- (void) bottom: sender
 {
 	if (![myDocument fromKit]) {
 		[[myDocument pdfView] bottom: sender];
@@ -266,14 +266,14 @@ extern NSPanel *pageNumberWindow;
 }
 
 // mitsu 1.29 (O)
-- (void) left: sender;
+- (void) left: sender
 {
 	if (![myDocument fromKit]) {
 		[[myDocument pdfView] left: sender];
 	}
 }
 
-- (void) right: sender;
+- (void) right: sender
 {
 	if (![myDocument fromKit]) {
 		[[myDocument pdfView] right: sender];
@@ -282,7 +282,7 @@ extern NSPanel *pageNumberWindow;
 
 ////////// end key movement /////////////////////////
 
-- (void) orderOut:sender;
+- (void) orderOut:sender
 {
 	if ([myDocument externalEditor])
 		[myDocument close];
@@ -293,7 +293,7 @@ extern NSPanel *pageNumberWindow;
 		[super orderOut: sender];
 }
 
-- (void)associatedWindow:(id)sender;
+- (void)associatedWindow:(id)sender
 {
 	if ([myDocument documentType] == isTeX) {
 		if ([myDocument getCallingWindow] == nil)
@@ -410,7 +410,7 @@ extern NSPanel *pageNumberWindow;
 	[super sendEvent: theEvent];
 }
 
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem;
+- (BOOL)validateMenuItem:(NSMenuItem *)anItem
 {
 
 	if ([anItem action] == @selector(displayLatexPanel:))
@@ -468,7 +468,7 @@ extern NSPanel *pageNumberWindow;
 }
 
 
-- (TSDocument *)document;
+- (TSDocument *)document
 {
 	return myDocument;
 }

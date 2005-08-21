@@ -62,9 +62,7 @@
 
 @implementation TSDocument
 
-//-----------------------------------------------------------------------------
 - (id)init
-//-----------------------------------------------------------------------------
 {
 	[super init];
 
@@ -105,9 +103,7 @@
 	return self;
 }
 
-//-----------------------------------------------------------------------------
 - (void)dealloc
-//-----------------------------------------------------------------------------
 {
 
 
@@ -1043,9 +1039,7 @@ in other code when an external editor is being used. */
 }
 
 
-//-----------------------------------------------------------------------------
 - (void)registerForNotifications
-//-----------------------------------------------------------------------------
 /*" This method registers all notifications that are necessary to work properly together with the other AppKit and TeXShop objects.
 "*/
 {
@@ -1150,9 +1144,7 @@ in other code when an external editor is being used. */
 											   object:textView2];
 }
 
-//-----------------------------------------------------------------------------
 - (void)setupFromPreferencesUsingWindowController:(NSWindowController *)windowController
-//-----------------------------------------------------------------------------
 /*" This method reads the NSUserDefaults and restores the settings before the document will actually be displayed.
 "*/
 {
@@ -1237,9 +1229,7 @@ in other code when an external editor is being used. */
 	// end of addition
 }
 
-//-----------------------------------------------------------------------------
 - (void) makeMenuFromDirectory: (NSMenu *)menu basePath: (NSString *)basePath action:(SEL)action level:(unsigned)level;
-//-----------------------------------------------------------------------------
 /* build a submenu from the specified directory (by S. Zenitani, Jan 31, 2003) */
 {
 	NSFileManager *fm;
@@ -1276,9 +1266,7 @@ in other code when an external editor is being used. */
 	}
 }
 
-//-----------------------------------------------------------------------------
 - (void)setDocumentFontFromPreferences:(NSNotification *)notification
-//-----------------------------------------------------------------------------
 /*" Changes the font of %textView to the one saved in the NSUserDefaults. This method is also registered with NSNotificationCenter and a notifictaion will be send whenever the font changes in the preferences panel.
 "*/
 {
@@ -1305,9 +1293,7 @@ in other code when an external editor is being used. */
 	return _externalEditor;
 }
 
-//-----------------------------------------------------------------------------
 - (void)rememberFont:(NSNotification *)notification
-//-----------------------------------------------------------------------------
 /*" Called when preferences starts to save current font "*/
 {
 	NSFont 	*font;
@@ -1320,9 +1306,7 @@ in other code when an external editor is being used. */
 	}
 }
 
-//-----------------------------------------------------------------------------
 - (void)revertDocumentFont:(NSNotification *)notification
-//-----------------------------------------------------------------------------
 /*" Changes the font of %textView to the one used before preferences called, in case the
 preference change is cancelled. "*/
 {
@@ -1337,14 +1321,12 @@ preference change is cancelled. "*/
 }
 
 
-//-----------------------------------------------------------------------------
-- (void) doNothing: (id) theDictionary;
-//-----------------------------------------------------------------------------
+- (void) doNothing: (id) theDictionary
 {
 	;
 }
 
-- (id) magnificationPanel;
+- (id) magnificationPanel
 {
 	if ([self fromKit])
 		return magnificationKitPanel;
@@ -1352,7 +1334,7 @@ preference change is cancelled. "*/
 		return magnificationPanel;
 }
 
-- (id) pagenumberPanel;
+- (id) pagenumberPanel
 {
 	if ([self fromKit])
 		return pagenumberKitPanel;
@@ -1360,17 +1342,17 @@ preference change is cancelled. "*/
 		return pagenumberPanel;
 }
 
-- (void) quitMagnificationPanel: sender;
+- (void) quitMagnificationPanel: sender
 {
 	[NSApp endSheet: magnificationPanel returnCode: 0];
 }
 
-- (void) quitPagenumberPanel: sender;
+- (void) quitPagenumberPanel: sender
 {
 	[NSApp endSheet: pagenumberPanel returnCode: 0];
 }
 
-- (void) printSource: sender;
+- (void) printSource: sender
 {
 
 	NSPrintOperation            *printOperation;
@@ -1393,7 +1375,7 @@ preference change is cancelled. "*/
 
 }
 
-- (void) doChooseMethod: sender;
+- (void) doChooseMethod: sender
 {
 	[[[[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")] submenu]
 		itemWithTag:100] setState:NSOffState];
@@ -1405,7 +1387,7 @@ preference change is cancelled. "*/
 	whichScript = [sender tag];
 }
 
-- (void) fixTypesetMenu;
+- (void) fixTypesetMenu
 {
 	id <NSMenuItem> 	aMenu;
 	int		i;
@@ -1427,7 +1409,7 @@ preference change is cancelled. "*/
 			[self fixTypesetMenu];
 }
 
-- (void) chooseProgramFF: sender;
+- (void) chooseProgramFF: sender
 {
 	int i = [sender tag];
 	[programButton selectItemAtIndex: i];
@@ -1441,7 +1423,7 @@ preference change is cancelled. "*/
 }
 
 
-- (void) chooseProgram: sender;
+- (void) chooseProgram: sender
 {
 	id		theItem;
 	int		which;
@@ -1458,45 +1440,45 @@ preference change is cancelled. "*/
 	[self fixMacroMenu];
 }
 
-- (void) okProject: sender;
+- (void) okProject: sender
 {
 	myPrefResult = 0;
 	[projectPanel close];
 }
 
-- (void) quitProject: sender;
+- (void) quitProject: sender
 {
 	myPrefResult = 1;
 	[projectPanel close];
 }
 
 
-- (void) okForRequest: sender;
+- (void) okForRequest: sender
 {
 	myPrefResult = 0;
 	[requestWindow close];
 }
 
-- (void) okForPrintRequest: sender;
+- (void) okForPrintRequest: sender
 {
 	myPrefResult = 0;
 	[printRequestPanel close];
 }
 
 
-- (void) okLine: sender;
+- (void) okLine: sender
 {
 	myPrefResult = 0;
 	[linePanel close];
 }
 
-- (void) quitLine: sender;
+- (void) quitLine: sender
 {
 	myPrefResult = 1;
 	[linePanel close];
 }
 
-- (void) setProjectFile: sender;
+- (void) setProjectFile: sender
 {
 	int		result;
 	NSString		*project, *nameString; //, *anotherString;
@@ -1532,7 +1514,7 @@ preference change is cancelled. "*/
 	}
 }
 
-- (void) doLine: sender;
+- (void) doLine: sender
 {
 	int		result, line;
 
@@ -1546,9 +1528,7 @@ preference change is cancelled. "*/
 
 #pragma mark Templates
 
-//-----------------------------------------------------------------------------
-- (void) fixTemplate: (id) theDictionary;
-//-----------------------------------------------------------------------------
+- (void) fixTemplate: (id) theDictionary
 {
 	NSRange		oldRange;
 	NSString		*oldString, *newString;
@@ -1584,7 +1564,6 @@ preference change is cancelled. "*/
 // Modified by Seiji Zenitani (Jan 31, 2003)
 //==================================================================
 - (void) doTemplate: sender
-//-----------------------------------------------------------------------------
 {
 	NSString		*nameString, *oldString;
 	id			theItem;
@@ -1680,7 +1659,7 @@ preference change is cancelled. "*/
 
 #pragma mark Tag menu
 
-- (void) doTag: sender;
+- (void) doTag: sender
 {
 	NSString	*text, *titleString, *matchString;
 	unsigned	start, end, irrelevant;
@@ -1721,7 +1700,7 @@ preference change is cancelled. "*/
 }
 
 
-- (void) setupTags;
+- (void) setupTags
 {
 	if ([SUD boolForKey: TagSectionsKey]) {
 		[tagTimer invalidate];
@@ -1736,9 +1715,7 @@ preference change is cancelled. "*/
 	}
 }
 
-//-----------------------------------------------------------------------------
-- (void) fixTags:(NSTimer *)timer;
-//-----------------------------------------------------------------------------
+- (void) fixTags:(NSTimer *)timer
 {
 	NSString	*text;
 	unsigned	start, end, irrelevant;
@@ -2026,7 +2003,7 @@ preference change is cancelled. "*/
 }
 
 
-- (void) doError: sender;
+- (void) doError: sender
 {
 	NSDocument		*myRoot;
 	NSArray 		*wlist;
@@ -2078,7 +2055,7 @@ preference change is cancelled. "*/
 	}
 }
 
-- (void) toLine: (int) line;
+- (void) toLine: (int) line
 {
 	int		i;
 	NSString	*text;
@@ -2117,33 +2094,33 @@ preference change is cancelled. "*/
 	return myPDFKitView;
 }
 
-- (id) pdfWindow;
+- (id) pdfWindow
 {
 	return pdfWindow;
 }
 
-- (id) pdfKitWindow;
+- (id) pdfKitWindow
 {
 	return pdfKitWindow;
 }
 
-- (id) textWindow;
+- (id) textWindow
 {
 	return textWindow;
 }
 
-- (id) textView;
+- (id) textView
 {
 	return textView;
 }
 
 
-- (TSDocumentType) documentType;
+- (TSDocumentType) documentType
 {
 	return _documentType;
 }
 
-- (NSPDFImageRep *) myTeXRep;
+- (NSPDFImageRep *) myTeXRep
 {
 	return texRep;
 }
@@ -2230,7 +2207,7 @@ preference change is cancelled. "*/
 	pdfCharacterIndex = index;
 }
 
-- (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView;
+- (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView
 {
 	int             pdfPage;
 	BOOL            found, synclineFound;
@@ -2532,7 +2509,7 @@ preference change is cancelled. "*/
 }
 
 
-- (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView;
+- (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView
 {
 	NSString			*theText, *searchText;
 	unsigned int		theIndex;
@@ -2704,7 +2681,7 @@ preference change is cancelled. "*/
 - (void)refreshTEXT
 {
 	NSString		*textPath;
-	NSRange            myRange;
+	NSRange			myRange;
 
 	textPath = [self fileName];
 
@@ -2765,15 +2742,14 @@ preference change is cancelled. "*/
 		if ([myData length]) {
 			theEncoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
 			newOutput = [[NSString alloc] initWithData: myData encoding: theEncoding];
-
+			
 			// 1.35 (F) fix --- suggested by Kino-san
 			if (newOutput == nil) {
 				newOutput = [[NSString alloc] initWithData: myData encoding: NSMacOSRomanStringEncoding];
 			}
 			// 1.35 (F) end
-
-			if ((makeError) && ([newOutput length] > 2) && (errorNumber < NUMBEROFERRORS))
-			{
+			
+			if ((makeError) && ([newOutput length] > 2) && (errorNumber < NUMBEROFERRORS)) {
 				myLength = [newOutput length];
 				searchString = @"l.";
 				lineRange.location = 0;
@@ -2796,9 +2772,9 @@ preference change is cancelled. "*/
 					}
 				}
 			}
-
+			
 			typesetStart = YES;
-
+			
 			[outputText replaceCharactersInRange: [outputText selectedRange] withString: newOutput];
 			[outputText scrollRangeToVisible: [outputText selectedRange]];
 			[newOutput release];
@@ -2821,9 +2797,9 @@ preference change is cancelled. "*/
 				[[statisticsForm cellAtIndex:0] setObjectValue:[wordNumber stringValue]];
 				[[statisticsForm cellAtIndex:1] setObjectValue:[lineNumber stringValue]];
 				[[statisticsForm cellAtIndex:2] setObjectValue:[charNumber stringValue]];
-				}
 			}
 		}
+	}
 }
 
 // Code by Nicolas Ojeda Bar, modified by Martin Heusse
@@ -2912,7 +2888,7 @@ preference change is cancelled. "*/
 }
 
 
-- (void) fixMacroMenu;
+- (void) fixMacroMenu
 {
 /*
 	if (whichEngine == 6)
@@ -2925,7 +2901,7 @@ preference change is cancelled. "*/
 	[self resetMacroButton: nil];
 }
 
-- (void) fixMacroMenuForWindowChange;
+- (void) fixMacroMenuForWindowChange
 {
 	if (g_macroType != whichEngine) {
 		g_macroType = whichEngine;
@@ -2950,9 +2926,7 @@ preference change is cancelled. "*/
 		}
 }
 
-//-----------------------------------------------------------------------------
-- (void)changePrefAutoComplete:(NSNotification *)notification;
-//-----------------------------------------------------------------------------
+- (void)changePrefAutoComplete:(NSNotification *)notification
 {
 	doAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
 	[autoCompleteButton setState: doAutoComplete];
@@ -3047,28 +3021,22 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 }
 
 // added by mitsu --(J) Typeset command, (D) Tags and (H) Macro
-//-----------------------------------------------------------------------------
 - (int)whichEngine
-//-----------------------------------------------------------------------------
 {
 	return whichEngine;
 }
 
-//-----------------------------------------------------------------------------
-- (void)resetTagsMenu:(NSNotification *)notification;
-//-----------------------------------------------------------------------------
+- (void)resetTagsMenu:(NSNotification *)notification
 {
 	[self setupTags];
 }
 
-//-----------------------------------------------------------------------------
-- (void)resetMacroButton:(NSNotification *)notification;
-//-----------------------------------------------------------------------------
+- (void)resetMacroButton:(NSNotification *)notification
 {
 	if (g_macroType == whichEngine) {
 		[[TSMacroMenuController sharedInstance] addItemsToPopupButton: macroButton];
 		[[TSMacroMenuController sharedInstance] addItemsToPopupButton: macroButtonEE];
-		}
+	}
 }
 // end addition
 
@@ -3088,8 +3056,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 
 	filePath = [self fileName];
 	if (filePath &&
-		(fileAttrs = [[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:YES]))
-	{
+		(fileAttrs = [[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:YES])) {
 		fsize = [fileAttrs objectForKey:NSFileSize];
 		creationDate = [fileAttrs objectForKey:NSFileCreationDate];
 		modificationDate = [fileAttrs objectForKey:NSFileModificationDate];
@@ -3099,8 +3066,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		fsize?[fsize intValue]:0,
 		creationDate?[creationDate description]:@"",
 		modificationDate?[modificationDate description]:@""];
-	}
-	else
+	} else
 		fileInfo = @"Not saved";
 
 	infoTitle = [NSString stringWithFormat:
@@ -3124,44 +3090,42 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSRange		oldRange, searchRange;
 	NSMutableString	*newString;
 	NSString *oldString;
-
+	
 	// mutably copy the replacement text
 	newString = [NSMutableString stringWithString: theString];
-
+	
 	// Determine the curent selection range and text
 	oldRange = [textView selectedRange];
 	oldString = [[textView string] substringWithRange: oldRange];
-
+	
 	// Substitute all occurances of #SEL# with the original text
 	[newString replaceOccurrencesOfString: @"#SEL#" withString: oldString
-					options: 0 range: NSMakeRange(0, [newString length])];
-
+								  options: 0 range: NSMakeRange(0, [newString length])];
+	
 	// Now search for #INS#, remember its position, and remove it. We will
 	// Later position the insertion mark there. Defaults to end of string.
 	searchRange = [newString rangeOfString:@"#INS#" options:NSLiteralSearch];
 	if (searchRange.location != NSNotFound)
 		[newString replaceCharactersInRange:searchRange withString:@""];
-
+	
 	// Filtering for Japanese
 	if (g_shouldFilter == kMacJapaneseFilterMode)
 		newString = filterBackslashToYen(newString);
-
+	
 	// Replace the text--
-		// Follow Apple's guideline "Subclassing NSTextView/Notifying About Changes to the Text"
-		// in "Text System User Interface Layer".
-		// This means bracketing each batch of potential changes with
-		// "shouldChangeTextInRange:replacementString:" and "didChangeText" messages
-	if ([textView shouldChangeTextInRange:oldRange replacementString:newString])
-	{
+	// Follow Apple's guideline "Subclassing NSTextView/Notifying About Changes to the Text"
+	// in "Text System User Interface Layer".
+	// This means bracketing each batch of potential changes with
+	// "shouldChangeTextInRange:replacementString:" and "didChangeText" messages
+	if ([textView shouldChangeTextInRange:oldRange replacementString:newString]) {
 		[textView replaceCharactersInRange:oldRange withString:newString];
 		[textView didChangeText];
-
+		
 		if (key)
 			[[textView undoManager] setActionName: key];
-
+		
 		// Place insertion mark
-		if (searchRange.location != NSNotFound)
-		{
+		if (searchRange.location != NSNotFound) {
 			searchRange.location += oldRange.location;
 			searchRange.length = 0;
 			[textView setSelectedRange:searchRange];
@@ -3214,8 +3178,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	[self setupTags];
 
 	// Place insertion mark
-	if (searchRange.location != NSNotFound)
-	{
+	if (searchRange.location != NSNotFound) {
 		searchRange.location += oldRange.location;
 		searchRange.length = 0;
 		[textView setSelectedRange:searchRange];
@@ -3280,7 +3243,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSRange		myRange, modifyRange, tempRange, oldRange;
 	unsigned		start, end, end1, changeStart, changeEnd;
 	int			theChar;
-
+	
 	text = [textView string];
 	myRange = [textView selectedRange];
 	// get old string for Undo
@@ -3288,7 +3251,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	oldRange.location = start;
 	oldRange.length = end1 - start;
 	oldString = [[textView string] substringWithRange: oldRange];
-
+	
 	changeStart = start;
 	changeEnd = start;
 	end = start;
@@ -3299,66 +3262,67 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		changeEnd = end1;
 		if ((end1 - start) > 0)
 			theChar = [text characterAtIndex: start];
+		
 		switch ([sender tag]) {
-
-			case Mcomment:	// if ((end1 == start)  || (theChar != '%') ) {
-									tempRange.location = start;
-									tempRange.length = 0;
-									[textView replaceCharactersInRange:tempRange withString:@"%"];
-									myRange.length++; oldRange.length++;
-									changeEnd++;
-									end++;
-								//    }
-								break;
-
-			case Muncomment:	if ((end1 != start) && (theChar == '%')) {
-									tempRange.location = start;
-									tempRange.length = 1;
-									[textView replaceCharactersInRange:tempRange withString:@""];
-									myRange.length--; oldRange.length--;
-									changeEnd--;
-									end--;
-									}
-								break;
-
-			// Originally this was a space; Greg Landweber correctly suggested a tab!
-			case Mindent: 	if (0 == 0) // (end1 == start) || (theChar != '%'))
-							{
-									tempRange.location = start;
-									tempRange.length = 0;
-									[textView replaceCharactersInRange:tempRange withString:@"\t"];
-									myRange.length++; oldRange.length++;
-									changeEnd++;
-									end++;
-									}
-								break;
-
-
-			case Munindent: 	if ((end1 != start) && (theChar == '\t')) {
-									tempRange.location = start;
-									tempRange.length = 1;
-									[textView replaceCharactersInRange:tempRange withString:@""];
-									myRange.length--; oldRange.length--;
-									changeEnd--;
-									end--;
-									}
-								break;
-
-			}
-		end++;
+			case Mcomment:
+				tempRange.location = start;
+				tempRange.length = 0;
+				[textView replaceCharactersInRange:tempRange withString:@"%"];
+				myRange.length++;
+				oldRange.length++;
+				changeEnd++;
+				end++;
+				break;
+				
+			case Muncomment:
+				if ((end1 != start) && (theChar == '%')) {
+					tempRange.location = start;
+					tempRange.length = 1;
+					[textView replaceCharactersInRange:tempRange withString:@""];
+					myRange.length--;
+					oldRange.length--;
+					changeEnd--;
+					end--;
+				}
+				break;
+				
+			case Mindent:
+				tempRange.location = start;
+				tempRange.length = 0;
+				[textView replaceCharactersInRange:tempRange withString:@"\t"];
+				myRange.length++;
+				oldRange.length++;
+				changeEnd++;
+				end++;
+				break;
+				
+			case Munindent:
+			 	if ((end1 != start) && (theChar == '\t')) {
+					tempRange.location = start;
+					tempRange.length = 1;
+					[textView replaceCharactersInRange:tempRange withString:@""];
+					myRange.length--;
+					oldRange.length--;
+					changeEnd--;
+					end--;
+				}
+				break;
+				
 		}
+		end++;
+	}
 	[self fixColor:changeStart :changeEnd];
 	tempRange.location = changeStart;
 	tempRange.length = (changeEnd - changeStart);
 	[textView setSelectedRange: tempRange];
-
+	
 	[self registerUndoWithString:oldString location:oldRange.location
-						length:oldRange.length key: [sender title]];
+						  length:oldRange.length key: [sender title]];
 }
 
 // end mitsu 1.29
 
-- (void)newTag: (id)sender;
+- (void)newTag: (id)sender
 {
 	NSString		*text;
 	NSRange		myRange, tempRange;
@@ -3381,7 +3345,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	[textView setSelectedRange: tempRange];
 }
 
-- (void)trashAUXFiles: sender;
+- (void)trashAUXFiles: sender
 {
 	NSString        *theSource;
 	
@@ -3394,9 +3358,9 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	if (! fileIsTex)
 		return;
 	
-	if (! [SUD boolForKey:AggressiveTrashAUXKey])
+	if (! [SUD boolForKey:AggressiveTrashAUXKey]) {
 		[self trashAUX];
-	else {
+	} else {
 		theSource = [[self textView] string];
 		if ([self checkMasterFile:theSource forTask:RootForTrashAUX])
 			return;
@@ -3409,10 +3373,10 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 }
 
 
-- (void)trashAUX;
+- (void)trashAUX
 {
-	NSString        *path, *path1, *path2;
-	 NSString       *extension;
+	NSString		*path, *path1, *path2;
+	NSString		*extension;
 	NSString        *fileName, *objectFileName;
 	NSMutableArray  *pathsToBeMoved, *fileToBeMoved;
 	id              anObject, stringObject;
@@ -3421,105 +3385,102 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSEnumerator    *enumerator;
 	NSArray         *otherExtensions;
 	NSEnumerator    *arrayEnumerator;
-
+	
 	if (! fileIsTex)
 		return;
-
+	
 	if ([self fileName] == nil)
 		return;
-
+	
 	path = [[self fileName] stringByDeletingLastPathComponent];
 	fileName = [[[self fileName] lastPathComponent] stringByDeletingPathExtension];
 	NSFileManager *myFileManager = [NSFileManager defaultManager];
-
+	
 	if (aggressiveTrash) {
 		enumerator = [myFileManager enumeratorAtPath: path];
 		fileToBeMoved = [NSMutableArray arrayWithCapacity: 1];
 		[fileToBeMoved addObject:@""];
-		}
-	else
+	} else
 		enumerator = [[myFileManager directoryContentsAtPath: path] objectEnumerator];
-
+	
 	pathsToBeMoved = [NSMutableArray arrayWithCapacity: 20];
-
-
-
+	
+	
+	
 	while ((anObject = [enumerator nextObject])) {
 		doMove = YES;
 		if (! aggressiveTrash) {
 			objectFileName = [anObject stringByDeletingPathExtension];
 			if (! [objectFileName isEqualToString:fileName])
 				doMove = NO;
-			}
-
+		}
+		
 		isOneOfOther = NO;
-
+		
 		extension = [anObject pathExtension];
-
+		
 		otherExtensions = [SUD stringArrayForKey: OtherTrashExtensionsKey];
 		arrayEnumerator = [otherExtensions objectEnumerator];
 		while ((stringObject = [arrayEnumerator nextObject])) {
-		   if ([extension isEqualToString:stringObject])
-			 isOneOfOther = YES;
-			}
-
-		if (doMove && (isOneOfOther ||
-			([extension isEqualToString:@"aux"] ||
-			[extension isEqualToString:@"blg"] ||
-			[extension isEqualToString:@"brf"] ||
-			[extension isEqualToString:@"glo"] ||
-			[extension isEqualToString:@"idx"] ||
-			[extension isEqualToString:@"ilg"] ||
-			[extension isEqualToString:@"ind"] ||
-			[extension isEqualToString:@"loa"] ||
-			[extension isEqualToString:@"lof"] ||
-			[extension isEqualToString:@"log"] ||
-			[extension isEqualToString:@"lot"] ||
-			[extension isEqualToString:@"mtc"] ||
-			[extension isEqualToString:@"mlf"] ||
-			[extension isEqualToString:@"out"] ||
-			[extension isEqualToString:@"ttt"] ||
-			[extension isEqualToString:@"fff"] ||
-			[extension isEqualToString:@"ent"] ||
-			[extension isEqualToString:@"css"] ||
-			[extension isEqualToString:@"idv"] ||
-			[extension isEqualToString:@"wrm"] ||
-			[extension isEqualToString:@"4ct"] ||
-			[extension isEqualToString:@"4tc"] ||
-			[extension isEqualToString:@"lg"] ||
-			[extension isEqualToString:@"xref"] ||
-			[extension isEqualToString:@"pdfsync"] ||
-			[extension isEqualToString:@"toc"])))
-				[pathsToBeMoved addObject: anObject];
-
+			if ([extension isEqualToString:stringObject])
+				isOneOfOther = YES;
 		}
-
-		if (aggressiveTrash) {
-
-			enumerator = [pathsToBeMoved objectEnumerator];
-			while ((anObject = [enumerator nextObject])) {
-				path1 = [path stringByAppendingPathComponent: anObject];
-				path2 = [path1 stringByDeletingLastPathComponent];
-				[fileToBeMoved replaceObjectAtIndex:0 withObject: [anObject lastPathComponent]];
-				[[NSWorkspace sharedWorkspace]
+		
+		if (doMove && (isOneOfOther ||
+					   ([extension isEqualToString:@"aux"] ||
+						[extension isEqualToString:@"blg"] ||
+						[extension isEqualToString:@"brf"] ||
+						[extension isEqualToString:@"glo"] ||
+						[extension isEqualToString:@"idx"] ||
+						[extension isEqualToString:@"ilg"] ||
+						[extension isEqualToString:@"ind"] ||
+						[extension isEqualToString:@"loa"] ||
+						[extension isEqualToString:@"lof"] ||
+						[extension isEqualToString:@"log"] ||
+						[extension isEqualToString:@"lot"] ||
+						[extension isEqualToString:@"mtc"] ||
+						[extension isEqualToString:@"mlf"] ||
+						[extension isEqualToString:@"out"] ||
+						[extension isEqualToString:@"ttt"] ||
+						[extension isEqualToString:@"fff"] ||
+						[extension isEqualToString:@"ent"] ||
+						[extension isEqualToString:@"css"] ||
+						[extension isEqualToString:@"idv"] ||
+						[extension isEqualToString:@"wrm"] ||
+						[extension isEqualToString:@"4ct"] ||
+						[extension isEqualToString:@"4tc"] ||
+						[extension isEqualToString:@"lg"] ||
+						[extension isEqualToString:@"xref"] ||
+						[extension isEqualToString:@"pdfsync"] ||
+						[extension isEqualToString:@"toc"])))
+			[pathsToBeMoved addObject: anObject];
+		
+	}
+	
+	if (aggressiveTrash) {
+		
+		enumerator = [pathsToBeMoved objectEnumerator];
+		while ((anObject = [enumerator nextObject])) {
+			path1 = [path stringByAppendingPathComponent: anObject];
+			path2 = [path1 stringByDeletingLastPathComponent];
+			[fileToBeMoved replaceObjectAtIndex:0 withObject: [anObject lastPathComponent]];
+			[[NSWorkspace sharedWorkspace]
 					performFileOperation:NSWorkspaceRecycleOperation source:path2 destination:nil files:fileToBeMoved tag:&myTag];
-				}
-
-			}
-
-		else
-
+		}
+		
+	} else {
 		[[NSWorkspace sharedWorkspace]
 			performFileOperation:NSWorkspaceRecycleOperation source:path destination:nil files:pathsToBeMoved tag:&myTag];
-
+	}
+	
 }
 
-- (void) showSyncMarks: sender;
+- (void) showSyncMarks: sender
 {
    [myPDFKitView display];
 }
 
-- (BOOL)syncState;
+- (BOOL)syncState
 {
 	if ([syncBox state] == 1)
 		return YES;
@@ -3527,7 +3488,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		return NO;
 }
 
-- (BOOL)fromKit;
+- (BOOL)fromKit
 {
 	return PDFfromKit;
 }
@@ -3553,22 +3514,22 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	[[self pdfKitView] goBack:sender];
 }
 
-- (id) mousemodeMenu;
+- (id) mousemodeMenu
 {
 	return mouseModeMenuKit;
 }
 
-- (id) mousemodeMatrix;
+- (id) mousemodeMatrix
 {
 	return mouseModeMatrixKK;
 }
 
-- (BOOL) textSelectionYellow;
+- (BOOL) textSelectionYellow
 {
 	return textSelectionYellow;
 }
 
-- (void) setTextSelectionYellow:(BOOL)value;
+- (void) setTextSelectionYellow:(BOOL)value
 {
 	textSelectionYellow = value;
 }

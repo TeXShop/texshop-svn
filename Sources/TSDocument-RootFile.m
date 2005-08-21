@@ -30,7 +30,7 @@
 
 @implementation TSDocument (RootFile)
 
-- (id) rootDocument;
+- (id) rootDocument
 {
 	return rootDocument;
 }
@@ -132,9 +132,7 @@
 	return YES;
 }
 
-//-----------------------------------------------------------------------------
-- (BOOL)checkMasterFile:(NSString *)theSource forTask:(int)task;
-//-----------------------------------------------------------------------------
+- (BOOL)checkMasterFile:(NSString *)theSource forTask:(int)task
 {
 	NSString                *home, *jobname;
 	NSRange                 aRange, bRange;
@@ -208,9 +206,7 @@
 }
 
 
-//-----------------------------------------------------------------------------
 - (BOOL) checkRootFile_forTask:(int)task
-//-----------------------------------------------------------------------------
 {
 	NSString			*projectPath, *nameString;
 

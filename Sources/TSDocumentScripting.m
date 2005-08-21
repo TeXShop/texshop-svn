@@ -509,7 +509,7 @@
 //
 // -----------------------------------------------------------------------------
 
-- (id)handleOpenForExternalEditorCommand:(NSScriptCommand*)command;
+- (id)handleOpenForExternalEditorCommand:(NSScriptCommand*)command
 {
 	NSDocumentController	*myController;
 	BOOL			useExternalEditor;

@@ -41,12 +41,12 @@
 	return result;
 }
 
-- (void) doChooseMethod: sender;
+- (void) doChooseMethod: sender
 {
 	[myDocument doChooseMethod: sender];
 }
 
-- (void) doError: sender;
+- (void) doError: sender
 {
 	[myDocument doError: sender];
 }

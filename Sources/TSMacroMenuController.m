@@ -170,7 +170,7 @@ static id sharedMacroMenuController = nil;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"ResetMacroButtonNotification" object:self];
 }
 
-- (void)reloadMacrosOnly;
+- (void)reloadMacrosOnly
 {
 	[macroDict release];
 	macroDict = nil;

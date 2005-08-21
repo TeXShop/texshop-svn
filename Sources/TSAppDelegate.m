@@ -49,7 +49,7 @@
 "*/
 @implementation TSAppDelegate
 
-- (void)setForPreview: (BOOL)value;
+- (void)setForPreview: (BOOL)value
 {
 	forPreview = value;
 }
@@ -648,7 +648,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 }
 
 
-- (void)configureMenuShortcutsFolder;
+- (void)configureMenuShortcutsFolder
 {
 	NSString 	*fileName, *keyEquivalentsPath;
 	NSFileManager	*fileManager;
@@ -1039,7 +1039,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 // end MatrixPanel Addition by Jonas 1.32 Nov 28 03
 
 
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem;
+- (BOOL)validateMenuItem:(NSMenuItem *)anItem
 {
 	if ([anItem action] == @selector(displayLatexPanel:)) {
 		return [[NSApp mainWindow] isKindOfClass:[TSTextEditorWindow class]];
@@ -1098,7 +1098,7 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 // end mitsu 1.29
 #endif
 
-- (void)ogreKitWillHackFindMenu:(OgreTextFinder*)textFinder;
+- (void)ogreKitWillHackFindMenu:(OgreTextFinder*)textFinder
 {
 	[textFinder setShouldHackFindMenu:[[NSUserDefaults standardUserDefaults] boolForKey:@"UseOgreKit"]];
 }

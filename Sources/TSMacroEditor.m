@@ -256,7 +256,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 }
 
 // action for Shift/Option/Control check box
-- (IBAction)modifiersAction:(id)sender;
+- (IBAction)modifiersAction:(id)sender
 {
 	keyTouched = YES;
 	[self reflectChangesInEditor: YES];
@@ -543,7 +543,7 @@ static TSFilterMode savedFilter = kNoFilterMode;
 }
 
 // action for "save selection to file" menu item
-- (void)saveSelection: (id)sender;
+- (void)saveSelection: (id)sender
 {
 	NSSavePanel *aPanel = [NSSavePanel savePanel];
 	[aPanel setRequiredFileType: @"plist"];

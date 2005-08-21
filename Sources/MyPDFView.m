@@ -96,7 +96,7 @@ NSData *draggedData;
 }
 // end mitsu 1.29
 
-- (void)drawDotsForPage:(int)page atPoint: (NSPoint)p;
+- (void)drawDotsForPage:(int)page atPoint: (NSPoint)p
 {
 	NSFileManager	*fileManager;
 	int             pageNumber;
@@ -288,12 +288,12 @@ NSData *draggedData;
 
 }
 
-- (void) setImageType: (int)theType;
+- (void) setImageType: (int)theType
 {
 	documentType = theType;
 }
 
-- (void) setDocument: (id) theDocument;
+- (void) setDocument: (id) theDocument
 {
 	myDocument = theDocument;
 }
@@ -313,7 +313,7 @@ is the most common case and does not require resetting any bounds,
 it is separated out for special minimal treatment to preserve
 scroller position.
 */
-- (void) setImageRep: (NSPDFImageRep *)theRep;
+- (void) setImageRep: (NSPDFImageRep *)theRep
 {
 // mitsu 1.29 (O) completely changed
 	[self renewGState];
@@ -597,7 +597,7 @@ scroller position.
 
 // set up the frame and bounds of the view after setting the magnification
 // according to the resizeOption
-- (void)fitToSize;
+- (void)fitToSize
 {
 	float fitWidth, fitHeight, tempMagH, tempMagV, newMag;
 
@@ -633,7 +633,7 @@ scroller position.
 	}
 }
 
-- (BOOL)acceptsFirstResponder;
+- (BOOL)acceptsFirstResponder
 {
 	return YES;
 }
@@ -641,7 +641,7 @@ scroller position.
 
 #pragma mark =====magnification=====
 
-- (double)magnification;
+- (double)magnification
 {
 	double	magsize;
 
@@ -659,7 +659,7 @@ possible to fix those sizes inside setMagnification.
 The commands below work, and were found after various unpleasant experiments
 failed. If you change the code below, be sure to test carefully!
 */
-- (void) setMagnification: (double)magSize;
+- (void) setMagnification: (double)magSize
 {
 	NSRect	myBounds, visRect;
 	NSPoint topLeft, theOrigin;
@@ -710,7 +710,7 @@ failed. If you change the code below, be sure to test carefully!
 	[(NSClipView *)[self superview] setCopiesOnScroll: copiesOnScroll];
 }
 
-- (void) changeScale: sender;
+- (void) changeScale: sender
 {
 	int		scale;
 	double	magSize;
@@ -753,7 +753,7 @@ failed. If you change the code below, be sure to test carefully!
 	// end mitsu 1.29
 }
 
-- (void) doStepper: sender;
+- (void) doStepper: sender
 {
 	if (sender == myStepper)
 		[myScale setIntValue: [myStepper intValue]];
@@ -811,7 +811,7 @@ failed. If you change the code below, be sure to test carefully!
 }
 */
 
-- (void)resetMagnification;
+- (void)resetMagnification
 {
 	double	theMagnification;
 	int		mag;
@@ -826,17 +826,17 @@ failed. If you change the code below, be sure to test carefully!
 	[myStepper1 setIntValue: mag];
 }
 
-- (void)changeMagnification:(NSNotification *)aNotification;
+- (void)changeMagnification:(NSNotification *)aNotification
 {
 	[self resetMagnification];
 }
 
-- (void)rememberMagnification:(NSNotification *)aNotification;
+- (void)rememberMagnification:(NSNotification *)aNotification
 {
 	oldMagnification = [self magnification];
 }
 
-- (void) revertMagnification:(NSNotification *)aNotification;
+- (void) revertMagnification:(NSNotification *)aNotification
 {
 	if (oldMagnification != [self magnification])
 		[self setMagnification: oldMagnification];
@@ -974,7 +974,7 @@ failed. If you change the code below, be sure to test carefully!
 }
 
 // calculate the origin from page number
-- (NSPoint)pointForPage: (int)aPage;
+- (NSPoint)pointForPage: (int)aPage
 {
 	NSPoint thePoint;
 	if (pageStyle == PDF_MULTI_PAGE_STYLE)
@@ -1204,7 +1204,7 @@ failed. If you change the code below, be sure to test carefully!
 
 
 
-- (void) nextPage: sender;
+- (void) nextPage: sender
 {
 	int		pagenumber;
 	NSRect	myBounds, myVisible, newVisible;
@@ -1276,7 +1276,7 @@ failed. If you change the code below, be sure to test carefully!
 	}
 }
 
-- (void) lastPage: sender;
+- (void) lastPage: sender
 {
 	int		pagenumber;
 
@@ -1455,7 +1455,7 @@ failed. If you change the code below, be sure to test carefully!
 }
 
 
-- (void) goToPage: sender;
+- (void) goToPage: sender
 {
 		int		pagenumber;
 	NSRect		myBounds, myVisible, newVisible;
@@ -1652,12 +1652,12 @@ failed. If you change the code below, be sure to test carefully!
 
 #pragma mark =====printing=====
 
-- (void) printDocument: sender;
+- (void) printDocument: sender
 {
 	[myDocument printDocument: sender];
 }
 
-- (void) printSource: sender;
+- (void) printSource: sender
 {
 	[myDocument printSource: sender];
 }
@@ -2690,7 +2690,7 @@ failed. If you change the code below, be sure to test carefully!
 #endif
 }
 
-- (void)selectAll: (id)sender;
+- (void)selectAll: (id)sender
 {
 	if ((mouseMode == MOUSE_MODE_SELECT) &&
 		((pageStyle == PDF_SINGLE_PAGE_STYLE) || (pageStyle == PDF_TWO_PAGE_STYLE) || ([myRep pageCount] <= 20)))
@@ -3190,7 +3190,7 @@ failed. If you change the code below, be sure to test carefully!
 }
 
 // save the image data from selected rectangle to a file
-- (void)saveSelctionPanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
+- (void)saveSelctionPanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo
 {
 	if (returnCode == NSFileHandlingPanelOKButton && [sheet filename])
 	{
@@ -3212,7 +3212,7 @@ failed. If you change the code below, be sure to test carefully!
 
 
 // control image type popup
-- (void) chooseExportImageType: sender;
+- (void) chooseExportImageType: sender
 {
 	int imageExportType;
 	NSSavePanel *savePanel;

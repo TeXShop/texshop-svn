@@ -57,7 +57,7 @@
 // end addition
 
 
-- (void)makeKeyAndOrderFront:(id)sender;
+- (void)makeKeyAndOrderFront:(id)sender
 {
 	if (
 		(! [myDocument externalEditor]) &&
@@ -67,14 +67,14 @@
 	[myDocument tryBadEncodingDialog:self];
 }
 
-- (void)associatedWindow:(id)sender;
+- (void)associatedWindow:(id)sender
 {
 	if ([myDocument documentType] == isTeX) {
 		[myDocument bringPdfWindowFront];
 	}
 }
 
-- (void) doChooseMethod: sender;
+- (void) doChooseMethod: sender
 {
 	[myDocument doChooseMethod: sender];
 }
@@ -93,7 +93,7 @@
 }
 // end forsplit
 
-- (void)close;
+- (void)close
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:[myDocument pdfView]]; // this fixes a bug; the application crashed when closing
 	// the last window in multi-page mode; investigation shows that the

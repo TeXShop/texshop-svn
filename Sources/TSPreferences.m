@@ -547,7 +547,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 	[SUD setBool:[sender state] forKey:NoScrollEnabledKey];
 }
 
-- (IBAction)autoPDFChanged:sender;
+- (IBAction)autoPDFChanged:sender
 {
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:PdfRefreshKey] forKey:PdfRefreshKey];
 	[SUD setBool:[sender state] forKey:PdfRefreshKey];

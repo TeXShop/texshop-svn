@@ -183,7 +183,7 @@ static BOOL isValidTeXCommandChar(int c)
 
 // This method is invoked when the syntax highlighting preferences are changed.
 // It either colorizes the whole text or removes all the coloring.
-- (void)reColor:(NSNotification *)notification;
+- (void)reColor:(NSNotification *)notification
 {
 	if ([SUD boolForKey:SyntaxColoringEnabledKey]) {
 		[self colorizeAll];

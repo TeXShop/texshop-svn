@@ -27,7 +27,7 @@
 
 @implementation TSPrintView : NSView
 
-- (TSPrintView *) initWithImageRep: (NSImageRep *) aRep;
+- (TSPrintView *) initWithImageRep: (NSImageRep *) aRep
 {
 	NSRect	frame;
 
@@ -47,12 +47,12 @@
 	[super dealloc];
 }
 
-- (BOOL)isVerticallyCentered;
+- (BOOL)isVerticallyCentered
 {
 	return YES;
 }
 
-- (BOOL)isHorizontallyCentered;
+- (BOOL)isHorizontallyCentered
 {
 	return YES;
 }
@@ -77,7 +77,7 @@
 }
 
 
-- (BOOL) knowsPageRange:(NSRangePointer)range;
+- (BOOL) knowsPageRange:(NSRangePointer)range
 {
 	if ([_imageRep isKindOfClass:[NSPDFImageRep class]]) {
 		range->location = 1;
@@ -88,7 +88,7 @@
 	}
 }
 
-- (NSRect)rectForPage:(int)pageNumber;
+- (NSRect)rectForPage:(int)pageNumber
 {
 	// This method will only be called when knowsPageRange: return YES, i.e. only
 	// if _imageRep is a NSPDFImageRep.

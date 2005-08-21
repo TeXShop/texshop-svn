@@ -36,7 +36,7 @@
 
 @implementation TSDocument (JobProcessing)
 
-- (void) doJobForScript:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous;
+- (void) doJobForScript:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous
 {
 	NSDate	*myDate;
 
@@ -103,7 +103,7 @@
 }
 
 
-- (void) doJob:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous;
+- (void) doJob:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous
 {
 	SEL		saveFinished;
 	NSDate	*myDate;
@@ -180,7 +180,7 @@
 }
 
 
-- (NSString *) separate: (NSString *)myEngine into:(NSMutableArray *)args;
+- (NSString *) separate: (NSString *)myEngine into:(NSMutableArray *)args
 {
 	NSArray		*myList;
 	NSString		*myString, *middleString;
@@ -239,7 +239,7 @@
 	return (theEngine);
 }
 
-- (void) convertDocument;
+- (void) convertDocument
 {
 	NSFileManager	*fileManager;
 	NSString		*myFileName;
@@ -394,7 +394,7 @@
 // The only reason for its current name seems to be that before we typeset a document,
 // we always first save it. And at the end of that save process, we perform the
 // typesetting.
-- (void) saveFinished: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo;
+- (void) saveFinished: (NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo
 {
 	NSArray			*myList;
 	NSString		*theSource, *theKey, *myEngine, *testString, *programString;
@@ -1026,7 +1026,7 @@
 	[self doJob:ContextEngine withError:YES runContinuously:NO];
 }
 
-- (void) doMetapost: sender;
+- (void) doMetapost: sender
 {
 // added by mitsu --(J++) Program popup button indicating Program name
 	[programButton selectItemWithTitle: @"MetaPost"];

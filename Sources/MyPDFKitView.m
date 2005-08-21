@@ -48,7 +48,7 @@
 }
 
 
-- (void) initializeDisplay;
+- (void) initializeDisplay
 {
 
 	NSColor	*backColor;
@@ -77,7 +77,7 @@
 
 }
 
-- (void) setupPageStyle;
+- (void) setupPageStyle
 {
 	switch (pageStyle) {
 		case PDF_SINGLE_PAGE_STYLE:			[self setDisplayMode: kPDFDisplaySinglePage];
@@ -113,7 +113,7 @@
 		}
 }
 
-- (void) setupMagnificationStyle;
+- (void) setupMagnificationStyle
 {
 	double	theMagnification;
 	int		mag;
@@ -143,7 +143,7 @@
 		}
 }
 
-- (void) setupOutline;
+- (void) setupOutline
 {
 	if (![SUD boolForKey: UseOutlineKey])
 		return;
@@ -170,7 +170,7 @@
 	}
 }
 
-- (void) setup;
+- (void) setup
 {
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(pageChanged:)
 												 name: PDFViewPageChangedNotification object: self];
@@ -205,7 +205,7 @@
 	[self initializeDisplay];
 }
 
-- (void) showWithPath: (NSString *)imagePath;
+- (void) showWithPath: (NSString *)imagePath
 {
 	
 	PDFDocument	*pdfDoc;
@@ -227,7 +227,7 @@
 	
 }
 
-- (void) reShowWithPath: (NSString *)imagePath;
+- (void) reShowWithPath: (NSString *)imagePath
 {
 	
 	PDFDocument	*pdfDoc;
@@ -290,7 +290,7 @@
 
 
 
-- (void) rotateClockwise:sender;
+- (void) rotateClockwise:sender
 {
 	int			i, amount, newAmount;
 	PDFPage		*myPage;
@@ -309,7 +309,7 @@
 	[self layoutDocumentView];
 }
 
-- (void) rotateCounterclockwise:sender;
+- (void) rotateCounterclockwise:sender
 {
 	int			i, amount, newAmount;
 	PDFPage		*myPage;
@@ -329,14 +329,14 @@
 	[self layoutDocumentView];
 }
 
-- (void) goBack:sender;
+- (void) goBack:sender
 {
 	if  ((pageStyle == PDF_SINGLE_PAGE_STYLE) || (pageStyle == PDF_TWO_PAGE_STYLE))
 		[self cleanupMarquee: YES];
 	[super goBack:sender];
 }
 
-- (void) goForward: sender;
+- (void) goForward: sender
 {
 	if  ((pageStyle == PDF_SINGLE_PAGE_STYLE) || (pageStyle == PDF_TWO_PAGE_STYLE))
 		[self cleanupMarquee: YES];
@@ -406,7 +406,7 @@
 		[_outlineView scrollRowToVisible: newlySelectedRow];
 }
 
-- (double)magnification;
+- (double)magnification
 {
 	double	magsize;
 
@@ -415,7 +415,7 @@
 }
 
 
-- (void) changeScale: sender;
+- (void) changeScale: sender
 {
 	int		scale;
 	double	magSize;
@@ -464,7 +464,7 @@
 */
 }
 
-- (void) doStepper: sender;
+- (void) doStepper: sender
 {
 	if (sender == myStepper)
 		[myScale setIntValue: [myStepper intValue]];
@@ -474,35 +474,35 @@
 }
 
 
-- (void) previousPage: (id)sender;
+- (void) previousPage: (id)sender
 {
 	if  ((pageStyle == PDF_SINGLE_PAGE_STYLE) || (pageStyle == PDF_TWO_PAGE_STYLE))
 		[self cleanupMarquee: YES];
 	[self goToPreviousPage:self];
 }
 
-- (void) nextPage: (id)sender;
+- (void) nextPage: (id)sender
 {
 	if  ((pageStyle == PDF_SINGLE_PAGE_STYLE) || (pageStyle == PDF_TWO_PAGE_STYLE))
 		[self cleanupMarquee: YES];
 	[self goToNextPage:sender];
 }
 
-- (void) firstPage: (id)sender;
+- (void) firstPage: (id)sender
 {
 	if  ((pageStyle == PDF_SINGLE_PAGE_STYLE) || (pageStyle == PDF_TWO_PAGE_STYLE))
 		[self cleanupMarquee: YES];
 	[self goToFirstPage:self];
 }
 
-- (void) lastPage: (id)sender;
+- (void) lastPage: (id)sender
 {
 	if  ((pageStyle == PDF_SINGLE_PAGE_STYLE) || (pageStyle == PDF_TWO_PAGE_STYLE))
 		[self cleanupMarquee: YES];
 	[self goToLastPage:sender];
 }
 
-- (void) goToKitPageNumber: (int) thePage;
+- (void) goToKitPageNumber: (int) thePage
 {
 	if  ((pageStyle == PDF_SINGLE_PAGE_STYLE) || (pageStyle == PDF_TWO_PAGE_STYLE))
 		[self cleanupMarquee: YES];
@@ -526,7 +526,7 @@
 }
 
 
-- (void) goToKitPage: (id)sender;
+- (void) goToKitPage: (id)sender
 {
 	int		thePage;
 
@@ -625,7 +625,7 @@
 }
 
 
-- (void) copy: (id)sender;
+- (void) copy: (id)sender
 {
 	if (mouseMode != NEW_MOUSE_MODE_SELECT_PDF)
 		[super copy:sender];
@@ -821,7 +821,7 @@
 	}
 }
 
-- (void) changeMouseMode: (id)sender;
+- (void) changeMouseMode: (id)sender
 {
 	int	oldMouseMode;
 
@@ -947,17 +947,17 @@
 
 #pragma mark =====drawPage=====
 
-- (void)setIndexForMark: (int)index;
+- (void)setIndexForMark: (int)index
 {
 	pageIndexForMark = index;
 }
 
-- (void)setBoundsForMark: (NSRect)bounds;
+- (void)setBoundsForMark: (NSRect)bounds
 {
 	pageBoundsForMark = bounds;
 }
 
-- (void)setDrawMark: (BOOL)value;
+- (void)setDrawMark: (BOOL)value
 {
 	drawMark = value;
 }
@@ -1572,7 +1572,7 @@
 #endif
 }
 
-- (void)selectAll: (id)sender;
+- (void)selectAll: (id)sender
 {
 /*
 	if ((mouseMode == NEW_MOUSE_MODE_SELECT_PDF) &&
@@ -1962,7 +1962,7 @@
 }
 
 // save the image data from selected rectangle to a file
-- (void)saveSelctionPanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
+- (void)saveSelctionPanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo
 {
 	if (returnCode == NSFileHandlingPanelOKButton && [sheet filename]) {
 		NSData *data = nil;
@@ -1990,7 +1990,7 @@
 
 
 // control image type popup
-- (void) chooseExportImageType: sender;
+- (void) chooseExportImageType: sender
 {
 	int imageExportType;
 	NSSavePanel *savePanel;
@@ -2101,7 +2101,7 @@
 
 #pragma mark =====sync=====
 
-- (void)setupSourceFiles;
+- (void)setupSourceFiles
 {
 	NSString		*sourceText, *searchText, *filePath, *filePathNew, *rootPath;
 	unsigned int	sourceLength;
@@ -2244,7 +2244,7 @@
 }
 
 
-- (BOOL)doNewSync: (NSEvent *)theEvent;
+- (BOOL)doNewSync: (NSEvent *)theEvent
 {
 	int						theIndex;
 	int						testIndex;
@@ -2944,7 +2944,7 @@
 //		you may combine shift key to shrink
 
 
-- (void)drawDotsForPage:(int)page atPoint: (NSPoint)p;
+- (void)drawDotsForPage:(int)page atPoint: (NSPoint)p
 {
 		NSFileManager	*fileManager;
 		int             pageNumber;
@@ -3307,7 +3307,7 @@
 
 }
 
-- (void)resetMagnification;
+- (void)resetMagnification
 {
 	double	theMagnification;
 	int		mag;
@@ -3323,17 +3323,17 @@
 }
 
 
-- (void)changeMagnification:(NSNotification *)aNotification;
+- (void)changeMagnification:(NSNotification *)aNotification
 {
 	[self resetMagnification];
 }
 
-- (void)rememberMagnification:(NSNotification *)aNotification;
+- (void)rememberMagnification:(NSNotification *)aNotification
 {
 	oldMagnification = [self magnification];
 }
 
-- (void) revertMagnification:(NSNotification *)aNotification;
+- (void) revertMagnification:(NSNotification *)aNotification
 {
 	if (oldMagnification != [self magnification])
 		[self setMagnification: oldMagnification];
@@ -3341,7 +3341,7 @@
 
 
 // Left and right arrows perform page up and page down if horizontal scroll bar is inactive
-- (void)keyDown:(NSEvent *)theEvent;
+- (void)keyDown:(NSEvent *)theEvent
 {
 	NSString	*theKey;
 	unichar		key;

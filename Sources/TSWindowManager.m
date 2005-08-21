@@ -72,9 +72,7 @@ static id _sharedInstance = nil;
     document window becomes key. We register this document window here so when TSPreferences
 	needs this information when setting the window position it will be available.
 "*/
-//-----------------------------------------------------------------------------
 - (void)textWindowDidBecomeKey:(NSNotification *)note
-//-----------------------------------------------------------------------------
 {
 	// do not retain the window here!
 	_activeTextWindow = [note object];
@@ -128,25 +126,19 @@ static id _sharedInstance = nil;
 
 /*" This method is registered with the NotificationCenter and will be called when a document window will be closed.
 "*/
-//-----------------------------------------------------------------------------
 - (void)documentWindowWillClose:(NSNotification *)note
-//-----------------------------------------------------------------------------
 {
 	_activeTextWindow = nil;
 }
 
 /*" Returns the active document window or nil if no document window is active.
 "*/
-//-----------------------------------------------------------------------------
 - (NSWindow *)activeTextWindow
-//-----------------------------------------------------------------------------
 {
 	return _activeTextWindow;
 }
 
-//-----------------------------------------------------------------------------
 - (void)setPdfWindowWithDocument:(TSDocument *) doc isActive:(BOOL)flag
-//-----------------------------------------------------------------------------
 {
 	// Update check mark in "Typeset" menu
 	if ([doc documentType] == isTeX)
@@ -171,9 +163,7 @@ static id _sharedInstance = nil;
 
 /*" This method is registered with the NotificationCenter and will be sent whenever a pdf window becomes key. We register this pdf window here so when TSPreferences needs this information when setting the window position it will be available.
 "*/
-//-----------------------------------------------------------------------------
 - (void)pdfWindowDidBecomeKey:(NSNotification *)note
-//-----------------------------------------------------------------------------
 {
 	// do not retain the window here!
 	_activePDFWindow = [note object];
@@ -183,39 +173,29 @@ static id _sharedInstance = nil;
 
 /*" This method is registered with the NotificationCenter and will be called when a document window will be closed.
 "*/
-//-----------------------------------------------------------------------------
 - (void)pdfWindowWillClose:(NSNotification *)note
-//-----------------------------------------------------------------------------
 {
 	_activePDFWindow = nil;
 
 }
 
-//-----------------------------------------------------------------------------
 - (NSWindow *)activePDFWindow
-//-----------------------------------------------------------------------------
 {
 	return _activePDFWindow;
 }
 
-//-----------------------------------------------------------------------------
 - (void)documentWindowDidResignKey:(NSNotification *)note
-//-----------------------------------------------------------------------------
 {
 	[self checkProgramMenuItem: [[[note object] document] whichEngine] checked: NO];
 }
 
-//-----------------------------------------------------------------------------
 - (void)pdfWindowDidResignKey:(NSNotification *)note
-//-----------------------------------------------------------------------------
 {
 	[self setPdfWindowWithDocument:[[note object] document] isActive:NO];
 }
 
 
-//-----------------------------------------------------------------------------
 - (void)checkProgramMenuItem: (int)programID checked: (BOOL)flag
-//-----------------------------------------------------------------------------
 {
 	[[[[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")] submenu]
 		itemWithTag:programID] setState: (flag)?NSOnState:NSOffState];
