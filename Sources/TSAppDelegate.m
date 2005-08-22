@@ -1016,27 +1016,29 @@ Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no fi
 
 - (IBAction)displayLatexPanel:(id)sender
 {
-	if ([[sender title] isEqualToString:NSLocalizedString(@"LaTeX Panel...", @"LaTeX Panel...")]) {
+	if ([sender tag] == 0) {
 		[[TSLaTeXPanelController sharedInstance] showWindow:self];
 		[sender setTitle:NSLocalizedString(@"Close LaTeX Panel", @"Close LaTeX Panel")];
+		[sender setTag:1];
 	} else {
 		[[TSLaTeXPanelController sharedInstance] hideWindow:self];
 		[sender setTitle:NSLocalizedString(@"LaTeX Panel...", @"LaTeX Panel...")];
+		[sender setTag:0];
 	}
 }
 
-// begin MatrixPanel Addition by Jonas 1.32 Nov 28 03
 - (IBAction)displayMatrixPanel:(id)sender
 {
-	if ([[sender title] isEqualToString:NSLocalizedString(@"Matrix Panel...", @"Matrix Panel...")]) {
+	if ([sender tag] == 0) {
 		[[TSMatrixPanelController sharedInstance] showWindow:self];
 		[sender setTitle:NSLocalizedString(@"Close Matrix Panel", @"Close Matrix Panel")];
+		[sender setTag:1];
 	} else {
 		[[TSMatrixPanelController sharedInstance] hideWindow:self];
 		[sender setTitle:NSLocalizedString(@"Matrix Panel...", @"Matrix Panel...")];
+		[sender setTag:0];
 	}
 }
-// end MatrixPanel Addition by Jonas 1.32 Nov 28 03
 
 
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem
