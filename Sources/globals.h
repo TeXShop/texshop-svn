@@ -269,24 +269,10 @@ extern NSString *GSBinPathKey;
 extern NSString *TexCommandKey;
 extern NSString *TexGSCommandKey;
 extern NSString *TexScriptCommandKey;
-extern NSString *TexTemplatePathKey;
-extern NSString *TexTemplateMorePathKey;
 extern NSString *MetaPostCommandKey;
 extern NSString *BibtexCommandKey;
 extern NSString *DistillerCommandKey;
-extern NSString *LatexPanelPathKey;
-extern NSString *MatrixPanelPathKey; // Jonas' Matrix addition
 extern NSString *MatrixSizeKey; // Jonas' Matrix addition
-extern NSString *BinaryPathKey;
-extern NSString *EnginePathKey;
-extern NSString *ScriptsPathKey;
-extern NSString *TempPathKey;
-extern NSString *TempOutputKey;
-extern NSString *AutoCompletionPathKey;
-extern NSString *MenuShortcutsPathKey;
-extern NSString *MacrosPathKey;
-extern NSString *CommandCompletionPathKey; // mitsu 1.29 (P)
-extern NSString *DraggedImagePathKey; // mitsu 1.29 drag & drop
 extern NSString *TSHasBeenUsedKey;
 extern NSString *UserInfoPathKey;
 
@@ -345,8 +331,26 @@ extern NSString *UseOutlineKey;
 // end mitsu 1.29
 
 
+/*" Paths "*/
+extern NSString *TexTemplatePathKey;
+extern NSString *TexTemplateMorePathKey;
+extern NSString *LatexPanelPathKey;
+extern NSString *MatrixPanelPathKey; // Jonas' Matrix addition
+extern NSString *BinaryPathKey;
+extern NSString *EnginePathKey;
+extern NSString *ScriptsPathKey;
+extern NSString *TempPathKey;
+extern NSString *TempOutputKey;
+extern NSString *AutoCompletionPathKey;
+extern NSString *MenuShortcutsPathKey;
+extern NSString *MacrosPathKey;
+extern NSString *CommandCompletionPathKey; // mitsu 1.29 (P)
+extern NSString *DraggedImagePathKey; // mitsu 1.29 drag & drop
+
+
 /*" Exceptions "*/
 extern NSString *XDirectoryCreation;
+
 
 /*" Notifications "*/
 extern NSString *SyntaxColoringChangedNotification;

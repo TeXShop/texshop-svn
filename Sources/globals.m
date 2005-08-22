@@ -76,24 +76,10 @@ NSString *GSBinPathKey = @"GSBinPath";
 NSString *TexCommandKey = @"TexCommand";
 NSString *TexGSCommandKey = @"TexGSCommand";
 NSString *TexScriptCommandKey = @"TexScriptCommand";
-NSString *TexTemplatePathKey = @"~/Library/TeXShop/Templates";
-NSString *TexTemplateMorePathKey = @"~/Library/TeXShop/Templates/More";
 NSString *MetaPostCommandKey = @"MetaPostCommand";
 NSString *BibtexCommandKey = @"BibtexCommand";
 NSString *DistillerCommandKey = @"DistillerCommand";
-NSString *LatexPanelPathKey = @"~/Library/TeXShop/LatexPanel";
-NSString *MatrixPanelPathKey = @"~/Library/TeXShop/MatrixPanel"; // Jonas' Matrix addition
 NSString *MatrixSizeKey = @"matrixsize"; // Jonas' Matrix addition
-NSString *BinaryPathKey = @"~/Library/TeXShop/bin";
-NSString *EnginePathKey = @"~/Library/TeXShop/Engines";
-NSString *ScriptsPathKey = @"~/Library/TeXShop/Scripts";
-NSString *TempPathKey = @"/tmp/TeXShop_Applescripts";
-NSString *TempOutputKey = @"/tmp/TeXShop_Output";
-NSString *AutoCompletionPathKey = @"~/Library/TeXShop/Keyboard";
-NSString *MenuShortcutsPathKey = @"~/Library/TeXShop/Menus";
-NSString *MacrosPathKey = @"~/Library/TeXShop/Macros";
-NSString *CommandCompletionPathKey = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt"; // mitsu 1.29 (P)
-NSString *DraggedImagePathKey = @"~/Library/TeXShop/DraggedImages/texshop_image"; // mitsu 1.29 drag & drop
 NSString *TSHasBeenUsedKey = @"TSHasBeenUsed";
 NSString *UserInfoPathKey = @"UserInfoPath";
 NSString *commentredKey = @"commentred";
@@ -147,10 +133,27 @@ NSString *UseOldHeadingCommandsKey = @"UseOldHeadingCommands";
 NSString *SyncMethodKey = @"SyncMethod";
 NSString *UseOutlineKey = @"UseOutline";
 
-// end mitsu 1.29
+
+// Paths
+NSString *TexTemplatePathKey = @"~/Library/TeXShop/Templates";
+NSString *TexTemplateMorePathKey = @"~/Library/TeXShop/Templates/More";
+NSString *LatexPanelPathKey = @"~/Library/TeXShop/LatexPanel";
+NSString *MatrixPanelPathKey = @"~/Library/TeXShop/MatrixPanel"; // Jonas' Matrix addition
+NSString *BinaryPathKey = @"~/Library/TeXShop/bin";
+NSString *EnginePathKey = @"~/Library/TeXShop/Engines";
+NSString *ScriptsPathKey = @"~/Library/TeXShop/Scripts";
+NSString *TempPathKey = @"/tmp/TeXShop_Applescripts";
+NSString *TempOutputKey = @"/tmp/TeXShop_Output";
+NSString *AutoCompletionPathKey = @"~/Library/TeXShop/Keyboard";
+NSString *MenuShortcutsPathKey = @"~/Library/TeXShop/Menus";
+NSString *MacrosPathKey = @"~/Library/TeXShop/Macros";
+NSString *CommandCompletionPathKey = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt"; // mitsu 1.29 (P)
+NSString *DraggedImagePathKey = @"~/Library/TeXShop/DraggedImages/texshop_image"; // mitsu 1.29 drag & drop
+
 
 // Exceptions
 NSString *XDirectoryCreation = @"DirectoryCreationException";
+
 
 // Notifications
 NSString *SyntaxColoringChangedNotification = @"SyntaxColoringChangedNotification";
@@ -180,4 +183,4 @@ NSMutableString *g_commandCompletionList = nil;
 BOOL g_canRegisterCommandCompletion = NO;
 
 // Koch 8/24/03
-int	g_macroType;
+int	g_macroType;	// FIXME: get rid of this

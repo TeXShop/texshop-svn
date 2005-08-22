@@ -212,6 +212,9 @@ static BOOL isValidTeXCommandChar(int c)
 // Recolor when typing / text is inserted...
 - (void)textDidChange:(NSNotification *)aNotification
 {
+// FIXME: There's a regression caused by some of my cleanup since TeXShop 2.03:
+// When working in split view mode
+
 //	[self colorizeAll];
 	[self fixColor :colorStart :colorEnd];
 	if (tagLine)

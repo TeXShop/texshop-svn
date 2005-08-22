@@ -2423,6 +2423,7 @@
 			mySelectedAttributes = [myTextView selectedTextAttributes];
 			newSelectedAttributes = [NSMutableDictionary dictionaryWithDictionary: mySelectedAttributes];
 			[newSelectedAttributes setObject:[NSColor yellowColor] forKey:@"NSBackgroundColor"];
+			// FIXME: use temporary attributes instead of abusing the text selection
 			[myTextView setSelectedTextAttributes: newSelectedAttributes];
 			correction = theIndex - testIndex + 5;
 			correctedFoundRange.location = foundRange.location + correction;
@@ -2432,7 +2433,6 @@
 			[myTextView setSelectedRange: correctedFoundRange];
 			[myTextView scrollRangeToVisible: correctedFoundRange];
 			[myTextWindow makeKeyAndOrderFront:self];
-			// [myTextView setSelectedTextAttributes: mySelectedAttributes];
 			return YES;
 		}
 	}
@@ -2494,6 +2494,7 @@
 			mySelectedAttributes = [myTextView selectedTextAttributes];
 			newSelectedAttributes = [NSMutableDictionary dictionaryWithDictionary: mySelectedAttributes];
 			[newSelectedAttributes setObject:[NSColor yellowColor] forKey:@"NSBackgroundColor"];
+			// FIXME: use temporary attributes instead of abusing the text selection
 			[myTextView setSelectedTextAttributes: newSelectedAttributes];
 			correction = testIndex - theIndex - 10;
 			if ((correction < 0) || (foundRange.location < correction))
@@ -3131,9 +3132,6 @@
 
 
 	while (remainingRange.length > 0);
-
-
-
 }
 
 

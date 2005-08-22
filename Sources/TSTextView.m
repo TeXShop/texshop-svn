@@ -93,13 +93,14 @@
 	NSMutableDictionary	*mySelectedTextAttributes;
 
 	// koch; Dec 13, 2003
-
+	
+	// Trigger PDF sync when a click occurs while cmd is pressed (and alt is not pressed).
 	if (!([theEvent modifierFlags] & NSAlternateKeyMask) && ([theEvent modifierFlags] & NSCommandKeyMask)) {
 		[self doSync: theEvent];
 		return;
 	}
 
-
+	// Reset the special 'yellow' selection (which is used by PDF sync).
 	if ([_document textSelectionYellow]) {
 		[_document setTextSelectionYellow: NO];
 		mySelectedTextAttributes = [NSMutableDictionary dictionaryWithDictionary: [[_document textView] selectedTextAttributes]];
