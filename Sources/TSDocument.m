@@ -2855,9 +2855,7 @@ preference change is cancelled. "*/
 
 - (void)doCompletion:(NSNotification *)notification
 {
-	NSWindow		*activeWindow;
-	activeWindow = [[TSWindowManager sharedInstance] activeTextWindow];
-	if ((activeWindow != nil) && (activeWindow == [self textWindow])) {
+	if ([[self textWindow] isMainWindow]) {
 		[self insertSpecial: [notification object]
 					undoKey: NSLocalizedString(@"LaTeX Panel", @"LaTeX Panel")];
 	}
@@ -2865,9 +2863,7 @@ preference change is cancelled. "*/
 
 - (void)doMatrix:(NSNotification *)notification
 {
-	NSWindow		*activeWindow;
-	activeWindow = [[TSWindowManager sharedInstance] activeTextWindow];
-	if ((activeWindow != nil) && (activeWindow == [self textWindow])) {
+	if ([[self textWindow] isMainWindow]) {
 		[self insertSpecial: [notification object]
 					undoKey: NSLocalizedString(@"Matrix Panel", @"Matrix Panel")];
 	}
@@ -2890,12 +2886,6 @@ preference change is cancelled. "*/
 
 - (void) fixMacroMenu
 {
-/*
-	if (whichEngine == 6)
-		g_macroType = 1;
-	else
-		g_macroType = 0;
-*/
 	g_macroType = whichEngine;
 	[[TSMacroMenuController sharedInstance] reloadMacrosOnly];
 	[self resetMacroButton: nil];
@@ -2906,7 +2896,7 @@ preference change is cancelled. "*/
 	if (g_macroType != whichEngine) {
 		g_macroType = whichEngine;
 		[[TSMacroMenuController sharedInstance] reloadMacrosOnly];
-		}
+	}
 }
 
 - (void) fixAutoMenu
