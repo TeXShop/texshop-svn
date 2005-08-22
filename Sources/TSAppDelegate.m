@@ -210,9 +210,7 @@
 
 Copies %fileName to %directory. This method takes care that no files are overwritten.
 "*/
-//------------------------------------------------------------------------------
 - (void)copyFile:(NSString *)fileName toDirectory:(NSString *)directory cutExtension:(BOOL)cutExt
-//------------------------------------------------------------------------------
 {
 	NSFileManager *fileManager;
 	NSString *destFileName;
@@ -238,9 +236,7 @@ Copies %fileName to %directory. This method takes care that no files are overwri
 
 Copies %fileName to ~/Library/TeXShop/Templates. This method takes care that no files are overwritten.
 "*/
-//------------------------------------------------------------------------------
 - (void)copyToTemplateDirectory:(NSString *)fileName
-//------------------------------------------------------------------------------
 {
 	[self copyFile:fileName toDirectory:TexTemplatePathKey cutExtension:NO];
 }
@@ -249,9 +245,7 @@ Copies %fileName to ~/Library/TeXShop/Templates. This method takes care that no 
 
 Copies %fileName to ~/Library/TeXShop/Templates/More. This method takes care that no files are overwritten.
 "*/
-//------------------------------------------------------------------------------
 - (void)copyToMoreDirectory:(NSString *)fileName
-//------------------------------------------------------------------------------
 {
 	[self copyFile:fileName toDirectory:TexTemplateMorePathKey cutExtension:NO];
 }
@@ -261,9 +255,7 @@ Copies %fileName to ~/Library/TeXShop/Templates/More. This method takes care tha
 
 Copies %fileName to ~/Library/TeXShop/Templates. This method takes care that no files are overwritten.
 "*/
-//------------------------------------------------------------------------------
 - (void)copyToBinaryDirectory:(NSString *)fileName
-//------------------------------------------------------------------------------
 {
 	[self copyFile:fileName toDirectory:BinaryPathKey cutExtension:YES];
 }
@@ -272,9 +264,7 @@ Copies %fileName to ~/Library/TeXShop/Templates. This method takes care that no 
 
 Copies %fileName to ~/Library/TeXShop/Engines. This method takes care that no files are overwritten.
 "*/
-//------------------------------------------------------------------------------
 - (void)copyToEngineDirectory:(NSString *)fileName
-//------------------------------------------------------------------------------
 {
 	[self copyFile:fileName toDirectory:EnginePathKey cutExtension:NO];
 }

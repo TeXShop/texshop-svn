@@ -57,9 +57,7 @@ static id _sharedInstance = nil;
 
 /*" This class is implemented as singleton, i.e. there is only one single instance in the runtime. This is the designated accessor method to get the shared instance of the Preferences class.
 "*/
-//------------------------------------------------------------------------------
 + (id)sharedInstance
-//------------------------------------------------------------------------------
 {
 	if (_sharedInstance == nil)
 	{
@@ -68,9 +66,7 @@ static id _sharedInstance = nil;
 	return _sharedInstance;
 }
 
-//------------------------------------------------------------------------------
 - (id)init
-//------------------------------------------------------------------------------
 {
 	if (_sharedInstance != nil) {
 		[super dealloc];
@@ -87,9 +83,7 @@ static id _sharedInstance = nil;
 	return self;
 }
 
-//------------------------------------------------------------------------------
 - (void)dealloc
-//------------------------------------------------------------------------------
 {
 	[_undoManager release];
 	[super dealloc];
@@ -102,9 +96,7 @@ static id _sharedInstance = nil;
 
 Loads the .nib file if necessary, fills all the controls with the values from the user defaults and makes the window visible.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)showPreferences:sender
-//------------------------------------------------------------------------------
 {
 	if (_prefsWindow == nil) {
 		// we need to load the nib
@@ -157,9 +149,7 @@ Loads the .nib file if necessary, fills all the controls with the values from th
 }
 
 
-//------------------------------------------------------------------------------
-- (IBAction)setDefaults:sender;
-//------------------------------------------------------------------------------
+- (IBAction)setDefaults:sender
 {
 
 	NSString *fileName;
@@ -202,9 +192,7 @@ Loads the .nib file if necessary, fills all the controls with the values from th
 
 Clicking this button will bring up the font panel.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)changeDocumentFont:sender;
-//------------------------------------------------------------------------------
+- (IBAction)changeDocumentFont:sender
 {
 	// become first responder so we will see the envents that NSFontManager sends
 	// up the repsonder chain
@@ -215,9 +203,7 @@ Clicking this button will bring up the font panel.
 
 /*" This method is sent down the responder chain by the font manager when changing fonts in the font panel. Since this class is delegate of the Window, we will receive this method and we can reflect the changes in the textField accordingly.
 "*/
-//------------------------------------------------------------------------------
 - (void)changeFont:(id)fontManager
-//------------------------------------------------------------------------------
 {
 	NSData	*fontData;
 
@@ -242,9 +228,7 @@ Clicking this button will bring up the font panel.
 
 This method will be called when the matrix changes. Target 0 means 'all windows start at a fixed position', target 1 means 'remember window position'.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)sourceWindowPosChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:DocumentWindowPosModeKey] forKey:DocumentWindowPosModeKey];
@@ -258,9 +242,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 
 /*" This method is connected to the 'use current pos as default' button on the 'Document' pane.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)currentDocumentWindowPosDefault:sender;
-//------------------------------------------------------------------------------
+- (IBAction)currentDocumentWindowPosDefault:sender
 {
 	NSWindow	*activeWindow;
 
@@ -280,9 +262,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 }
 
 /*" Set Find Panel"*/
-//------------------------------------------------------------------------------
 - (IBAction)findPanelChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:UseOgreKitKey] forKey:UseOgreKitKey];
@@ -295,9 +275,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 
 
 /*" Make Empty Document on Startup "*/
-//------------------------------------------------------------------------------
-- (IBAction)emptyButtonPressed:sender;
-//------------------------------------------------------------------------------
+- (IBAction)emptyButtonPressed:sender
 {
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:MakeEmptyDocumentKey] forKey:MakeEmptyDocumentKey];
 
@@ -305,9 +283,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 }
 
 /*" Configure for External Editor "*/
-//------------------------------------------------------------------------------
-- (IBAction)externalEditorButtonPressed:sender;
-//------------------------------------------------------------------------------
+- (IBAction)externalEditorButtonPressed:sender
 {
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:UseExternalEditorKey] forKey:UseExternalEditorKey];
 
@@ -319,9 +295,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 
 
 /*" Change Encoding "*/
-//------------------------------------------------------------------------------
-- (IBAction)encodingChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)encodingChanged:sender
 {
 	NSString	*oldValue, *value;
 	int		tag;
@@ -347,9 +321,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 }
 
 /*" Change tab size "*/
-//------------------------------------------------------------------------------
-- (IBAction)tabsChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)tabsChanged:sender
 {
 	int		value;
 
@@ -372,9 +344,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 
 /*" This method is connected to the 'syntax coloring' checkbox.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)syntaxColorPressed:sender;
-//------------------------------------------------------------------------------
+- (IBAction)syntaxColorPressed:sender
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:SyntaxColoringEnabledKey] forKey:SyntaxColoringEnabledKey];
@@ -386,9 +356,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 
 /*" This method is connected to the 'select on activate' checkbox.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)selectActivatePressed:sender;
-//------------------------------------------------------------------------------
+- (IBAction)selectActivatePressed:sender
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:AcceptFirstMouseKey] forKey:AcceptFirstMouseKey];
@@ -399,9 +367,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 
 /*" This method is connected to the 'parens matching' checkbox.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)parensMatchPressed:sender;
-//------------------------------------------------------------------------------
+- (IBAction)parensMatchPressed:sender
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:ParensMatchingEnabledKey] forKey:ParensMatchingEnabledKey];
@@ -411,9 +377,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 
 /*" This method is connected to the 'spell checking' checkbox.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)spellCheckPressed:sender;
-//------------------------------------------------------------------------------
+- (IBAction)spellCheckPressed:sender
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:SpellCheckEnabledKey] forKey:SpellCheckEnabledKey];
@@ -423,9 +387,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 
 /*" This method is connected to the 'shell escape warning' checkbox.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)escapeWarningChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)escapeWarningChanged:sender
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:WarnForShellEscapeKey] forKey:WarnForShellEscapeKey];
@@ -436,9 +398,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 
 /*" This method is connected to the 'auto complete' checkbox.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)autoCompletePressed:sender;
-//------------------------------------------------------------------------------
+- (IBAction)autoCompletePressed:sender
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:AutoCompleteEnabledKey] forKey:AutoCompleteEnabledKey];
@@ -457,9 +417,7 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 
 A tag of 0 means don't save the window position, a tag of 1 to save the setting. This should only flag the request to save the position, the actual saving of position and size can be left to [NSWindow setAutoSaveFrameName].
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)pdfWindowPosChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:PdfWindowPosModeKey] forKey:PdfWindowPosModeKey];
@@ -475,9 +433,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 
 /*" This method is connected to the 'use current pos as default' button.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)currentPdfWindowPosDefault:sender;
-//------------------------------------------------------------------------------
+- (IBAction)currentPdfWindowPosDefault:sender
 {
 	NSWindow	*activeWindow;
 
@@ -496,9 +452,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 
 /*" This method is connected to the magnification text field on the Preview pane'.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)magChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)magChanged:sender
 {
 	// NSRunAlertPanel(@"warning", @"not yet implemented", nil, nil, nil);
 
@@ -537,9 +491,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 
 /*" This method is connected to the 'scroll' checkbox.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)scrollPressed:sender;
-//------------------------------------------------------------------------------
+- (IBAction)scrollPressed:sender
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:NoScrollEnabledKey] forKey:NoScrollEnabledKey];
@@ -557,9 +509,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 
 // mitsu 1.29 (O)
 /*" This method is connected to page style popup button. "*/
-//------------------------------------------------------------------------------
-- (IBAction)pageStyleChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)pageStyleChanged:sender
 {
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:PdfPageStyleKey] forKey:PdfPageStyleKey];
 
@@ -568,9 +518,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 
 /*" This method is connect to the 'first double page' radio buttons.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)firstDoublePageChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)firstDoublePageChanged:sender
 {
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:PdfFirstPageStyleKey] forKey:PdfFirstPageStyleKey];
 
@@ -582,9 +530,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 
 
 /*" This method is connected to resize option popup button. "*/
-//------------------------------------------------------------------------------
-- (IBAction)resizeOptionChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)resizeOptionChanged:sender
 {
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:PdfKitFitSizeKey] forKey:PdfKitFitSizeKey];
 
@@ -593,9 +539,7 @@ A tag of 0 means don't save the window position, a tag of 1 to save the setting.
 
 
 /*" This method is connected to image copy type popup button. "*/
-//------------------------------------------------------------------------------
-- (IBAction)imageCopyTypeChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)imageCopyTypeChanged:sender
 {
 	// mitsu 1.29b
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD
@@ -625,9 +569,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 
 
 /*" This method is connected to default mouse mode popup button. "*/
-//------------------------------------------------------------------------------
-- (IBAction)mouseModeChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)mouseModeChanged:sender
 {
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:PdfKitMouseModeKey] forKey:PdfKitMouseModeKey];
 
@@ -635,9 +577,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 }
 
 /*" This method is connected to default mouse mode popup button. "*/
-//------------------------------------------------------------------------------
-- (IBAction)colorMapChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)colorMapChanged:sender
 {
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD integerForKey:PdfColorMapKey] forKey:PdfColorMapKey];
 
@@ -645,9 +585,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 }
 
 /*" This method is connected to default mouse mode popup button. "*/
-//------------------------------------------------------------------------------
-- (IBAction)copyForeColorChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)copyForeColorChanged:sender
 {
 	[[_undoManager prepareWithInvocationTarget:SUD] setFloat:[SUD floatForKey:PdfFore_RKey] forKey:PdfFore_RKey];
 	[[_undoManager prepareWithInvocationTarget:SUD] setFloat:[SUD floatForKey:PdfFore_GKey] forKey:PdfFore_GKey];
@@ -662,9 +600,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 }
 
 /*" This method is connected to default mouse mode popup button. "*/
-//------------------------------------------------------------------------------
-- (IBAction)copyBackColorChanged:sender;
-//------------------------------------------------------------------------------
+- (IBAction)copyBackColorChanged:sender
 {
 	[[_undoManager prepareWithInvocationTarget:SUD] setFloat:[SUD floatForKey:PdfBack_RKey] forKey:PdfBack_RKey];
 	[[_undoManager prepareWithInvocationTarget:SUD] setFloat:[SUD floatForKey:PdfBack_GKey] forKey:PdfBack_GKey];
@@ -692,9 +628,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 //==============================================================================
 /*" This method is connected to the textField that holds the tetex bin path.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)tetexBinPathChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo messages first
 	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:TetexBinPathKey] 				forKey:TetexBinPathKey];
@@ -705,9 +639,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 //==============================================================================
 /*" This method is connected to the textField that holds the gs bin path.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)gsBinPathChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:GSBinPathKey] 				forKey:GSBinPathKey];
@@ -720,9 +652,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 //==============================================================================
 /*" This method is connected to the textField that holds the TeX command. It is located on the TeX pane.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)texProgramChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:TexCommandKey] forKey:TexCommandKey];
@@ -732,9 +662,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 
 /*" This method is connected to the textField that holds the LaTeX command. It is located on the TeX pane.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)latexProgramChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:LatexCommandKey] forKey:LatexCommandKey];
@@ -744,9 +672,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 
 /*" This method is connected to the textField that holds the tex + ghostscript command. It is located on the TeX pane.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)texGSProgramChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:TexGSCommandKey] forKey:TexGSCommandKey];
@@ -756,9 +682,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 
 /*" This method is connected to the textField that holds the latextex + ghostscript command. It is located on the TeX pane.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)latexGSProgramChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:LatexGSCommandKey] forKey:LatexGSCommandKey];
@@ -768,9 +692,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 
 /*" This method is connected to the 'save postscript' checkbox.
 "*/
-//------------------------------------------------------------------------------
-- (IBAction)savePSPressed:sender;
-//------------------------------------------------------------------------------
+- (IBAction)savePSPressed:sender
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:SavePSEnabledKey] forKey:SavePSEnabledKey];
@@ -783,9 +705,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 
 /*" This method is connected to the textField that holds the tex script command. It is located on the TeX pane.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)texScriptProgramChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:TexScriptCommandKey] forKey:TexScriptCommandKey];
@@ -795,9 +715,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 
 /*" This method is connected to the textField that holds the latex script command. It is located on the TeX pane.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)latexScriptProgramChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:LatexScriptCommandKey] forKey:LatexScriptCommandKey];
@@ -811,9 +729,7 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 
 A tag of 0 means use TeX, a tag of 1 means use LaTeX.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)defaultProgramChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:DefaultCommandKey] forKey:DefaultCommandKey];
@@ -847,9 +763,7 @@ A tag of 100 means use pdftex, a tag of 101 means use tex + ghostscript, a tag o
 person script.
 
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)defaultScriptChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD boolForKey:DefaultScriptKey] forKey:DefaultScriptKey];
@@ -869,9 +783,7 @@ person script.
 	[SUD setInteger:[[sender selectedCell] tag] forKey:SyncMethodKey];
 }
 
-//------------------------------------------------------------------------------
 - (IBAction)defaultMetaPostChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:MetaPostCommandKey] forKey:MetaPostCommandKey];
@@ -879,9 +791,7 @@ person script.
 	[SUD setInteger:[[sender selectedCell] tag] forKey:MetaPostCommandKey];
 }
 
-//------------------------------------------------------------------------------
 - (IBAction)defaultBibtexChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:BibtexCommandKey] forKey:BibtexCommandKey];
@@ -889,9 +799,7 @@ person script.
 	[SUD setInteger:[[sender selectedCell] tag] forKey:BibtexCommandKey];
 }
 
-//------------------------------------------------------------------------------
 - (IBAction)distillerChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD integerForKey:DistillerCommandKey] forKey:DistillerCommandKey];
@@ -900,9 +808,7 @@ person script.
 }
 
 // zenitani 1.35 (C)
-//------------------------------------------------------------------------------
-- (IBAction)ptexUtfOutputPressed:sender;
-//------------------------------------------------------------------------------
+- (IBAction)ptexUtfOutputPressed:sender
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:ptexUtfOutputEnabledKey] forKey:ptexUtfOutputEnabledKey];
@@ -916,9 +822,7 @@ person script.
 
 A tag of 0 means "always", a tag of 1 means "when errors occur".
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)consoleBehaviorChanged:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD boolForKey:ConsoleBehaviorKey] forKey:ConsoleBehaviorKey];
@@ -932,9 +836,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 
 A tag of 0 means "always", a tag of 1 means "when errors occur".
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)saveRelatedButtonPressed:sender
-//------------------------------------------------------------------------------
 {
 	// register the undo message first
 	[[_undoManager prepareWithInvocationTarget:SUD] setInteger:[SUD boolForKey:SaveRelatedKey] forKey:SaveRelatedKey];
@@ -950,9 +852,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 //==============================================================================
 /*" This method is connected to the OK button.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)okButtonPressed:sender
-//------------------------------------------------------------------------------
 {
 		NSMutableString *path;
 	// save everything to the user defaults
@@ -999,9 +899,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 
 /*" This method is connected to the Cancel button.
 "*/
-//------------------------------------------------------------------------------
 - (IBAction)cancelButtonPressed:sender
-//------------------------------------------------------------------------------
 {
 	// undo everyting
 	[_undoManager endUndoGrouping];
@@ -1043,9 +941,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 //==============================================================================
 /*" This method will be called whenever the user defaults change. We simply update the state of the prefences window and all of its controls. This may sound like the "brute force" method (in fact it is) but since the UserDefaults aren't likely to change from outside of this class we'll ignore that for now.
 "*/
-//------------------------------------------------------------------------------
 - (void)userDefaultsChanged:(NSNotification *)notification
-//------------------------------------------------------------------------------
 {
 	// only update the window's controls when the window is not visible.
 	// If the window is visible the user edits it directly with the mouse.
@@ -1059,9 +955,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 //==============================================================================
 
 /*" This method returns a relative path name of 'path', based on fromFile: file. If the second argument 'file' is nil, it will return an absolute path of 'path'. Added by zenitani, Feb 13, 2003. "*/
-//------------------------------------------------------------------------------
 - (NSString *)relativePath: (NSString *)path fromFile: (NSString *)file
-//------------------------------------------------------------------------------
 {
 	NSArray *a, *b;
 	NSString *rpath = @"", *astr, *bstr;
@@ -1091,9 +985,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 
 /*" This method will be called when no defaults were registered so far. Since this is the first time that TeXShop runs, we register a standard defaults set (from the FactoryDefaults.plist) and fill ~/Library/TeXShop/Templates with our templates.
 "*/
-//------------------------------------------------------------------------------
 - (void)registerFactoryDefaults
-//------------------------------------------------------------------------------
 {
 	NSString *fileName;
 	NSDictionary *factoryDefaults;
@@ -1120,9 +1012,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 
 This method retrieves the application preferences from the defaults object and sets the controls in the window accordingly.
 "*/
-//------------------------------------------------------------------------------
 - (void)updateControlsFromUserDefaults:(NSUserDefaults *)defaults
-//------------------------------------------------------------------------------
 {
 	NSData	*fontData;
 	double	magnification;
@@ -1288,9 +1178,7 @@ This method retrieves the application preferences from the defaults object and s
 
 This method updates the textField that represents the name of the selected font in the Document pane.
 "*/
-//------------------------------------------------------------------------------
 - (void)updateDocumentFontTextField
-//------------------------------------------------------------------------------
 {
 	NSString *fontDescription;
 

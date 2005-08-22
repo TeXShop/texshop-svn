@@ -39,18 +39,14 @@ static id _sharedInstance = nil;
 
 /*" This class is implemented as singleton, i.e. there is only one single instance in the runtime. This is the designated accessor method to get the shared instance of the Preferences class.
 "*/
-//------------------------------------------------------------------------------
 + (id)sharedInstance
-//------------------------------------------------------------------------------
 {
 	if (_sharedInstance == nil)
 		_sharedInstance = [[TSWindowManager alloc] init];
 	return _sharedInstance;
 }
 
-//------------------------------------------------------------------------------
 - (id)init
-//------------------------------------------------------------------------------
 {
 	if (_sharedInstance != nil)
 	{
@@ -61,9 +57,7 @@ static id _sharedInstance = nil;
 	return self;
 }
 
-//------------------------------------------------------------------------------
 - (void)dealloc
-//------------------------------------------------------------------------------
 {
 	[super dealloc];
 }
