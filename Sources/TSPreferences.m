@@ -853,7 +853,6 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 "*/
 - (IBAction)okButtonPressed:sender
 {
-		NSMutableString *path;
 	// save everything to the user defaults
 
 

@@ -337,6 +337,7 @@ extern NSString *UseOutlineKey;
 
 
 /*" Paths "*/
+extern NSString *TeXShopPath;
 extern NSString *TexTemplatePath;
 extern NSString *TexTemplateMorePath;
 extern NSString *LatexPanelPath;

@@ -135,17 +135,18 @@ NSString *UseOutlineKey = @"UseOutline";
 
 
 // Paths
+NSString *TeXShopPath = @"~/Library/TeXShop";
 NSString *TexTemplatePath = @"~/Library/TeXShop/Templates";
 NSString *TexTemplateMorePath = @"~/Library/TeXShop/Templates/More";
 NSString *LatexPanelPath = @"~/Library/TeXShop/LatexPanel";
-NSString *MatrixPanelPath = @"~/Library/TeXShop/MatrixPanel"; // Jonas' Matrix addition
+NSString *MatrixPanelPath = @"~/Library/TeXShop/MatrixPanel";
 NSString *BinaryPath = @"~/Library/TeXShop/bin";
 NSString *EnginePath = @"~/Library/TeXShop/Engines";
 NSString *ScriptsPath = @"~/Library/TeXShop/Scripts";
 NSString *AutoCompletionPath = @"~/Library/TeXShop/Keyboard";
 NSString *MenuShortcutsPath = @"~/Library/TeXShop/Menus";
 NSString *MacrosPath = @"~/Library/TeXShop/Macros";
-NSString *CommandCompletionPath = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt"; // mitsu 1.29 (P)
+NSString *CommandCompletionPath = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt";
 
 // TODO: Shouldn't we use  NSTemporaryDirectory() (or a path based on it) rather than the following three paths?
 NSString *TempPath = @"/tmp/TeXShop_Applescripts";
