@@ -511,6 +511,7 @@
 						[nameStr replaceOccurrencesOfString: @"\n" withString: @""
 													options: 0 range: NSMakeRange(0, [nameStr length])];
 						node = [TSMacroTreeNode nodeWithName: nameStr content: obj key: @""];
+						[nameStr release];
 						[submenu addChild: node];
 					}
 				}

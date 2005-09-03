@@ -24,18 +24,13 @@
 
 #import "UseMitsu.h"
 
-#import <Foundation/Foundation.h>
-#import "TSLaTeXPanelController.h"
-#import "TSMatrixPanelController.h"
-#import "OgreKit/OgreTextFinder.h"
-// added by mitsu --(H) Macro menu and (G) TSEncodingSupport
-// #import "TSMacroMenuController.h"
-#import "TSEncodingSupport.h"
-// end addition
+#import <Cocoa/Cocoa.h>
+
+@class OgreTextFinder;
 
 @interface TSAppDelegate : NSObject
 {
-	BOOL	forPreview;
+	BOOL	_forPreview;
 }
 
 - (IBAction)displayMatrixPanel:(id)sender; //  MatrixPanel Addition by Jonas 1.32 Nov 28 03
@@ -44,16 +39,6 @@
 - (IBAction)displayMatrixPanel:(id)sender;
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem;
 - (BOOL)forPreview;
-- (void)configureExternalEditor;
-- (void)configureMenuShortcutsFolder;
-- (void)configureAutoCompletion;
-- (void)configureTemplates;
-- (void)configureScripts;
-- (void)configureBin;
-- (void)configureLatexPanel;
-- (void)configureMatrixPanel; // Jonas 1.32
-- (void)configureMacro;
-- (void)prepareConfiguration: (NSString *)filePath; // mitsu 1.29 (P)
 - (void)finishCommandCompletionConfigure; // mitsu 1.29 (P)
 - (void)openCommandCompletionList: (id)sender; // mitsu 1.29 (P)
 #ifdef MITSU_PDF
@@ -61,11 +46,9 @@
 #endif
 - (void)finishAutoCompletionConfigure;
 - (void)finishMenuKeyEquivalentsConfigure;
+- (void)configureExternalEditor;
 - (void)setForPreview: (BOOL)value;
-// - (void)showConfiguration:(id)sender;
-// - (void)showMacrosHelp:(id)sender;
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender;
-- (void)configureEngine;
 - (void)ogreKitWillHackFindMenu:(OgreTextFinder*)textFinder;
 - (IBAction)checkForUpdate:(id)sender; // Update checker
 @end

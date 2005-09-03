@@ -28,7 +28,6 @@
 #import "globals.h"
 #import <Carbon/Carbon.h>
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 
 // to set the bounds of rotated view
@@ -3260,7 +3259,7 @@ failed. If you change the code below, be sure to test carefully!
 		if (data)
 		{
 			[pboard setData:data forType:dataType];
-			filePath = [[DraggedImagePathKey stringByStandardizingPath]
+			filePath = [[DraggedImagePath stringByStandardizingPath]
 					stringByAppendingPathExtension: extensionForType(imageCopyType)];
 			if ([data writeToFile: filePath atomically: NO])
 				[pboard setPropertyList:[NSArray arrayWithObject: filePath]
@@ -3313,7 +3312,7 @@ failed. If you change the code below, be sure to test carefully!
 		data = [self imageDataFromSelectionType: imageCopyType];
 		if (data)
 		{
-			filePath = [[DraggedImagePathKey stringByStandardizingPath]
+			filePath = [[DraggedImagePath stringByStandardizingPath]
 						stringByAppendingPathExtension: extensionForType(imageCopyType)];
 			if ([data writeToFile: filePath atomically: NO])
 				[pboard setPropertyList:[NSArray arrayWithObject: filePath]

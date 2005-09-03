@@ -26,7 +26,6 @@
 #import "TSTextView.h"
 #import "globals.h"
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 static BOOL isValidTeXCommandChar(int c);
 
@@ -212,8 +211,13 @@ static BOOL isValidTeXCommandChar(int c)
 // Recolor when typing / text is inserted...
 - (void)textDidChange:(NSNotification *)aNotification
 {
-// FIXME: There's a regression caused by some of my cleanup since TeXShop 2.03:
-// When working in split view mode
+// FIXME: There's a bug (also present in stock 2.03) when working in split view mode:
+// If (for example) the upper view is positioned at the start of the document; and the
+// lower view is positioned at a part of the document which is e.g. in the middle of the
+// document (and I am assuming here that the document is at least a couple 'windows' high).
+// and you then insert (paste) text into the upper view, the lower view's content is
+// being scrolled. So far so good. But if you repeatedly insert text into the upper view,
+// the lower view isn't updated anymore!
 
 //	[self colorizeAll];
 	[self fixColor :colorStart :colorEnd];

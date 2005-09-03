@@ -301,6 +301,8 @@ enum RootCommand
 - (void) makeMenuFromDirectory: (NSMenu *)menu basePath: (NSString *)basePath action:(SEL)action level:(unsigned)level; // added by S. Zenitani
 - (void)resetMacroButton:(NSNotification *)notification;
 
+- (NSString *)filterBackslashes:(NSString *)aString;
+
 @end
 
 

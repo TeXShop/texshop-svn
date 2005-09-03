@@ -25,7 +25,6 @@
 #import "TSDocumentScripting.h"
 #import "globals.h"
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 @implementation TSDocument (ScriptingSupport)
 

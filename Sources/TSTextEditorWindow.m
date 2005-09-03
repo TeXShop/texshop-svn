@@ -27,7 +27,6 @@
 #import "TSDocument.h" // for the definition of isTeX (move this to a separate file!!)
 #import "globals.h"
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 
 @implementation TSTextEditorWindow : NSWindow

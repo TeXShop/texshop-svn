@@ -73,7 +73,7 @@ static id _sharedInstance = nil;
 
 	NSBundle *myBundle=[NSBundle mainBundle];
 
-	completionPath = [LatexPanelPathKey stringByStandardizingPath];
+	completionPath = [LatexPanelPath stringByStandardizingPath];
 	completionPath = [completionPath stringByAppendingPathComponent:@"completion"];
 	completionPath = [completionPath stringByAppendingPathExtension:@"plist"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: completionPath])

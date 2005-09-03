@@ -46,7 +46,6 @@
 #import "TSDocumentController.h"
 
 
-#define SUD [NSUserDefaults standardUserDefaults]
 #define Mcomment 1
 #define Muncomment 2
 #define Mindent 3
@@ -832,7 +831,7 @@ in other code when an external editor is being used. */
 
 	// mitsu 1.29 (P)
 	if (!fileIsTex && [[self fileName] isEqualToString:
-		[CommandCompletionPathKey stringByStandardizingPath]])
+		[CommandCompletionPath stringByStandardizingPath]])
 		g_canRegisterCommandCompletion = YES;
 	// end mitsu 1.29
 
@@ -860,7 +859,7 @@ in other code when an external editor is being used. */
 	[super saveDocument: sender];
 	// if CommandCompletion list is being saved, reload it.
 	if (!fileIsTex && [[self fileName] isEqualToString:
-				[CommandCompletionPathKey stringByStandardizingPath]])
+				[CommandCompletionPath stringByStandardizingPath]])
 		[[NSApp delegate] finishCommandCompletionConfigure];
 }
 
@@ -895,7 +894,7 @@ in other code when an external editor is being used. */
 	[detexTask setCurrentDirectoryPath: [myFileName stringByDeletingLastPathComponent]];
 	[detexTask setEnvironment: g_environment];
 	enginePath = [[NSBundle mainBundle] pathForResource:@"detexwrap" ofType:nil];
-	tetexBinPath = [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath];
+	tetexBinPath = [[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath];
 	args = [NSMutableArray array];
 	[args addObject:tetexBinPath];
 	[args addObject: [myFileName  stringByStandardizingPath]];
@@ -971,7 +970,7 @@ in other code when an external editor is being used. */
 	unsigned        i;
 
 	fm       = [NSFileManager defaultManager];
-	basePath = [EnginePathKey stringByStandardizingPath];
+	basePath = [EnginePath stringByStandardizingPath];
 	fileList = [fm directoryContentsAtPath: basePath];
 	for (i=0; i < [fileList count]; i++) {
 		title = [fileList objectAtIndex: i];
@@ -1014,7 +1013,7 @@ in other code when an external editor is being used. */
 	newSize.width = 100;
 	newSize.height = 100;
 	if (windowIsSplit) {
-		[scrollView2 retain];
+//		[scrollView2 retain];	// FIXME: THis retain doesn't seem necessary and cause a leak, I believe...
 		[scrollView2 removeFromSuperview];
 		windowIsSplit = NO;
 		textView = textView1;
@@ -1200,7 +1199,7 @@ in other code when an external editor is being used. */
 	unsigned lv = 3;
 
 	fm       = [ NSFileManager defaultManager ];
-	basePath = [ TexTemplatePathKey stringByStandardizingPath ];
+	basePath = [ TexTemplatePath stringByStandardizingPath ];
 	fileList = [ fm directoryContentsAtPath: basePath ];
 
 	for (i = 0; i < [fileList count]; i++) {
@@ -1592,7 +1591,7 @@ preference change is cancelled. "*/
 	{
 		theItem = [sender selectedItem];
 		if ( theItem != nil ){
-			nameString = [TexTemplatePathKey stringByStandardizingPath];
+			nameString = [TexTemplatePath stringByStandardizingPath];
 			nameString = [nameString stringByAppendingPathComponent:[theItem title]];
 			nameString = [nameString stringByAppendingPathExtension:@"tex"];
 		}else{
@@ -1605,7 +1604,7 @@ preference change is cancelled. "*/
 	{
 /*
 		// The lines are moved (S. Zenitani, Jan 31, 2003)
-		nameString = [TexTemplatePathKey stringByStandardizingPath];
+		nameString = [TexTemplatePath stringByStandardizingPath];
 		nameString = [nameString stringByAppendingPathComponent:[theItem title]];
 		nameString = [nameString stringByAppendingPathExtension:@"tex"];
 */
@@ -3078,29 +3077,28 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 - (void)insertSpecial:(NSString *)theString undoKey:(NSString *)key
 {
 	NSRange		oldRange, searchRange;
-	NSMutableString	*newString;
-	NSString *oldString;
+	NSMutableString	*stringBuf;
+	NSString *oldString, *newString;
 	
 	// mutably copy the replacement text
-	newString = [NSMutableString stringWithString: theString];
+	stringBuf = [NSMutableString stringWithString: theString];
 	
 	// Determine the curent selection range and text
 	oldRange = [textView selectedRange];
 	oldString = [[textView string] substringWithRange: oldRange];
 	
 	// Substitute all occurances of #SEL# with the original text
-	[newString replaceOccurrencesOfString: @"#SEL#" withString: oldString
-								  options: 0 range: NSMakeRange(0, [newString length])];
+	[stringBuf replaceOccurrencesOfString: @"#SEL#" withString: oldString
+								  options: 0 range: NSMakeRange(0, [stringBuf length])];
 	
 	// Now search for #INS#, remember its position, and remove it. We will
 	// Later position the insertion mark there. Defaults to end of string.
-	searchRange = [newString rangeOfString:@"#INS#" options:NSLiteralSearch];
+	searchRange = [stringBuf rangeOfString:@"#INS#" options:NSLiteralSearch];
 	if (searchRange.location != NSNotFound)
-		[newString replaceCharactersInRange:searchRange withString:@""];
+		[stringBuf replaceCharactersInRange:searchRange withString:@""];
 	
 	// Filtering for Japanese
-	if (g_shouldFilter == kMacJapaneseFilterMode)
-		newString = filterBackslashToYen(newString);
+	newString = [self filterBackslashes:stringBuf];
 	
 	// Replace the text--
 	// Follow Apple's guideline "Subclassing NSTextView/Notifying About Changes to the Text"
@@ -3128,30 +3126,29 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 - (void)insertSpecialNonStandard:(NSString *)theString undoKey:(NSString *)key
 {
 	NSRange		oldRange, searchRange;
-	NSMutableString	*newString;
-	NSString *oldString;
+	NSMutableString	*stringBuf;
+	NSString *oldString, *newString;
 	unsigned from, to;
 
 	// mutably copy the replacement text
-	newString = [NSMutableString stringWithString: theString];
+	stringBuf = [NSMutableString stringWithString: theString];
 
 	// Determine the curent selection range and text
 	oldRange = [textView selectedRange];
 	oldString = [[textView string] substringWithRange: oldRange];
 
 	// Substitute all occurances of #SEL# with the original text
-	[newString replaceOccurrencesOfString: @"#SEL#" withString: oldString
-					options: 0 range: NSMakeRange(0, [newString length])];
+	[stringBuf replaceOccurrencesOfString: @"#SEL#" withString: oldString
+					options: 0 range: NSMakeRange(0, [stringBuf length])];
 
 	// Now search for #INS#, remember its position, and remove it. We will
 	// Later position the insertion mark there. Defaults to end of string.
-	searchRange = [newString rangeOfString:@"#INS#" options:NSLiteralSearch];
+	searchRange = [stringBuf rangeOfString:@"#INS#" options:NSLiteralSearch];
 	if (searchRange.location != NSNotFound)
-		[newString replaceCharactersInRange:searchRange withString:@""];
+		[stringBuf replaceCharactersInRange:searchRange withString:@""];
 
 	// Filtering for Japanese
-	if (g_shouldFilter == kMacJapaneseFilterMode)
-		newString = filterBackslashToYen(newString);
+	newString = [self filterBackslashes:stringBuf];
 
 	// Insert the new text
 	[textView replaceCharactersInRange:oldRange withString:newString];
@@ -3524,5 +3521,13 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	textSelectionYellow = value;
 }
 
+
+- (NSString *)filterBackslashes:(NSString *)aString
+{
+	if (g_shouldFilter == kMacJapaneseFilterMode)
+		return filterBackslashToYen(aString);
+	else
+		return aString;
+}
 
 @end

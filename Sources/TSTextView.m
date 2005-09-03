@@ -32,7 +32,6 @@
 #import "TSMacroMenuController.h" // zenitani 1.33
 #import <OgreKit/OgreKit.h>
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 // end addition
 
@@ -846,7 +845,7 @@
 	if ([g_commandCompletionList characterAtIndex: [g_commandCompletionList length]-1] != '\n')
 		[g_commandCompletionList appendString: @"\n"];
 
-	completionPath = [CommandCompletionPathKey stringByStandardizingPath];
+	completionPath = [CommandCompletionPath stringByStandardizingPath];
 	// back up old list
 	backupPath = [completionPath stringByDeletingPathExtension];
 	backupPath = [backupPath stringByAppendingString:@"~"];

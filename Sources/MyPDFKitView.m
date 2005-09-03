@@ -31,7 +31,6 @@
 
 #define NUMBER_OF_SOURCE_FILES	60
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 
 @implementation MyPDFKitView : PDFView
@@ -2038,7 +2037,7 @@
 		data = [self imageDataFromSelectionType: imageCopyType];
 		if (data) {
 			[pboard setData:data forType:dataType];
-			filePath = [[DraggedImagePathKey stringByStandardizingPath]
+			filePath = [[DraggedImagePath stringByStandardizingPath]
 					stringByAppendingPathExtension: extensionForType(imageCopyType)];
 			if ([data writeToFile: filePath atomically: NO])
 				[pboard setPropertyList:[NSArray arrayWithObject: filePath]
@@ -2087,7 +2086,7 @@
 	} else if ([type isEqualToString: NSFilenamesPboardType]) {
 		data = [self imageDataFromSelectionType: imageCopyType];
 		if (data) {
-			filePath = [[DraggedImagePathKey stringByStandardizingPath]
+			filePath = [[DraggedImagePath stringByStandardizingPath]
 						stringByAppendingPathExtension: extensionForType(imageCopyType)];
 			if ([data writeToFile: filePath atomically: NO])
 				[pboard setPropertyList:[NSArray arrayWithObject: filePath]

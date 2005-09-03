@@ -32,7 +32,6 @@
 #import "globals.h"
 extern NSPanel *pageNumberWindow;
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 @implementation TSPreviewWindow
 

@@ -33,6 +33,11 @@
 #define	BACKSLASH	'\\'
 
 
+// Shortcut to access the standard user defaults more easily.
+#define SUD [NSUserDefaults standardUserDefaults]
+
+
+
 // The following block defines constants used in the PDF code. 
 // TODO: Move this to a more appropriate header file.
 #if 1
@@ -264,8 +269,8 @@ extern NSString *PdfQuickDragKey; // mitsu 1.29 drag & drop
 extern NSString *SaveDocumentFontKey;
 extern NSString *SyntaxColoringEnabledKey;
 extern NSString *KeepBackupKey;
-extern NSString *TetexBinPathKey;
-extern NSString *GSBinPathKey;
+extern NSString *TetexBinPath;
+extern NSString *GSBinPath;
 extern NSString *TexCommandKey;
 extern NSString *TexGSCommandKey;
 extern NSString *TexScriptCommandKey;
@@ -274,7 +279,7 @@ extern NSString *BibtexCommandKey;
 extern NSString *DistillerCommandKey;
 extern NSString *MatrixSizeKey; // Jonas' Matrix addition
 extern NSString *TSHasBeenUsedKey;
-extern NSString *UserInfoPathKey;
+extern NSString *UserInfoPath;
 
 extern NSString *commentredKey;
 extern NSString *commentgreenKey;
@@ -332,24 +337,20 @@ extern NSString *UseOutlineKey;
 
 
 /*" Paths "*/
-extern NSString *TexTemplatePathKey;
-extern NSString *TexTemplateMorePathKey;
-extern NSString *LatexPanelPathKey;
-extern NSString *MatrixPanelPathKey; // Jonas' Matrix addition
-extern NSString *BinaryPathKey;
-extern NSString *EnginePathKey;
-extern NSString *ScriptsPathKey;
-extern NSString *TempPathKey;
+extern NSString *TexTemplatePath;
+extern NSString *TexTemplateMorePath;
+extern NSString *LatexPanelPath;
+extern NSString *MatrixPanelPath; // Jonas' Matrix addition
+extern NSString *BinaryPath;
+extern NSString *EnginePath;
+extern NSString *ScriptsPath;
+extern NSString *TempPath;
 extern NSString *TempOutputKey;
-extern NSString *AutoCompletionPathKey;
-extern NSString *MenuShortcutsPathKey;
-extern NSString *MacrosPathKey;
-extern NSString *CommandCompletionPathKey; // mitsu 1.29 (P)
-extern NSString *DraggedImagePathKey; // mitsu 1.29 drag & drop
-
-
-/*" Exceptions "*/
-extern NSString *XDirectoryCreation;
+extern NSString *AutoCompletionPath;
+extern NSString *MenuShortcutsPath;
+extern NSString *MacrosPath;
+extern NSString *CommandCompletionPath; // mitsu 1.29 (P)
+extern NSString *DraggedImagePath; // mitsu 1.29 drag & drop
 
 
 /*" Notifications "*/

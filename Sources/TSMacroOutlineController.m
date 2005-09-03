@@ -48,7 +48,6 @@
 #define onlyAcceptDropOnRoot	NO
 #define autoSort 				NO
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 // ================================================================
 // Method implimentations
@@ -444,6 +443,7 @@ static TSMacroOutlineController *_sharedOutlineViewController = nil;
 		if (g_shouldFilter)	// we only use backslashes
 			string = filterYenToBackslash(string);
 		TSMacroTreeNode *newItem = [TSMacroTreeNode nodeWithName: nameStr content: string key: nil];
+		[nameStr release];
 		
 		itemsToSelect = [NSMutableArray arrayWithObject: newItem];
 		[parentNode insertChild: newItem atIndex:childIndex++];

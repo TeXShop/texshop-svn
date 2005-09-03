@@ -123,7 +123,7 @@ static id _sharedInstance = nil;
 
 	NSBundle *myBundle = [NSBundle mainBundle];
 
-	matrixPath = [MatrixPanelPathKey stringByStandardizingPath];
+	matrixPath = [MatrixPanelPath stringByStandardizingPath];
 	matrixPath = [matrixPath stringByAppendingPathComponent:@"matrixpanel_1"];
 	matrixPath = [matrixPath stringByAppendingPathExtension:@"plist"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: matrixPath])

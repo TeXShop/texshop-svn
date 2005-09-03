@@ -71,8 +71,8 @@ NSString *PdfQuickDragKey = @"PdfQuickDrag"; // mitsu 1.29 drag & drop
 NSString *SaveDocumentFontKey = @"SaveDocumentFont";
 NSString *SyntaxColoringEnabledKey = @"SyntaxColoringEnabled";
 NSString *KeepBackupKey = @"KeepBackup";
-NSString *TetexBinPathKey = @"TetexBinPath";
-NSString *GSBinPathKey = @"GSBinPath";
+NSString *TetexBinPath = @"TetexBinPath";
+NSString *GSBinPath = @"GSBinPath";
 NSString *TexCommandKey = @"TexCommand";
 NSString *TexGSCommandKey = @"TexGSCommand";
 NSString *TexScriptCommandKey = @"TexScriptCommand";
@@ -81,7 +81,7 @@ NSString *BibtexCommandKey = @"BibtexCommand";
 NSString *DistillerCommandKey = @"DistillerCommand";
 NSString *MatrixSizeKey = @"matrixsize"; // Jonas' Matrix addition
 NSString *TSHasBeenUsedKey = @"TSHasBeenUsed";
-NSString *UserInfoPathKey = @"UserInfoPath";
+NSString *UserInfoPath = @"UserInfoPath";
 NSString *commentredKey = @"commentred";
 NSString *commentgreenKey = @"commentgreen";
 NSString *commentblueKey = @"commentblue";
@@ -135,24 +135,22 @@ NSString *UseOutlineKey = @"UseOutline";
 
 
 // Paths
-NSString *TexTemplatePathKey = @"~/Library/TeXShop/Templates";
-NSString *TexTemplateMorePathKey = @"~/Library/TeXShop/Templates/More";
-NSString *LatexPanelPathKey = @"~/Library/TeXShop/LatexPanel";
-NSString *MatrixPanelPathKey = @"~/Library/TeXShop/MatrixPanel"; // Jonas' Matrix addition
-NSString *BinaryPathKey = @"~/Library/TeXShop/bin";
-NSString *EnginePathKey = @"~/Library/TeXShop/Engines";
-NSString *ScriptsPathKey = @"~/Library/TeXShop/Scripts";
-NSString *TempPathKey = @"/tmp/TeXShop_Applescripts";
+NSString *TexTemplatePath = @"~/Library/TeXShop/Templates";
+NSString *TexTemplateMorePath = @"~/Library/TeXShop/Templates/More";
+NSString *LatexPanelPath = @"~/Library/TeXShop/LatexPanel";
+NSString *MatrixPanelPath = @"~/Library/TeXShop/MatrixPanel"; // Jonas' Matrix addition
+NSString *BinaryPath = @"~/Library/TeXShop/bin";
+NSString *EnginePath = @"~/Library/TeXShop/Engines";
+NSString *ScriptsPath = @"~/Library/TeXShop/Scripts";
+NSString *AutoCompletionPath = @"~/Library/TeXShop/Keyboard";
+NSString *MenuShortcutsPath = @"~/Library/TeXShop/Menus";
+NSString *MacrosPath = @"~/Library/TeXShop/Macros";
+NSString *CommandCompletionPath = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt"; // mitsu 1.29 (P)
+
+// TODO: Shouldn't we use  NSTemporaryDirectory() (or a path based on it) rather than the following three paths?
+NSString *TempPath = @"/tmp/TeXShop_Applescripts";
 NSString *TempOutputKey = @"/tmp/TeXShop_Output";
-NSString *AutoCompletionPathKey = @"~/Library/TeXShop/Keyboard";
-NSString *MenuShortcutsPathKey = @"~/Library/TeXShop/Menus";
-NSString *MacrosPathKey = @"~/Library/TeXShop/Macros";
-NSString *CommandCompletionPathKey = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt"; // mitsu 1.29 (P)
-NSString *DraggedImagePathKey = @"~/Library/TeXShop/DraggedImages/texshop_image"; // mitsu 1.29 drag & drop
-
-
-// Exceptions
-NSString *XDirectoryCreation = @"DirectoryCreationException";
+NSString *DraggedImagePath = @"~/Library/TeXShop/DraggedImages/texshop_image"; // mitsu 1.29 drag & drop
 
 
 // Notifications

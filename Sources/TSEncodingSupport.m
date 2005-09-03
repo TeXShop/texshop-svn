@@ -25,7 +25,6 @@
 #import "TSEncodingSupport.h"
 #import "TSDocument.h" // mitsu 1.29 (P)
 #import "globals.h"
-#define SUD [NSUserDefaults standardUserDefaults]
 
 static NSString *yenString = nil;
 
@@ -75,6 +74,10 @@ static TSEncoding _availableEncodings[] = {
 	int i;
 	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i)
 		_availableEncodings[i].nsEnc = CFStringConvertEncodingToNSStringEncoding(_availableEncodings[i].cfEnc);
+
+	// initialize yen string
+	unichar yenChar = YEN;
+	yenString = [[NSString stringWithCharacters: &yenChar length:1] retain];
 }
 
 + (id)sharedInstance
@@ -93,9 +96,6 @@ static TSEncoding _availableEncodings[] = {
 		sharedEncodingSupport = [super init];
 
 		g_shouldFilter = kNoFilterMode;
-		// initialize yen string
-		unichar yenChar = YEN;
-		yenString = [[NSString stringWithCharacters: &yenChar length:1] retain];
 
 		// register for encoding changed notification
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(encodingChanged:)
@@ -139,6 +139,10 @@ static TSEncoding _availableEncodings[] = {
 
 
 // set up g_texChar, g_taggedTeXSections and menu item for tex character conversion
+// FIXME: This is only called when starting up or when the encoding prefs are changed.
+// In particular, it is *not* sufficient to just save a file with a different encoding!
+// TODO: Correct this by making the encoding checks document specific. In particular,
+// g_texChar, g_taggedTeXSections should be replaced by TSDocument members.
 - (void)setupForEncoding
 {
 	NSString *currentEncoding;
@@ -177,7 +181,7 @@ static TSEncoding _availableEncodings[] = {
 			[g_commandCompletionList replaceOccurrencesOfString: @"\\" withString: yenString
 						options: 0 range: NSMakeRange(0, [g_commandCompletionList length])];
 			theDoc = [[NSDocumentController sharedDocumentController]
-				documentForFileName: [CommandCompletionPathKey stringByStandardizingPath]];
+				documentForFileName: [CommandCompletionPath stringByStandardizingPath]];
 			if (theDoc)
 				[[theDoc textView] setString: filterBackslashToYen([[theDoc textView] string])];
 		}
@@ -211,7 +215,7 @@ static TSEncoding _availableEncodings[] = {
 			[g_commandCompletionList replaceOccurrencesOfString: yenString withString: @"\\"
 						options: 0 range: NSMakeRange(0, [g_commandCompletionList length])];
 			theDoc = [[NSDocumentController sharedDocumentController]
-				documentForFileName: [CommandCompletionPathKey stringByStandardizingPath]];
+				documentForFileName: [CommandCompletionPath stringByStandardizingPath]];
 			if (theDoc)
 				[[theDoc textView] setString: filterYenToBackslash([[theDoc textView] string])];
 		}

@@ -26,7 +26,6 @@
 #import "globals.h"
 #import "TSEncodingSupport.h"
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 @implementation TSDocument (RootFile)
 
@@ -254,7 +253,6 @@
 	}
 }
 
-
 - (void) checkFileLinks:(NSString *)theSource
 {
 	NSString *home,*jobname=[[self fileName] stringByDeletingLastPathComponent];
@@ -276,9 +274,8 @@
 	// create list of linked files from \input commands
 	aRange = NSMakeRange(0, [theSource length]);
 	slist = [[NSMutableArray alloc] init];
-	searchString = [NSString stringWithString:@"\\input"];
-	if (g_shouldFilter == kMacJapaneseFilterMode)
-		searchString = filterBackslashToYen(searchString);
+	searchString = @"\\input";
+	searchString = [self filterBackslashes:searchString];
 
 	while (YES) {
 		aRange = [theSource rangeOfString:searchString options:NSLiteralSearch range:aRange];
@@ -412,9 +409,7 @@
 		saveName = [NSString stringWithFormat:@"%@/%@",home,relFile];
 
 	// see if \jobname is there
-	searchString = [NSString stringWithString:@"\\jobname"];
-	if (g_shouldFilter == kMacJapaneseFilterMode)
-		searchString = filterBackslashToYen(searchString);
+	searchString = [self filterBackslashes:@"\\jobname"];
 	aRange = [saveName rangeOfString:searchString options:NSLiteralSearch];
 	if(aRange.location == NSNotFound)
 		return saveName;

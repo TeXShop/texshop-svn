@@ -32,7 +32,6 @@
 #import "TSTextView.h"
 // end mistu 1.29
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 @implementation TSMacroMenuController
 
@@ -81,11 +80,11 @@ static id sharedMacroMenuController = nil;
 	NSString *error = nil; // mitsu 1.29 (U) added
 						   //    NSString *aString; // mitsu 1.29 (U) removed
 	
-	defaultPathStr = [MacrosPathKey stringByStandardizingPath];
+	defaultPathStr = [MacrosPath stringByStandardizingPath];
 	defaultPathStr = [defaultPathStr stringByAppendingPathComponent:@"Macros_Latex"];
 	defaultPathStr = [defaultPathStr stringByAppendingPathExtension:@"plist"];
 	
-	pathStr = [MacrosPathKey stringByStandardizingPath];
+	pathStr = [MacrosPath stringByStandardizingPath];
 	switch (g_macroType) {
 		case TexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Tex"]; break;
 		case LatexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
@@ -366,11 +365,11 @@ static id sharedMacroMenuController = nil;
 			
 			// save newScript in file named scriptFileName in directory scriptFilePath
 			NSFileManager *fileManager = [NSFileManager defaultManager];
-			if (!([fileManager fileExistsAtPath: [TempPathKey stringByStandardizingPath]])) {
+			if (!([fileManager fileExistsAtPath: [TempPath stringByStandardizingPath]])) {
 				// create the necessary directories
 				NS_DURING
 					// create ~/Library/TeXShop/Temp
-					result = [fileManager createDirectoryAtPath:[TempPathKey stringByStandardizingPath] attributes:nil];
+					result = [fileManager createDirectoryAtPath:[TempPath stringByStandardizingPath] attributes:nil];
 				NS_HANDLER
 					result = NO;
 					reason = [localException reason];
@@ -380,7 +379,7 @@ static id sharedMacroMenuController = nil;
 					return;
 				}
 			}
-			NSString *scriptFilePath = [TempPathKey stringByStandardizingPath];
+			NSString *scriptFilePath = [TempPath stringByStandardizingPath];
 			NSString *scriptFileName = [scriptFilePath stringByAppendingString: @"/tempscript"];
 			
 			NS_DURING

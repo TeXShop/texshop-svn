@@ -30,7 +30,6 @@
 #import "TSEncodingSupport.h"
 #import "globals.h"
 
-#define SUD [NSUserDefaults standardUserDefaults]
 
 @implementation TSMacroEditor
 
@@ -171,11 +170,11 @@ static TSFilterMode savedFilter = kNoFilterMode;
 {
 	NSString *pathStr, *defaultPathStr;
 	
-	defaultPathStr = [MacrosPathKey stringByStandardizingPath];
+	defaultPathStr = [MacrosPath stringByStandardizingPath];
 	defaultPathStr = [defaultPathStr stringByAppendingPathComponent:@"Macros_Latex"];
 	defaultPathStr = [defaultPathStr stringByAppendingPathExtension:@"plist"];
 	
-	pathStr = [MacrosPathKey stringByStandardizingPath];
+	pathStr = [MacrosPath stringByStandardizingPath];
 	switch (g_macroType) {
 		case TexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Tex"]; break;
 		case LatexEngine: pathStr = [pathStr stringByAppendingPathComponent:@"Macros_Latex"]; break;
