@@ -883,14 +883,7 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 
 
 	// re-Set the environment for subtasks
-	[g_environment release];
-	g_environment = [[NSMutableDictionary dictionaryWithDictionary:[[NSProcessInfo processInfo] environment]] retain];
-	path = [NSMutableString stringWithString: [g_environment objectForKey:@"PATH"]];
-	[path appendString:@":"];
-	[path appendString:[SUD stringForKey:TetexBinPath]];
-	[path appendString:@":"];
-	[path appendString:[SUD stringForKey:GSBinPath]];
-	[g_environment setObject: path forKey: @"PATH"];
+	[[NSApp delegate] setupEnv];
 
 	// close the window
 	[_prefsWindow performClose:self];

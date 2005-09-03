@@ -25,7 +25,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-// In order to use this controller, create an instance of MyOutlineView
+// In order to use this controller, create an instance of TSMacroOutlineView
 // which is a subclass of NSOutlineView.
 // Instantiate this class in Interface Builder and make connections
 // with the outline view as "delegate" and "dataSource".
@@ -34,9 +34,9 @@
 // from a dictionary.
 
 #define SEPARATOR_IMAGE @"Separator.tiff"
-#define MyOutlineViewAddedItemNotification		@"MyOutlineViewAddedItem"
-#define MyOutlineViewRemovedItemNotification	@"MyOutlineViewDeletedItem"
-#define MyOutlineViewAcceptedDropNotification	@"MyOutlineViewAcceptedDrop"
+#define TSMacroOutlineViewAddedItemNotification		@"TSMacroOutlineViewAddedItem"
+#define TSMacroOutlineViewRemovedItemNotification	@"TSMacroOutlineViewDeletedItem"
+#define TSMacroOutlineViewAcceptedDropNotification	@"TSMacroOutlineViewAcceptedDrop"
 
 @class TSMacroTreeNode;
 
@@ -75,7 +75,7 @@
 @end
 
 
-@interface MyOutlineView : NSOutlineView
+@interface TSMacroOutlineView : NSOutlineView
 {
 }
 @end

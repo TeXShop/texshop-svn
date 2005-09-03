@@ -84,7 +84,6 @@
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification
 {
 	NSString *fileName;
-	NSMutableString *path;
 	NSDictionary *factoryDefaults;
 //	OgreTextFinder *theFinder;
 	id theFinder;
@@ -120,22 +119,8 @@
 		[SUD registerDefaults:factoryDefaults];
 	}
 
-	// get copy of environment and add the preferences paths
-	g_environment = [[NSMutableDictionary dictionaryWithDictionary:[[NSProcessInfo processInfo] environment]] retain];
-	path = [NSMutableString stringWithString: [g_environment objectForKey:@"PATH"]];
-	[path appendString:@":"];
-	[path appendString:[SUD stringForKey:TetexBinPath]];
-	[path appendString:@":"];
-	[path appendString:[SUD stringForKey:GSBinPath]];
-	[g_environment setObject: path forKey: @"PATH"];
-	NSString *editPath = [[NSBundle mainBundle] pathForResource:@"TEXTEDIT" ofType:nil inDirectory:@"TEXTEDIT.app/Contents/MacOS"];
-	// NSLog(editPath);
-	NSString *newEditPath = [editPath stringByAppendingString:@" %%s %%d"];
-	// NSLog(newEditPath);
-	// NSString *newEditPath = [editPath stringByAppendingString:@" %s %d"];
-	// NSString *newEditPath = @" \%s \%d";
-	// NSLog(newEditPath);
-	[g_environment setObject: newEditPath forKey:@"TEXEDIT"];
+	// Setup env vars for external programs.
+	[self setupEnv];
 
 	// Set up ~/Library/TeXShop; must come before dealing with TSEncodingSupport and MacoMenuController below
 	[self setupTeXShopLibrary];
@@ -196,6 +181,42 @@
 			theFinder = [TextFinder sharedInstance];
 
 	// documentsHaveLoaded = NO;
+}
+
+- (void)setupEnv
+{
+	// get copy of environment and add the preferences paths
+	[g_environment release];
+	g_environment = [[NSMutableDictionary dictionaryWithDictionary:[[NSProcessInfo processInfo] environment]] retain];
+
+
+	// Customize 'PATH'
+	NSMutableString *path;
+	path = [NSMutableString stringWithString: [g_environment objectForKey:@"PATH"]];
+	[path appendString:@":"];
+	[path appendString:[SUD stringForKey:TetexBinPath]];
+	[path appendString:@":"];
+	[path appendString:[SUD stringForKey:GSBinPath]];
+	[g_environment setObject: path forKey: @"PATH"];
+
+
+	// Set 'TEXEDIT' env var (see the 'tex' man page for details). We construct a simple shell
+	// command, which first (re)opens the document, and then uses osascript to run an AppleScript
+	// which selects the right line. The AppleScript looks like this:
+	//   tell application "TeXShop"
+	//       goto document 1 line %d
+	//       activate
+	//   end tell
+	NSMutableString *script = [NSMutableString string];
+
+	[script appendFormat:@"open -a '%@' '%%s' &&", [[NSBundle mainBundle] bundlePath]];
+	[script appendString:@" osascript"];
+	[script appendString:@" -e 'tell application \"TeXShop\"'"];
+	[script appendString:@" -e     'goto document 1 line %d'"];
+	[script appendString:@" -e     'activate'"];
+	[script appendString:@" -e 'end tell'"];
+
+	[g_environment setObject: script forKey:@"TEXEDIT"];
 }
 
 // mitsu 1.29 drag & drop

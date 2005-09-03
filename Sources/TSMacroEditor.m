@@ -81,13 +81,13 @@ static TSFilterMode savedFilter = kNoFilterMode;
 					name: NSOutlineViewSelectionDidChangeNotification object: outlineView];
 		[[NSNotificationCenter defaultCenter] addObserver:self
 					selector:@selector(outlineViewItemsChanged:)
-					name: MyOutlineViewAddedItemNotification object: outlineView];
+					name: TSMacroOutlineViewAddedItemNotification object: outlineView];
 		[[NSNotificationCenter defaultCenter] addObserver:self
 					selector:@selector(outlineViewItemsChanged:)
-					name: MyOutlineViewRemovedItemNotification object: outlineView];
+					name: TSMacroOutlineViewRemovedItemNotification object: outlineView];
 		[[NSNotificationCenter defaultCenter] addObserver:self
 					selector:@selector(outlineViewItemsChanged:)
-					name: MyOutlineViewAcceptedDropNotification object: outlineView];
+					name: TSMacroOutlineViewAcceptedDropNotification object: outlineView];
 		// set up variables
 		[outlineController setRootOfTree: newRoot]; // one can use [outlineView dataSource] instead
 		previousItem = nil;
@@ -121,8 +121,9 @@ static TSFilterMode savedFilter = kNoFilterMode;
 - (void)loadUI
 {
 	if (!outlineView) {
-		if (![NSBundle loadNibNamed:@"TSMacroEditor" owner:self]) {
-			NSLog(@"Failed to load TSMacroEditor.nib");
+		if (![NSBundle loadNibNamed:@"MacroEditor" owner:self]) {
+			// TODO: Show an error dialog to the user here
+			NSLog(@"Failed to load MacroEditor.nib");
 			NSBeep();
 			return;
 		}

@@ -173,9 +173,9 @@ static TSMacroOutlineController *_sharedOutlineViewController = nil;
 	if (newRow >= 0)
 		[outlineView selectRow: newRow byExtendingSelection: NO];
 	
-#ifdef MyOutlineViewAddedItemNotification
+#ifdef TSMacroOutlineViewAddedItemNotification
 	// notify that item was added -- custom notification
-	[[NSNotificationCenter defaultCenter] postNotificationName: MyOutlineViewAddedItemNotification
+	[[NSNotificationCenter defaultCenter] postNotificationName: TSMacroOutlineViewAddedItemNotification
 														object: outlineView];
 #endif
 }
@@ -201,9 +201,9 @@ static TSMacroOutlineController *_sharedOutlineViewController = nil;
 
 	[outlineView selectItems: newChildren byExtendingSelection: NO];
 
-#ifdef MyOutlineViewAddedItemNotification
+#ifdef TSMacroOutlineViewAddedItemNotification
 	// notify that item was added -- custom notification
-	[[NSNotificationCenter defaultCenter] postNotificationName: MyOutlineViewAddedItemNotification
+	[[NSNotificationCenter defaultCenter] postNotificationName: TSMacroOutlineViewAddedItemNotification
 					object: outlineView];
 #endif
 }
@@ -219,9 +219,9 @@ static TSMacroOutlineController *_sharedOutlineViewController = nil;
 	[outlineView deselectAll:nil];
 	[outlineView reloadData];
 
-#ifdef MyOutlineViewRemovedItemNotification
+#ifdef TSMacroOutlineViewRemovedItemNotification
 	// notify that item was deleted -- custom notification
-	[[NSNotificationCenter defaultCenter] postNotificationName: MyOutlineViewRemovedItemNotification
+	[[NSNotificationCenter defaultCenter] postNotificationName: TSMacroOutlineViewRemovedItemNotification
 					object: outlineView];
 #endif
 }
@@ -468,9 +468,9 @@ static TSMacroOutlineController *_sharedOutlineViewController = nil;
 
 	[self performDropOperation:info onNode:parentNode atIndex:childIndex];
 
-#ifdef MyOutlineViewAcceptedDropNotification
+#ifdef TSMacroOutlineViewAcceptedDropNotification
 	// notify that item was moved or dropped -- custom notification
-	[[NSNotificationCenter defaultCenter] postNotificationName: MyOutlineViewAcceptedDropNotification
+	[[NSNotificationCenter defaultCenter] postNotificationName: TSMacroOutlineViewAcceptedDropNotification
 					object: outlineView];
 #endif
 	return YES;
@@ -524,7 +524,7 @@ static TSMacroOutlineController *_sharedOutlineViewController = nil;
 @end
 
 
-@implementation MyOutlineView
+@implementation TSMacroOutlineView
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {
 	if (isLocal)
