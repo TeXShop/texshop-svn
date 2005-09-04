@@ -88,9 +88,6 @@
 //	OgreTextFinder *theFinder;
 	id theFinder;
 
-	// documentsHaveLoaded = NO;
-
-
 	g_macroType = LatexEngine;
 
 	g_taggedTeXSections = [[NSArray alloc] initWithObjects:
@@ -170,8 +167,6 @@
 		theFinder = [OgreTextFinder sharedTextFinder];
 	else
 		theFinder = [TextFinder sharedInstance];
-
-	// documentsHaveLoaded = NO;
 }
 
 

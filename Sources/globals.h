@@ -104,16 +104,6 @@ enum GsColorMode
 	GsColorModeThousands = 2
 };
 
-/*" Symbolic constants for the default Typeset program to use. "*/
-enum DefaultCommand
-{
-	DefaultCommandTeX = 0,
-	DefaultCommandLaTeX = 1,
-	DefaultCommandConTEXt = 2,
-	DefaultCommandUser = 3
-};
-
-
 /*" Symbolic constants for Japanese conversion "*/
 typedef enum
 {

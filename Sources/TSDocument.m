@@ -1376,36 +1376,35 @@ preference change is cancelled. "*/
 
 - (void) doChooseMethod: sender
 {
-	[[[[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")] submenu]
-		itemWithTag:100] setState:NSOffState];
-	[[[[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")] submenu]
-		itemWithTag:101] setState:NSOffState];
-	[[[[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")] submenu]
-		itemWithTag:102] setState:NSOffState];
+	NSMenu *menu;
+	
+	 menu = [[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")] submenu];
+	
+	[[menu itemWithTag:kTypesetViaPDFTeX] setState:NSOffState];
+	[[menu itemWithTag:kTypesetViaGhostScript] setState:NSOffState];
+	[[menu itemWithTag:kTypesetViaPersonalScript] setState:NSOffState];
 	[sender setState:NSOnState];
 	whichScript = [sender tag];
 }
 
 - (void) fixTypesetMenu
 {
-	id <NSMenuItem> 	aMenu;
-	int		i;
+	NSMenu				*menu;
 
-	for (i = 100; i <= 102; i++) {
-		aMenu = [[[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")]
-			submenu] itemWithTag:i];
-		if (whichScript == i)
-			[aMenu setState:NSOnState];
-		else
-			[aMenu setState:NSOffState];
-		}
+	menu = [[[NSApp mainMenu] itemWithTitle:NSLocalizedString(@"Typeset", @"Typeset")] submenu];
+
+	[[menu itemWithTag:kTypesetViaPDFTeX] setState:NSOffState];
+	[[menu itemWithTag:kTypesetViaGhostScript] setState:NSOffState];
+	[[menu itemWithTag:kTypesetViaPersonalScript] setState:NSOffState];
+
+	[[menu itemWithTag:whichScript] setState:NSOnState];
 }
 
 - (void)newMainWindow:(NSNotification *)notification
 {
 	id object = [notification object];
-		if ((object == pdfWindow) || (object == textWindow) || (object == outputWindow))
-			[self fixTypesetMenu];
+	if ((object == pdfWindow) || (object == textWindow) || (object == outputWindow))
+		[self fixTypesetMenu];
 }
 
 - (void) chooseProgramFF: sender

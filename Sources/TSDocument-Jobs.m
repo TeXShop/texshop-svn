@@ -76,30 +76,23 @@
 }
 
 
-- (void) doJobForScript:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous
+- (void)killRunningTasks
 {
 	NSDate	*myDate;
 
-	if (! fileIsTex)
-		return;
-
-	useTempEngine = YES;
-	tempEngine = type;
-
-	typesetContinuously = continuous;
 	/* The lines of code below kill previously running tasks. This is
 		necessary because otherwise the source file will be open when the
 		system tries to save a new version. If the source file is open,
 		NSDocument makes a backup in /tmp which is never removed. */
 
 	if (texTask != nil) {
-		if (theScript == 101) {
+		if (theScript == kTypesetViaGhostScript) {
 			kill( -[texTask processIdentifier], SIGTERM);
-		}
-		else
+		} else
 			[texTask terminate];
 		myDate = [NSDate date];
-		while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
+			;
 		[texTask release];
 		texTask = nil;
 	}
@@ -107,7 +100,8 @@
 	if (bibTask != nil) {
 		[bibTask terminate];
 		myDate = [NSDate date];
-		while (([bibTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		while (([bibTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
+			;
 		[bibTask release];
 		bibTask = nil;
 	}
@@ -115,7 +109,8 @@
 	if (indexTask != nil) {
 		[indexTask terminate];
 		myDate = [NSDate date];
-		while (([indexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		while (([indexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
+			;
 		[indexTask release];
 		indexTask = nil;
 	}
@@ -123,10 +118,25 @@
 	if (metaFontTask != nil) {
 		[metaFontTask terminate];
 		myDate = [NSDate date];
-		while (([metaFontTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
+		while (([metaFontTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
+			;
 		[metaFontTask release];
 		metaFontTask = nil;
 	}
+}
+
+
+- (void) doJobForScript:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous
+{
+	if (! fileIsTex)
+		return;
+
+	useTempEngine = YES;
+	tempEngine = type;
+
+	typesetContinuously = continuous;
+	
+	[self killRunningTasks];
 
 	errorNumber = 0;
 	whichError = 0;
@@ -146,7 +156,6 @@
 - (void) doJob:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous
 {
 	SEL		saveFinished;
-	NSDate	*myDate;
 
 	useTempEngine = NO;
 
@@ -154,45 +163,8 @@
 		return;
 
 	typesetContinuously = continuous;
-	/* The lines of code below kill previously running tasks. This is
-		necessary because otherwise the source file will be open when the
-		system tries to save a new version. If the source file is open,
-		NSDocument makes a backup in /tmp which is never removed. */
 
-	if (texTask != nil) {
-		if (theScript == 101) {
-			kill( -[texTask processIdentifier], SIGTERM);
-		} else
-			[texTask terminate];
-		myDate = [NSDate date];
-		while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-		[texTask release];
-		texTask = nil;
-	}
-
-	if (bibTask != nil) {
-		[bibTask terminate];
-		myDate = [NSDate date];
-		while (([bibTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-		[bibTask release];
-		bibTask = nil;
-	}
-
-	if (indexTask != nil) {
-		[indexTask terminate];
-		myDate = [NSDate date];
-		while (([indexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-		[indexTask release];
-		indexTask = nil;
-	}
-
-	if (metaFontTask != nil) {
-		[metaFontTask terminate];
-		myDate = [NSDate date];
-		while (([metaFontTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5)) ;
-		[metaFontTask release];
-		metaFontTask = nil;
-	}
+	[self killRunningTasks];
 
 	errorNumber = 0;
 	whichError = 0;
@@ -502,27 +474,27 @@
 				programString = [programString lowercaseString];
 				if ([programString isEqualToString:@"pdftex"]) {
 					withLatex = NO;
-					theScript = 100;
+					theScript = kTypesetViaPDFTeX;
 					done = YES;
 				} else if ([programString isEqualToString:@"pdflatex"]) {
 					withLatex = YES;
-					theScript = 100;
+					theScript = kTypesetViaPDFTeX;
 					done = YES;
 				} else if ([programString isEqualToString:@"tex"]) {
 					withLatex = NO;
-					theScript = 101;
+					theScript = kTypesetViaGhostScript;
 					done = YES;
 				} else if ([programString isEqualToString:@"latex"]) {
 					withLatex = YES;
-					theScript = 101;
+					theScript = kTypesetViaGhostScript;
 					done = YES;
 				} else if ([programString isEqualToString:@"personaltex"]) {
 					withLatex = NO;
-					theScript = 102;
+					theScript = kTypesetViaPersonalScript;
 					done = YES;
 				} else if ([programString isEqualToString:@"personallatex"]) {
 					withLatex = YES;
-					theScript = 102;
+					theScript = kTypesetViaPersonalScript;
 					done = YES;
 				} else {
 					i = UserEngine;
@@ -558,24 +530,23 @@
 
 		if ((theKey) && ([theKey isEqualToString:@"%&pdftex"])) {
 			withLatex = NO;
-			theScript = 100;
+			theScript = kTypesetViaPDFTeX;
 		} else if ((theKey) && ([theKey isEqualToString:@"%&pdflatex"])) {
 			withLatex = YES;
-			theScript = 100;
+			theScript = kTypesetViaPDFTeX;
 		} else if ((theKey) && ([theKey isEqualToString:@"%&tex"])) {
 			withLatex = NO;
-			theScript = 101;
+			theScript = kTypesetViaGhostScript;
 		} else if ((theKey) && ([theKey isEqualToString:@"%&latex"])) {
 			withLatex = YES;
-			theScript = 101;
+			theScript = kTypesetViaGhostScript;
 		} else if ((theKey) && ([theKey isEqualToString:@"%&personaltex"])) {
 			withLatex = NO;
-			theScript = 102;
+			theScript = kTypesetViaPersonalScript;
 		} else if ((theKey) && ([theKey isEqualToString:@"%&personallatex"])) {
 			withLatex = YES;
-			theScript = 102;
-		}
-		else if (theKey) {
+			theScript = kTypesetViaPersonalScript;
+		} else if (theKey) {
 			length = [theKey length];
 			theRange.location = 0;
 			theRange.length = 10;
@@ -587,22 +558,22 @@
 
 				if ([lowerprogramName isEqualToString:@"pdftex"]) {
 					withLatex = NO;
-					theScript = 100;
+					theScript = kTypesetViaPDFTeX;
 				} else if ([lowerprogramName isEqualToString:@"pdflatex"]) {
 					withLatex = YES;
-					theScript = 100;
+					theScript = kTypesetViaPDFTeX;
 				} else if ([lowerprogramName isEqualToString:@"tex"]) {
 					withLatex = NO;
-					theScript = 101;
+					theScript = kTypesetViaGhostScript;
 				} else if ([lowerprogramName isEqualToString:@"latex"]) {
 					withLatex = YES;
-					theScript = 101;
+					theScript = kTypesetViaGhostScript;
 				} else if ([lowerprogramName isEqualToString:@"personaltex"]) {
 					withLatex = NO;
-					theScript = 102;
+					theScript = kTypesetViaPersonalScript;
 				} else if ([lowerprogramName isEqualToString:@"personallatex"]) {
 					withLatex = YES;
-					theScript = 102;
+					theScript = kTypesetViaPersonalScript;
 				} else {
 					i = UserEngine;
 					j = [programButton numberOfItems];
@@ -622,7 +593,7 @@
 
 	// End Old Stuff
 
-	if ((! warningGiven) && ((whichEngineLocal == TexEngine) || (whichEngineLocal == LatexEngine)) && (theScript == 100) && ([SUD boolForKey:WarnForShellEscapeKey])) {
+	if ((! warningGiven) && ((whichEngineLocal == TexEngine) || (whichEngineLocal == LatexEngine)) && (theScript == kTypesetViaPDFTeX) && ([SUD boolForKey:WarnForShellEscapeKey])) {
 		if (withLatex)
 			myEngine = [[SUD stringForKey:LatexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
 		else
@@ -683,11 +654,6 @@
 						  nil, nil, nil, [textView window], nil, nil, nil, nil,
 						  NSLocalizedString(@"%@ does not exist. Perhaps teTeX was not installed or was removed during a system upgrade. If so, go to the TeXShop web site and follow the instructions to (re)install teTeX. Another possibility is that a tool path is incorrectly configured in TeXShop preferences. This can happen if you are using the fink teTeX distribution.",
 											@"%@ does not exist. Perhaps teTeX was not installed or was removed during a system upgrade. If so, go to the TeXShop web site and follow the instructions to (re)install teTeX. Another possibility is that a tool path is incorrectly configured in TeXShop preferences. This can happen if you are using the fink teTeX distribution."),
-						  
-						  /*
-						   NSLocalizedString(@"%@ does not exist.  Is one of the tool paths configured incorrectly?",
-											 @"%@ does not exist.  Is one of the tool paths configured incorrectly?"),
-						   */
 						  filename);
 		return FALSE;
 	}
@@ -783,7 +749,7 @@
 		if ((whichEngineLocal == TexEngine) || (whichEngineLocal == LatexEngine) || (whichEngineLocal == MetapostEngine) || (whichEngineLocal == ContextEngine)) {
 			NSString* enginePath;
 			NSString* myEngine;
-			if ((theScript == 101) && ([SUD boolForKey:SavePSEnabledKey])
+			if ((theScript == kTypesetViaGhostScript) && ([SUD boolForKey:SavePSEnabledKey])
 				//        && (whichEngine != 2)   && (whichEngine != 4))
 				&& (whichEngineLocal != MetapostEngine) && (whichEngineLocal != ContextEngine))
 					[args addObject: [NSString stringWithString:@"--keep-psfile"]];
@@ -796,7 +762,7 @@
 			texTask = [[NSTask alloc] init];
 			
 			if (whichEngineLocal == ContextEngine) {
-				if (theScript == 100) {
+				if (theScript == kTypesetViaPDFTeX) {
 					enginePath = [[NSBundle mainBundle] pathForResource:@"contextwrap" ofType:nil];
 					[args addObject: [[[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
 					if (continuous)
@@ -816,7 +782,7 @@
 					else
 						[args addObject: @"Ghostscript"];
 					[args addObject: [[[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
-					if ((theScript == 101) && ([SUD boolForKey:SavePSEnabledKey]))
+					if ((theScript == kTypesetViaGhostScript) && ([SUD boolForKey:SavePSEnabledKey]))
 						[args addObject: @"yes"];
 					else
 						[args addObject: @"no"];
@@ -840,7 +806,7 @@
 				[args addObject: [[[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
 			} else {
 				switch (theScript) {
-					case 100:
+					case kTypesetViaPDFTeX:
 						if (withLatex)
 							myEngine = [[SUD stringForKey:LatexCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
 						else
@@ -863,7 +829,7 @@
 							}
 							break;
 						
-					case 101:
+					case kTypesetViaGhostScript:
 						if (continuous) {
 							if (withLatex) {
 								enginePath = [[NSBundle mainBundle] pathForResource:@"altpdflatex" ofType:nil];
@@ -888,7 +854,7 @@
 						
 						break;
 						
-					case 102:
+					case kTypesetViaPersonalScript:
 						
 						if (withLatex)
 							myEngine = [[SUD stringForKey:LatexScriptCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
@@ -1221,8 +1187,6 @@
 
 - (void)abort:(id)sender
 {
-	NSDate      *myDate;
-
 	if (! fileIsTex)
 		return;
 
@@ -1240,45 +1204,7 @@
 
 	taskDone = YES;
 
-	if (texTask != nil) {
-		if (theScript == 101) {
-			kill( -[texTask processIdentifier], SIGTERM);
-		}
-		else
-			[texTask terminate];
-		myDate = [NSDate date];
-		while (([texTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
-			;
-		[texTask release];
-		texTask = nil;
-	}
-
-	if (bibTask != nil) {
-		[bibTask terminate];
-		myDate = [NSDate date];
-		while (([bibTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
-			;
-		[bibTask release];
-		bibTask = nil;
-	}
-
-	if (indexTask != nil) {
-		[indexTask terminate];
-		myDate = [NSDate date];
-		while (([indexTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
-			;
-		[indexTask release];
-		indexTask = nil;
-	}
-
-	if (metaFontTask != nil) {
-		[metaFontTask terminate];
-		myDate = [NSDate date];
-		while (([metaFontTask isRunning]) && ([myDate timeIntervalSinceDate:myDate] < 0.5))
-			;
-		[metaFontTask release];
-		metaFontTask = nil;
-	}
+	[self killRunningTasks];
 
 	[inputPipe release];
 	inputPipe = 0;
@@ -1287,11 +1213,11 @@
 - (void)checkATaskStatus:(NSNotification *)aNotification
 {
 	NSString		*imagePath;
-	NSString            *alternatePath;
+	NSString		*alternatePath;
 	NSDictionary	*myAttributes;
-	NSDate		*endDate;
-	int			status;
-	BOOL                alreadyFound;
+	NSDate			*endDate;
+	int				status;
+	BOOL			alreadyFound;
 
 	[outputText setSelectable: YES];
 

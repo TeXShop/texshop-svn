@@ -167,7 +167,6 @@ NSString *DocumentAutoCompleteNotification = @"DocumentAutoCompleteNotification"
 NSString *ExternalEditorNotification = @"ExternalEditorNotification";
 
 /*" Other variables "*/
-// BOOL documentsHaveLoaded;
 TSFilterMode		g_shouldFilter;
 int					g_texChar;
 NSDictionary		*g_autocompletionDictionary;

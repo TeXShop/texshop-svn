@@ -26,6 +26,22 @@
 
 #define NUMBEROFERRORS	20
 
+/*" Symbolic constants for the default Typeset program to use. "*/
+enum DefaultCommand
+{
+	DefaultCommandTeX = 0,
+	DefaultCommandLaTeX = 1,
+	DefaultCommandConTEXt = 2,
+	DefaultCommandUser = 3
+};
+
+typedef enum
+{
+	kTypesetViaPDFTeX			= 100,
+	kTypesetViaGhostScript		= 101,
+	kTypesetViaPersonalScript	= 102
+} DefaultTypesetMode;
+
 typedef enum {
 	isTeX		= 0,
 	isOther		= 1,
@@ -99,11 +115,13 @@ enum RootCommand
 	id			tags;
 	NSStringEncoding	_encoding;
 	NSStringEncoding	_tempencoding;
-	int			whichScript;		/*" 100 = pdftex, 101 = gs, 102 = personal script "*/
+	DefaultTypesetMode			whichScript;		/*" 100 = pdftex, 101 = gs, 102 = personal script "*/
 	int			whichEngine;		/*" 1 = tex, 2 = latex, 3 = bibtex, 4 = makeindex, 5 = megapost, 6 = context,
 													7 = metafont "*/
 	id			rootDocument;
 	BOOL		tagLine;
+
+
 	BOOL		typesetStart;		/*" YES if tex output "*/
 	NSFileHandle	*writeHandle;
 	NSFileHandle	*readHandle;
@@ -116,6 +134,8 @@ enum RootCommand
 	NSTask		*detexTask;
 	NSPipe		*detexPipe;
 	NSFileHandle        *detexHandle;
+
+
 	NSDate		*startDate;
 	NSPDFImageRep	*texRep;
 	NSData		*previousFontData;	/*" holds font data in case preferences change is cancelled "*/
@@ -125,7 +145,7 @@ enum RootCommand
 	int			errorLine[NUMBEROFERRORS];
 	int			errorNumber;
 	int			whichError;
-	int			theScript;		/*" script currently executing; 100, 101, 102 "*/
+	DefaultTypesetMode			theScript;		/*" script currently executing; 100, 101, 102 "*/
 	
 	unsigned	colorStart, colorEnd;
 	NSDictionary		*regularColorAttribute;

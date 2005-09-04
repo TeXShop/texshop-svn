@@ -759,7 +759,7 @@ A tag of 0 means use TeX, a tag of 1 means use LaTeX.
 /*" This method is connected to the "Default Script" matrix on the TeX pane.
 
 A tag of 100 means use pdftex, a tag of 101 means use tex + ghostscript, a tag of 102 means use
-person script.
+person script. See also: DefaultTypesetMode.
 
 "*/
 - (IBAction)defaultScriptChanged:sender
