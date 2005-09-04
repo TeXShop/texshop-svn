@@ -881,9 +881,6 @@ A tag of 0 means "always", a tag of 1 means "when errors occur".
 	[SUD synchronize];
 
 
-	// re-Set the environment for subtasks
-	[[NSApp delegate] setupEnv];
-
 	// close the window
 	[_prefsWindow performClose:self];
 }

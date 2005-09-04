@@ -12,29 +12,9 @@
 		401FA14006DBF8DD00EA4793 /* TeXShopHelp in Resources */ = {isa = PBXBuildFile; fileRef = 401FA0E106DBF8DD00EA4793 /* TeXShopHelp */; };
 		40217942083AB7620018C510 /* OgreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40217941083AB7620018C510 /* OgreKit.framework */; };
 		40217946083AB76F0018C510 /* OgreKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 40217941083AB7620018C510 /* OgreKit.framework */; };
-		4030560206E3BCFF009FBD7B /* platex2pdf-euc.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 403055FC06E3BCFF009FBD7B /* platex2pdf-euc.bxx */; };
-		4030560306E3BCFF009FBD7B /* platex2pdf-jis.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 403055FD06E3BCFF009FBD7B /* platex2pdf-jis.bxx */; };
-		4030560406E3BCFF009FBD7B /* platex2pdf-sjis.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 403055FE06E3BCFF009FBD7B /* platex2pdf-sjis.bxx */; };
-		4030560506E3BCFF009FBD7B /* ptex2pdf-euc.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 403055FF06E3BCFF009FBD7B /* ptex2pdf-euc.bxx */; };
-		4030560606E3BCFF009FBD7B /* ptex2pdf-jis.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4030560006E3BCFF009FBD7B /* ptex2pdf-jis.bxx */; };
-		4030560706E3BCFF009FBD7B /* ptex2pdf-sjis.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4030560106E3BCFF009FBD7B /* ptex2pdf-sjis.bxx */; };
 		403CA3180608D37000FFDBBC /* Defaults_pTeX_euc.plist in Resources */ = {isa = PBXBuildFile; fileRef = 403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */; };
 		403CA3190608D37000FFDBBC /* Defaults_pTeX_sjis.plist in Resources */ = {isa = PBXBuildFile; fileRef = 403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */; };
-		4061C582057D983200B3E286 /* altpdflatexc.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C575057D983200B3E286 /* altpdflatexc.bxx */; };
-		4061C583057D983200B3E286 /* bibtexc.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C576057D983200B3E286 /* bibtexc.bxx */; };
-		4061C584057D983200B3E286 /* flip.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C577057D983200B3E286 /* flip.bxx */; };
-		4061C585057D983200B3E286 /* htlatexc.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C578057D983200B3E286 /* htlatexc.bxx */; };
-		4061C586057D983200B3E286 /* htlatexr.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C579057D983200B3E286 /* htlatexr.bxx */; };
-		4061C587057D983200B3E286 /* htlatexra.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C57A057D983200B3E286 /* htlatexra.bxx */; };
-		4061C588057D983200B3E286 /* makeindexc.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C57B057D983200B3E286 /* makeindexc.bxx */; };
-		4061C589057D983200B3E286 /* makeindexcg.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C57C057D983200B3E286 /* makeindexcg.bxx */; };
-		4061C58A057D983200B3E286 /* makeindexk.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C57D057D983200B3E286 /* makeindexk.bxx */; };
-		4061C58B057D983200B3E286 /* makeindices.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C57E057D983200B3E286 /* makeindices.bxx */; };
-		4061C58C057D983200B3E286 /* mpostc.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C57F057D983200B3E286 /* mpostc.bxx */; };
-		4061C58D057D983200B3E286 /* pdflatexc.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C580057D983200B3E286 /* pdflatexc.bxx */; };
-		4061C58E057D983200B3E286 /* pdfselectc.bxx in Resources */ = {isa = PBXBuildFile; fileRef = 4061C581057D983200B3E286 /* pdfselectc.bxx */; };
 		40658EEB07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 40658EEA07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff */; };
-		40667DF1057A6E3300855C68 /* setname.scpt in Resources */ = {isa = PBXBuildFile; fileRef = 40667DF0057A6E3300855C68 /* setname.scpt */; };
 		406A69F5060F8C170028E210 /* detexwrap in Resources */ = {isa = PBXBuildFile; fileRef = 406A69F4060F8C170028E210 /* detexwrap */; };
 		407880640519249A006979EA /* TSConsoleWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CFF0E9000ACFC67F000001 /* TSConsoleWindow.h */; };
 		407880650519249A006979EA /* TSTextEditorWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CFF0ED000AD0B87F000001 /* TSTextEditorWindow.h */; };
@@ -58,7 +38,6 @@
 		4078807B0519249A006979EA /* UseMitsu.h in Headers */ = {isa = PBXBuildFile; fileRef = 4068429E0405A20000000009 /* UseMitsu.h */; };
 		4078807D0519249A006979EA /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		4078807F0519249A006979EA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
-		407880800519249A006979EA /* GraphicsTemplate.tex in Resources */ = {isa = PBXBuildFile; fileRef = 00C86228FF221B217F000001 /* GraphicsTemplate.tex */; };
 		407880810519249A006979EA /* Icons.icns in Resources */ = {isa = PBXBuildFile; fileRef = 00E3D4B8FF24EF1F80DF2474 /* Icons.icns */; };
 		407880830519249A006979EA /* FindPanel.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01E48F61FF2A05357F000001 /* FindPanel.strings */; };
 		407880910519249A006979EA /* FactoryDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0AC768C10010B19F7F000001 /* FactoryDefaults.plist */; };
@@ -171,8 +150,6 @@
 		4078811D0519249A006979EA /* s53.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F5B8EAF901FF5A1601DF2474 /* s53.tiff */; };
 		4078811E0519249A006979EA /* s54.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F5B8EAFA01FF5A1601DF2474 /* s54.tiff */; };
 		4078811F0519249A006979EA /* s55.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F5B8EAFB01FF5A1601DF2474 /* s55.tiff */; };
-		407881200519249A006979EA /* completion.plist in Resources */ = {isa = PBXBuildFile; fileRef = F5B8EA9401FF5A1501DF2474 /* completion.plist */; };
-		407881210519249A006979EA /* LatexTemplate.tex in Resources */ = {isa = PBXBuildFile; fileRef = F5BFF9A1020217CD01DF2474 /* LatexTemplate.tex */; };
 		407881320519249A006979EA /* BibTeXAction.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F5ECC30C021466FC01DF2474 /* BibTeXAction.tiff */; };
 		407881330519249A006979EA /* ConTeXAction.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F5ECC30D021466FC01DF2474 /* ConTeXAction.tiff */; };
 		407881340519249A006979EA /* LaTeXAction.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F5ECC3100214673901DF2474 /* LaTeXAction.tiff */; };
@@ -184,12 +161,9 @@
 		4078813A0519249A006979EA /* texicon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F5ECC3160214673901DF2474 /* texicon.tiff */; };
 		4078813B0519249A006979EA /* TeXShop.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = F5ECC3220214678B01DF2474 /* TeXShop.scriptTerminology */; };
 		4078813C0519249A006979EA /* ToolbarItems.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5ECC3240214678B01DF2474 /* ToolbarItems.strings */; };
-		4078814C0519249A006979EA /* autocompletion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 40A4053503BFD1090000001E /* autocompletion.plist */; };
-		4078814D0519249A006979EA /* KeyEquivalents.plist in Resources */ = {isa = PBXBuildFile; fileRef = 409BA5FE03C16CBC0000001E /* KeyEquivalents.plist */; };
 		407881640519249A006979EA /* Separator.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 40A3BBC703CCC58100000009 /* Separator.tiff */; };
 		407881650519249A006979EA /* MetaFontAction.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 4005D64D03D1217000000009 /* MetaFontAction.tiff */; };
 		4078816E0519249A006979EA /* split.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 40B275F603EF6F9D00000009 /* split.tiff */; };
-		4078816F0519249A006979EA /* CommandCompletion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 406842980405965F00000009 /* CommandCompletion.txt */; };
 		407881700519249A006979EA /* Select.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 40160CAB0409574C00000009 /* Select.tiff */; };
 		407881730519249A006979EA /* MagGlass.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 407DE7540409C08300000009 /* MagGlass.tiff */; };
 		407881740519249A006979EA /* MagGlassL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 407DE7560409C09600000009 /* MagGlassL.tiff */; };
@@ -222,7 +196,6 @@
 		4096186405824CF2000D94FD /* TSMatrixPanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4096186205824CF2000D94FD /* TSMatrixPanelController.h */; };
 		4096186505824CF2000D94FD /* TSMatrixPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4096186305824CF2000D94FD /* TSMatrixPanelController.m */; };
 		40A43B83056FE6ED00AFDC86 /* TeXShop.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = 40A43B82056FE6ED00AFDC86 /* TeXShop.scriptSuite */; };
-		40A8847E072CABF5007BFAF6 /* TEXTEDIT.app in Resources */ = {isa = PBXBuildFile; fileRef = 40A8847D072CABF5007BFAF6 /* TEXTEDIT.app */; };
 		40B1DDC806EB6E540083A311 /* altpdftex in Resources */ = {isa = PBXBuildFile; fileRef = 40B1DDC706EB6E540083A311 /* altpdftex */; };
 		40B7DEAB057139E2002872F2 /* TSDocumentScripting.h in Headers */ = {isa = PBXBuildFile; fileRef = 40B7DEA9057139E2002872F2 /* TSDocumentScripting.h */; };
 		40B7DEAC057139E2002872F2 /* TSDocumentScripting.m in Sources */ = {isa = PBXBuildFile; fileRef = 40B7DEAA057139E2002872F2 /* TSDocumentScripting.m */; };
@@ -235,18 +208,12 @@
 		40D1F2CD06040BCF00087115 /* mat02.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 40D1F2CB06040BCF00087115 /* mat02.tiff */; };
 		40E55A8C073B2A3000860060 /* pdf.icns in Resources */ = {isa = PBXBuildFile; fileRef = 40E55A8B073B2A3000860060 /* pdf.icns */; };
 		40E94AFA07ECF1F500782DE9 /* TextTool.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 40E94AF907ECF1F500782DE9 /* TextTool.tiff */; };
-		40F66D7E06041188000993D5 /* matrixpanel_1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 40F66D7D06041188000993D5 /* matrixpanel_1.plist */; };
-		40FEB2930540E7E7006370DB /* Macros_Latex.plist in Resources */ = {isa = PBXBuildFile; fileRef = 40FEB2920540E7E7006370DB /* Macros_Latex.plist */; };
-		40FEB2970540E7FA006370DB /* Macros_Context.plist in Resources */ = {isa = PBXBuildFile; fileRef = 40FEB2960540E7FA006370DB /* Macros_Context.plist */; };
-		40FF5D9D06D5674C00426CC9 /* XeLaTeX.engine in Resources */ = {isa = PBXBuildFile; fileRef = 40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */; };
-		40FF5DA806D567C600426CC9 /* XeTeX.engine in Resources */ = {isa = PBXBuildFile; fileRef = 40FF5DA706D567C600426CC9 /* XeTeX.engine */; };
 		520C2EEB08AE92850010B1F8 /* TSDocument-Jobs.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEA08AE92850010B1F8 /* TSDocument-Jobs.m */; };
 		520C2EF008AE984C0010B1F8 /* TSDocument-RootFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEE08AE984C0010B1F8 /* TSDocument-RootFile.m */; };
 		520C2EF108AE984C0010B1F8 /* TSDocument-Syntax.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */; };
 		5217898608A7FAD600FC1D44 /* NSString-Extras.h in Headers */ = {isa = PBXBuildFile; fileRef = 5217898408A7FAD600FC1D44 /* NSString-Extras.h */; };
 		5217898708A7FAD600FC1D44 /* NSString-Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 5217898508A7FAD600FC1D44 /* NSString-Extras.m */; };
 		525C20AE08A94BA5009C5A9C /* OpenHandCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */; };
-		52917509089D430200577613 /* More in Resources */ = {isa = PBXBuildFile; fileRef = 529174F8089D430200577613 /* More */; };
 		529B9B73089D8287006CC11B /* BackAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B71089D8287006CC11B /* BackAdorn.tif */; };
 		529B9B74089D8287006CC11B /* ForwardAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B72089D8287006CC11B /* ForwardAdorn.tif */; };
 		52A4037008AE1F6C0070F041 /* Encodings.strings in Resources */ = {isa = PBXBuildFile; fileRef = 52A4036E08AE1F6C0070F041 /* Encodings.strings */; };
@@ -257,6 +224,7 @@
 		52B13E5008A8183B00756E5E /* FindPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 52B13E4F08A8183B00756E5E /* FindPanel.nib */; };
 		52B13E5208A8183B00756E5E /* MacroEditor.nib in Resources */ = {isa = PBXBuildFile; fileRef = 52B13E5108A8183B00756E5E /* MacroEditor.nib */; };
 		52B13E5408A8183B00756E5E /* matrixpanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 52B13E5308A8183B00756E5E /* matrixpanel.nib */; };
+		52E4BF8D08CA74C300726E11 /* TeXShop in Resources */ = {isa = PBXBuildFile; fileRef = 52E4BF4408CA74C300726E11 /* TeXShop */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -309,7 +277,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		00C86228FF221B217F000001 /* GraphicsTemplate.tex */ = {isa = PBXFileReference; lastKnownFileType = text; path = GraphicsTemplate.tex; sourceTree = "<group>"; };
 		00CFF0E9000ACFC67F000001 /* TSConsoleWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TSConsoleWindow.h; sourceTree = "<group>"; };
 		00CFF0EB000ACFFC7F000001 /* TSConsoleWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TSConsoleWindow.m; sourceTree = "<group>"; };
 		00CFF0ED000AD0B87F000001 /* TSTextEditorWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TSTextEditorWindow.h; sourceTree = "<group>"; };
@@ -349,30 +316,9 @@
 		40160CAB0409574C00000009 /* Select.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Select.tiff; sourceTree = "<group>"; };
 		401FA0E206DBF8DD00EA4793 /* English */ = {isa = PBXFileReference; lastKnownFileType = folder; name = English; path = English.lproj/TeXShopHelp; sourceTree = "<group>"; };
 		40217941083AB7620018C510 /* OgreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OgreKit.framework; sourceTree = "<group>"; };
-		403055FC06E3BCFF009FBD7B /* platex2pdf-euc.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "platex2pdf-euc.bxx"; sourceTree = "<group>"; };
-		403055FD06E3BCFF009FBD7B /* platex2pdf-jis.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "platex2pdf-jis.bxx"; sourceTree = "<group>"; };
-		403055FE06E3BCFF009FBD7B /* platex2pdf-sjis.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "platex2pdf-sjis.bxx"; sourceTree = "<group>"; };
-		403055FF06E3BCFF009FBD7B /* ptex2pdf-euc.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "ptex2pdf-euc.bxx"; sourceTree = "<group>"; };
-		4030560006E3BCFF009FBD7B /* ptex2pdf-jis.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "ptex2pdf-jis.bxx"; sourceTree = "<group>"; };
-		4030560106E3BCFF009FBD7B /* ptex2pdf-sjis.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "ptex2pdf-sjis.bxx"; sourceTree = "<group>"; };
 		403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Defaults_pTeX_euc.plist; sourceTree = "<group>"; };
 		403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Defaults_pTeX_sjis.plist; sourceTree = "<group>"; };
-		4061C575057D983200B3E286 /* altpdflatexc.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = altpdflatexc.bxx; sourceTree = "<group>"; };
-		4061C576057D983200B3E286 /* bibtexc.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = bibtexc.bxx; sourceTree = "<group>"; };
-		4061C577057D983200B3E286 /* flip.bxx */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = flip.bxx; sourceTree = "<group>"; };
-		4061C578057D983200B3E286 /* htlatexc.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = htlatexc.bxx; sourceTree = "<group>"; };
-		4061C579057D983200B3E286 /* htlatexr.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = htlatexr.bxx; sourceTree = "<group>"; };
-		4061C57A057D983200B3E286 /* htlatexra.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = htlatexra.bxx; sourceTree = "<group>"; };
-		4061C57B057D983200B3E286 /* makeindexc.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = makeindexc.bxx; sourceTree = "<group>"; };
-		4061C57C057D983200B3E286 /* makeindexcg.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = makeindexcg.bxx; sourceTree = "<group>"; };
-		4061C57D057D983200B3E286 /* makeindexk.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = makeindexk.bxx; sourceTree = "<group>"; };
-		4061C57E057D983200B3E286 /* makeindices.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = makeindices.bxx; sourceTree = "<group>"; };
-		4061C57F057D983200B3E286 /* mpostc.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = mpostc.bxx; sourceTree = "<group>"; };
-		4061C580057D983200B3E286 /* pdflatexc.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = pdflatexc.bxx; sourceTree = "<group>"; };
-		4061C581057D983200B3E286 /* pdfselectc.bxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = pdfselectc.bxx; sourceTree = "<group>"; };
 		40658EEA07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DrawerToggleToolbarImage.tiff; sourceTree = "<group>"; };
-		40667DF0057A6E3300855C68 /* setname.scpt */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.scpt; path = setname.scpt; sourceTree = "<group>"; };
-		406842980405965F00000009 /* CommandCompletion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommandCompletion.txt; sourceTree = "<group>"; };
 		4068429A0405969B00000009 /* MyPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPDFView.h; sourceTree = "<group>"; };
 		4068429B0405969B00000009 /* MyPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPDFView.m; sourceTree = "<group>"; };
 		4068429E0405A20000000009 /* UseMitsu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UseMitsu.h; sourceTree = "<group>"; };
@@ -395,11 +341,8 @@
 		4096186205824CF2000D94FD /* TSMatrixPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSMatrixPanelController.h; sourceTree = "<group>"; };
 		4096186305824CF2000D94FD /* TSMatrixPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSMatrixPanelController.m; sourceTree = "<group>"; };
 		409618B60582545A000D94FD /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/matrixpanel.nib; sourceTree = "<group>"; };
-		409BA5FE03C16CBC0000001E /* KeyEquivalents.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = KeyEquivalents.plist; sourceTree = "<group>"; };
 		40A3BBC703CCC58100000009 /* Separator.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Separator.tiff; sourceTree = "<group>"; };
-		40A4053503BFD1090000001E /* autocompletion.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = autocompletion.plist; sourceTree = "<group>"; };
 		40A43B82056FE6ED00AFDC86 /* TeXShop.scriptSuite */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TeXShop.scriptSuite; sourceTree = "<group>"; };
-		40A8847D072CABF5007BFAF6 /* TEXTEDIT.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = TEXTEDIT.app; sourceTree = "<group>"; };
 		40AA2B8103C79AF800000009 /* TSEncodingSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSEncodingSupport.h; sourceTree = "<group>"; };
 		40AA2B8203C79AF800000009 /* TSEncodingSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSEncodingSupport.m; sourceTree = "<group>"; };
 		40B1DDC706EB6E540083A311 /* altpdftex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = altpdftex; sourceTree = "<group>"; };
@@ -418,11 +361,6 @@
 		40E94AF907ECF1F500782DE9 /* TextTool.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TextTool.tiff; sourceTree = "<group>"; };
 		40EB71E50400BE1000000009 /* TSDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSDocumentController.h; sourceTree = "<group>"; };
 		40EB71E60400BE1000000009 /* TSDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSDocumentController.m; sourceTree = "<group>"; };
-		40F66D7D06041188000993D5 /* matrixpanel_1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = matrixpanel_1.plist; sourceTree = "<group>"; };
-		40FEB2920540E7E7006370DB /* Macros_Latex.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = Macros_Latex.plist; sourceTree = "<group>"; };
-		40FEB2960540E7FA006370DB /* Macros_Context.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = Macros_Context.plist; sourceTree = "<group>"; };
-		40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = XeLaTeX.engine; sourceTree = "<group>"; };
-		40FF5DA706D567C600426CC9 /* XeTeX.engine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.csh; path = XeTeX.engine; sourceTree = "<group>"; };
 		520C2EEA08AE92850010B1F8 /* TSDocument-Jobs.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Jobs.m"; sourceTree = "<group>"; };
 		520C2EEE08AE984C0010B1F8 /* TSDocument-RootFile.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-RootFile.m"; sourceTree = "<group>"; };
 		520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Syntax.m"; sourceTree = "<group>"; };
@@ -493,11 +431,11 @@
 		52917487089D418800577613 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Spanish; path = Spanish.lproj/TeXShop.scriptTerminology; sourceTree = "<group>"; };
 		52917488089D418B00577613 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/ToolbarItems.strings; sourceTree = "<group>"; };
 		52917489089D418E00577613 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Spanish; path = Spanish.lproj/TeXShopHelp; sourceTree = "<group>"; };
-		529174F8089D430200577613 /* More */ = {isa = PBXFileReference; lastKnownFileType = folder; path = More; sourceTree = "<group>"; };
 		529B9B71089D8287006CC11B /* BackAdorn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BackAdorn.tif; sourceTree = "<group>"; };
 		529B9B72089D8287006CC11B /* ForwardAdorn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ForwardAdorn.tif; sourceTree = "<group>"; };
 		52A4036F08AE1F6C0070F041 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Encodings.strings; sourceTree = "<group>"; };
 		52A403A708AE20020070F041 /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/Encodings.strings; sourceTree = "<group>"; };
+		52E4BF4408CA74C300726E11 /* TeXShop */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TeXShop; sourceTree = "<group>"; };
 		66A63DCE0114947700000001 /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
 		66A63DCF0114947700000001 /* epstopdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = epstopdfwrap; sourceTree = "<group>"; };
 		66A63DD00114947700000001 /* ps2pdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = ps2pdfwrap; sourceTree = "<group>"; };
@@ -511,7 +449,6 @@
 		F5332B18016CD72701DF2474 /* contextdviwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = contextdviwrap; sourceTree = "<group>"; };
 		F5B8EA8E01FF59A101DF2474 /* TSLaTeXPanelController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TSLaTeXPanelController.h; sourceTree = "<group>"; };
 		F5B8EA8F01FF59A101DF2474 /* TSLaTeXPanelController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TSLaTeXPanelController.m; sourceTree = "<group>"; };
-		F5B8EA9401FF5A1501DF2474 /* completion.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = completion.plist; sourceTree = "<group>"; };
 		F5B8EA9701FF5A1601DF2474 /* m1.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = m1.tiff; sourceTree = "<group>"; };
 		F5B8EA9801FF5A1601DF2474 /* m10.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = m10.tiff; sourceTree = "<group>"; };
 		F5B8EA9901FF5A1601DF2474 /* m11.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = m11.tiff; sourceTree = "<group>"; };
@@ -612,7 +549,6 @@
 		F5B8EAF901FF5A1601DF2474 /* s53.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = s53.tiff; sourceTree = "<group>"; };
 		F5B8EAFA01FF5A1601DF2474 /* s54.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = s54.tiff; sourceTree = "<group>"; };
 		F5B8EAFB01FF5A1601DF2474 /* s55.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = s55.tiff; sourceTree = "<group>"; };
-		F5BFF9A1020217CD01DF2474 /* LatexTemplate.tex */ = {isa = PBXFileReference; lastKnownFileType = text; path = LatexTemplate.tex; sourceTree = "<group>"; };
 		F5ECC30C021466FC01DF2474 /* BibTeXAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BibTeXAction.tiff; sourceTree = "<group>"; };
 		F5ECC30D021466FC01DF2474 /* ConTeXAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ConTeXAction.tiff; sourceTree = "<group>"; };
 		F5ECC3100214673901DF2474 /* LaTeXAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = LaTeXAction.tiff; sourceTree = "<group>"; };
@@ -646,6 +582,7 @@
 		0273C927FF23CC9B80DF2474 /* Graphics */ = {
 			isa = PBXGroup;
 			children = (
+				F5B8EA9501FF5A1601DF2474 /* Panelpicture */,
 				529B9B71089D8287006CC11B /* BackAdorn.tif */,
 				529B9B72089D8287006CC11B /* ForwardAdorn.tif */,
 				F5ECC30C021466FC01DF2474 /* BibTeXAction.tiff */,
@@ -668,7 +605,6 @@
 				40BA4A4704B54E5500000B3B /* split1.png */,
 				407DE7540409C08300000009 /* MagGlass.tiff */,
 				407DE7560409C09600000009 /* MagGlassL.tiff */,
-				F5B8EA9501FF5A1601DF2474 /* Panelpicture */,
 				40658EEA07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff */,
 				40E94AF907ECF1F500782DE9 /* TextTool.tiff */,
 			);
@@ -775,18 +711,11 @@
 				027B3F65000AD8447F000001 /* Interfaces */,
 				528029E3089D3E1100696FB9 /* AppleScript */,
 				0273C927FF23CC9B80DF2474 /* Graphics */,
-				529174F5089D42C800577613 /* Templates */,
 				528029DB089D3DD900696FB9 /* Shellscripts */,
 				0AC768C10010B19F7F000001 /* FactoryDefaults.plist */,
 				403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */,
 				403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */,
-				F5B8EA9401FF5A1501DF2474 /* completion.plist */,
-				40A4053503BFD1090000001E /* autocompletion.plist */,
-				40F66D7D06041188000993D5 /* matrixpanel_1.plist */,
-				406842980405965F00000009 /* CommandCompletion.txt */,
-				409BA5FE03C16CBC0000001E /* KeyEquivalents.plist */,
-				40FEB2920540E7E7006370DB /* Macros_Latex.plist */,
-				40FEB2960540E7FA006370DB /* Macros_Context.plist */,
+				52E4BF4408CA74C300726E11 /* TeXShop */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -798,40 +727,6 @@
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		4061C574057D983200B3E286 /* bin */ = {
-			isa = PBXGroup;
-			children = (
-				4061C575057D983200B3E286 /* altpdflatexc.bxx */,
-				4061C576057D983200B3E286 /* bibtexc.bxx */,
-				4061C577057D983200B3E286 /* flip.bxx */,
-				4061C578057D983200B3E286 /* htlatexc.bxx */,
-				4061C579057D983200B3E286 /* htlatexr.bxx */,
-				4061C57A057D983200B3E286 /* htlatexra.bxx */,
-				4061C57B057D983200B3E286 /* makeindexc.bxx */,
-				4061C57C057D983200B3E286 /* makeindexcg.bxx */,
-				4061C57D057D983200B3E286 /* makeindexk.bxx */,
-				4061C57E057D983200B3E286 /* makeindices.bxx */,
-				4061C57F057D983200B3E286 /* mpostc.bxx */,
-				4061C580057D983200B3E286 /* pdflatexc.bxx */,
-				4061C581057D983200B3E286 /* pdfselectc.bxx */,
-				403055FC06E3BCFF009FBD7B /* platex2pdf-euc.bxx */,
-				403055FD06E3BCFF009FBD7B /* platex2pdf-jis.bxx */,
-				403055FE06E3BCFF009FBD7B /* platex2pdf-sjis.bxx */,
-				403055FF06E3BCFF009FBD7B /* ptex2pdf-euc.bxx */,
-				4030560006E3BCFF009FBD7B /* ptex2pdf-jis.bxx */,
-				4030560106E3BCFF009FBD7B /* ptex2pdf-sjis.bxx */,
-			);
-			path = bin;
-			sourceTree = "<group>";
-		};
-		40667DEF057A6E3300855C68 /* Scripts */ = {
-			isa = PBXGroup;
-			children = (
-				40667DF0057A6E3300855C68 /* setname.scpt */,
-			);
-			path = Scripts;
 			sourceTree = "<group>";
 		};
 		4077C67503C7FEB000000009 /* Macro Classes */ = {
@@ -873,8 +768,6 @@
 				F5332B18016CD72701DF2474 /* contextdviwrap */,
 				40923AD00570A1770089F69B /* altpdflatex */,
 				40B1DDC706EB6E540083A311 /* altpdftex */,
-				40FF5D9C06D5674C00426CC9 /* XeLaTeX.engine */,
-				40FF5DA706D567C600426CC9 /* XeTeX.engine */,
 			);
 			path = Shellscripts;
 			sourceTree = "<group>";
@@ -883,7 +776,6 @@
 			isa = PBXGroup;
 			children = (
 				400477A2057B0F06000B3E9D /* ScriptRunner.app */,
-				40A8847D072CABF5007BFAF6 /* TEXTEDIT.app */,
 				40A43B82056FE6ED00AFDC86 /* TeXShop.scriptSuite */,
 			);
 			path = AppleScript;
@@ -900,18 +792,6 @@
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 			);
 			path = Sources;
-			sourceTree = "<group>";
-		};
-		529174F5089D42C800577613 /* Templates */ = {
-			isa = PBXGroup;
-			children = (
-				40667DEF057A6E3300855C68 /* Scripts */,
-				4061C574057D983200B3E286 /* bin */,
-				F5BFF9A1020217CD01DF2474 /* LatexTemplate.tex */,
-				00C86228FF221B217F000001 /* GraphicsTemplate.tex */,
-				529174F8089D430200577613 /* More */,
-			);
-			path = Templates;
 			sourceTree = "<group>";
 		};
 		52ACCDF308A82AB700FCD428 /* LaTeX Panel */ = {
@@ -1197,22 +1077,38 @@
 			files = (
 				4078807D0519249A006979EA /* Credits.rtf in Resources */,
 				52B13E4808A8182F00756E5E /* MainMenu.nib in Resources */,
-				4078807F0519249A006979EA /* InfoPlist.strings in Resources */,
-				407880800519249A006979EA /* GraphicsTemplate.tex in Resources */,
-				407880810519249A006979EA /* Icons.icns in Resources */,
 				52B13E5008A8183B00756E5E /* FindPanel.nib in Resources */,
-				407880830519249A006979EA /* FindPanel.strings in Resources */,
 				52B13E4C08A8183B00756E5E /* Preferences.nib in Resources */,
-				407880910519249A006979EA /* FactoryDefaults.plist in Resources */,
-				407880920519249A006979EA /* tex.icns in Resources */,
+				52B13E4E08A8183B00756E5E /* completionpanel1.2.nib in Resources */,
+				52B13E4A08A8183B00756E5E /* TSDocument.nib in Resources */,
+				52B13E5208A8183B00756E5E /* MacroEditor.nib in Resources */,
+				52B13E5408A8183B00756E5E /* matrixpanel.nib in Resources */,
+				407880830519249A006979EA /* FindPanel.strings in Resources */,
 				407880A20519249A006979EA /* Localizable.strings in Resources */,
+				4078807F0519249A006979EA /* InfoPlist.strings in Resources */,
+				407880B80519249A006979EA /* CustomInfo.plist in Resources */,
+				4078813C0519249A006979EA /* ToolbarItems.strings in Resources */,
+				52A4037008AE1F6C0070F041 /* Encodings.strings in Resources */,
+				407880810519249A006979EA /* Icons.icns in Resources */,
+				407880920519249A006979EA /* tex.icns in Resources */,
+				40E55A8C073B2A3000860060 /* pdf.icns in Resources */,
 				407880AB0519249A006979EA /* epstopdf in Resources */,
 				407880AC0519249A006979EA /* epstopdfwrap in Resources */,
 				407880AD0519249A006979EA /* ps2pdfwrap in Resources */,
 				407880AE0519249A006979EA /* contextwrap in Resources */,
-				407880B80519249A006979EA /* CustomInfo.plist in Resources */,
 				407880B90519249A006979EA /* metapostwrap in Resources */,
 				407880BA0519249A006979EA /* contextdviwrap in Resources */,
+				40008E6B055436A5005D78AB /* mptopdfwrap in Resources */,
+				40923AD10570A1770089F69B /* altpdflatex in Resources */,
+				406A69F5060F8C170028E210 /* detexwrap in Resources */,
+				40B1DDC806EB6E540083A311 /* altpdftex in Resources */,
+				407880910519249A006979EA /* FactoryDefaults.plist in Resources */,
+				403CA3180608D37000FFDBBC /* Defaults_pTeX_euc.plist in Resources */,
+				403CA3190608D37000FFDBBC /* Defaults_pTeX_sjis.plist in Resources */,
+				4078813B0519249A006979EA /* TeXShop.scriptTerminology in Resources */,
+				40A43B83056FE6ED00AFDC86 /* TeXShop.scriptSuite in Resources */,
+				400477A3057B0F06000B3E9D /* ScriptRunner.app in Resources */,
+				401FA14006DBF8DD00EA4793 /* TeXShopHelp in Resources */,
 				407880BC0519249A006979EA /* m1.tiff in Resources */,
 				407880BD0519249A006979EA /* m10.tiff in Resources */,
 				407880BE0519249A006979EA /* m11.tiff in Resources */,
@@ -1313,9 +1209,6 @@
 				4078811D0519249A006979EA /* s53.tiff in Resources */,
 				4078811E0519249A006979EA /* s54.tiff in Resources */,
 				4078811F0519249A006979EA /* s55.tiff in Resources */,
-				407881200519249A006979EA /* completion.plist in Resources */,
-				407881210519249A006979EA /* LatexTemplate.tex in Resources */,
-				52B13E4E08A8183B00756E5E /* completionpanel1.2.nib in Resources */,
 				407881320519249A006979EA /* BibTeXAction.tiff in Resources */,
 				407881330519249A006979EA /* ConTeXAction.tiff in Resources */,
 				407881340519249A006979EA /* LaTeXAction.tiff in Resources */,
@@ -1325,66 +1218,21 @@
 				407881380519249A006979EA /* PreviousPageAction.tiff in Resources */,
 				407881390519249A006979EA /* TeXAction.tiff in Resources */,
 				4078813A0519249A006979EA /* texicon.tiff in Resources */,
-				4078813B0519249A006979EA /* TeXShop.scriptTerminology in Resources */,
-				4078813C0519249A006979EA /* ToolbarItems.strings in Resources */,
-				52B13E4A08A8183B00756E5E /* TSDocument.nib in Resources */,
-				4078814C0519249A006979EA /* autocompletion.plist in Resources */,
-				4078814D0519249A006979EA /* KeyEquivalents.plist in Resources */,
-				52B13E5208A8183B00756E5E /* MacroEditor.nib in Resources */,
 				407881640519249A006979EA /* Separator.tiff in Resources */,
 				407881650519249A006979EA /* MetaFontAction.tiff in Resources */,
 				4078816E0519249A006979EA /* split.tiff in Resources */,
-				4078816F0519249A006979EA /* CommandCompletion.txt in Resources */,
 				407881700519249A006979EA /* Select.tiff in Resources */,
 				407881730519249A006979EA /* MagGlass.tiff in Resources */,
 				407881740519249A006979EA /* MagGlassL.tiff in Resources */,
 				407881750519249A006979EA /* split1.png in Resources */,
-				40FEB2930540E7E7006370DB /* Macros_Latex.plist in Resources */,
-				40FEB2970540E7FA006370DB /* Macros_Context.plist in Resources */,
-				40008E6B055436A5005D78AB /* mptopdfwrap in Resources */,
-				40A43B83056FE6ED00AFDC86 /* TeXShop.scriptSuite in Resources */,
-				40923AD10570A1770089F69B /* altpdflatex in Resources */,
-				40667DF1057A6E3300855C68 /* setname.scpt in Resources */,
-				400477A3057B0F06000B3E9D /* ScriptRunner.app in Resources */,
-				4061C582057D983200B3E286 /* altpdflatexc.bxx in Resources */,
-				4061C583057D983200B3E286 /* bibtexc.bxx in Resources */,
-				4061C584057D983200B3E286 /* flip.bxx in Resources */,
-				4061C585057D983200B3E286 /* htlatexc.bxx in Resources */,
-				4061C586057D983200B3E286 /* htlatexr.bxx in Resources */,
-				4061C587057D983200B3E286 /* htlatexra.bxx in Resources */,
-				4061C588057D983200B3E286 /* makeindexc.bxx in Resources */,
-				4061C589057D983200B3E286 /* makeindexcg.bxx in Resources */,
-				4061C58A057D983200B3E286 /* makeindexk.bxx in Resources */,
-				4061C58B057D983200B3E286 /* makeindices.bxx in Resources */,
-				4061C58C057D983200B3E286 /* mpostc.bxx in Resources */,
-				4061C58D057D983200B3E286 /* pdflatexc.bxx in Resources */,
-				4061C58E057D983200B3E286 /* pdfselectc.bxx in Resources */,
-				52B13E5408A8183B00756E5E /* matrixpanel.nib in Resources */,
 				40D1F2CC06040BCF00087115 /* mat01.tiff in Resources */,
 				40D1F2CD06040BCF00087115 /* mat02.tiff in Resources */,
-				40F66D7E06041188000993D5 /* matrixpanel_1.plist in Resources */,
-				403CA3180608D37000FFDBBC /* Defaults_pTeX_euc.plist in Resources */,
-				403CA3190608D37000FFDBBC /* Defaults_pTeX_sjis.plist in Resources */,
-				406A69F5060F8C170028E210 /* detexwrap in Resources */,
-				40FF5D9D06D5674C00426CC9 /* XeLaTeX.engine in Resources */,
-				40FF5DA806D567C600426CC9 /* XeTeX.engine in Resources */,
-				401FA14006DBF8DD00EA4793 /* TeXShopHelp in Resources */,
-				4030560206E3BCFF009FBD7B /* platex2pdf-euc.bxx in Resources */,
-				4030560306E3BCFF009FBD7B /* platex2pdf-jis.bxx in Resources */,
-				4030560406E3BCFF009FBD7B /* platex2pdf-sjis.bxx in Resources */,
-				4030560506E3BCFF009FBD7B /* ptex2pdf-euc.bxx in Resources */,
-				4030560606E3BCFF009FBD7B /* ptex2pdf-jis.bxx in Resources */,
-				4030560706E3BCFF009FBD7B /* ptex2pdf-sjis.bxx in Resources */,
-				40B1DDC806EB6E540083A311 /* altpdftex in Resources */,
-				40A8847E072CABF5007BFAF6 /* TEXTEDIT.app in Resources */,
-				40E55A8C073B2A3000860060 /* pdf.icns in Resources */,
 				40658EEB07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff in Resources */,
 				40E94AFA07ECF1F500782DE9 /* TextTool.tiff in Resources */,
-				52917509089D430200577613 /* More in Resources */,
 				529B9B73089D8287006CC11B /* BackAdorn.tif in Resources */,
 				529B9B74089D8287006CC11B /* ForwardAdorn.tif in Resources */,
 				525C20AE08A94BA5009C5A9C /* OpenHandCursor.tiff in Resources */,
-				52A4037008AE1F6C0070F041 /* Encodings.strings in Resources */,
+				52E4BF8D08CA74C300726E11 /* TeXShop in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

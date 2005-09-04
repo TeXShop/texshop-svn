@@ -41,17 +41,9 @@
 @class TSTextEditorWindow;
 
 
-@interface TSAppDelegate (SetupTeXShopLibrary)
+@interface TSAppDelegate (Private)
 
-- (void)setupTeXShopLibrary;
-
-- (BOOL)createDirectoryAtPath:(NSString *)directory;
-
-- (void)configureTemplates;
-- (void)configureBin;
-- (void)configureEngine;
-
-- (void)configureFile:(NSString *)filename atPath:(NSString *)directory;
+- (void)mirrorPath:(NSString *)srcPath toPath:(NSString *)dstPath;
 
 @end
 
@@ -127,11 +119,14 @@
 		[SUD registerDefaults:factoryDefaults];
 	}
 
-	// Setup env vars for external programs.
-	[self setupEnv];
-
-	// Set up ~/Library/TeXShop; must come before dealing with TSEncodingSupport and MacoMenuController below
-	[self setupTeXShopLibrary];
+	// Make sure the ~/Library/TeXShop/ directory exists and is populated.
+	// To do this, we walk recursively through our private 'TeXShop' folder contained
+	// in the .app bundle, and mirrors all files and folders found there which aren't
+	// present inside ~/Library/TeXShop.
+	//
+	// This must come before dealing with TSEncodingSupport and MacoMenuController below
+	[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop"]
+			  toPath:[TeXShopPath stringByStandardizingPath]];
 
 // Finish configuration of various pieces
 	[[TSMacroMenuController sharedInstance] loadMacros];
@@ -188,42 +183,6 @@
 - (BOOL)forPreview
 {
 	return _forPreview;
-}
-
-- (void)setupEnv
-{
-	// get copy of environment and add the preferences paths
-	[g_environment release];
-	g_environment = [[NSMutableDictionary dictionaryWithDictionary:[[NSProcessInfo processInfo] environment]] retain];
-
-
-	// Customize 'PATH'
-	NSMutableString *path;
-	path = [NSMutableString stringWithString: [g_environment objectForKey:@"PATH"]];
-	[path appendString:@":"];
-	[path appendString:[SUD stringForKey:TetexBinPath]];
-	[path appendString:@":"];
-	[path appendString:[SUD stringForKey:GSBinPath]];
-	[g_environment setObject: path forKey: @"PATH"];
-
-
-	// Set 'TEXEDIT' env var (see the 'tex' man page for details). We construct a simple shell
-	// command, which first (re)opens the document, and then uses osascript to run an AppleScript
-	// which selects the right line. The AppleScript looks like this:
-	//   tell application "TeXShop"
-	//       goto document 1 line %d
-	//       activate
-	//   end tell
-	NSMutableString *script = [NSMutableString string];
-
-	[script appendFormat:@"open -a '%@' '%%s' &&", [[NSBundle mainBundle] bundlePath]];
-	[script appendString:@" osascript"];
-	[script appendString:@" -e 'tell application \"TeXShop\"'"];
-	[script appendString:@" -e     'goto document 1 line %d'"];
-	[script appendString:@" -e     'activate'"];
-	[script appendString:@" -e 'end tell'"];
-
-	[g_environment setObject: script forKey:@"TEXEDIT"];
 }
 
 // Added by Greg Landweber to load the autocompletion dictionary
@@ -503,7 +462,23 @@
 	[textFinder setShouldHackFindMenu:[[NSUserDefaults standardUserDefaults] boolForKey:@"UseOgreKit"]];
 }
 
-// begin Update Checker Nov 05 04; Martin Kerz
+// Update Checker Nov 05 04; Martin Kerz
+// This code simply fixes a text file from a fixed URL, and parses it
+// for the version of the latest TeXShop releae. It then compares it to
+// the CFBundleVersion of the running application (the comparision is
+// pretty dumb right now, just a simple case insensitive string compare).
+// If the online TeXShop version is newer, we offer the user to
+// fetch the new version, which is done by grabbing another fixed
+// URL through the NSWorkSpaceManager.
+//
+// This approach is quite simple but also a bit limited. The version compare
+// should be improved. Also, the remote file with the version (a plist)
+// could also contain the URL of the new .dmg. That way we don't have
+// to use a fixed filename for new TeXShop releases.
+//
+// We could also add a preference to do automatic checks at regular time intervals.
+// And of course an fully automated in-place updated would be cool, too, but
+// you got to ask yourself if it's really worth the whole effort ;-)
 - (IBAction)checkForUpdate:(id)sender
 {
 	NSString *currentVersion = [[[NSBundle bundleForClass:[self class]]
@@ -546,259 +521,83 @@
 	}
 
 }
-// end update checker
 
 
 @end
 
 
-@implementation TSAppDelegate (SetupTeXShopLibrary)
+@implementation TSAppDelegate (Private)
 
-// This method makes sure the ~/Library/TeXShop/ directory exists and is populated.
-// TODO: It would be much more elegant to simply have a big 'TeXShop' folder
-// inside our app bundle. Then, write a method which recursively traverses through
-// this bundle directory, and mirrors all files and folders contained in it into
-// ~/Library/TeXShop. That way it becomes trivial to add/remove/rename files we 
-// want to add there.
-- (void)setupTeXShopLibrary
-{
-	// First create TeXShop directory if it does not exist
-	if (![self createDirectoryAtPath:TeXShopPath])
-		return;
-
-	[self configureTemplates];
-	[self configureBin];
-	[self configureEngine];
-
-	[self configureFile:@"setname.scpt" atPath:ScriptsPath];
-	[self configureFile:@"autocompletion.plist" atPath:AutoCompletionPath];
-	[self configureFile:@"completion.plist" atPath:LatexPanelPath];
-	[self configureFile:@"matrixpanel_1.plist" atPath:MatrixPanelPath];
-	[self configureFile:@"KeyEquivalents.plist" atPath:MenuShortcutsPath];
-	[self configureFile:@"Macros_Latex.plist" atPath:MacrosPath];
-	[self configureFile:@"Macros_Context.plist" atPath:MacrosPath];
-
-	[self configureFile:[CommandCompletionPath lastPathComponent] atPath:[CommandCompletionPath stringByDeletingLastPathComponent]];
-
-
-#ifdef MITSU_PDF
-	NSString *draggedImageFolder = [[DraggedImagePath stringByStandardizingPath]
-										stringByDeletingLastPathComponent];
-	[self createDirectoryAtPath:draggedImageFolder];
-#endif
-}
-
-// Copy the file specified by srcPath into the target directory, unless a file with the same
-// name already exists in the destination.
-// Returns NO if an error occurred.
-- (BOOL)safeCopyFile:(NSString *)srcPath toDirectory:(NSString *)directory cutExtension:(BOOL)cutExt
+// Recursively copy the file/folder at srcPath to dstPath.
+// This creates target folders as needed, and will not overwrite
+// existing files.
+- (void)mirrorPath:(NSString *)srcPath toPath:(NSString *)dstPath
 {
 	NSFileManager	*fileManager;
-	NSString		*dstPath;
-	NSString		*filename;
-	BOOL			result;
-	
-	if (!srcPath)
-		return NO;
-	
-	fileManager = [NSFileManager defaultManager];
-	filename = [srcPath lastPathComponent];
-	dstPath = [directory stringByAppendingPathComponent:filename];
-	if (cutExt)
-		dstPath = [dstPath stringByDeletingPathExtension];
-	
-	// Check if that file already exists
-	if ([fileManager fileExistsAtPath:dstPath] == NO) {
-		NS_DURING
-			// file doesn't exist -> copy it
-			result = [fileManager copyPath:srcPath toPath:dstPath handler:nil];
-		NS_HANDLER
-			// For now we don't display an error message here, because this method is called for
-			// a lot of files.
-			result = NO;
-		NS_ENDHANDLER
-	} else {
-		// The file already exists, so we are happy.
-		result = YES;
-	}
-	
-	return result;
-}
-
-
-// Create the specified directory, if it is missing.
-// Returns YES if successful, NO if an error occurred.
-- (BOOL)createDirectoryAtPath:(NSString *)directory
-{
-	NSFileManager	*fileManager;
+	BOOL			srcExists, srcIsDir;
+	BOOL			dstExists, dstIsDir;
 	BOOL			result;
 	NSString		*reason;
-	BOOL			isDirectory;
 
 	fileManager = [NSFileManager defaultManager];
 	
-	// Make sure to expand the directory path (so that e.g. ~ gets resolved).
-	directory = [directory stringByStandardizingPath];
+	srcExists = [fileManager fileExistsAtPath:srcPath isDirectory:&srcIsDir];
+	dstExists = [fileManager fileExistsAtPath:dstPath isDirectory:&dstIsDir];
 	
-	if (!([fileManager fileExistsAtPath: directory isDirectory:&isDirectory])) {
-		NS_DURING
-			// create the missing directory
-			result = [fileManager createDirectoryAtPath:directory attributes:nil];
-		NS_HANDLER
-			result = NO;
-			reason = [localException reason];
-		NS_ENDHANDLER
-	} else {
-		// Verify that 'directory' really points to a directory, and not an ordinary file.
-		result = isDirectory;
-	}
-
-	if (!result) {
-		NSRunAlertPanel(NSLocalizedString(@"Error", @"Error"), reason,
-			[NSString stringWithFormat: NSLocalizedString(@"Couldn't create folder:\n%@", @"Message when creating a directory failed"), directory],
-			nil, nil);
-	}
+	if (!srcExists)
+		return;	// Source doesn't exist, abort (this shouldn't happen)
 	
-	return result;
-}
-
-// ------------- these routines create ~/Library/TeXShop and folders and files if necessary ----------
-
-- (void)configureTemplates
-{
-	NSArray			*files;
-	NSEnumerator 	*fileEnumerator;
-	NSString		*fileName;
-	NSFileManager	*fileManager;
-	NSString		*directory;
-
-	fileManager = [NSFileManager defaultManager];
-
-	// The code below was written by Sarah Chambers
-	// if preferences folder doesn't exist already...
-
-	// Next create Templates folder
-	directory = [TexTemplatePath stringByStandardizingPath];
-	if (!([fileManager fileExistsAtPath: directory])) {
-
-		if (![self createDirectoryAtPath:directory])
-			return;
-
-		// fill in our templates
-		files = [NSBundle pathsForResourcesOfType:@".tex" inDirectory:[[NSBundle mainBundle] resourcePath]];
-		fileEnumerator = [files objectEnumerator];
-		while ((fileName = [fileEnumerator nextObject])) {
-			[self safeCopyFile:fileName toDirectory:directory cutExtension:NO];
-		}
-
-		// create the subdirectory "More"
-		directory = [TexTemplateMorePath stringByStandardizingPath];
-		if (![self createDirectoryAtPath:directory])
-			return;
-
-		// fill in our templates
-		files = [NSBundle pathsForResourcesOfType:@"tex" inDirectory:[[[NSBundle mainBundle] resourcePath] stringByAppendingString: @"/More"]];
-		fileEnumerator = [files objectEnumerator];
-		while ((fileName = [fileEnumerator nextObject])) {	
-			[self safeCopyFile:fileName toDirectory:directory cutExtension:NO];
+	if (dstExists && (srcIsDir != dstIsDir))
+		return; // Both source and destination exist, but one is a file and the other a folder: abort!
+	
+	if (srcIsDir) {
+		// Create destination directory if missing (and abort if this fails)
+		if (!dstExists) {
+			NS_DURING
+				// create the missing directory
+				result = [fileManager createDirectoryAtPath:dstPath attributes:nil];
+			NS_HANDLER
+				result = NO;
+				reason = [localException reason];
+			NS_ENDHANDLER
+			if (!result) {
+				NSRunAlertPanel(NSLocalizedString(@"Error", @"Error"), reason,
+					[NSString stringWithFormat: NSLocalizedString(@"Couldn't create folder:\n%@", @"Message when creating a directory failed"), dstPath],
+					nil, nil);
+				return;
+			}
 		}
 		
-	}
-}
-
-- (void)configureBin
-{
-	NSString		*fileName;
-	NSFileManager	*fileManager;
-	NSArray			*files;
-	NSEnumerator 	*fileEnumerator;
-	NSString		*directory;
-
-	fileManager = [NSFileManager defaultManager];
-
-	// The code below is copied from Sarah Chambers' code
-
-	// if folder doesn't exist already...
-	directory = [BinaryPath stringByStandardizingPath];
-	if (!([fileManager fileExistsAtPath: directory])) {
-
-		if (![self createDirectoryAtPath:directory])
-			return;
-
-		// fill in our binaries
-		files = [NSBundle pathsForResourcesOfType:@"bxx" inDirectory:[[NSBundle mainBundle] resourcePath]];
-		fileEnumerator = [files objectEnumerator];
+		// Iterate over the content of the source dir and copy it recursively
+		NSEnumerator 	*fileEnumerator;
+		NSString		*fileName;
+		fileEnumerator = [[fileManager directoryContentsAtPath:srcPath] objectEnumerator];
 		while ((fileName = [fileEnumerator nextObject])) {
-			[self safeCopyFile:fileName toDirectory:directory cutExtension:YES];
+			[self mirrorPath:[srcPath stringByAppendingPathComponent:fileName]
+					  toPath:[dstPath stringByAppendingPathComponent:fileName]];
 		}
-
-	}
-}
-
-- (void)configureEngine
-{
-	NSString		*fileName;
-	NSFileManager	*fileManager;
-	NSArray			*files;
-	NSEnumerator 	*fileEnumerator;
-	NSString		*directory;
-
-	fileManager = [NSFileManager defaultManager];
-
-	// The code below is copied from Sarah Chambers' code
-
-	// if folder doesn't exist already...
-	directory = [EnginePath stringByStandardizingPath];
-	if (!([fileManager fileExistsAtPath: directory])) {
-
-		if (![self createDirectoryAtPath:directory])
-			return;
-
-		// fill in our binaries
-		files = [NSBundle pathsForResourcesOfType:@"engine" inDirectory:[[NSBundle mainBundle] resourcePath]];
-		fileEnumerator = [files objectEnumerator];
-		while ((fileName = [fileEnumerator nextObject])) {
-			[self safeCopyFile:fileName toDirectory:directory cutExtension:NO];
-		}
-
-	}
-}
-
-
-- (void)configureFile:(NSString *)filename atPath:(NSString *)directory
-{
-	NSFileManager	*fileManager;
-	NSString		*dstPath;
-	NSString		*extension;
-	NSString		*bundlePath;
-	NSString		*reason;
-	BOOL			result;
-	
-	directory = [directory stringByStandardizingPath];
-	dstPath = [directory stringByAppendingPathComponent:filename];
-
-	// Create the parent directory (if missing).
-	if (![self createDirectoryAtPath:directory])
-		return;
-
-	// Now see if the file is inside; if not, copy it from the program bundle.
-	fileManager = [NSFileManager defaultManager];
-	if (![fileManager fileExistsAtPath:dstPath]) {
-		NS_DURING
-			result = NO;
-			extension = [filename pathExtension];
-			filename = [filename stringByDeletingPathExtension];
-			bundlePath = [[NSBundle mainBundle] pathForResource:filename ofType:extension];
-			if (bundlePath)
-				result = [fileManager copyPath:bundlePath toPath:dstPath handler:nil];
-		NS_HANDLER
-			result = NO;
-			reason = [localException reason];
-		NS_ENDHANDLER
-		if (!result) {
-			NSRunAlertPanel(@"Error", reason,
-							[NSString stringWithFormat: @"Couldn't create file:\n%@", dstPath], nil, nil);
-			return;
+	} else {
+		// Copy source to destination
+		if (!dstExists) {
+			NS_DURING
+				// file doesn't exist -> copy it
+				result = [fileManager copyPath:srcPath toPath:dstPath handler:nil];
+			NS_HANDLER
+				result = NO;
+				reason = [localException reason];
+			NS_ENDHANDLER
+			if (!result) {
+				// Copying the file failed for some reason.
+				// We might want to show an error alert here, but then the main
+				// reason why this would fail is a write protected Library; and in that
+				// case it doesn't seem clever to pop up a dozen or more error alerts.
+				// Hence we only do so for directory creation failures for now.
+				// Might want to revise this decision at a later point...
+				// Like maybe just record the fact that an error occurred, and at the
+				// end of the mirroring process, pop up a single error dialog 
+				// stating something like "TeXShop failed to copy one or multiple files
+				// from FOO to BAR, etc.".
+			}
 		}
 	}
 }

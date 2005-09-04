@@ -168,7 +168,6 @@ NSString *ExternalEditorNotification = @"ExternalEditorNotification";
 
 /*" Other variables "*/
 // BOOL documentsHaveLoaded;
-NSMutableDictionary *g_environment;
 TSFilterMode		g_shouldFilter;
 int					g_texChar;
 NSDictionary		*g_autocompletionDictionary;

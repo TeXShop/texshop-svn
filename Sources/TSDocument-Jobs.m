@@ -35,6 +35,47 @@
 
 @implementation TSDocument (JobProcessing)
 
+- (NSDictionary *)environmentForSubTask
+{
+	NSMutableDictionary *env;
+
+
+	// get copy of environment and add the preferences paths
+	env = [[NSMutableDictionary dictionaryWithDictionary:[[NSProcessInfo processInfo] environment]] retain];
+
+
+	// Customize 'PATH'
+	NSMutableString *path;
+	path = [NSMutableString stringWithString: [env objectForKey:@"PATH"]];
+	[path appendString:@":"];
+	[path appendString:[SUD stringForKey:TetexBinPath]];
+	[path appendString:@":"];
+	[path appendString:[SUD stringForKey:GSBinPath]];
+	[env setObject: path forKey: @"PATH"];
+
+
+	// Set 'TEXEDIT' env var (see the 'tex' man page for details). We construct a simple shell
+	// command, which first (re)opens the document, and then uses osascript to run an AppleScript
+	// which selects the right line. The AppleScript looks like this:
+	//   tell application "TeXShop"
+	//       goto document 1 line %d
+	//       activate
+	//   end tell
+	NSMutableString *script = [NSMutableString string];
+
+	[script appendFormat:@"open -a '%@' '%%s' &&", [[NSBundle mainBundle] bundlePath]];
+	[script appendString:@" osascript"];
+	[script appendString:@" -e 'tell application \"TeXShop\"'"];
+	[script appendString:@" -e     'goto document 1 line %d'"];
+	[script appendString:@" -e     'activate'"];
+	[script appendString:@" -e 'end tell'"];
+
+	[env setObject: script forKey:@"TEXEDIT"];
+	
+	return env;
+}
+
+
 - (void) doJobForScript:(int)type withError:(BOOL)error runContinuously:(BOOL)continuous
 {
 	NSDate	*myDate;
@@ -304,7 +345,7 @@
 			[texTask setCurrentDirectoryPath: TempOutputKey];
 		else
 			[texTask setCurrentDirectoryPath: [sourcePath stringByDeletingLastPathComponent]];
-		[texTask setEnvironment: g_environment];
+		[texTask setEnvironment: [self environmentForSubTask]];
 
 		if ([[myFileName pathExtension] isEqualToString:@"dvi"]) {
 			if (! writeable) {
@@ -655,7 +696,7 @@
 	[task setLaunchPath: filename];
 	[task setArguments: args];
 	[task setCurrentDirectoryPath: [sourcePath stringByDeletingLastPathComponent]];
-	[task setEnvironment: g_environment];
+	[task setEnvironment: [self environmentForSubTask]];
 	[task setStandardOutput: outputPipe];
 	[task setStandardError: outputPipe];
 	[task setStandardInput: inputPipe];
@@ -880,7 +921,7 @@
 			/*
 			 if ((enginePath != nil) && ([[NSFileManager defaultManager] fileExistsAtPath: enginePath])) {
 				 [texTask setCurrentDirectoryPath: [sourcePath stringByDeletingLastPathComponent]];
-				 [texTask setEnvironment: g_environment];
+				 [texTask setEnvironment: [self environmentForSubTask]];
 				 [texTask setLaunchPath:enginePath];
 				 [texTask setArguments:args];
 				 [texTask setStandardOutput: outputPipe];

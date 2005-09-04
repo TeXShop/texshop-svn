@@ -368,7 +368,6 @@ extern NSString *ExternalEditorNotification;
 
 
 /*" Other variables "*/
-extern NSMutableDictionary 	*g_environment;		/*" Store for environment for subtasks, set in TSPreferences "*/
 extern TSFilterMode			g_shouldFilter;		/*" Used for Japanese yen conversion "*/
 extern int					g_texChar;			/*" The tex command character; usually \ but yen in Japanese yen "*/
 extern NSDictionary			*g_autocompletionDictionary;  // added by Greg Landweber

@@ -310,6 +310,8 @@ enum RootCommand
 
 @interface TSDocument (JobProcessing)
 
+- (NSDictionary *)environmentForSubTask;
+
 - (void) doUser: (int)theEngine;
 
 - (void) doTex: sender;
