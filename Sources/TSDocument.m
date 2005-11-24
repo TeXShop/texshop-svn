@@ -104,12 +104,9 @@
 
 - (void)dealloc
 {
-
-
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[[NSNotificationCenter defaultCenter] removeObserver:pdfView];// mitsu 1.29 (O) need to remove here, otherwise updateCurrentPage fails
-	if (tagTimer != nil)
-	{
+	if (tagTimer != nil) {
 		[tagTimer invalidate];
 		[tagTimer release];
 	}
@@ -211,19 +208,19 @@
 // and possibly move code to other functions.
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController
 {
-	BOOL                spellExists;
+	BOOL			spellExists;
 	NSString		*imagePath;
 	NSString		*theSource;
 	NSString		*fileExtension;
-	NSRange		myRange;
-	BOOL		imageFound;
+	NSRange			myRange;
+	BOOL			imageFound;
 	NSString		*theFileName;
-	int			defaultcommand;
-	NSSize		contentSize;
+	int				defaultcommand;
+	NSSize			contentSize;
 	NSDictionary	*myAttributes;
-		int                 i;
-	BOOL                done;
-	NSString            *defaultCommand;
+	int				i;
+	BOOL			done;
+	NSString		*defaultCommand;
 
 	[super windowControllerDidLoadNib:aController];
 
@@ -292,7 +289,6 @@
 	[self setupFromPreferencesUsingWindowController:aController];
 
 	[pdfView setDocument: self]; /* This was commented out!! Don't do it; needed by Ghostscript; Dick */
-	[textView setDelegate: self];
 	// the next line caused jpg and tiff files to fail, so we do it later
 	//   [pdfView resetMagnification];
 
@@ -484,7 +480,7 @@
 	// end change
 
 
-	theSource = [[self textView] string];
+	theSource = [_textStorage string];
 	if ([self checkMasterFile: theSource forTask:RootForOpening])
 		return;
 	if ([self checkRootFile_forTask: RootForOpening])
@@ -592,11 +588,11 @@ in other code when an external editor is being used. */
 	NSString            *encodingString, *text, *testString;
 	BOOL                done;
 	int                 linesTested;
-	unsigned            start, end, irrelevant;
+	unsigned            start, end;
 
 	// FIXME: Unify this with the code in readFromFile:
 	if ((GetCurrentKeyModifiers() & optionKey) == 0) {
-		text = [textView string];
+		text = [_textStorage string];
 		length = [text length];
 		done = NO;
 		linesTested = 0;
@@ -604,7 +600,7 @@ in other code when an external editor is being used. */
 		myRange.length = 1;
 
 		while ((myRange.location < length) && (!done) && (linesTested < 20)) {
-			[text getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+			[text getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 			myRange.location = end;
 			myRange.length = 1;
 			linesTested++;
@@ -642,11 +638,11 @@ in other code when an external editor is being used. */
 
 	// zenitani 1.35 (C) --- utf.sty output
 	if( [SUD boolForKey:ptexUtfOutputEnabledKey] &&
-		[[TSEncodingSupport sharedInstance] ptexUtfOutputCheck: [textView string] withEncoding: _encoding] ) {
+		[[TSEncodingSupport sharedInstance] ptexUtfOutputCheck: [_textStorage string] withEncoding: _encoding] ) {
 
 		return [[TSEncodingSupport sharedInstance] ptexUtfOutput: textView withEncoding: _encoding];
 	} else {
-		return [[textView string] dataUsingEncoding: _encoding allowLossyConversion:YES];
+		return [[_textStorage string] dataUsingEncoding: _encoding allowLossyConversion:YES];
 	}
 }
 
@@ -655,7 +651,7 @@ in other code when an external editor is being used. */
 	id 			myData;
 	NSString            *firstBytes, *encodingString, *testString;
 	NSRange             encodingRange, newEncodingRange, myRange, theRange;
-	unsigned            length, start, end, irrelevant;
+	unsigned            length, start, end;
 	BOOL                done;
 	int                 linesTested;
 
@@ -671,7 +667,7 @@ in other code when an external editor is being used. */
 		myRange.length = 1;
 
 		while ((myRange.location < length) && (!done) && (linesTested < 20)) {
-			[firstBytes getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+			[firstBytes getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 			myRange.location = end;
 			myRange.length = 1;
 			linesTested++;
@@ -776,7 +772,7 @@ in other code when an external editor is being used. */
 	if (_documentType == isTeX) {
 		
 		if (!_externalEditor) {
-			theSource = [[self textView] string];
+			theSource = [_textStorage string];
 			if ([self checkMasterFile:theSource forTask:RootForPrinting])
 				return;
 			if ([self checkRootFile_forTask:RootForPrinting])
@@ -787,8 +783,6 @@ in other code when an external editor is being used. */
 	}
 	else if (_documentType == isPDF)
 		imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-	else if ((_documentType == isJPG) || (_documentType == isTIFF))
-		imagePath = [self fileName];
 	else
 		imagePath = [self fileName];
 	
@@ -866,7 +860,12 @@ in other code when an external editor is being used. */
 
 #pragma mark Statistics dialog
 
-
+// FIXME: The statistics dialog relies on the detex command. If that can't be found or
+// doesn't work, this command silently fails.
+// To fix this, at the very least we should show an error dialog if using 'detex' fails.
+// Better: Include a copy of detex in TeXShop. Even better: Write our own stats code,
+// possibly based on the detex source, so that we just have to call a function to
+// gather the stats.
 - (void)showStatistics: sender
 {
 	NSDate          *myDate;
@@ -1660,7 +1659,7 @@ preference change is cancelled. "*/
 - (void) doTag: sender
 {
 	NSString	*text, *titleString, *matchString;
-	unsigned	start, end, irrelevant;
+	unsigned	start, end;
 	NSRange	myRange, nameRange, gotoRange;
 	unsigned	length;
 	unsigned	lineNumber = 0;
@@ -1680,7 +1679,7 @@ preference change is cancelled. "*/
 
 	// Search for the line with number 'destLineNumber'.
 	while ((myRange.location < length) && (lineNumber < destLineNumber)) {
-		[text getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+		[text getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 		myRange.location = end;
 		lineNumber++;
 	}
@@ -1716,7 +1715,7 @@ preference change is cancelled. "*/
 - (void) fixTags:(NSTimer *)timer
 {
 	NSString	*text;
-	unsigned	start, end, irrelevant;
+	unsigned	start, end;
 	NSRange	myRange, nameRange;
 	unsigned	length, index;
 	unsigned	lineNumber;
@@ -1736,7 +1735,7 @@ preference change is cancelled. "*/
 
 	// Iterate over all lines
 	while ((myRange.location < length) && (myRange.location < index)) {
-		[text getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+		[text getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 		myRange.location = end;
 		lineNumber++;
 
@@ -2057,7 +2056,7 @@ preference change is cancelled. "*/
 {
 	int		i;
 	NSString	*text;
-	unsigned	start, end, irrelevant, stringlength;
+	unsigned	start, end, stringlength;
 	NSRange	myRange;
 
 	if (line < 1) return;
@@ -2067,7 +2066,7 @@ preference change is cancelled. "*/
 	myRange.length = 1;
 	i = 1;
 	while ((i <= line) && (myRange.location < stringlength)) {
-		[text getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+		[text getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 		myRange.location = end;
 		i++;
 	}
@@ -2209,7 +2208,7 @@ preference change is cancelled. "*/
 {
 	int             pdfPage;
 	BOOL            found, synclineFound;
-	unsigned        start, end, irrelevant, stringlength;
+	unsigned        start, end, stringlength;
 	NSRange         myRange;
 	NSString        *syncInfo;
 	NSFileManager   *fileManager;
@@ -2262,13 +2261,13 @@ preference change is cancelled. "*/
 	myRange.location = 0;
 	myRange.length = 1;
 	NS_DURING
-	[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+	[syncInfo getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 	NS_HANDLER
 	return;
 	NS_ENDHANDLER
 	syncInfo = [syncInfo substringFromIndex: end];
 	NS_DURING
-	[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+	[syncInfo getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 	NS_HANDLER
 	return;
 	NS_ENDHANDLER
@@ -2300,7 +2299,7 @@ preference change is cancelled. "*/
 		}
 		
 		NS_DURING
-			[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+			[syncInfo getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 		NS_HANDLER
 			return;
 		NS_ENDHANDLER
@@ -2315,7 +2314,7 @@ preference change is cancelled. "*/
 		found = NO;
 		while (!found && (myRange.location < stringlength)) {
 			NS_DURING
-				[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+				[syncInfo getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 			NS_HANDLER
 				return;
 			NS_ENDHANDLER
@@ -2356,7 +2355,7 @@ preference change is cancelled. "*/
 	skipdepth = 0;
 	while (myRange.location < stringlength) {
 		NS_DURING
-			[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+			[syncInfo getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 		NS_HANDLER
 			return;
 		NS_ENDHANDLER
@@ -2435,13 +2434,13 @@ preference change is cancelled. "*/
 	myRange.location = 0;
 	myRange.length = 1;
 	NS_DURING
-		[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+		[syncInfo getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 	NS_HANDLER
 		return;
 	NS_ENDHANDLER
 	syncInfo = [syncInfo substringFromIndex: end];
 	NS_DURING
-		[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+		[syncInfo getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 	NS_HANDLER
 		return;
 	NS_ENDHANDLER
@@ -2460,7 +2459,7 @@ preference change is cancelled. "*/
 		found = NO;
 		while ((! found) && (myRange.location < stringlength)) {
 			NS_DURING
-				[syncInfo getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];
+				[syncInfo getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 			NS_HANDLER
 				return;
 			NS_ENDHANDLER
@@ -2676,6 +2675,9 @@ preference change is cancelled. "*/
 }
 
 // the next routine is used by applescript
+// FIXME: This function appears to be nothing more than a glorified 'revert'.
+// I.e. it just reloads the file from disk, which is exactly what 'revert' does.
+// The only possible difference I can think of is the 'undo' behavior.
 - (void)refreshTEXT
 {
 	NSString		*textPath;
@@ -2730,7 +2732,7 @@ preference change is cancelled. "*/
 	int			error;
 	int                 lineCount, wordCount, charCount;
 	unsigned int	myLength;
-	unsigned		start, end, irrelevant;
+	unsigned		start, end;
 	NSStringEncoding	theEncoding;
 	BOOL                result;
 
@@ -2753,7 +2755,7 @@ preference change is cancelled. "*/
 				lineRange.location = 0;
 				lineRange.length = 1;
 				while (lineRange.location < myLength) {
-					[newOutput getLineStart: &start end: &end contentsEnd: &irrelevant forRange: lineRange];
+					[newOutput getLineStart: &start end: &end contentsEnd: nil forRange: lineRange];
 					lineRange.location = end;
 					searchRange.location = start;
 					searchRange.length = end - start;

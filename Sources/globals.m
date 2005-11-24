@@ -82,6 +82,7 @@ NSString *DistillerCommandKey = @"DistillerCommand";
 NSString *MatrixSizeKey = @"matrixsize"; // Jonas' Matrix addition
 NSString *TSHasBeenUsedKey = @"TSHasBeenUsed";
 NSString *UserInfoPath = @"UserInfoPath";
+
 NSString *commentredKey = @"commentred";
 NSString *commentgreenKey = @"commentgreen";
 NSString *commentblueKey = @"commentblue";
@@ -91,7 +92,6 @@ NSString *commandblueKey = @"commandblue";
 NSString *markerredKey = @"markerred";
 NSString *markergreenKey = @"markergreen";
 NSString *markerblueKey = @"markerblue";
-NSString *tabsKey = @"tabs";
 NSString *background_RKey = @"background_R";
 NSString *background_GKey = @"background_G";
 NSString *background_BKey = @"background_B";
@@ -101,6 +101,8 @@ NSString *foreground_BKey = @"foreground_B";
 NSString *insertionpoint_RKey = @"insertionpoint_R";
 NSString *insertionpoint_GKey = @"insertionpoint_G";
 NSString *insertionpoint_BKey = @"insertionpoint_B";
+
+NSString *tabsKey = @"tabs";
 NSString *WarnForShellEscapeKey = @"WarnForShellEscape";
 NSString *ptexUtfOutputEnabledKey = @"ptexUtfOutput"; // zenitani 1.35 (C)
 // mitsu 1.29 (O)
