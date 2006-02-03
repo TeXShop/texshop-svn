@@ -1,5 +1,41 @@
-This is an export from my OmniOutliner file, and only a temporary placeholder.
+Some of the things Richard and Max have to do before the release:
 
+* Update ogrekit for Intel compatibility (Dick)
+* Re-add all existing localizations (Max)
+* Fix the "Save As" encoding popup (Max)
+* Backport all changes made in 2.09:
+  - we should add a list of those here, or keep track of them by some other means
+* Write a list of things that Max changed (at least the user visible stuff)
+* Update copyright notice in files to "2000-2006" (?)
+* Remove the fake "Eugene Algorithms", use "The TeXShop team" or so instead (?)
+* Modify the web site:
+  - add a link the SF.net project page
+  - add links to the bug/feature request trackers
+  - 
+* File release system: Add 2.04 and 2.09 to the SF.net file release system (Max)
+* ...
+* Do lots of testing, esp. for some of the more obscure features, to 
+
+
+When doing the release, we should
+* Give the created files names containing the version, e.g.
+   TeXShop-2.10.dmg  and TeXShop-2.10-source.zip
+  or so.
+* Release them via the FRS (File Release System); if desired, they can of course
+  in addition also be released in the traditional place (probably required for the
+  auto-update feature anyway).
+* ...
+
+
+
+AFTER the 2.10 release, we can move on to other things. Top on the list:
+* New localization system (Max)
+* ...
+
+
+
+
+The following is an export from my OmniOutliner file, and only a temporary placeholder.
 
 Topic
 - [-] TeXShop
