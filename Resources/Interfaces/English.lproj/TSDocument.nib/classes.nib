@@ -86,30 +86,6 @@
             }; 
             SUPERCLASS = NSView; 
         }, 
-        {CLASS = MySound; LANGUAGE = ObjC; SUPERCLASS = Sound; }, 
-        {
-            ACTIONS = {
-                changeScale = id; 
-                doStepper = id; 
-                goToPage = id; 
-                myAction = id; 
-                nextPage = id; 
-                previousPage = id; 
-            }; 
-            CLASS = MyView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                currentPage = id; 
-                currentPage1 = id; 
-                myScale = id; 
-                myScale1 = id; 
-                myStepper = id; 
-                myStepper1 = id; 
-                totalPage = id; 
-                totalPage1 = id; 
-            }; 
-            SUPERCLASS = NSView; 
-        }, 
         {CLASS = NSCursor; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {

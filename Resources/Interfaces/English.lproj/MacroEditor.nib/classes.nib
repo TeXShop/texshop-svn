@@ -1,9 +1,8 @@
 {
     IBClasses = (
-        {CLASS = DictTreeNode; LANGUAGE = ObjC; SUPERCLASS = NSMutableDictionary; }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = ImageAndTextCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
-        {CLASS = MyTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
+        {CLASS = TSTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
         {CLASS = NSArray; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSMutableArray; LANGUAGE = ObjC; SUPERCLASS = NSArray; }, 
         {CLASS = NSOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 

@@ -13,7 +13,7 @@
             SUPERCLASS = NSTableColumn; 
         }, 
         {
-            CLASS = MatrixTableView; 
+            CLASS = TSMatrixTableView; 
             LANGUAGE = ObjC; 
             OUTLETS = {myController = id; }; 
             SUPERCLASS = NSTableView; 
@@ -26,7 +26,7 @@
                 resetMatrix = id; 
                 resizeMatrix = id; 
             }; 
-            CLASS = Matrixcontroller; 
+            CLASS = TSMatrixPanelController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 borderbutton = id; 

@@ -1,7 +1,7 @@
 {
     IBClasses = (
         {
-            CLASS = ConsoleWindow; 
+            CLASS = TSConsoleWindow; 
             LANGUAGE = ObjC; 
             OUTLETS = {myDocument = id; }; 
             SUPERCLASS = NSWindow; 
@@ -37,7 +37,7 @@
                 trashAUXFiles = id; 
                 updateStatistics = id; 
             }; 
-            CLASS = Document; 
+            CLASS = TSDocument; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 ProgramButtonKK = id; 
@@ -107,7 +107,7 @@
         }, 
         {CLASS = FlippedClipView; LANGUAGE = ObjC; SUPERCLASS = NSClipView; }, 
         {
-            CLASS = MainWindow; 
+            CLASS = TSTextWindow; 
             LANGUAGE = ObjC; 
             OUTLETS = {myDocument = id; }; 
             SUPERCLASS = NSWindow; 
@@ -191,32 +191,8 @@
             }; 
             SUPERCLASS = NSView; 
         }, 
-        {CLASS = MySound; LANGUAGE = ObjC; SUPERCLASS = Sound; }, 
         {
-            ACTIONS = {
-                changeScale = id; 
-                doStepper = id; 
-                goToPage = id; 
-                myAction = id; 
-                nextPage = id; 
-                previousPage = id; 
-            }; 
-            CLASS = MyView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                currentPage = id; 
-                currentPage1 = id; 
-                myScale = id; 
-                myScale1 = id; 
-                myStepper = id; 
-                myStepper1 = id; 
-                totalPage = id; 
-                totalPage1 = id; 
-            }; 
-            SUPERCLASS = NSView; 
-        }, 
-        {
-            CLASS = MyWindow; 
+            CLASS = TSPreviewWindow; 
             LANGUAGE = ObjC; 
             OUTLETS = {myDocument = id; }; 
             SUPERCLASS = NSWindow; 

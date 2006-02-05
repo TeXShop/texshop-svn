@@ -49,18 +49,18 @@
         }, 
         {
             ACTIONS = {openMacroEditor = id; }; 
-            CLASS = MacroEditor; 
+            CLASS = TSMacroEditor; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
         }, 
         {
-            CLASS = MacroMenuController; 
+            CLASS = TSMacroMenuController; 
             LANGUAGE = ObjC; 
             OUTLETS = {macroMenu = id; }; 
             SUPERCLASS = NSObject; 
         }, 
         {
-            CLASS = MyDocumentController; 
+            CLASS = TSDocumentController; 
             LANGUAGE = ObjC; 
             OUTLETS = {encodingMenu = id; encodingView = id; }; 
             SUPERCLASS = NSDocumentController; 
@@ -72,7 +72,6 @@
             SUPERCLASS = NSResponder; 
         }, 
         {CLASS = OgreTextFinder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {CLASS = STEController; LANGUAGE = ObjC; SUPERCLASS = NSDocumentController; }, 
         {
             ACTIONS = {
                 checkForUpdate = id; 
