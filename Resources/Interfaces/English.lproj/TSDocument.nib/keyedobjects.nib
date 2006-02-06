@@ -4480,7 +4480,8 @@ are made, name that root file below. </string>
 			</dict>
 		</dict>
 		<string>OK</string>
-		<string></string>
+		<string>
+</string>
 		<dict>
 			<key>$class</key>
 			<dict>

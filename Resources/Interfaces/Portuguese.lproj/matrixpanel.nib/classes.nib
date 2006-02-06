@@ -13,12 +13,6 @@
             SUPERCLASS = NSTableColumn; 
         }, 
         {
-            CLASS = TSMatrixTableView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {myController = id; }; 
-            SUPERCLASS = NSTableView; 
-        }, 
-        {
             ACTIONS = {
                 brselChange = id; 
                 envselChange = id; 
@@ -46,6 +40,12 @@
                 vtf = id; 
             }; 
             SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = TSMatrixTableView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {myController = id; }; 
+            SUPERCLASS = NSTableView; 
         }
     ); 
     IBVersion = 1; 

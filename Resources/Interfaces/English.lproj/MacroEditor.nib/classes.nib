@@ -2,7 +2,6 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = ImageAndTextCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
-        {CLASS = TSTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
         {CLASS = NSArray; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSMutableArray; LANGUAGE = ObjC; SUPERCLASS = NSArray; }, 
         {CLASS = NSOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
@@ -55,7 +54,8 @@
             OUTLETS = {outlineView = id; }; 
             SUPERCLASS = NSObject; 
         }, 
-        {CLASS = TSMacroOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }
+        {CLASS = TSMacroOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
+        {CLASS = TSTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }
     ); 
     IBVersion = 1; 
 }

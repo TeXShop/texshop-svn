@@ -7,7 +7,7 @@
 	<key>IBEditorPositions</key>
 	<dict>
 		<key>356</key>
-		<string>479 687 961 232 0 0 1920 1178 </string>
+		<string>479 692 961 232 0 0 1920 1178 </string>
 		<key>494</key>
 		<string>472 610 379 115 0 0 1280 1002 </string>
 		<key>577</key>
@@ -20,7 +20,7 @@
 		<string>372 673 141 106 0 0 1280 1002 </string>
 	</dict>
 	<key>IBFramework Version</key>
-	<string>437.0</string>
+	<string>443.0</string>
 	<key>IBGroupedObjects</key>
 	<dict>
 		<key>1</key>
@@ -79,7 +79,7 @@
 		<integer>356</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8A428</string>
+	<string>8G32</string>
 	<key>IBUserGuides</key>
 	<dict>
 		<key>Console</key>
@@ -104,5 +104,7 @@
 			<string>NO</string>
 		</dict>
 	</dict>
+	<key>IBUsesTextArchiving</key>
+	<true/>
 </dict>
 </plist>
