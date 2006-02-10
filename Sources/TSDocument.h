@@ -227,7 +227,7 @@ enum RootCommand
 - (void) doLine: sender;
 - (void) doTag: sender;
 - (void) chooseProgram: sender;
-- (void) chooseProgramFF: sender;
+- (void) chooseProgramEE: sender;
 - (id) pdfView;
 - (id) pdfKitView;
 - (void) doCompletion:(NSNotification *)notification;

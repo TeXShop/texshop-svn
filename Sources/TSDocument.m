@@ -1406,7 +1406,7 @@ preference change is cancelled. "*/
 		[self fixTypesetMenu];
 }
 
-- (void) chooseProgramFF: sender
+- (void) chooseProgramEE: sender
 {
 	int i = [sender tag];
 	[programButton selectItemAtIndex: i];
