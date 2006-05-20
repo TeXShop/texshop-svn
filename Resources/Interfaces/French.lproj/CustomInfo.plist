@@ -5,7 +5,8 @@
     NSAppVersion = "2";
     NSHumanReadableShortName = "TeXShop";
     NSHumanReadableCompleteName = "TeXShop"; 
-    NSHumanReadableCopyright = "Copyright (c) 2001-2005, Eugene Algorithms \n http://www.uoregon.edu/~koch/texshop";
+    NSHumanReadableCopyright = "Copyright (c) 2001-2006, Richard Koch 
+ http://www.texshop.org";
     CFBundleDocumentTypes = (
      {
         CFBundleTypeName = "tex";
