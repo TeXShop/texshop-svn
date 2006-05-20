@@ -2,13 +2,11 @@
 <!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
 <plist version="0.9">
 <dict>
-	<key>Name</key>
-	<string>TeXShop</string>
 	<key>AppleEventCode</key>
 	<string>TeXs</string>
 	<key>Classes</key>
 	<dict>
-		<key>TSDocument</key>
+		<key>MyDocument</key>
 		<dict>
 			<key>AppleEventCode</key>
 			<string>docu</string>
@@ -30,44 +28,44 @@
 			<dict>
 				<key>Search</key>
 				<string>handleSearchCommand:</string>
-				<key>Latex</key>
-				<string>handleLatexCommand:</string>
-				<key>LatexInteractive</key>
-				<string>handleLatexInteractiveCommand:</string>
-				<key>Tex</key>
-				<string>handleTexCommand:</string>
-				<key>TexInteractive</key>
-				<string>handleTexInteractiveCommand:</string>
-				<key>Bibtex</key>
-				<string>handleBibtexCommand:</string>
-				<key>BibtexInteractive</key>
-				<string>handleBibtexInteractiveCommand:</string>
-				<key>Context</key>
-				<string>handleContextCommand:</string>
-				<key>ContextInteractive</key>
-				<string>handleContextInteractiveCommand:</string>
-				<key>Metapost</key>
-				<string>handleMetapostCommand:</string>
-				<key>MetapostInteractive</key>
-				<string>handleMetapostInteractiveCommand:</string>
-				<key>Makeindex</key>
-				<string>handleMakeindexCommand:</string>
-				<key>MakeindexInteractive</key>
-				<string>handleMakeindexInteractiveCommand:</string>
-				<key>Typeset</key>
-				<string>handleTypesetCommand:</string>
-				<key>TypesetInteractive</key>
-				<string>handleTypesetInteractiveCommand:</string>
-				<key>RefreshPDF</key>
-				<string>handleRefreshPDFCommand:</string>
-				<key>RefreshPDFBackground</key>
-				<string>handleRefreshPDFBackgroundCommand:</string>
-				<key>RefreshTEXT</key>
-				<string>handleRefreshTEXTCommand:</string>
-				<key>TaskDone</key>
-				<string>handleTaskDoneCommand:</string>
-				<key>GotoLine</key>
-				<string>handleGotoLineCommand:</string>
+                                <key>Latex</key>
+                                <string>handleLatexCommand:</string>
+                                 <key>LatexInteractive</key>
+                                 <string>handleLatexInteractiveCommand:</string>
+                                 <key>Tex</key>
+                                <string>handleTexCommand:</string>
+                                <key>TexInteractive</key>
+                                <string>handleTexInteractiveCommand:</string>
+                                 <key>Bibtex</key>
+                                <string>handleBibtexCommand:</string>
+                                 <key>BibtexInteractive</key>
+                                <string>handleBibtexInteractiveCommand:</string>
+                                 <key>Context</key>
+                                <string>handleContextCommand:</string>
+                                 <key>ContextInteractive</key>
+                                <string>handleContextInteractiveCommand:</string>
+                                 <key>Metapost</key>
+                                <string>handleMetapostCommand:</string>
+                                 <key>MetapostInteractive</key>
+                                 <string>handleMetapostInteractiveCommand:</string>
+                                 <key>Makeindex</key>
+                                <string>handleMakeindexCommand:</string>
+                                <key>MakeindexInteractive</key>
+                                <string>handleMakeindexInteractiveCommand:</string>
+                                <key>Typeset</key>
+                                <string>handleTypesetCommand:</string>
+                                <key>TypesetInteractive</key>
+                                <string>handleTypesetInteractiveCommand:</string>
+                                <key>RefreshPDF</key>
+                                <string>handleRefreshPDFCommand:</string>
+								<key>RefreshPDFBackground</key>
+                                <string>handleRefreshPDFBackgroundCommand:</string>
+                                <key>RefreshTEXT</key>
+                                <string>handleRefreshTEXTCommand:</string>
+                                <key>TaskDone</key>
+                                <string>handleTaskDoneCommand:</string>
+                                <key>GotoLine</key>
+                                <string>handleGotoLineCommand:</string>
 			</dict>
 			<key>ToOneRelationships</key>
 			<dict>
@@ -123,7 +121,7 @@
 			<string>capp</string>
 			<key>Superclass</key>
 			<string>NSCoreSuite.NSApplication</string>
-			<key>SupportedCommands</key>
+                        <key>SupportedCommands</key>
 			<dict>
 				<key>OpenForExternalEditor</key>
 				<string>handleOpenForExternalEditorCommand:</string>
@@ -135,7 +133,7 @@
 					<key>AppleEventCode</key>
 					<string>docu</string>
 					<key>Type</key>
-					<string>TSDocument</string>
+					<string>MyDocument</string>
 				</dict>
 			</dict>
 		</dict>
@@ -199,11 +197,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		<key>Latex</key>
+                <key>Latex</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -212,11 +208,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		<key>LatexInteractive</key>
+                <key>LatexInteractive</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -225,9 +219,7 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
 		 <key>Tex</key>
 		<dict>
@@ -238,11 +230,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		 <key>TexInteractive</key>
+                 <key>TexInteractive</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -251,9 +241,7 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
 		 <key>Bibtex</key>
 		<dict>
@@ -264,11 +252,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		<key>BibtexInteractive</key>
+                <key>BibtexInteractive</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -277,9 +263,7 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
 		 <key>Context</key>
 		<dict>
@@ -290,11 +274,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		<key>ContextInteractive</key>
+                <key>ContextInteractive</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -303,9 +285,7 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
 		 <key>Metapost</key>
 		<dict>
@@ -316,11 +296,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		 <key>MetapostInteractive</key>
+                 <key>MetapostInteractive</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -329,9 +307,7 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
 		 <key>Makeindex</key>
 		<dict>
@@ -342,11 +318,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		<key>MakeindexInteractive</key>
+                <key>MakeindexInteractive</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -355,11 +329,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		<key>Typeset</key>
+                <key>Typeset</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -368,11 +340,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		<key>TypesetInteractive</key>
+                <key>TypesetInteractive</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -381,9 +351,7 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
 		 <key>RefreshPDF</key>
 		<dict>
@@ -394,9 +362,7 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
 		 <key>RefreshPDFBackground</key>
 		<dict>
@@ -407,11 +373,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		 <key>RefreshTEXT</key>
+                 <key>RefreshTEXT</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -420,11 +384,9 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber&lt;Int&gt;</string>
+			<string>obj </string>
 		</dict>
-		<key>TaskDone</key>
+                <key>TaskDone</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
@@ -433,20 +395,18 @@
 			<key>CommandClass</key>
 			<string>NSScriptCommand</string>
 			<key>ResultAppleEventCode</key>
-			<string>magn</string>
-			<key>Type</key>
-			<string>NSNumber;</string> 
+			<string>obj </string>
 		</dict>
-		<key>OpenForExternalEditor</key>
+                <key>OpenForExternalEditor</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
 			<key>AppleEventCode</key>
 			<string>Ofee</string>
 			<key>CommandClass</key>
-			<string>NSScriptCommand</string>
-			<key>Type</key>
-			<string>NSObjectReference</string>
+                        <string>NSScriptCommand</string>
+                        <key>Type</key>
+                        <string>NSObject</string>
 			<key>Arguments</key>
 			<dict>
 				<key>FileName</key>
@@ -460,21 +420,23 @@
 				</dict>
 			</dict>
 			<key>ResultAppleEventCode</key>
-			<string>obj </string>
+			<string>****</string>
 		</dict>
-		<key>GotoLine</key>
+                <key>GotoLine</key>
 		<dict>
 			<key>AppleEventClassCode</key>
 			<string>TeXs</string>
 			<key>AppleEventCode</key>
 			<string>Gtli</string>
 			<key>CommandClass</key>
-			<string>NSScriptCommand</string>
+                        <string>NSScriptCommand</string>
+                        <key>Type</key>
+                        <string>NSObject</string>
 			<key>Arguments</key>
 			<dict>
 				<key>LineNumber</key>
 				<dict>
-					<key>AppleEventCode</key>
+                                        <key>AppleEventCode</key>
 					<string>STRT</string>
 					<key>Optional</key>
 					<string>NO</string>
@@ -482,7 +444,11 @@
 					<string>NSNumber&lt;Int&gt;</string>
 				</dict>
 			</dict>
+			<key>ResultAppleEventCode</key>
+			<string>****</string>
 		</dict>
 	</dict>
+	<key>Name</key>
+	<string>TeXShop</string>
 </dict>
 </plist>
