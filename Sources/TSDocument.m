@@ -893,7 +893,7 @@ in other code when an external editor is being used. */
 	[detexTask setCurrentDirectoryPath: [myFileName stringByDeletingLastPathComponent]];
 	[detexTask setEnvironment: [self environmentForSubTask]];
 	enginePath = [[NSBundle mainBundle] pathForResource:@"detexwrap" ofType:nil];
-	tetexBinPath = [[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath];
+	tetexBinPath = [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath];
 	args = [NSMutableArray array];
 	[args addObject:tetexBinPath];
 	[args addObject: [myFileName  stringByStandardizingPath]];

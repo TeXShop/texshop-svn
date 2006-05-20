@@ -46,6 +46,7 @@ static TSEncoding _availableEncodings[] = {
 	{ 0, kCFStringEncodingISOLatin1,			@"IsoLatin" },
 	{ 0, kCFStringEncodingISOLatin2,			@"IsoLatin2" },
 	{ 0, kCFStringEncodingISOLatin5,			@"IsoLatin5" },
+	{ 0, kCFStringEncodingISOLatin9,			@"IsoLatin9" },
 	{ 0, kCFStringEncodingMacJapanese,			@"MacJapanese" },
 	{ 0, kCFStringEncodingDOSJapanese,			@"DOSJapanese" },
 	{ 0, kCFStringEncodingShiftJIS_X0213_00,	@"SJIS_X0213" },
@@ -167,12 +168,31 @@ static TSEncoding _availableEncodings[] = {
 			[currentEncoding isEqualToString:@"SJIS_X0213"] ) {
 		g_texChar = YEN; // yen
 		[g_taggedTeXSections release];
-		g_taggedTeXSections = [[NSArray alloc] initWithObjects:
+
+		if ([SUD boolForKey: ConTeXtTagsKey]) {
+			g_taggedTeXSections = [[NSArray alloc] initWithObjects:
+					filterBackslashToYen(@"\\chapter"),
+					filterBackslashToYen(@"\\section"),
+					filterBackslashToYen(@"\\subsection"),
+					filterBackslashToYen(@"\\subsubsection"),
+					filterBackslashToYen(@"\\subsubsubsection"),
+					filterBackslashToYen(@"\\subsubsubsubsection"),
+					filterBackslashToYen(@"\\part"),
+					filterBackslashToYen(@"\\title"),
+					filterBackslashToYen(@"\\subject"),
+					filterBackslashToYen(@"\\subsubject"),
+					filterBackslashToYen(@"\\subsubsubject"),
+					filterBackslashToYen(@"\\subsubsubsubject"),
+					filterBackslashToYen(@"\\subsubsubsubsubject"),
+					nil];
+		} else {
+			g_taggedTeXSections = [[NSArray alloc] initWithObjects:
 							filterBackslashToYen(@"\\chapter"),
 							filterBackslashToYen(@"\\section"),
 							filterBackslashToYen(@"\\subsection"),
 							filterBackslashToYen(@"\\subsubsection"),
 							nil];
+		}
 				// mitsu 1.29 (P)
 
 		// If the command completion list already exists, and we are about to change the filter mode:
@@ -201,6 +221,8 @@ static TSEncoding _availableEncodings[] = {
 		}
 	} else {
 		g_texChar = BACKSLASH;
+		
+		/*
 		[g_taggedTeXSections release];
 		g_taggedTeXSections = [[NSArray alloc] initWithObjects:
 							@"\\chapter",
@@ -208,6 +230,7 @@ static TSEncoding _availableEncodings[] = {
 							@"\\subsection",
 							@"\\subsubsection",
 							nil];
+		*/
 				// mitsu 1.29 (P)
 		// If the command completion list already exists, and we are about to change the filter mode:
 		// Update the command completion list to match the new filter mode. {

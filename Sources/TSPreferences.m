@@ -108,6 +108,8 @@ Loads the .nib file if necessary, fills all the controls with the values from th
 		when showing preferences: [self updateControlsFromUserDefaults:SUD]; */
 	}
 
+	[SUD synchronize];
+
 	[self updateControlsFromUserDefaults:SUD];
 	/* the next command causes windows to remember their font in case it is changed, and then
 	the change is cancelled */
@@ -630,9 +632,9 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 - (IBAction)tetexBinPathChanged:sender
 {
 	// register the undo messages first
-	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:TetexBinPath] 				forKey:TetexBinPath];
+	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:TetexBinPathKey] 				forKey:TetexBinPathKey];
 
-	[SUD setObject:[_tetexBinPathField stringValue] forKey:TetexBinPath];
+	[SUD setObject:[_tetexBinPathField stringValue] forKey:TetexBinPathKey];
 }
 
 //==============================================================================
@@ -641,9 +643,9 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 - (IBAction)gsBinPathChanged:sender
 {
 	// register the undo message first
-	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:GSBinPath] 				forKey:GSBinPath];
+	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:GSBinPathKey] 				forKey:GSBinPathKey];
 
-	[SUD setObject:[_gsBinPathField stringValue] forKey:GSBinPath];
+	[SUD setObject:[_gsBinPathField stringValue] forKey:GSBinPathKey];
 }
 
 //==============================================================================
@@ -1137,8 +1139,8 @@ This method retrieves the application preferences from the defaults object and s
 	[_latexCommandTextField setStringValue:[defaults stringForKey:LatexCommandKey]];
 	[_texGSCommandTextField setStringValue:[defaults stringForKey:TexGSCommandKey]];
 	[_latexGSCommandTextField setStringValue:[defaults stringForKey:LatexGSCommandKey]];
-	[_tetexBinPathField setStringValue:[defaults stringForKey:TetexBinPath]];
-	[_gsBinPathField setStringValue:[defaults stringForKey:GSBinPath]];
+	[_tetexBinPathField setStringValue:[defaults stringForKey:TetexBinPathKey]];
+	[_gsBinPathField setStringValue:[defaults stringForKey:GSBinPathKey]];
 
 	[_texScriptCommandTextField setStringValue:[defaults stringForKey:TexScriptCommandKey]];
 	[_latexScriptCommandTextField setStringValue:[defaults stringForKey:LatexScriptCommandKey]];

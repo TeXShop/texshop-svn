@@ -210,6 +210,15 @@ typedef enum _SyncMethodType
 	SEARCHFIRST = 2 // new pdf search first, but fall back on PDF sync if necessary
 } _SyncMethodType;
 
+/*" Comment and Indent Methods"*/
+typedef enum _CommentIndentType
+{
+	Mcomment = 1,
+	Muncomment = 2,
+	Mindent = 3,
+	Munindent = 4
+} _CommentIndentType;
+
 
 /*" global defines for TeXShop.app "*/
 extern NSString *DefaultCommandKey;
@@ -225,6 +234,7 @@ extern NSString *LatexPanelNameKey;
 extern NSString *MakeEmptyDocumentKey;
 extern NSString *UseExternalEditorKey;
 extern NSString *EncodingKey;
+extern NSString *LineBreakModeKey;
 extern NSString *TagSectionsKey;
 extern NSString *LPanelOutlinesKey;
 extern NSString *PanelOriginXKey;
@@ -259,8 +269,8 @@ extern NSString *PdfQuickDragKey; // mitsu 1.29 drag & drop
 extern NSString *SaveDocumentFontKey;
 extern NSString *SyntaxColoringEnabledKey;
 extern NSString *KeepBackupKey;
-extern NSString *TetexBinPath;
-extern NSString *GSBinPath;
+extern NSString *TetexBinPathKey;
+extern NSString *GSBinPathKey;
 extern NSString *TexCommandKey;
 extern NSString *TexGSCommandKey;
 extern NSString *TexScriptCommandKey;
@@ -323,6 +333,11 @@ extern NSString *AcceptFirstMouseKey;
 extern NSString *UseOldHeadingCommandsKey;
 extern NSString *SyncMethodKey;
 extern NSString *UseOutlineKey;
+extern NSString *LeftRightArrowsAlwaysPageKey;
+extern NSString *ReleaseDocumentClassesKey;
+extern NSString *RedConsoleAfterErrorKey;
+extern NSString *PreviewDrawerOpenKey;
+extern NSString *ConTeXtTagsKey;
 // end mitsu 1.29
 
 

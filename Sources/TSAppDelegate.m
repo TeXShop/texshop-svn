@@ -38,6 +38,10 @@
 #import "OgreKit/OgreTextFinder.h"
 #import "TextFinder.h"
 
+#include <sys/sysctl.h>     // for testForIntel
+#include <mach/machine.h>   // for testForIntel
+
+
 @class TSTextEditorWindow;
 
 
@@ -56,6 +60,25 @@
 {
 	[g_autocompletionDictionary release];
 	[super dealloc];
+}
+
+
+- (void)testForIntel;
+{
+	// if the processor is intel and the path variable preference is /usr/local/tetex/bin/powerpc-apple-darwin-current,
+	// then change that preference permanently to /usr/local/tetex/bin/i386-apple-darwin-current
+
+    NSString *binPath = [SUD stringForKey:TetexBinPathKey];
+    if (! [binPath isEqualToString:@"/usr/local/teTeX/bin/powerpc-apple-darwin-current"])
+		return;
+	
+	// Determine CPU type
+	cpu_type_t cputype;
+	size_t s = sizeof cputype;
+	if (sysctlbyname("hw.cputype", &cputype, &s, NULL, 0) == 0 && cputype == CPU_TYPE_I386) {
+		[SUD setObject:@"/usr/local/teTeX/bin/i386-apple-darwin-current" forKey:TetexBinPathKey];
+		[SUD synchronize];
+	}
 }
 
 
@@ -89,24 +112,59 @@
 	id theFinder;
 
 	g_macroType = LatexEngine;
+	
+	// WARNING: g_taggedTeXSections may be reset in EncodingSupport
+	
+	if ([SUD boolForKey: ConTeXtTagsKey]) {
 
-	g_taggedTeXSections = [[NSArray alloc] initWithObjects:
-					@"\\chapter",
+		g_taggedTeXSections = [[NSArray alloc] initWithObjects:@"\\chapter",
+					@"\\section",
+					@"\\subsection",
+					@"\\subsubsection",
+					@"\\subsubsubsection",
+					@"\\subsubsubsubsection",
+					@"\\part",
+					@"\\title",
+					@"\\subject",
+					@"\\subsubject",
+					@"\\subsubsubject",
+					@"\\subsubsubsubject",
+					@"\\subsubsubsubsubject",
+					nil];
+					
+		g_taggedTagSections = [[NSArray alloc] initWithObjects:@"chapter: ",
+					@"section: ",
+					@"subsection: ",
+					@"subsubsection: ",
+					@"subsubsubsection: ",
+					@"subsubsubsubsection: ",
+					@"part: ",
+					@"title: ",
+					@"subject: ",
+					@"subsubject: ",
+					@"subsubsubject: ",
+					@"subsubsubsubject: ",
+					@"subsubsubsubsubject: ",
+					nil];
+	} else {
+		
+		g_taggedTeXSections = [[NSArray alloc] initWithObjects:@"\\chapter",
 					@"\\section",
 					@"\\subsection",
 					@"\\subsubsection",
 					nil];
-
-	g_taggedTagSections = [[NSArray alloc] initWithObjects:
-					@"Chapter: ",
-					@"Section: ",
-					@"Subsection: ",
-					@"Subsubsection: ",
+					
+		g_taggedTagSections = [[NSArray alloc] initWithObjects:@"chapter: ",
+					@"section: ",
+					@"subsection: ",
+					@"subsubsection: ",
 					nil];
+	}
+		
 	// if this is the first time the app is used, register a set of defaults to make sure
 	// that the app is useable.
 	if (([[NSUserDefaults standardUserDefaults] boolForKey:TSHasBeenUsedKey] == NO) ||
-		([[NSUserDefaults standardUserDefaults] objectForKey:TetexBinPath] == nil)) {
+		([[NSUserDefaults standardUserDefaults] objectForKey:TetexBinPathKey] == nil)) {
 		[[TSPreferences sharedInstance] registerFactoryDefaults];
 	} else {
 		// register defaults
@@ -167,6 +225,8 @@
 		theFinder = [OgreTextFinder sharedTextFinder];
 	else
 		theFinder = [TextFinder sharedInstance];
+	    
+	[self testForIntel];
 }
 
 

@@ -48,9 +48,9 @@
 	NSMutableString *path;
 	path = [NSMutableString stringWithString: [env objectForKey:@"PATH"]];
 	[path appendString:@":"];
-	[path appendString:[SUD stringForKey:TetexBinPath]];
+	[path appendString:[SUD stringForKey:TetexBinPathKey]];
 	[path appendString:@":"];
-	[path appendString:[SUD stringForKey:GSBinPath]];
+	[path appendString:[SUD stringForKey:GSBinPathKey]];
 	[env setObject: path forKey: @"PATH"];
 
 
@@ -323,7 +323,7 @@
 			if (! writeable) {
 				enginePath = [[NSBundle mainBundle] pathForResource:@"altpdftex" ofType:nil];
 				argumentString = [[NSString stringWithString:@" --tex-path "]
-					stringByAppendingString: [[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath]];
+					stringByAppendingString: [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath]];
 				enginePath = [enginePath stringByAppendingString: argumentString];
 			} else
 				enginePath = [[SUD stringForKey:LatexGSCommandKey] stringByExpandingTildeInPath];
@@ -342,7 +342,7 @@
 				[args addObject: [NSString stringWithString:@"Panther"]];
 			else
 				[args addObject: [NSString stringWithString:@"Ghostscript"]];
-			gsPath = [[SUD stringForKey:GSBinPath] stringByExpandingTildeInPath];
+			gsPath = [[SUD stringForKey:GSBinPathKey] stringByExpandingTildeInPath];
 			[args addObject: gsPath];
 		} else if  ([[myFileName pathExtension] isEqualToString:@"eps"]) {
 			enginePath = [[NSBundle mainBundle] pathForResource:@"epstopdfwrap" ofType:nil];
@@ -350,9 +350,9 @@
 				[args addObject: [NSString stringWithString:@"Panther"]];
 			else
 				[args addObject: [NSString stringWithString:@"Ghostscript"]];
-			gsPath = [[SUD stringForKey:GSBinPath] stringByExpandingTildeInPath];
+			gsPath = [[SUD stringForKey:GSBinPathKey] stringByExpandingTildeInPath];
 			[args addObject: gsPath];
-			tetexBinPath = [[[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath] stringByAppendingString:@"/"];
+			tetexBinPath = [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"];
 			epstopdfPath = [tetexBinPath stringByAppendingString:@"epstopdf"];
 			[args addObject: epstopdfPath];
 			// [args addObject: [[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil]];
@@ -383,7 +383,7 @@
 
 		if (enginePath != nil) {
 			if ([enginePath characterAtIndex:0] != '/') {
-				tetexBinPath = [[[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath] stringByAppendingString:@"/"];
+				tetexBinPath = [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"];
 				enginePath = [tetexBinPath stringByAppendingString:enginePath];
 			}
 		}
@@ -624,7 +624,7 @@
 	// Ensure we have an absolute filename for the executable, prepending  the teTeX bin path if need be.
 	NSString* filename = leafname;
 	if (filename != nil && [filename length] > 0 && ([filename characterAtIndex: 0] != '/') && ([filename characterAtIndex: 0] != '~')) {
-		NSString* tetexBinPath = [[[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath] stringByAppendingString:@"/"];
+		NSString* tetexBinPath = [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"];
 		filename = [tetexBinPath stringByAppendingString: leafname];
 	}
 	
@@ -764,7 +764,7 @@
 			if (whichEngineLocal == ContextEngine) {
 				if (theScript == kTypesetViaPDFTeX) {
 					enginePath = [[NSBundle mainBundle] pathForResource:@"contextwrap" ofType:nil];
-					[args addObject: [[[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
+					[args addObject: [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
 					if (continuous)
 						[args addObject:@"YES"];
 					else
@@ -775,13 +775,13 @@
 						[args addObject:@"YES"];
 					else
 						[args addObject:@"NO"];
-					gsPath = [[SUD stringForKey:GSBinPath] stringByExpandingTildeInPath]; // 1.35 (D)
+					gsPath = [[SUD stringForKey:GSBinPathKey] stringByExpandingTildeInPath]; // 1.35 (D)
 					[args addObject: gsPath];
 					if (([SUD integerForKey:DistillerCommandKey] == 1) && (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_2))
 						[args addObject: @"Panther"];
 					else
 						[args addObject: @"Ghostscript"];
-					[args addObject: [[[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
+					[args addObject: [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
 					if ((theScript == kTypesetViaGhostScript) && ([SUD boolForKey:SavePSEnabledKey]))
 						[args addObject: @"yes"];
 					else
@@ -801,9 +801,9 @@
 					[args addObject: @"YES"];
 				else
 					[args addObject: @"NO"];
-				gsPath = [[SUD stringForKey:GSBinPath] stringByExpandingTildeInPath]; // 1.35 (D)
+				gsPath = [[SUD stringForKey:GSBinPathKey] stringByExpandingTildeInPath]; // 1.35 (D)
 				[args addObject: gsPath];
-				[args addObject: [[[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
+				[args addObject: [[[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath] stringByAppendingString:@"/"]];
 			} else {
 				switch (theScript) {
 					case kTypesetViaPDFTeX:
@@ -834,12 +834,12 @@
 							if (withLatex) {
 								enginePath = [[NSBundle mainBundle] pathForResource:@"altpdflatex" ofType:nil];
 								myEngine = [enginePath stringByAppendingString:@" --maxpfb --tex-path "];
-								myEngine = [myEngine stringByAppendingString: [[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath]]; // 1.35 (D)
+								myEngine = [myEngine stringByAppendingString: [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath]]; // 1.35 (D)
 																																				  // fixPath = NO;
 							} else {
 								enginePath = [[NSBundle mainBundle] pathForResource:@"altpdftex" ofType:nil];
 								myEngine = [enginePath stringByAppendingString:@" --maxpfb --tex-path "];
-								myEngine = [myEngine stringByAppendingString: [[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath]]; // 1.35 (D)
+								myEngine = [myEngine stringByAppendingString: [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath]]; // 1.35 (D)
 																																				  // fixPath = NO;
 							}
 						} else {
