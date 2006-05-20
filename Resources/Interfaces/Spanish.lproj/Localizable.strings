@@ -70,5 +70,6 @@
 "You have the most recent version of TeXShop." = "Tienes la versión más reciente de TeXShop.";
 "New version available" = "Nueva versión disponible";
 "A new version of TeXShop is available (version %@). Would you like to download it now?" = "Existe una nueva versión de TeXShop disponible (versión %@). ¿Quieres descargarla ahora?";
+"This version of TeXShop requires Mac OS X 10.4 or higher. Use TeXShop 1.37 instead." = "This version of TeXShop requires Mac OS X 10.4 or higher. Use TeXShop 1.37 instead.";
 "Hard Wrap" = "Hard Wrap";
 "Newline Removal" = "Newline Removal";

@@ -5,6 +5,7 @@
 "Typeset" = "Compor";
 "Save" = "Guardar";
 "Print..." = "Imprimir...";
+"Print Source..." = "Print Source...";
 "Set Project Root..." = "Documento principal...";
 "LaTeX Panel..." = "Painel LaTeX...";
 "Close LaTeX Panel" = "Fechar Painel LaTeX";

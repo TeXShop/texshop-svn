@@ -51,7 +51,7 @@
 "Completion" = "コマンド補完";
 "Path: %@\nFile size: %d bytes\nCreation date: %@\nModification date: %@" = "場所： %@\nファイルサイズ： %d バイト\n作成日： %@\n変更日： %@";
 "Info: %@" = "情報: %@";
-"%@\nCharacters: %d" = "%@\n\文字数: %d 文字";
+"%@\n\nCharacters: %d" = "%@\n\文字数: %d 文字";
 "The file encoding changed; characters can be lost if the wrong encoding is used." = "ファイルのエンコーディングが変更されました。違うエンコーディングを使うと、文字情報が失われることがあります。";
 "Currently open files retain their old encoding." = "現在開かれているファイルのエンコーディングは変更されません。";
 "Drag && Drop" = "ドラッグ＆ドロップ"; // zenitani 1.33
@@ -71,7 +71,5 @@
 "New version available" = "新しいバージョンが公開されています。";
 "A new version of TeXShop is available (version %@). Would you like to download it now?" = "TeXShop の新しいバージョン (version %@) が公開されています。今すぐダウンロードしますか？";
 "This version of TeXShop requires Mac OS X 10.4 or higher. Use TeXShop 1.37 instead." = "このバージョンの TeXShop が動作するためには Mac OS X 10.4 以上が必要です。代わりに TeXShop 1.37 をお使いください。";
-"This version of TeXShop requires Mac OS X 10.4 or higher. Use TeXShop 1.39 instead." = "このバージョンの TeXShop が動作するためには Mac OS X 10.4 以上が必要です。代わりに TeXShop 1.39 をお使いください。";
-"This version of TeXShop requires Mac OS X 10.4 or higher. Use TeXShop 1.40 instead." = "このバージョンの TeXShop が動作するためには Mac OS X 10.4 以上が必要です。代わりに TeXShop 1.40 をお使いください。";
 "Hard Wrap" = "Hard Wrap";
 "Newline Removal" = "Newline Removal";
