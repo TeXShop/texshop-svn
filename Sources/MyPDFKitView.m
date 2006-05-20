@@ -42,6 +42,7 @@
 
 	// Clean up.
 	[_searchResults release];
+	[sourceFiles release];
 
 	[super dealloc];
 }
@@ -204,14 +205,44 @@
 	[self initializeDisplay];
 }
 
+- (BOOL) doReleaseDocument
+{
+	long	MacVersion;
+	int		result;
+
+	result = [SUD integerForKey:ReleaseDocumentClassesKey];
+	if (result == 1)
+		return NO;
+	else if (result == 2)
+		return YES;
+	else {
+        if ((Gestalt(gestaltSystemVersion, &MacVersion) == noErr) && (MacVersion >= 0x1043)) 
+			return YES;
+		else
+			return NO;
+	}
+}
+
+
 - (void) showWithPath: (NSString *)imagePath
 {
 	
 	PDFDocument	*pdfDoc;
+	NSData	*theData;
 	
 	sourceFiles = nil;
-	pdfDoc = [[[PDFDocument alloc] initWithURL: [NSURL fileURLWithPath: imagePath]] retain];
-	[self setDocument: pdfDoc];
+	
+	// if ([SUD boolForKey:ReleaseDocumentClassesKey]) {
+	if ([self doReleaseDocument]) {
+		pdfDoc = [[[PDFDocument alloc] initWithURL: [NSURL fileURLWithPath: imagePath]] autorelease]; 
+		[self setDocument: pdfDoc];
+		// [pdfDoc release];
+	} else {
+		theData = [NSData dataWithContentsOfURL: [NSURL fileURLWithPath: imagePath]];
+		pdfDoc = [[[PDFDocument alloc] initWithData: theData] retain];
+		[self setDocument: pdfDoc];
+	}
+		
 	[self setup];
 	totalPages = [[self document] pageCount];
 	[totalPage setIntValue:totalPages];
@@ -222,19 +253,20 @@
 	[self setupOutline];
 	
 	[myPDFWindow makeKeyAndOrderFront: self];
-	
-	
+	if ([SUD boolForKey:PreviewDrawerOpenKey]) 
+		[self toggleDrawer: self];
 }
 
 - (void) reShowWithPath: (NSString *)imagePath
 {
 	
-	PDFDocument	*pdfDoc;
+	PDFDocument	*pdfDoc, *oldDoc;
 	PDFPage		*aPage;
 	int			theindex, oldindex;
 	BOOL		needsInitialization;
 	int			i, amount, newAmount;
 	PDFPage		*myPage;
+	NSData		*theData;
 	
 	[self cleanupMarquee: YES];
 	
@@ -246,6 +278,9 @@
 		needsInitialization = YES;
 	else
 		needsInitialization = NO;
+	
+	NSRect visibleRect = [[self documentView] visibleRect];
+	NSRect fullRect = [[self documentView] bounds];
 	
 	drawMark = NO;
 	aPage = [self currentPage];
@@ -260,8 +295,25 @@
 		[_searchResults release];
 		_searchResults = NULL;
 	}
-	pdfDoc = [[[PDFDocument alloc] initWithURL: [NSURL fileURLWithPath: imagePath]] retain];
-	[self setDocument: pdfDoc];
+			
+	// if ([SUD boolForKey:ReleaseDocumentClassesKey]) {
+	if ([self doReleaseDocument]) {
+		// NSLog(@"texshop release");
+		pdfDoc = [[[PDFDocument alloc] initWithURL: [NSURL fileURLWithPath: imagePath]] autorelease]; 
+		[self setDocument: pdfDoc];
+		// [pdfDoc release];
+	} else {
+		oldDoc = [self document];
+		theData = [NSData dataWithContentsOfURL: [NSURL fileURLWithPath: imagePath]];
+		pdfDoc = [[[PDFDocument alloc] initWithData: theData] retain];
+		// pdfDoc = [[PDFDocument alloc] initWithData: theData];
+		[self setDocument: pdfDoc];
+		if (oldDoc != NULL) {
+			[oldDoc setDelegate: NULL];
+			[oldDoc release];
+		}
+	}
+
 	[[self document] setDelegate: self];
 	totalPages = [[self document] pageCount];
 	[totalPage setIntValue:totalPages];
@@ -283,8 +335,23 @@
 		[self layoutDocumentView];
 	}
 	[self setupOutline];
+		
+	// WARNING: The next 9 lines of code are very fragile. Initially I used
+	// NSDisableScreenUpdates until I discovered that this call is only in 10.4.3 and above
+	// and works on Intel but not on PowerPC.
+	// In the code below, you'd think that goToPage should be inside the disableFlushWindow,
+	// but it doesn't seem to work there. If changes are made, be sure to test on
+	// Intel and on PowerPC.
 	aPage = [[self document] pageAtIndex: theindex];
 	[self goToPage: aPage];
+	
+	NSRect newFullRect = [[self documentView] bounds];
+	int difference = newFullRect.size.height - fullRect.size.height;
+	visibleRect.origin.y = visibleRect.origin.y + difference;
+	[[self window] disableFlushWindow];
+	[self display];
+	[[self documentView] scrollRectToVisible: visibleRect];
+	[[self window] enableFlushWindow];
 }
 
 
@@ -1082,6 +1149,16 @@
 
 	// koch; Dec 5, 2003
 
+	// The next lines fix a strange bug. Suppose the user has chosen the select tool,
+	// but then changes to the source window with command-1 and typesets to get back
+	// to the preview. Then the select tool is not active. The reason is that
+	// pushing the command key calls "flags changed" but releasing it doesn't call
+	// "flags changed" because now another window is active. Koch Jan 11, 2006
+	if (!([theEvent modifierFlags] & NSAlternateKeyMask) &&
+		!([theEvent modifierFlags] & NSCommandKeyMask) &&
+		!([theEvent modifierFlags] & NSControlKeyMask))
+		currentMouseMode = mouseMode;
+	
 	if (!([theEvent modifierFlags] & NSAlternateKeyMask) && ([theEvent modifierFlags] & NSCommandKeyMask)) {
 		currentMouseMode = mouseMode;
 		[[self window] invalidateCursorRectsForView: self];
@@ -1956,19 +2033,19 @@
 
 	[savePanel beginSheetForDirectory:nil file:nil
 		modalForWindow:[self window] modalDelegate:self
-		didEndSelector:@selector(saveSelctionPanelDidEnd:returnCode:contextInfo:)
+		didEndSelector:@selector(saveSelectionPanelDidEnd:returnCode:contextInfo:)
 		contextInfo:nil];
 }
 
 // save the image data from selected rectangle to a file
-- (void)saveSelctionPanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo
+- (void)saveSelectionPanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo
 {
 	if (returnCode == NSFileHandlingPanelOKButton && [sheet filename]) {
 		NSData *data = nil;
-		NSNumber *aNumber;
+		//NSNumber *aNumber;
 
-		aNumber = [NSNumber numberWithInt: [SUD integerForKey: PdfExportTypeKey]];
-		NSLog([aNumber stringValue]);
+		//aNumber = [NSNumber numberWithInt: [SUD integerForKey: PdfExportTypeKey]];
+		//NSLog([aNumber stringValue]);
 
 		data = [self imageDataFromSelectionType: [SUD integerForKey: PdfExportTypeKey]];
 
@@ -2109,6 +2186,7 @@
 	int				currentIndex;
 	NSFileManager	*manager;
 	BOOL			isDir;
+	unsigned	startIndex, lineEndIndex, contentsEndIndex;
 
 	manager = [NSFileManager defaultManager];
 
@@ -2118,6 +2196,38 @@
 	sourceText = [[myDocument textView] string];
 	sourceLength = [sourceText length];
 
+	searchText = @"%!TEX projectfile =";
+	done = NO;
+	maskRange.location = 0;
+	maskRange.length = sourceLength;
+	
+	// experiments show that the syntax is \include{file} where "file" cannot include ".tex" but the name must be "file.tex"
+	while ((!done) && (maskRange.length > 0) && (currentIndex < NUMBER_OF_SOURCE_FILES)) {
+		searchRange = [sourceText rangeOfString: searchText options:NSLiteralSearch range:maskRange];
+		if (searchRange.location == NSNotFound) 
+			done = YES;
+		else {
+			maskRange.location = searchRange.location + 1;
+			maskRange.length = sourceLength - maskRange.location;
+			[sourceText getLineStart: &startIndex end: &lineEndIndex contentsEnd: &contentsEndIndex forRange: searchRange];
+			newSearchRange.location = searchRange.location + 19;
+			newSearchRange.length = contentsEndIndex - newSearchRange.location;
+			filePath = [sourceText substringWithRange: newSearchRange];
+			if (filePath)
+			    filePath = [filePath stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]; 
+			if (filePath && ([filePath length] > 0)) {
+			    if ([filePath characterAtIndex: 0] != '/')
+					filePath = [[rootPath stringByAppendingString:@"/"] stringByAppendingString: filePath];
+			    filePath = [filePath stringByStandardizingPath];
+			    // add this to the array
+			    if (([manager fileExistsAtPath: filePath isDirectory:&isDir]) && (!isDir)) {
+					[sourceFiles insertObject: filePath atIndex: currentIndex];
+					currentIndex++;
+				}
+			}
+		}
+	}
+	
 	searchText = @"\\include{";
 	done = NO;
 	maskRange.location = 0;
@@ -3353,8 +3463,9 @@
 		[self previousPage:self];
 	} else if ((key == NSRightArrowFunctionKey) && ([theEvent modifierFlags] & NSCommandKeyMask)) {
 		[self nextPage:self];
-	} else if (((key == NSLeftArrowFunctionKey) || (key == NSRightArrowFunctionKey))
-		&& (! [[[[self documentView] enclosingScrollView] horizontalScroller] isEnabled])
+	} else if (((key == NSLeftArrowFunctionKey) || (key == NSRightArrowFunctionKey)) &&
+				([SUD boolForKey: LeftRightArrowsAlwaysPageKey] ||
+				! [[[[self documentView] enclosingScrollView] horizontalScroller] isEnabled])
 		) {
 		if (key == NSLeftArrowFunctionKey)
 			[self previousPage:self];

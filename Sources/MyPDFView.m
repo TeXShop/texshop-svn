@@ -3184,12 +3184,12 @@ failed. If you change the code below, be sure to test carefully!
 
 	[savePanel beginSheetForDirectory:nil file:nil
 		modalForWindow:[self window] modalDelegate:self
-		didEndSelector:@selector(saveSelctionPanelDidEnd:returnCode:contextInfo:)
+		didEndSelector:@selector(saveSelectionPanelDidEnd:returnCode:contextInfo:)
 		contextInfo:nil];
 }
 
 // save the image data from selected rectangle to a file
-- (void)saveSelctionPanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo
+- (void)saveSelectionPanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo
 {
 	if (returnCode == NSFileHandlingPanelOKButton && [sheet filename])
 	{

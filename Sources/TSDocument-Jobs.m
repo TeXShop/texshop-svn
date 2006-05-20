@@ -251,6 +251,54 @@
 	return (theEngine);
 }
 
+- (void) testGSCommandKey;
+{
+    NSString	    *gsTeXCommand, *path;
+    NSRange			theRange;
+    NSString	    *binaryLocation;
+    NSFileManager   *fileManager;
+    NSString	    *newGSTeXCommand;
+    BOOL			changed;
+	int				locationOfRest;
+    
+    changed = NO;
+    gsTeXCommand = [SUD stringForKey:TexGSCommandKey];
+    theRange = [gsTeXCommand rangeOfString: @"altpdftex"];
+    if (theRange.location != NSNotFound) { // && (theRange.location == 0)) {
+    locationOfRest = theRange.location + 9;
+	binaryLocation = [SUD stringForKey:TetexBinPathKey];
+	path = [binaryLocation stringByAppendingString:@"/simpdftex"];
+	fileManager = [NSFileManager defaultManager];
+	if ([fileManager fileExistsAtPath:path]) {
+		newGSTeXCommand = [NSString stringWithString: @"simpdftex tex"];
+		if ([gsTeXCommand length] > locationOfRest)
+		    newGSTeXCommand = [newGSTeXCommand stringByAppendingString: [gsTeXCommand substringFromIndex: locationOfRest]];
+		[SUD setObject:newGSTeXCommand forKey:TexGSCommandKey];
+		changed = YES;
+		}
+	}
+	
+    gsTeXCommand = [SUD stringForKey:LatexGSCommandKey];
+    theRange = [gsTeXCommand rangeOfString: @"altpdflatex"];
+    if (theRange.location != NSNotFound) { // && (theRange.location == 0)) {
+    locationOfRest = theRange.location + 11;
+	binaryLocation = [SUD stringForKey:TetexBinPathKey];
+	path = [binaryLocation stringByAppendingString:@"/simpdftex"];
+	fileManager = [NSFileManager defaultManager];
+	if ([fileManager fileExistsAtPath:path]) {
+		newGSTeXCommand = [NSString stringWithString: @"simpdftex latex"];
+		if ([gsTeXCommand length] > locationOfRest)
+		    newGSTeXCommand = [newGSTeXCommand stringByAppendingString: [gsTeXCommand substringFromIndex: locationOfRest]];
+		[SUD setObject:newGSTeXCommand forKey:LatexGSCommandKey];
+		changed = YES;
+		}
+	}
+	
+    if (changed)
+	[SUD synchronize];
+    
+}
+
 - (void) convertDocument
 {
 	NSFileManager	*fileManager;
@@ -320,13 +368,9 @@
 		[texTask setEnvironment: [self environmentForSubTask]];
 
 		if ([[myFileName pathExtension] isEqualToString:@"dvi"]) {
-			if (! writeable) {
-				enginePath = [[NSBundle mainBundle] pathForResource:@"altpdftex" ofType:nil];
-				argumentString = [[NSString stringWithString:@" --tex-path "]
-					stringByAppendingString: [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath]];
-				enginePath = [enginePath stringByAppendingString: argumentString];
-			} else
-				enginePath = [[SUD stringForKey:LatexGSCommandKey] stringByExpandingTildeInPath];
+			[self testGSCommandKey];
+			enginePath = [[SUD stringForKey:LatexGSCommandKey] stringByExpandingTildeInPath];
+
 			if (([SUD integerForKey:DistillerCommandKey] == 1) && (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_2))
 				enginePath = [enginePath stringByAppendingString: @" --distiller /usr/bin/pstopdf"];
 			if (! writeable) {
@@ -749,11 +793,12 @@
 		if ((whichEngineLocal == TexEngine) || (whichEngineLocal == LatexEngine) || (whichEngineLocal == MetapostEngine) || (whichEngineLocal == ContextEngine)) {
 			NSString* enginePath;
 			NSString* myEngine;
+/*
 			if ((theScript == kTypesetViaGhostScript) && ([SUD boolForKey:SavePSEnabledKey])
 				//        && (whichEngine != 2)   && (whichEngine != 4))
 				&& (whichEngineLocal != MetapostEngine) && (whichEngineLocal != ContextEngine))
 					[args addObject: [NSString stringWithString:@"--keep-psfile"]];
-			
+*/			
 			if (texTask != nil) {
 				[texTask terminate];
 				[texTask release];
@@ -843,6 +888,7 @@
 																																				  // fixPath = NO;
 							}
 						} else {
+							[self testGSCommandKey];
 							if (withLatex)
 								myEngine = [[SUD stringForKey:LatexGSCommandKey] stringByExpandingTildeInPath]; // 1.35 (D)
 							else
@@ -878,6 +924,9 @@
 			if ((whichEngineLocal != MetapostEngine) && (whichEngineLocal != ContextEngine)) {
 				
 				enginePath = [self separate:myEngine into:args];
+
+				if ((theScript == kTypesetViaGhostScript) && ([SUD boolForKey:SavePSEnabledKey])) 
+					[args addObject: [NSString stringWithString:@"--keep-psfile"]];
 			}
 			
 			// Koch: Feb 20; this allows spaces everywhere in path except
@@ -1177,7 +1226,8 @@
 		// in the next two lines, replace "command" by "old command" after Japanese modification made -- koch
 		[outputText replaceCharactersInRange: selectedRange withString: command];
 		selectedRange.length = [command length];
-		[outputText setTextColor: [NSColor redColor] range: selectedRange];
+		if ([SUD boolForKey: RedConsoleAfterErrorKey])
+			[outputText setTextColor: [NSColor redColor] range: selectedRange];
 		[outputText scrollRangeToVisible: selectedRange];
 		[texCommand setStringValue: @""];
 		// end addition

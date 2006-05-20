@@ -37,7 +37,7 @@
 - (void) doChooseMethod: sender;
 - (void) makeKeyAndOrderFront:(id)sender;
 - (void) becomeMainWindow;
-//- (void) sendEvent:(NSEvent *)theEvent;
+- (void) sendEvent:(NSEvent *)theEvent;
 - (void) associatedWindow:(id)sender;
 // forsplit
 - (BOOL)makeFirstResponder:(NSResponder *)aResponder;

@@ -27,6 +27,9 @@
 
 #import "TSDocument.h"
 #import <OgreKit/OgreKit.h> // zenitani 1.35 (A)
+#import <Security/Authorization.h>
+#import <Security/AuthorizationTags.h>
+
 
 #import "MyPDFView.h"
 #import "MyPDFKitView.h"
@@ -46,17 +49,8 @@
 #import "TSDocumentController.h"
 
 
-#define Mcomment 1
-#define Muncomment 2
-#define Mindent 3
-#define Munindent 4
-
 #define COLORTIME  0.02
 #define COLORLENGTH 5000
-
-// #define COLORTIME  .02
-// #define COLORLENGTH 500000
-
 
 
 @implementation TSDocument
@@ -224,7 +218,10 @@
 
 	[super windowControllerDidLoadNib:aController];
 
-
+	// can this fix the printer; Feb 1, 2006
+	
+	// [self setPrintInfo:[NSPrintInfo sharedPrintInfo]];
+	
 	// the code below exists because the spell checker sometimes did not exist
 	// in Panther developer releases; it is probably not necessary for
 	// the final release
@@ -235,6 +232,13 @@
 		spellExists = NO;
 	NS_ENDHANDLER
 
+	switch ([SUD integerForKey: LineBreakModeKey]) {
+		case 0: lineBreakMode = NSLineBreakByClipping;          break;
+		case 1: lineBreakMode = NSLineBreakByWordWrapping;		break;
+		case 2: lineBreakMode = NSLineBreakByCharWrapping;		break;
+		// FIXME: Should we handle invalid keys here better?
+		default: lineBreakMode = NSLineBreakByCharWrapping;		break;
+	}
 
 	/* New forsplit */
 
@@ -253,8 +257,15 @@
 	[self setupTextView:textView2];
 	if (spellExists)
 		[textView2 setContinuousSpellCheckingEnabled:[SUD boolForKey:SpellCheckEnabledKey]];
+
+	//mfwitten@mit.edu: Ruler stuff; ruler should not have formatting tools
+	[scrollView2 setHasHorizontalRuler: NO];
+	[textView2 setUsesRuler: NO];
+	// end witten
+
 	[scrollView2 setDocumentView:textView2];
 	[textView2 release];
+
 
 	// Create a custom NSTextStorage and make sure the two NSTextViews both use it.
 	[[textView1 layoutManager] replaceTextStorage:_textStorage];
@@ -302,6 +313,7 @@
 	if (( ! [fileExtension isEqualToString: @"tex"]) && ( ! [fileExtension isEqualToString: @"TEX"])
 		&& ( ! [fileExtension isEqualToString: @"dtx"]) && ( ! [fileExtension isEqualToString: @"ins"])
 		&& ( ! [fileExtension isEqualToString: @"sty"]) && ( ! [fileExtension isEqualToString: @"cls"])
+		&& ( ! [fileExtension isEqualToString: @"Rnw"])
 		// added by mitsu --(N) support for .def, .fd, .ltx. .clo
 		&& ( ! [fileExtension isEqualToString: @"def"]) && ( ! [fileExtension isEqualToString: @"fd"])
 		&& ( ! [fileExtension isEqualToString: @"ltx"]) && ( ! [fileExtension isEqualToString: @"clo"])
@@ -729,16 +741,14 @@ in other code when an external editor is being used. */
 - (BOOL)writeToFile:(NSString *)fileName ofType:(NSString *)docType
 {
 	BOOL		result;
-	NSUndoManager	*myManager;
 
 	result = [super writeToFile:fileName ofType:docType];
 	if (result) {
-		// We register a dummy undo operation here, to make sure that the undo stack
-		// is properly synced to the actual editing state of the document.
-		myManager = [self undoManager];
-		[myManager registerUndoWithTarget:self selector:@selector(doNothing:) object: nil];
-		[myManager setActionName:NSLocalizedString(@"Save Spot", @"Save Spot")];
-		[[textWindow undoManager] undo];
+		// We have to break the undo coalescing after saving, otherwise the "document edited symbol"
+		// and the undo stack will get out of sync, leading to bad behavior.
+		// Note that breakUndoCoalescing was only added in 10.4, before that we had to do some
+		// dirty tricks to get acceptable behavior.
+		[textView breakUndoCoalescing];
 	}
 	return result;
 }
@@ -760,6 +770,8 @@ in other code when an external editor is being used. */
 	return value;
 }
 
+// - (void) printDocumentWithSettings: (NSDictionary :)printSettings showPrintPanel:(BOOL)showPrintPanel delegate:(id)delegate 
+// 	didPrintSelector:(SEL)didPrintSelector contextInfo:(void *)contextInfo
 - (void)printShowingPrintPanel:(BOOL)flag
 {
 	id				printView;
@@ -2159,6 +2171,23 @@ preference change is cancelled. "*/
 	}
 	// end forsplit
 
+	//Michael Witten: mfwitten@mit.edu
+	if ([anItem action] == @selector(setLineBreakMode:)) {
+		switch ([anItem tag]) {
+			case 0: [anItem setState: (lineBreakMode == NSLineBreakByClipping)	   ? NSOnState : NSOffState]; break;
+			case 1: [anItem setState: (lineBreakMode == NSLineBreakByWordWrapping) ? NSOnState : NSOffState]; break;
+			case 2: [anItem setState: (lineBreakMode == NSLineBreakByCharWrapping) ? NSOnState : NSOffState]; break;
+		}
+	}
+    
+    if ([anItem action] == @selector(hardWrapSelection:)) {
+		if (lineBreakMode == NSLineBreakByClipping)
+			return NO;
+		else
+			return YES;
+	}
+	// end witten
+
 	return [super validateMenuItem: anItem];
 }
 
@@ -2958,57 +2987,37 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 }
 
 // The code below is a modification of code from Apple's TextEdit example
-
+//mfwitten@mit.edu: 22 June 2005 Cleaned up
 - (void)fixUpTabs {
-	BOOL			empty = NO;
-	NSRange			myRange, theRange;
-	unsigned			tabWidth;
-	NSParagraphStyle 		*paraStyle;
-	NSMutableParagraphStyle 	*newStyle;
-	NSFont			*font = nil;
-	NSData			*fontData;
-	
-	NSString *string = [_textStorage string];
-	
-	if ([SUD boolForKey:SaveDocumentFontKey] == NO) {
-		font = [NSFont userFontOfSize:12.0];
+    NSFont		*	font		= nil;
+	NSData		*	fontData;
+    
+    if ([SUD boolForKey:SaveDocumentFontKey] == NO) {
+        font = [NSFont userFontOfSize:12.0];
 	} else {
-		fontData = [SUD objectForKey:DocumentFontKey];
-		if (fontData != nil) {
-			font = [NSUnarchiver unarchiveObjectWithData:fontData];
-			[textView setFont:font];
+        fontData = [SUD objectForKey:DocumentFontKey];
+        if (fontData != nil) {
+            font = [NSUnarchiver unarchiveObjectWithData:fontData];
+            [textView setFont:font];
 		} else
-			font = [NSFont userFontOfSize:12.0];
+            font = [NSFont userFontOfSize:12.0];
 	}
 	
-	// I cannot figure out how to set the tabs if there is no text, so in that
-	// case I insert text and later remove it; Koch, 11/28/2002
-	if ([string length] == 0) {
-		empty = YES;
-		myRange.location = 0; myRange.length = 0;
-		// empty files have a space, but the cursor is at the start
-		[_textStorage replaceCharactersInRange: myRange withString:@" "];
-	}
+	unsigned					tabWidth			= [SUD integerForKey: tabsKey];
+	unsigned					textStorageLength	= [_textStorage length];
+    NSArray					*	desiredTabStops		= tabStopArrayForFontAndTabWidth(font, tabWidth);
+	NSParagraphStyle 		*	paraStyle			= [NSParagraphStyle defaultParagraphStyle];
+    NSMutableParagraphStyle	*	newStyle			= [[paraStyle mutableCopyWithZone:[_textStorage zone]] autorelease];
 	
-	tabWidth = [SUD integerForKey: tabsKey];
-	
-	NSArray *desiredTabStops = tabStopArrayForFontAndTabWidth(font, tabWidth);
-	
-	paraStyle = [NSParagraphStyle defaultParagraphStyle];
-	newStyle = [paraStyle mutableCopyWithZone:[_textStorage zone]];
 	[newStyle setTabStops:desiredTabStops];
-	theRange.location = 0; theRange.length = [string length];
-	[_textStorage addAttribute:NSParagraphStyleAttributeName value:newStyle range: theRange];
-	[newStyle release];
 	
-	if (empty) {
-		myRange.location = 0; myRange.length = 1;
-		//        [[textView textStorage] replaceCharactersInRange: myRange withString:@""]; //was "\b"
-	}
-	
+	if (textStorageLength)
+		[_textStorage addAttribute:NSParagraphStyleAttributeName value:newStyle range:NSMakeRange(0, textStorageLength)];
+        
 	[textView setFont:font];
-	
+	[textView setDefaultParagraphStyle: newStyle];
 }
+
 
 // added by mitsu --(J) Typeset command, (D) Tags and (H) Macro
 - (int)whichEngine
@@ -3227,10 +3236,16 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 // mitsu 1.29 (T3)
 - (void) doCommentOrIndent: (id)sender
 {
+	[self doCommentOrIndentForTag: [sender tag]];
+}
+
+- (void) doCommentOrIndentForTag: (int)tag
+{
 	NSString		*text, *oldString;
 	NSRange		myRange, modifyRange, tempRange, oldRange;
 	unsigned		start, end, end1, changeStart, changeEnd;
 	int			theChar;
+	NSString	*theCommand;
 	
 	text = [textView string];
 	myRange = [textView selectedRange];
@@ -3251,7 +3266,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		if ((end1 - start) > 0)
 			theChar = [text characterAtIndex: start];
 		
-		switch ([sender tag]) {
+		switch (tag) {
 			case Mcomment:
 				tempRange.location = start;
 				tempRange.length = 0;
@@ -3260,6 +3275,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 				oldRange.length++;
 				changeEnd++;
 				end++;
+				theCommand = NSLocalizedString(@"Comment", @"Comment");
 				break;
 				
 			case Muncomment:
@@ -3271,6 +3287,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 					oldRange.length--;
 					changeEnd--;
 					end--;
+					theCommand = NSLocalizedString(@"Uncomment", @"Uncomment");
 				}
 				break;
 				
@@ -3282,6 +3299,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 				oldRange.length++;
 				changeEnd++;
 				end++;
+				theCommand = NSLocalizedString(@"Indent", @"Indent");
 				break;
 				
 			case Munindent:
@@ -3293,6 +3311,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 					oldRange.length--;
 					changeEnd--;
 					end--;
+					theCommand = NSLocalizedString(@"Unindent", @"Unindent");
 				}
 				break;
 				
@@ -3305,7 +3324,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	[textView setSelectedRange: tempRange];
 	
 	[self registerUndoWithString:oldString location:oldRange.location
-						  length:oldRange.length key: [sender title]];
+						  length:oldRange.length key: theCommand];
 }
 
 // end mitsu 1.29
@@ -3531,4 +3550,391 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		return aString;
 }
 
+// ------------------------ Configure TeX Paper-Size ------------------------------
+//
+// This was an attempt to let TeXShop configure TeX's paper size
+// but the attempt was aborted because TeXShop isn't a TeX configuration tool,
+// and because Apple's security mechanism is hard to deal with.
+// For the moment, I'm leaving the code in place.
+//
+
+- (void) configurePaperSize: sender;
+{
+	[PaperSizeChoice selectCellWithTag:0];
+	[PaperSizePanel makeKeyAndOrderFront:self];
+}
+
+- (void) paperSizeOKPressed: sender;
+{   
+    int	paperChoice;
+    
+    paperChoice = [[PaperSizeChoice selectedCell] tag];
+    [PaperSizePanel close];
+    if (paperChoice == 0) return;
+    
+    // The code below is modified from an article by Brian R. Hill
+    // See http://www.stepwise.com/Articles/Technical/2001-03-26.01.html
+
+    // We'll be hanging onto the authorizationRef
+    // and using it throughout the code samples
+
+    AuthorizationRef authorizationRef = NULL;
+    OSStatus err = 0;
+     
+    // The authorization rights structure holds a reference to an array
+    // of AuthorizationItem structures that represent the rights for which
+    // you are requesting access.
+
+    AuthorizationRights rights;
+    AuthorizationFlags flags;
+    
+    // We just want the user's current authorization environment,
+    // so we aren't asking for any additional rights yet.
+
+    rights.count=0;
+    rights.items = NULL;
+        
+    flags = kAuthorizationFlagDefaults;
+    
+    err = AuthorizationCreate(&rights, kAuthorizationEmptyEnvironment, 
+                              flags, &authorizationRef);
+			      
+    AuthorizationItem items[1];
+    
+    NSString *teTeXBinPath = [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath];
+    NSString *toolPath = [teTeXBinPath stringByAppendingString: @"/texconfig-sys"];
+    const char *myPath =  [toolPath cStringUsingEncoding: NSASCIIStringEncoding];
+    
+    BOOL authorized = NO;
+   
+/*
+    // There should be one item in the AuthorizationItems array for each
+    // right you want to acquire.
+
+    // The data in the value and valueLength is dependent on which right you
+    // want to acquire. 
+        
+    // For the right to execute tools as root, kAuthorizationRightExecute,
+    // they should hold a pointer to a C string containing the path to 
+    // the tool you want to execute, and the length of the C string path.
+
+    // There needs to be one item for each tool you want to execute.
+        
+    items[0].name = kAuthorizationRightExecute;
+    items[0].value = myPath;
+    items[0].valueLength = strlen(myPath);
+    items[0].flags = 0;
+
+    rights.count=1;
+    rights.items = items;
+    
+    flags = kAuthorizationFlagExtendRights;
+    
+    // Since we've specified kAuthorizationFlagExtendRights and
+    // haven't specified kAuthorizationFlagInteractionAllowed, if the
+    // user isn't currently authorized to execute tools as root,
+    // they won't be asked for a password and err will indicate
+    // an authorization failure.
+
+    err = AuthorizationCopyRights(authorizationRef,&rights,
+                                  kAuthorizationEmptyEnvironment,
+                                  flags, NULL);
+
+    authorized = (errAuthorizationSuccess==err);
+*/
+
+    AuthorizationItem item[1];
+    
+    item[0].name = kAuthorizationRightExecute;
+    item[0].value = myPath;
+    item[0].valueLength = strlen(myPath);
+    item[0].flags = 0;
+    
+    rights.count=1;
+    rights.items = item;
+    
+    flags = kAuthorizationFlagInteractionAllowed 
+               | kAuthorizationFlagExtendRights;
+
+    // Here, since we've specified kAuthorizationFlagExtendRights and
+    // have also specified kAuthorizationFlagInteractionAllowed, if the
+    // user isn't currently authorized to execute tools as root 
+    // (kAuthorizationRightExecute),they will be asked for their password. 
+
+    // The err return value will indicate authorization success or failure.
+
+    err = AuthorizationCopyRights(authorizationRef,&rights,
+                                  kAuthorizationEmptyEnvironment,
+                                  flags, NULL);
+    authorized = (errAuthorizationSuccess==err);
+
+    if (authorized) {
+    
+	char* args[3];
+	FILE* iopipe=NULL;
+	// The arguments parameter to AuthorizationExecuteWithPrivileges is
+	// a NULL terminated array of C string pointers.
+
+	args[0] = "paper";
+	if (paperChoice == 1)
+	    args[1] = "a4";
+	else if (paperChoice == 2)
+	    args[1] = "letter";
+	args[2] = NULL;
+
+	err = AuthorizationExecuteWithPrivileges(authorizationRef,
+		    myPath, 0, args, &iopipe);
+		    
+	if (err != 0) 
+	    NSLog(@"Error %d in AuthorizationExecuteWithPrivileges", err);
+    }
+    
+    AuthorizationFree(authorizationRef,kAuthorizationFlagDestroyRights);
+
+}
+
+- (void) paperSizeCancelPressed: sender;
+{
+    [PaperSizePanel close];
+}
+
+//--------------- end of paper-size code ----------------------------
+
+
+// The code below to handle line break algorithms and hard wrapping was written by
+// Michael Witten: mfwitten@mit.edu; May, June, 2005
+
+- (void)setLineBreakMode: (id)sender
+{
+	//choose the mode
+	int modeNew = [sender tag];
+	switch (modeNew)
+	{
+		case 0: lineBreakMode = NSLineBreakByClipping;          break;
+		case 1: lineBreakMode = NSLineBreakByWordWrapping;		break;
+		case 2: lineBreakMode = NSLineBreakByCharWrapping;		break;
+	}
+		
+	//Setup the stuff
+	switch (lineBreakMode)
+	{
+		case NSLineBreakByClipping:
+        {
+            NSTextContainer *   container       = [textView textContainer];
+            NSSize              containerSize   = [container containerSize];
+                                containerSize.width = FLT_MAX;
+            
+			[scrollView setHasHorizontalScroller:  YES];
+			[textView setHorizontallyResizable: YES];
+            [container setWidthTracksTextView: NO];
+			[container setContainerSize: containerSize];
+            
+			//Apparently, the frame must be made the largest possible so as to make the scroll bars correct.
+			[textView setFrameSize: containerSize];
+			
+			//The above code causes the text to be incorrectly drawn. This fixes that.
+			[textView setFrameSize: [scrollView contentSize]];
+			
+			//Do the same for the second textView:
+            container       = [textView2 textContainer];
+            containerSize   = [container containerSize];
+            containerSize.width = FLT_MAX;
+            
+			[scrollView2 setHasHorizontalScroller:  YES];
+			[textView2 setHorizontallyResizable: YES];
+            [container setWidthTracksTextView: NO];
+			[container setContainerSize: containerSize];
+			[textView2 setFrameSize: containerSize];
+            [textView2 setFrameSize: [scrollView contentSize]];
+            
+			break;
+		}
+		//case NSLineBreakByWordWrapping:
+		//case NSLineBreakByCharWrapping:
+		default:
+            [scrollView setHasHorizontalScroller: NO];
+			[textView setHorizontallyResizable: NO];
+			[textView setAutoresizingMask: NSViewWidthSizable];
+			[[textView textContainer] setWidthTracksTextView: YES];
+			[textView setFrameSize: [scrollView contentSize]];
+			
+			//Do the same for the second textView:
+            [scrollView2 setHasHorizontalScroller: NO];
+			[textView2 setHorizontallyResizable: NO];
+			[textView2 setAutoresizingMask: NSViewWidthSizable];
+			[[textView2 textContainer] setWidthTracksTextView: YES];
+			[textView2 setFrameSize: [scrollView contentSize]];
+            
+			break;
+	}
+        	
+	//Reformat the text
+	unsigned						textStorageLength	= [_textStorage length];
+    NSMutableParagraphStyle		*	styleNew;
+    if (textStorageLength)
+    {
+        styleNew = [[[_textStorage attribute: NSParagraphStyleAttributeName atIndex: 0 effectiveRange: nil] mutableCopyWithZone: [_textStorage zone]] autorelease];
+        [styleNew setLineBreakMode: lineBreakMode];
+        [_textStorage addAttribute: NSParagraphStyleAttributeName value: styleNew range: NSMakeRange(0, textStorageLength)];
+    }
+    
+	//This is so that the when everything is deleted, the format remains the same.
+    styleNew = [[[textView defaultParagraphStyle] mutableCopy] autorelease];
+    [styleNew setLineBreakMode: lineBreakMode];
+    
+	[textView  setDefaultParagraphStyle: styleNew];
+	[textView2 setDefaultParagraphStyle: styleNew];
+}
+
+
+- (void)hardWrapSelection: (id)sender
+{
+	NSRange				charRange			= [textView selectedRange];
+    unsigned            textStorageIndexLast= [_textStorage length] - 1;
+	NSString		*	textStorageString	= [_textStorage string];
+	NSMutableArray	*	newlineIndexes		= [[[NSMutableArray alloc] init] autorelease];
+	NSLayoutManager	*	layoutManager   	= [textView layoutManager];
+	
+	if ((charRange.length == 0) && ((charRange = [textView2 selectedRange]).length == 0))
+        charRange = NSMakeRange(0, [_textStorage length]);
+	
+	unsigned    charRangeLocationLast   = charRange.location + charRange.length - 1;
+    
+    //extend the range to the previous line
+    [layoutManager lineFragmentRectForGlyphAtIndex: charRange.location effectiveRange: &charRange];
+    if (charRange.location != 0)
+        charRange.location--;
+	
+	while (true)
+	{
+		[layoutManager lineFragmentRectForGlyphAtIndex: charRange.location effectiveRange: &charRange];
+		
+		charRange.location += charRange.length - 1;
+		charRange.length	= 1;
+		
+        if (charRange.location >= textStorageIndexLast)
+			break;
+        
+        if (![[textStorageString substringWithRange: charRange] isEqualToString: @"\n"])
+            [newlineIndexes insertObject: [NSNumber numberWithUnsignedInt: ++charRange.location] atIndex: 0];
+        else
+            charRange.location++;
+        
+        if (charRange.location >= charRangeLocationLast)
+			break;
+	}
+    
+	if ([newlineIndexes count])
+		[self insertNewlinesFromSelectionUsingIndexes: newlineIndexes withActionName: NSLocalizedString(@"Hard Wrap", @"Hard Wrap")];
+}
+
+- (void)removeNewLinesFromSelection: (id)sender
+{
+	NSString		*	textStorageString	= [_textStorage string];
+	NSMutableArray	*	newlineIndexes		= [[[NSMutableArray alloc] init] autorelease];
+	NSRange				charRange			= [textView selectedRange];
+	
+	if (charRange.length == 0)
+    {
+		charRange = [textView2 selectedRange];
+        
+        if (charRange.length == 0)
+            charRange = NSMakeRange(0, [_textStorage length]);
+    }
+	
+	unsigned charRangeStart = charRange.location;
+	
+	for (charRange.location = (charRange.location + charRange.length - 1), charRange.length = 1; charRange.location > charRangeStart; charRange.location--)
+	{
+		if ([[textStorageString substringWithRange: charRange] isEqualToString: @"\n"])		
+			[newlineIndexes addObject: [NSNumber numberWithUnsignedInt: charRange.location]];
+	}
+	
+	if ([newlineIndexes count])
+		[self removeNewlinesUsingIndexes: newlineIndexes withActionName: NSLocalizedString(@"Newline Removal", @"Newline Removal")];
+}
+
+- (void)insertNewlinesFromSelectionUsingIndexes: (NSArray*)indexes withActionName: (NSString*)actionName //added by mfwitten@mit.edu
+{	
+	NSUndoManager	*	undoManager			= [textView undoManager];
+	NSMutableArray	*	indexesReversed		= [[[NSMutableArray alloc] init] autorelease];
+	NSEnumerator	*	indexesEnumerator	= [indexes objectEnumerator];
+	NSNumber		*	index;
+    
+    NSRange				selectedRange		= [textView selectedRange];
+    BOOL                selected            = YES;
+    NSTextView      *   textViewSelected    = textView;
+	
+	if ((selectedRange.length == 0) && ((selectedRange = [textView2 selectedRange]).length == 0))
+        selected = NO;
+	
+	while ((index = (NSNumber*)[indexesEnumerator nextObject]))
+	{
+		[_textStorage insertAttributedString: [[[NSAttributedString alloc] initWithString: @"\n"] autorelease] atIndex: [index unsignedIntValue]];
+		[indexesReversed insertObject: index atIndex: 0];
+	}
+    
+    if (selected)
+    {
+        unsigned offset         = 0;
+        unsigned indexesCount   = [indexes count];
+                
+        if ([(NSNumber*)[indexes objectAtIndex: indexesCount - 1] unsignedIntValue] <= selectedRange.location)
+        {
+            selectedRange.location++;
+            offset = 1;
+        }
+        
+        selectedRange.length += indexesCount - offset;
+        
+        [textViewSelected setSelectedRange: selectedRange];
+    }
+    
+	[undoManager setActionName: actionName];
+	[[undoManager prepareWithInvocationTarget: self]
+			removeNewlinesUsingIndexes: indexesReversed withActionName: actionName];
+}
+
+- (void)removeNewlinesUsingIndexes: (NSArray*)indexes withActionName: (NSString*)actionName //added by mfwitten@mit.edu
+{	
+	NSUndoManager	*	undoManager					= [textView undoManager];
+	NSMutableArray	*	indexesReversed				= [[[NSMutableArray alloc] init] autorelease];
+	NSEnumerator	*	indexesEnumerator			= [indexes objectEnumerator];
+	NSNumber		*	index;
+	
+    NSRange				selectedRange		= [textView selectedRange];
+    BOOL                selected            = YES;
+    NSTextView      *   textViewSelected    = textView;
+	
+	if ((selectedRange.length == 0) && ((selectedRange = [textView2 selectedRange]).length == 0))
+        selected = NO;
+    
+	while ((index = (NSNumber*)[indexesEnumerator nextObject]))
+	{
+		[_textStorage deleteCharactersInRange: NSMakeRange([index unsignedIntValue], 1)];
+		[indexesReversed insertObject: index atIndex: 0];
+	}
+    
+    if (selected)
+    {
+        unsigned offset         = 0;
+        unsigned indexesCount   = [indexes count];
+                
+        if ([(NSNumber*)[indexes objectAtIndex: 0] unsignedIntValue] <= selectedRange.location)
+        {
+            selectedRange.location--;
+            offset = 1;
+        }
+        
+        selectedRange.length -= indexesCount - offset;
+        
+        [textViewSelected setSelectedRange: selectedRange];
+    }
+	
+	[undoManager setActionName: actionName];
+	[[undoManager prepareWithInvocationTarget: self]
+			insertNewlinesFromSelectionUsingIndexes: indexesReversed withActionName: actionName];
+}
+
+// end witten
 @end

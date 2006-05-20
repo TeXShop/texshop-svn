@@ -92,7 +92,7 @@
 {
 	// This method will only be called when knowsPageRange: return YES, i.e. only
 	// if _imageRep is a NSPDFImageRep.
-	NSPDFImageRep *pdfRep = _imageRep;
+	NSPDFImageRep *pdfRep = (NSPDFImageRep *)_imageRep;
 	int		thePage;
 	NSRect	aRect;
 
