@@ -1,7 +1,8 @@
 /* Localizable Strings: Spanish */
 
+/* Tags menu */
 "Tags" = "Marcas";
-"Typeset" = "Componer";					/*% Name of "Typeset" menu */
+"Typeset" = "Componer";
 "Save" = "Guardar";
 "Print..." = "Imprimir...";
 "Print Source..." = "Imprimir código...";
@@ -69,3 +70,5 @@
 "You have the most recent version of TeXShop." = "Tienes la versión más reciente de TeXShop.";
 "New version available" = "Nueva versión disponible";
 "A new version of TeXShop is available (version %@). Would you like to download it now?" = "Existe una nueva versión de TeXShop disponible (versión %@). ¿Quieres descargarla ahora?";
+"Hard Wrap" = "Hard Wrap";
+"Newline Removal" = "Newline Removal";
