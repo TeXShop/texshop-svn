@@ -16,6 +16,9 @@
 /* "IsoLatin5" corresponds to code 0x00000209 in TextEncodingNames.string */
 "IsoLatin5"	= "Türkisch (ISO Latin 5)";
 
+/* "IsoLatin9" corresponds to code 0x0000020F in TextEncodingNames.string */
+"IsoLatin9"	= "Westeuropäisch (ISO Latin 9)";
+
 /* "MacJapanese" corresponds to code 0x00000001 in TextEncodingNames.string */
 "MacJapanese"	= "Japanisch (Mac OS, ShiftJIS ¥)";
 
