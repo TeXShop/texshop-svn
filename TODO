@@ -2,7 +2,6 @@ Some of the things Richard and Max have to do before the release:
 
 * Update ogrekit for Intel compatibility (Dick)
 * Re-add all existing localizations (Max)
-* Fix the "Save As" encoding popup (Max)
 * Backport all changes made between 2.03 and 2.09b:
   - Source code has been updated
   - Help files: TODO

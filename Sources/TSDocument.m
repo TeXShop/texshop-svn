@@ -558,21 +558,32 @@
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
 {
-	NSView	*accessoryView;
+	NSView				*oldAccessoryView;
+	NSStringEncoding	theCode;
+ 
 
-	// FIXME HACK: This can be removed once we converted all encoding menus to be generated on the fly.
-	NSString *encName = [[TSEncodingSupport sharedInstance] keyForStringEncoding:_encoding];
-	int tag = [[TSEncodingSupport sharedInstance] tagForEncoding:encName];
+	// Create the contents of the encoding menu on the fly
+	[openSaveBox removeAllItems];
+	[[TSEncodingSupport sharedInstance] addEncodingsToMenu:[openSaveBox menu] withTarget:0 action:0];
 
-	[openSaveBox selectItemAtIndex: tag];
-	accessoryView = [savePanel accessoryView];
-	[openSaveView retain];	// FIXME: Why is this retain needed?
+	// Select active encoding
+	theCode = [[TSEncodingSupport sharedInstance] defaultEncoding];
+	[openSaveBox selectItemWithTag: theCode];
 
-	// FIXME: Why do we loop over the subviews of the accessoryView of the savepanel and add them ?!?
-	NSEnumerator *enumerator = [[accessoryView subviews] objectEnumerator];
+	// Get the active accessory view.
+	oldAccessoryView = [savePanel accessoryView];
+
+	// We now loop over all items in the existing accessory view, and add them to
+	// our new accessory view. This is apparently needed to get the file type popup
+	// to show up -- but I can't seem to find any official documentation which 
+	// confirms this, which is kinda odd...
+	NSEnumerator *enumerator = [[oldAccessoryView subviews] objectEnumerator];
 	id	anObject;
 	while ((anObject = [enumerator nextObject]))
 		[openSaveView addSubview: anObject];
+
+	[openSaveView retain];	// FIXME: Why is this retain needed?
+
 	[savePanel setAccessoryView: openSaveView];
 	return YES;
 }
