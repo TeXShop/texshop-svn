@@ -305,6 +305,19 @@ extern NSPanel *pageNumberWindow;
 
 - (void)sendEvent:(NSEvent *)theEvent
 {
+	if ([myDocument fromKit] && ([theEvent type] == NSKeyDown) && ([theEvent modifierFlags] & NSCommandKeyMask)) {
+		if ([[theEvent characters] characterAtIndex:0] == '[') {
+			[[myDocument pdfKitView] goBack: self];
+			return;
+		} 
+		
+		if ([[theEvent characters] characterAtIndex:0] == ']') {
+			[[myDocument pdfKitView] goForward: self];
+			return;
+		} 
+	
+	}
+
 	if (![myDocument fromKit]) {
 
 		unichar	theChar;
@@ -507,6 +520,11 @@ extern NSPanel *pageNumberWindow;
 }
 // end mitsu 1.29 (O)
 // end mitsu 1.29
+
+- (void) configurePaperSize: sender
+{
+    [myDocument configurePaperSize: self];
+}
 
 #endif
 

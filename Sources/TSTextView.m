@@ -91,6 +91,11 @@
 {
 	NSMutableDictionary	*mySelectedTextAttributes;
 
+	if ([theEvent modifierFlags] & NSAlternateKeyMask)
+		_alternateDown = YES;
+	else
+		_alternateDown = NO;
+	
 	// koch; Dec 13, 2003
 	
 	// Trigger PDF sync when a click occurs while cmd is pressed (and alt is not pressed).
@@ -107,6 +112,12 @@
 		[[_document textView] setSelectedTextAttributes: mySelectedTextAttributes];
 	}
 	[super mouseDown:theEvent];
+}
+
+- (void)mouseUp:(NSEvent *)theEvent
+{
+	_alternateDown = NO;
+	[super mouseUp:theEvent];
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
@@ -359,6 +370,23 @@
 }
 // zenitani 1.33(2) end
 
+// The new two routines just insure that the cursor does not change when the option key is
+// pressed. This paves the way for a serious change in the third routine. If the option key
+// is down during a double click over a bracket, the bracket is chosen. If it is not down
+// during a double click, the text between the bracket and its matching pair is selected.
+// This is exactly the behavior of XCode.
+
+- (void)flagsChanged:(NSEvent *)theEvent
+{
+	if (!([theEvent modifierFlags] & NSAlternateKeyMask))
+		[super flagsChanged:theEvent];
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent
+{
+	if (!([theEvent modifierFlags] & NSAlternateKeyMask))
+		[super mouseMoved:theEvent];
+}
 
 // New version by David Reitter selects beginning backslash with words as in "\int"
 - (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity
@@ -386,7 +414,10 @@
 		}
 	}
 
-	if ((proposedSelRange.length != 0) || (granularity != NSSelectByParagraph))
+	if ((proposedSelRange.length != 0) || (granularity != NSSelectByWord))
+        return replacementRange;
+	
+	if (_alternateDown)
 		return replacementRange;
 
 	length = [textString length];
@@ -893,5 +924,21 @@
 	
 	return visibleRange;
 }
+
+#pragma mark ========Ruler==========
+
+//mfwitten@mit.edu: delegate methods for rulers"
+- (void)rulerView: (NSRulerView*)aRulerView didMoveMarker: (NSRulerMarker*)aMarker
+{
+    NSRange selectedRange = [self selectedRange];
+    NSObject* representedObject = [aMarker representedObject];
+    
+	if ([representedObject isKindOfClass: [NSString class]] && [(NSString*)representedObject isEqualToString: @"NSTailIndentRulerMarkerTag"])
+        [self selectAll: self];
+    
+    [super rulerView: aRulerView didMoveMarker: aMarker];
+    [self setSelectedRange: selectedRange];
+}
+
 
 @end

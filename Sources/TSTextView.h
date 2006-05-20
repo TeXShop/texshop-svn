@@ -26,6 +26,7 @@
 @interface TSTextView : NSTextView
 {
 	TSDocument		*_document;
+	BOOL			_alternateDown;
 }
 
 - (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity;
