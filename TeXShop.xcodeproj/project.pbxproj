@@ -436,6 +436,62 @@
 		52A4036F08AE1F6C0070F041 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Encodings.strings; sourceTree = "<group>"; };
 		52A403A708AE20020070F041 /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/Encodings.strings; sourceTree = "<group>"; };
 		52E4BF4408CA74C300726E11 /* TeXShop */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TeXShop; sourceTree = "<group>"; };
+		52E4C6AC099640C3007A1CD3 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		52E4C6AD099640C9007A1CD3 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		52E4C6AE099640CD007A1CD3 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		52E4C6AF099640D1007A1CD3 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		52E4C6B0099640D5007A1CD3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		52E4C6B1099640DD007A1CD3 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Portuguese; path = Portuguese.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		52E4C6B2099640E2007A1CD3 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Romanian; path = Romanian.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		52E4C6B3099640E6007A1CD3 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		52E4CA5509964136007A1CD3 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/TSDocument.nib; sourceTree = "<group>"; };
+		52E4CA6109964167007A1CD3 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/TSDocument.nib; sourceTree = "<group>"; };
+		52E4CA620996416A007A1CD3 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/TSDocument.nib; sourceTree = "<group>"; };
+		52E4CA630996416D007A1CD3 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/TSDocument.nib; sourceTree = "<group>"; };
+		52E4CA6409964173007A1CD3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/TSDocument.nib; sourceTree = "<group>"; };
+		52E4CA6509964179007A1CD3 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Portuguese; path = Portuguese.lproj/TSDocument.nib; sourceTree = "<group>"; };
+		52E4CA660996417D007A1CD3 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Romanian; path = Romanian.lproj/TSDocument.nib; sourceTree = "<group>"; };
+		52E4CA6709964180007A1CD3 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/TSDocument.nib; sourceTree = "<group>"; };
+		52E4CA6A0996418F007A1CD3 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/Preferences.nib; sourceTree = "<group>"; };
+		52E4CA6B09964193007A1CD3 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/Preferences.nib; sourceTree = "<group>"; };
+		52E4CA6C09964196007A1CD3 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/Preferences.nib; sourceTree = "<group>"; };
+		52E4CA6D0996419A007A1CD3 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/Preferences.nib; sourceTree = "<group>"; };
+		52E4CA6E0996419D007A1CD3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/Preferences.nib; sourceTree = "<group>"; };
+		52E4CA6F099641A0007A1CD3 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Portuguese; path = Portuguese.lproj/Preferences.nib; sourceTree = "<group>"; };
+		52E4CA70099641A3007A1CD3 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Romanian; path = Romanian.lproj/Preferences.nib; sourceTree = "<group>"; };
+		52E4CA71099641A7007A1CD3 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/Preferences.nib; sourceTree = "<group>"; };
+		52E4CA74099641D0007A1CD3 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
+		52E4CA75099641D4007A1CD3 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
+		52E4CA76099641D7007A1CD3 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
+		52E4CA77099641DB007A1CD3 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
+		52E4CA78099641DD007A1CD3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
+		52E4CA79099641E0007A1CD3 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Portuguese; path = Portuguese.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
+		52E4CA7A099641E2007A1CD3 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Romanian; path = Romanian.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
+		52E4CA7B099641E5007A1CD3 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/completionpanel1.2.nib; sourceTree = "<group>"; };
+		52E4CA7E099641EC007A1CD3 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		52E4CA7F099641EF007A1CD3 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		52E4CA80099641F2007A1CD3 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		52E4CA81099641F5007A1CD3 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		52E4CA82099641FA007A1CD3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		52E4CA83099641FE007A1CD3 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Portuguese; path = Portuguese.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		52E4CA8409964201007A1CD3 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Romanian; path = Romanian.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		52E4CA8509964205007A1CD3 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		52E4CA8809964213007A1CD3 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/MacroEditor.nib; sourceTree = "<group>"; };
+		52E4CA8909964216007A1CD3 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MacroEditor.nib; sourceTree = "<group>"; };
+		52E4CA8A09964218007A1CD3 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/MacroEditor.nib; sourceTree = "<group>"; };
+		52E4CA8B0996421B007A1CD3 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MacroEditor.nib; sourceTree = "<group>"; };
+		52E4CA8C0996421E007A1CD3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/MacroEditor.nib; sourceTree = "<group>"; };
+		52E4CA8D09964221007A1CD3 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Portuguese; path = Portuguese.lproj/MacroEditor.nib; sourceTree = "<group>"; };
+		52E4CA8E09964223007A1CD3 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Romanian; path = Romanian.lproj/MacroEditor.nib; sourceTree = "<group>"; };
+		52E4CA8F09964226007A1CD3 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/MacroEditor.nib; sourceTree = "<group>"; };
+		52E4CA9209964232007A1CD3 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/matrixpanel.nib; sourceTree = "<group>"; };
+		52E4CA9309964234007A1CD3 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/matrixpanel.nib; sourceTree = "<group>"; };
+		52E4CA9409964237007A1CD3 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/matrixpanel.nib; sourceTree = "<group>"; };
+		52E4CA950996423B007A1CD3 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/matrixpanel.nib; sourceTree = "<group>"; };
+		52E4CA960996423D007A1CD3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/matrixpanel.nib; sourceTree = "<group>"; };
+		52E4CA970996423F007A1CD3 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Portuguese; path = Portuguese.lproj/matrixpanel.nib; sourceTree = "<group>"; };
+		52E4CA9809964242007A1CD3 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Romanian; path = Romanian.lproj/matrixpanel.nib; sourceTree = "<group>"; };
+		52E4CA9909964245007A1CD3 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/matrixpanel.nib; sourceTree = "<group>"; };
 		66A63DCE0114947700000001 /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
 		66A63DCF0114947700000001 /* epstopdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = epstopdfwrap; sourceTree = "<group>"; };
 		66A63DD00114947700000001 /* ps2pdfwrap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.csh; path = ps2pdfwrap; sourceTree = "<group>"; };
@@ -1381,6 +1437,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				2A37F4B7FDCFA73011CA2CEA /* English */,
+				52E4C6AC099640C3007A1CD3 /* Dutch */,
+				52E4C6AD099640C9007A1CD3 /* French */,
+				52E4C6AE099640CD007A1CD3 /* German */,
+				52E4C6AF099640D1007A1CD3 /* Italian */,
+				52E4C6B0099640D5007A1CD3 /* Japanese */,
+				52E4C6B1099640DD007A1CD3 /* Portuguese */,
+				52E4C6B2099640E2007A1CD3 /* Romanian */,
+				52E4C6B3099640E6007A1CD3 /* Spanish */,
 			);
 			name = MainMenu.nib;
 			sourceTree = "<group>";
@@ -1389,6 +1453,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				2A37F4B5FDCFA73011CA2CEA /* English */,
+				52E4CA5509964136007A1CD3 /* Dutch */,
+				52E4CA6109964167007A1CD3 /* French */,
+				52E4CA620996416A007A1CD3 /* German */,
+				52E4CA630996416D007A1CD3 /* Italian */,
+				52E4CA6409964173007A1CD3 /* Japanese */,
+				52E4CA6509964179007A1CD3 /* Portuguese */,
+				52E4CA660996417D007A1CD3 /* Romanian */,
+				52E4CA6709964180007A1CD3 /* Spanish */,
 			);
 			name = TSDocument.nib;
 			sourceTree = "<group>";
@@ -1397,6 +1469,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				0AC768BF001078217F000001 /* English */,
+				52E4CA6A0996418F007A1CD3 /* Dutch */,
+				52E4CA6B09964193007A1CD3 /* French */,
+				52E4CA6C09964196007A1CD3 /* German */,
+				52E4CA6D0996419A007A1CD3 /* Italian */,
+				52E4CA6E0996419D007A1CD3 /* Japanese */,
+				52E4CA6F099641A0007A1CD3 /* Portuguese */,
+				52E4CA70099641A3007A1CD3 /* Romanian */,
+				52E4CA71099641A7007A1CD3 /* Spanish */,
 			);
 			name = Preferences.nib;
 			sourceTree = "<group>";
@@ -1405,6 +1485,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				66DECA060212595500000103 /* English */,
+				52E4CA74099641D0007A1CD3 /* Dutch */,
+				52E4CA75099641D4007A1CD3 /* French */,
+				52E4CA76099641D7007A1CD3 /* German */,
+				52E4CA77099641DB007A1CD3 /* Italian */,
+				52E4CA78099641DD007A1CD3 /* Japanese */,
+				52E4CA79099641E0007A1CD3 /* Portuguese */,
+				52E4CA7A099641E2007A1CD3 /* Romanian */,
+				52E4CA7B099641E5007A1CD3 /* Spanish */,
 			);
 			name = completionpanel1.2.nib;
 			sourceTree = "<group>";
@@ -1413,6 +1501,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				0187897CFF29F6DE7F000001 /* English */,
+				52E4CA7E099641EC007A1CD3 /* Dutch */,
+				52E4CA7F099641EF007A1CD3 /* French */,
+				52E4CA80099641F2007A1CD3 /* German */,
+				52E4CA81099641F5007A1CD3 /* Italian */,
+				52E4CA82099641FA007A1CD3 /* Japanese */,
+				52E4CA83099641FE007A1CD3 /* Portuguese */,
+				52E4CA8409964201007A1CD3 /* Romanian */,
+				52E4CA8509964205007A1CD3 /* Spanish */,
 			);
 			name = FindPanel.nib;
 			sourceTree = "<group>";
@@ -1421,6 +1517,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				4077C63603C7FC0900000009 /* English */,
+				52E4CA8809964213007A1CD3 /* Dutch */,
+				52E4CA8909964216007A1CD3 /* French */,
+				52E4CA8A09964218007A1CD3 /* German */,
+				52E4CA8B0996421B007A1CD3 /* Italian */,
+				52E4CA8C0996421E007A1CD3 /* Japanese */,
+				52E4CA8D09964221007A1CD3 /* Portuguese */,
+				52E4CA8E09964223007A1CD3 /* Romanian */,
+				52E4CA8F09964226007A1CD3 /* Spanish */,
 			);
 			name = MacroEditor.nib;
 			sourceTree = "<group>";
@@ -1429,6 +1533,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				409618B60582545A000D94FD /* English */,
+				52E4CA9209964232007A1CD3 /* Dutch */,
+				52E4CA9309964234007A1CD3 /* French */,
+				52E4CA9409964237007A1CD3 /* German */,
+				52E4CA950996423B007A1CD3 /* Italian */,
+				52E4CA960996423D007A1CD3 /* Japanese */,
+				52E4CA970996423F007A1CD3 /* Portuguese */,
+				52E4CA9809964242007A1CD3 /* Romanian */,
+				52E4CA9909964245007A1CD3 /* Spanish */,
 			);
 			name = matrixpanel.nib;
 			sourceTree = "<group>";
