@@ -680,7 +680,7 @@
 		if (! isFile) {
 			NSBeginAlertSheet(NSLocalizedString(@"Can't find required tool.", @"Can't find required tool."),
 							  nil, nil, nil,[textView window], nil, nil, nil, nil,
-							  NSLocalizedString(@"%@ does not exist", @"%@ does not exist"), filename);
+							  NSLocalizedString(@"%@ does not exist.", @"%@ does not exist."), filename);
 			return FALSE;
 		} else
 			isExecutable = [[NSFileManager defaultManager] isExecutableFileAtPath: filename];
