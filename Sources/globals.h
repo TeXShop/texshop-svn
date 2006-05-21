@@ -269,8 +269,8 @@ extern NSString *PdfQuickDragKey; // mitsu 1.29 drag & drop
 extern NSString *SaveDocumentFontKey;
 extern NSString *SyntaxColoringEnabledKey;
 extern NSString *KeepBackupKey;
-extern NSString *TetexBinPathKey;
-extern NSString *GSBinPathKey;
+extern NSString *TetexBinPath;
+extern NSString *GSBinPath;
 extern NSString *TexCommandKey;
 extern NSString *TexGSCommandKey;
 extern NSString *TexScriptCommandKey;

@@ -632,9 +632,9 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 - (IBAction)tetexBinPathChanged:sender
 {
 	// register the undo messages first
-	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:TetexBinPathKey] 				forKey:TetexBinPathKey];
+	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:TetexBinPath] 				forKey:TetexBinPath];
 
-	[SUD setObject:[_tetexBinPathField stringValue] forKey:TetexBinPathKey];
+	[SUD setObject:[_tetexBinPathField stringValue] forKey:TetexBinPath];
 }
 
 //==============================================================================
@@ -643,9 +643,9 @@ integerForKey:PdfCopyTypeKey] forKey:PdfCopyTypeKey];
 - (IBAction)gsBinPathChanged:sender
 {
 	// register the undo message first
-	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:GSBinPathKey] 				forKey:GSBinPathKey];
+	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD objectForKey:GSBinPath] 				forKey:GSBinPath];
 
-	[SUD setObject:[_gsBinPathField stringValue] forKey:GSBinPathKey];
+	[SUD setObject:[_gsBinPathField stringValue] forKey:GSBinPath];
 }
 
 //==============================================================================
@@ -1139,8 +1139,8 @@ This method retrieves the application preferences from the defaults object and s
 	[_latexCommandTextField setStringValue:[defaults stringForKey:LatexCommandKey]];
 	[_texGSCommandTextField setStringValue:[defaults stringForKey:TexGSCommandKey]];
 	[_latexGSCommandTextField setStringValue:[defaults stringForKey:LatexGSCommandKey]];
-	[_tetexBinPathField setStringValue:[defaults stringForKey:TetexBinPathKey]];
-	[_gsBinPathField setStringValue:[defaults stringForKey:GSBinPathKey]];
+	[_tetexBinPathField setStringValue:[defaults stringForKey:TetexBinPath]];
+	[_gsBinPathField setStringValue:[defaults stringForKey:GSBinPath]];
 
 	[_texScriptCommandTextField setStringValue:[defaults stringForKey:TexScriptCommandKey]];
 	[_latexScriptCommandTextField setStringValue:[defaults stringForKey:LatexScriptCommandKey]];

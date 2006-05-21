@@ -916,7 +916,7 @@ in other code when an external editor is being used. */
 	[detexTask setCurrentDirectoryPath: [myFileName stringByDeletingLastPathComponent]];
 	[detexTask setEnvironment: [self environmentForSubTask]];
 	enginePath = [[NSBundle mainBundle] pathForResource:@"detexwrap" ofType:nil];
-	tetexBinPath = [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath];
+	tetexBinPath = [[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath];
 	args = [NSMutableArray array];
 	[args addObject:tetexBinPath];
 	[args addObject: [myFileName  stringByStandardizingPath]];
@@ -3612,7 +3612,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 			      
     AuthorizationItem items[1];
     
-    NSString *teTeXBinPath = [[SUD stringForKey:TetexBinPathKey] stringByExpandingTildeInPath];
+    NSString *teTeXBinPath = [[SUD stringForKey:TetexBinPath] stringByExpandingTildeInPath];
     NSString *toolPath = [teTeXBinPath stringByAppendingString: @"/texconfig-sys"];
     const char *myPath =  [toolPath cStringUsingEncoding: NSASCIIStringEncoding];
     

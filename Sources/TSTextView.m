@@ -931,7 +931,7 @@
 - (void)rulerView: (NSRulerView*)aRulerView didMoveMarker: (NSRulerMarker*)aMarker
 {
     NSRange selectedRange = [self selectedRange];
-    NSObject* representedObject = [aMarker representedObject];
+    id representedObject = [aMarker representedObject];
     
 	if ([representedObject isKindOfClass: [NSString class]] && [(NSString*)representedObject isEqualToString: @"NSTailIndentRulerMarkerTag"])
         [self selectAll: self];

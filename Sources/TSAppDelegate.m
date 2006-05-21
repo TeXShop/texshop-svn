@@ -68,7 +68,7 @@
 	// if the processor is intel and the path variable preference is /usr/local/tetex/bin/powerpc-apple-darwin-current,
 	// then change that preference permanently to /usr/local/tetex/bin/i386-apple-darwin-current
 
-    NSString *binPath = [SUD stringForKey:TetexBinPathKey];
+    NSString *binPath = [SUD stringForKey:TetexBinPath];
     if (! [binPath isEqualToString:@"/usr/local/teTeX/bin/powerpc-apple-darwin-current"])
 		return;
 	
@@ -76,7 +76,7 @@
 	cpu_type_t cputype;
 	size_t s = sizeof cputype;
 	if (sysctlbyname("hw.cputype", &cputype, &s, NULL, 0) == 0 && cputype == CPU_TYPE_I386) {
-		[SUD setObject:@"/usr/local/teTeX/bin/i386-apple-darwin-current" forKey:TetexBinPathKey];
+		[SUD setObject:@"/usr/local/teTeX/bin/i386-apple-darwin-current" forKey:TetexBinPath];
 		[SUD synchronize];
 	}
 }
@@ -164,7 +164,7 @@
 	// if this is the first time the app is used, register a set of defaults to make sure
 	// that the app is useable.
 	if (([[NSUserDefaults standardUserDefaults] boolForKey:TSHasBeenUsedKey] == NO) ||
-		([[NSUserDefaults standardUserDefaults] objectForKey:TetexBinPathKey] == nil)) {
+		([[NSUserDefaults standardUserDefaults] objectForKey:TetexBinPath] == nil)) {
 		[[TSPreferences sharedInstance] registerFactoryDefaults];
 	} else {
 		// register defaults
