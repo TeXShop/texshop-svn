@@ -521,10 +521,12 @@ extern NSPanel *pageNumberWindow;
 // end mitsu 1.29 (O)
 // end mitsu 1.29
 
+/*
 - (void) configurePaperSize: sender
 {
     [myDocument configurePaperSize: self];
 }
+*/
 
 #endif
 
