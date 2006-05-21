@@ -288,7 +288,6 @@ enum RootCommand
 - (void) setCharacterIndex:(unsigned int)index;
 - (BOOL) textSelectionYellow;
 - (void) setTextSelectionYellow:(BOOL)value;
-- (void) configurePaperSize: sender;
 // - (void) printDocumentWithSettings: (NSDictionary :)printSettings showPrintPanel:(BOOL)showPrintPanel delegate:(id)delegate 
 // 	didPrintSelector:(SEL)didPrintSelector contextInfo:(void *)contextInfo;
 //-----------------------------------------------------------------------------

@@ -27,9 +27,11 @@
 
 #import "TSDocument.h"
 #import <OgreKit/OgreKit.h> // zenitani 1.35 (A)
+
+#if 0
 #import <Security/Authorization.h>
 #import <Security/AuthorizationTags.h>
-
+#endif
 
 #import "MyPDFView.h"
 #import "MyPDFKitView.h"
@@ -3560,6 +3562,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		return aString;
 }
 
+#if 0
 // ------------------------ Configure TeX Paper-Size ------------------------------
 //
 // This was an attempt to let TeXShop configure TeX's paper size
@@ -3709,6 +3712,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 }
 
 //--------------- end of paper-size code ----------------------------
+#endif
 
 
 // The code below to handle line break algorithms and hard wrapping was written by
