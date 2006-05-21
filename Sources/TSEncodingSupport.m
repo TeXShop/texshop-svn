@@ -298,53 +298,6 @@ static TSEncoding _availableEncodings[] = {
 	[(NSMenuItem *)sender setState: [SUD boolForKey: theKey]?NSOnState:NSOffState];
 }
 
-
-#pragma mark Old encoding API
-
-// NOTE: To add new encodings, it is only necessary to add items to the next
-// three items, and add items to the preference nib and the document nib
-// and the menu nib; these additional items need appropriate tags.
-// UPDATE (Max Horn): Adding new encodings now is even simpler: just
-// add them to _availableEncodings and to the .nibs.
-// TODO: It could be even simpler: Auto-generate the menus, so the nib files
-// do not even have to be changed!
-
-- (int)tagForEncodingPreference
-{
-	NSString	*currentEncoding;
-
-	currentEncoding = [SUD stringForKey:EncodingKey];
-	return [self tagForEncoding: currentEncoding];
-}
-
-- (int)tagForEncoding: (NSString *)encoding
-{
-	int i;
-	for (i = 0; i < ARRAYSIZE(_availableEncodings); ++i) {
-		if ([encoding isEqualToString:_availableEncodings[i].name])
-			return i;
-	}
-	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
-	return 0;
-}
-
-- (NSString *)encodingForTag: (int)tag
-{
-	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
-	if (tag < 0 || tag >= ARRAYSIZE(_availableEncodings))
-		tag = 0;
-	return _availableEncodings[tag].name;
-}
-
-- (NSStringEncoding)stringEncodingForTag: (int)tag
-{
-	// If the encoding is unknown, use the first encoding in our list (MacOS Roman).
-	if (tag < 0 || tag >= ARRAYSIZE(_availableEncodings))
-		tag = 0;
-	return _availableEncodings[tag].nsEnc;
-}
-
-
 #pragma mark New encoding API
 
 - (NSStringEncoding)defaultEncoding
@@ -386,7 +339,6 @@ static TSEncoding _availableEncodings[] = {
 {
 	return [self localizedNameForKey: [self keyForStringEncoding:encoding]];
 }
-
 
 - (void)addEncodingsToMenu:(NSMenu *)menu withTarget:(id)aTarget action:(SEL)anAction
 {

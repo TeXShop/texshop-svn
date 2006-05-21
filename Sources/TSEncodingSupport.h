@@ -34,13 +34,6 @@
 - (void)encodingChanged: (NSNotification *)note;
 - (IBAction)toggleTeXCharConversion:(id)sender;
 
-// Old encoding API: Uses 'tags' to enumerate the encodings, 'encoding' means a string used in the
-// preference storage, and finally, NSStringEncodings to be passed to the Cocoa APIs
-- (int)tagForEncodingPreference;
-- (int)tagForEncoding: (NSString *)encoding;
-- (NSString *)encodingForTag: (int)tag;
-- (NSStringEncoding)stringEncodingForTag: (int)encoding;
-
 // New encoding API: Uses NSStringEncoding for the menu tags
 - (NSStringEncoding)defaultEncoding;
 - (NSStringEncoding)stringEncodingForKey: (NSString *)key;
