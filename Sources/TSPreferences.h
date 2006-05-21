@@ -34,13 +34,13 @@
 	IBOutlet NSButton	*_docWindowPosButton;		/* connected to set current position button */
 	IBOutlet NSMatrix       *_findMatrix;                   /* connected to Find Panel */
 
-	IBOutlet NSButton	*_syntaxColorButton;		/*" connected to "Syntax Coloring" "*/
-	IBOutlet NSButton       *_selectActivateButton;         /*" connected to "Select on Activate" "*/
-	IBOutlet NSButton	*_parensMatchButton;		/*" connected to "Parens Matching "*/
-	IBOutlet NSButton	*_spellCheckButton;		/*" connected to "SpellChecking "*/
-	IBOutlet NSButton	*_autoCompleteButton;		/*" connected to "Auto Completion "*/
-	IBOutlet NSButton	*_openEmptyButton;		/*" open empty document on start "*/
-	IBOutlet NSButton	*_externalEditorButton;		/*" use external editor "*/
+	IBOutlet NSButtonCell	*_syntaxColorButton;		/*" connected to "Syntax Coloring" "*/
+	IBOutlet NSButtonCell   *_selectActivateButton;         /*" connected to "Select on Activate" "*/
+	IBOutlet NSButtonCell	*_parensMatchButton;		/*" connected to "Parens Matching "*/
+	IBOutlet NSButtonCell	*_spellCheckButton;		/*" connected to "SpellChecking "*/
+	IBOutlet NSButtonCell	*_autoCompleteButton;		/*" connected to "Auto Completion "*/
+	IBOutlet NSButton		*_openEmptyButton;		/*" open empty document on start "*/
+	IBOutlet NSButton		*_externalEditorButton;		/*" use external editor "*/
 	IBOutlet NSPopUpButton	*_defaultEncodeMatrix;		/*" text encoding "*/
 	IBOutlet NSMatrix	*_pdfWindowPosMatrix;		/*" connected to "PDF Window Position" "*/
 	IBOutlet NSButton	*_pdfWindowPosButton;		/* connected to current position button */
@@ -65,7 +65,7 @@
 	IBOutlet NSTextField    *_engineTextField;
 	IBOutlet NSMatrix       *_distillerMatrix;              /*" connected to "Distiller" "*/
 	IBOutlet NSMatrix	*_consoleMatrix;		/*" connected to "Show Console" "*/
-	IBOutlet NSTextField	*_tabsTextField;		/*" connected to tab size text field "*/
+	IBOutlet NSFormCell	*_tabsTextField;		/*" connected to tab size text field "*/
 	IBOutlet NSButton	*_saveRelatedButton;		/*" connected to Save Related Files "*/
 	IBOutlet NSButton       *_autoPDFButton;
 	IBOutlet NSButton       *_ptexUtfOutputButton;          // zenitani 1.35 (C)
