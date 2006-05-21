@@ -3258,7 +3258,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSRange		myRange, modifyRange, tempRange, oldRange;
 	unsigned		start, end, end1, changeStart, changeEnd;
 	int			theChar;
-	NSString	*theCommand;
+	NSString	*theCommand = 0;
 	
 	text = [textView string];
 	myRange = [textView selectedRange];
@@ -3331,6 +3331,10 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 		}
 		end++;
 	}
+	
+	if (!theCommand)
+		return;	// If no change was made, do nothing (see bug #1488597).
+
 	[self fixColor:changeStart :changeEnd];
 	tempRange.location = changeStart;
 	tempRange.length = (changeEnd - changeStart);
