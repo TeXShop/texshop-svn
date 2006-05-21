@@ -37,6 +37,9 @@
 - (NSString *)readSourceFromEquationEditorPDF: (NSString *)filePath;
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent;
 - (NSString *)resolveAlias: (NSString *)path;
+@end
 
+
+@interface NSTextView (TeXShop)
 - (NSRange)visibleCharacterRange;
 @end

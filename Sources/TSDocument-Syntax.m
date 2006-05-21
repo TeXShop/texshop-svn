@@ -62,7 +62,7 @@ static BOOL isValidTeXCommandChar(int c)
 // Colorize ("perform syntax highlighting") all the characters in the given range.
 // Can only recolor full lines, so the given range will be extended accordingly before the
 // coloring takes place.
-- (void)colorizeText:(TSTextView *)aTextView range:(NSRange)range
+- (void)colorizeText:(NSTextView *)aTextView range:(NSRange)range
 {
 	NSLayoutManager *layoutManager;
 	NSString	*textString;
@@ -240,7 +240,7 @@ static BOOL isValidTeXCommandChar(int c)
 	[self colorizeVisibleAreaInTextView:textView2];
 }
 
-- (void) colorizeVisibleAreaInTextView:(TSTextView *)aTextView
+- (void) colorizeVisibleAreaInTextView:(NSTextView *)aTextView
 {
 	// No syntax coloring if the file is not TeX, or if it is disabled
 	if (!fileIsTex || ![SUD boolForKey:SyntaxColoringEnabledKey])

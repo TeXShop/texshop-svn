@@ -139,7 +139,7 @@
 	[super dealloc];
 }
 
-- (void)setupTextView:(TSTextView *)aTextView
+- (void)setupTextView:(NSTextView *)aTextView
 {
 	NSColor		*backgroundColor, *insertionpointColor;
 
@@ -163,7 +163,6 @@
 	[aTextView setBackgroundColor: backgroundColor];
 	[aTextView setInsertionPointColor: insertionpointColor];
 	[aTextView setAcceptsGlyphInfo: YES]; // suggested by Itoh 1.35 (A)
-	[aTextView setDocument: self];
 }
 
 #pragma mark NSDocument interface
@@ -238,7 +237,7 @@
 		case 0: lineBreakMode = NSLineBreakByClipping;          break;
 		case 1: lineBreakMode = NSLineBreakByWordWrapping;		break;
 		case 2: lineBreakMode = NSLineBreakByCharWrapping;		break;
-		// FIXME: Should we handle invalid keys here better?
+		// FIXME: Shouldn't we handle invalid values better?
 		default: lineBreakMode = NSLineBreakByCharWrapping;		break;
 	}
 
@@ -248,6 +247,7 @@
 	contentSize = [scrollView contentSize];
 	textView1 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
 	[self setupTextView:textView1];
+	[(TSTextView *)textView1 setDocument: self];
 	[scrollView setDocumentView:textView1];
 	[textView1 release];
 	textView = textView1;
@@ -257,6 +257,7 @@
 	contentSize = [scrollView2 contentSize];
 	textView2 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
 	[self setupTextView:textView2];
+	[(TSTextView *)textView2 setDocument: self];
 	if (spellExists)
 		[textView2 setContinuousSpellCheckingEnabled:[SUD boolForKey:SpellCheckEnabledKey]];
 

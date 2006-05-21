@@ -62,63 +62,80 @@ enum RootCommand
 	RootForTrashAUX = 6
 };
 
-@class TSTextView;
 @class MyPDFKitView;
+@class MyPDFView;
+@class MySelection;
 
 @interface TSDocument : NSDocument
 {
-	// forsplit
-	IBOutlet TSTextView		*textView1;
-	IBOutlet TSTextView		*textView2;
-	IBOutlet NSScrollView	*scrollView2;
-	IBOutlet NSSplitView	*splitView;
-	NSTextStorage 	*_textStorage;
-	BOOL		windowIsSplit;
-// endforsplit
-	IBOutlet TSTextView		*textView;		/*" textView displaying the current TeX source "*/
-	IBOutlet NSScrollView	*scrollView;		/*" scrollView for textView"*/
-	id			pdfView;		/*" view displaying the current preview "*/
-	id			textWindow;		/*" window displaying the current document "*/
-	id			pdfWindow;		/*" window displaying the current pdf preview "*/
-	id			pdfKitWindow;
-	id			outputWindow;		/*" window displaying the output of the running TeX process "*/
-	id			outputText;		/*" text displaying the output of the running TeX process "*/
+	IBOutlet NSTextView			*textView1;
+	IBOutlet NSTextView			*textView2;
+	IBOutlet NSScrollView		*scrollView2;
+	IBOutlet NSSplitView		*splitView;
+
+	IBOutlet NSTextView			*textView;		/*" textView displaying the current TeX source "*/
+	IBOutlet NSScrollView		*scrollView;		/*" scrollView for textView"*/
+	IBOutlet MyPDFView			*pdfView;		/*" view displaying the current preview "*/
+	IBOutlet NSWindow			*textWindow;		/*" window displaying the current document "*/
+	IBOutlet NSWindow			*pdfWindow;		/*" window displaying the current pdf preview "*/
+	IBOutlet NSWindow			*pdfKitWindow;
+	IBOutlet NSWindow			*outputWindow;		/*" window displaying the output of the running TeX process "*/
+	IBOutlet NSTextView			*outputText;		/*" text displaying the output of the running TeX process "*/
 	IBOutlet NSTextField		*texCommand;		/*" connected to the command textField on the errors panel "*/
-	id			popupButton;		/*" popupButton displaying all the TeX templates "*/
-	id			projectPanel;
-	id			projectName;
-	id			requestWindow;
-	id			printRequestPanel;
-	id			pagenumberPanel;
-	id			pagenumberKitPanel;
-	id			magnificationPanel;
-	id			magnificationKitPanel;
-	id			statisticsPanel;
-	id			statisticsForm;
-	id			openSaveBox;
-	id			openSaveView;
-	id			linePanel;
-	id			lineBox;
-	id			typesetButton;
-	id			typesetButtonEE;
-	id			programButton;
-	id			programButtonEE;
+	IBOutlet NSPopUpButton		*popupButton;		/*" popupButton displaying all the TeX templates "*/
+	IBOutlet NSPanel			*projectPanel;
+	IBOutlet NSTextField		*projectName;
+	IBOutlet NSPanel			*requestWindow;
+	IBOutlet NSPanel			*printRequestPanel;
+	IBOutlet NSPanel			*pagenumberPanel;
+	IBOutlet NSPanel			*pagenumberKitPanel;
+	IBOutlet NSPanel			*magnificationPanel;
+	IBOutlet NSPanel			*magnificationKitPanel;
+	IBOutlet NSPanel			*statisticsPanel;
+	IBOutlet NSForm				*statisticsForm;
+	IBOutlet NSPopUpButton		*openSaveBox;		// TODO: Rename this to 'encodingPopUp' (don't forget to update the NIBs)
+	IBOutlet NSView				*openSaveView;
+	IBOutlet NSPanel			*linePanel;
+	IBOutlet NSTextField		*lineBox;
+	IBOutlet NSButton			*typesetButton;
+	IBOutlet NSButton			*typesetButtonEE;
+	IBOutlet NSPopUpButton		*programButton;
+	IBOutlet NSPopUpButton		*programButtonEE;
 
-	id			previousButtonKK;
-	id			nextButtonKK;
-	id			gotopageOutletKK;
-	id			magnificationOutletKK;
-	id			mouseModeMatrixKK;
-	id			backforthKK;
-	id			drawerKK;
+	IBOutlet NSButton			*previousButtonKK;
+	IBOutlet NSButton			*nextButtonKK;
+	IBOutlet NSBox				*gotopageOutletKK;
+	IBOutlet NSBox				*magnificationOutletKK;
+	IBOutlet NSMatrix			*mouseModeMatrixKK;
+	IBOutlet NSSegmentedControl	*backforthKK;
+	IBOutlet NSImageView		*drawerKK;
 
-	id			tags;
+
+	IBOutlet NSPopUpButton		*tags;
+
+	IBOutlet NSMatrix			*mouseModeMatrix; // mitsu 1.29 (O)
+	IBOutlet NSMenu				*mouseModeMenu; // mitsu 1.29 (O)
+	IBOutlet NSMenu				*mouseModeMenuKit; // mitsu 1.29 (O)
+
+	IBOutlet NSPopUpButton		*macroButton;		/*" pull-down list for macros "*/
+	IBOutlet NSPopUpButton		*macroButtonEE;          /*" same in pdf window "*/
+	IBOutlet NSButton			*autoCompleteButton;
+
+	id			gotopageOutlet;
+	id			magnificationOutlet;
+	id			previousButton;
+	id			nextButton;
+
+
+	NSTextStorage				*_textStorage;
+	BOOL		windowIsSplit;
+
 	NSStringEncoding	_encoding;
 	NSStringEncoding	_tempencoding;
 	DefaultTypesetMode			whichScript;		/*" 100 = pdftex, 101 = gs, 102 = personal script "*/
 	int			whichEngine;		/*" 1 = tex, 2 = latex, 3 = bibtex, 4 = makeindex, 5 = megapost, 6 = context,
 													7 = metafont "*/
-	id			rootDocument;
+	TSDocument	*rootDocument;
 	BOOL		tagLine;
 
 
@@ -157,28 +174,16 @@ enum RootCommand
 	unsigned	tagLocation;
 	unsigned	tagLocationLine;
 
-	BOOL		makeError;
-	SEL			tempSEL;
-	id			mSelection;
-	id			gotopageOutlet;
-	id			magnificationOutlet;
-	id			previousButton;
-	id			nextButton;
+	BOOL				makeError;
+	SEL					tempSEL;
+	MySelection			*mSelection;
 	BOOL                taskDone;
 	int                 pdfSyncLine;
 	id                  syncBox;
 	BOOL                aggressiveTrash;
 
-	IBOutlet NSMatrix 	*mouseModeMatrix; // mitsu 1.29 (O)
-	IBOutlet NSMenu 	*mouseModeMenu; // mitsu 1.29 (O)
-	IBOutlet NSMenu 	*mouseModeMenuKit; // mitsu 1.29 (O)
-	IBOutlet NSMenu 	*magnificationMenu; // mitsu 1.29 test
-
 	BOOL		_externalEditor;
 // added by mitsu --(H) Macro menu; macroButton
-	id			macroButton;		/*" pull-down list for macros "*/
-	id                  macroButtonEE;          /*" same in pdf window "*/
-	id			autoCompleteButton;
 	BOOL		doAutoComplete;
 	BOOL		warningGiven;
 	BOOL		omitShellEscape;
@@ -200,8 +205,6 @@ enum RootCommand
 	unsigned int		pdfCharacterIndex;
 	BOOL				textSelectionYellow;
 
-    NSPanel				*PaperSizePanel;
-    id					PaperSizeChoice;
 	//Michael Witten: mfwitten@mit.edu
 	NSLineBreakMode		lineBreakMode;
 	// end witten
@@ -404,6 +407,6 @@ enum RootCommand
 
 - (void)fixColor:(unsigned)from :(unsigned)to;
 - (void)colorizeAll;
-- (void)colorizeVisibleAreaInTextView:(TSTextView *)aTextView;
+- (void)colorizeVisibleAreaInTextView:(NSTextView *)aTextView;
 
 @end
