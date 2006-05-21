@@ -299,15 +299,15 @@ This method will be called when the matrix changes. Target 0 means 'all windows 
 - (IBAction)encodingChanged:sender
 {
 	NSString	*oldValue, *value;
-	int		tag;
+	NSStringEncoding	theCode;
 
 	oldValue = [SUD stringForKey:EncodingKey];
 	[[_undoManager prepareWithInvocationTarget:SUD] setObject:[SUD stringForKey:EncodingKey] forKey:EncodingKey];
 
-	tag = [[sender selectedCell] tag];
-	value = [[TSEncodingSupport sharedInstance] encodingForTag: tag];
-
+	theCode = [[sender selectedCell] tag];
+	value = [[TSEncodingSupport sharedInstance] keyForStringEncoding: theCode];
 	[SUD setObject:value forKey:EncodingKey];
+
 	// added by mitsu --(G) TSEncodingSupport
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"EncodingChangedNotification" object:self];
 	encodingTouched = YES;
@@ -1034,9 +1034,12 @@ This method retrieves the application preferences from the defaults object and s
 	[_externalEditorButton setState:[defaults boolForKey:UseExternalEditorKey]];
 	[_ptexUtfOutputButton setState:[defaults boolForKey:ptexUtfOutputEnabledKey]]; // zenitani 1.35 (C)
 
-	myTag = [[TSEncodingSupport sharedInstance] tagForEncodingPreference];
 
-	[_defaultEncodeMatrix selectItemAtIndex: myTag];
+	// Create the contents of the encoding menu on the fly & select the active encoding
+	[_defaultEncodeMatrix removeAllItems];
+	[[TSEncodingSupport sharedInstance] addEncodingsToMenu:[_defaultEncodeMatrix menu] withTarget:0 action:0];
+	[_defaultEncodeMatrix selectItemWithTag: [[TSEncodingSupport sharedInstance] defaultEncoding]];
+
 	if ([defaults boolForKey:UseOgreKitKey] == NO)
 		[_findMatrix selectCellWithTag:0];
 	else

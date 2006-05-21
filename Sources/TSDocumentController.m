@@ -60,20 +60,16 @@
 
 - (int)runModalOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)extensions
 {
-	NSStringEncoding	theCode;
 	int					result;
 
 	// Set an accessory view, with the encoding popup button in it.
 	[openPanel setAccessoryView: encodingView];
 	[encodingView retain];	// FIXME: Is this line really necessary?
 
-	// Create the contents of the encoding menu on the fly
+	// Create the contents of the encoding menu on the fly & select the active encoding
 	[encodingMenu removeAllItems];
 	[[TSEncodingSupport sharedInstance] addEncodingsToMenu:[encodingMenu menu] withTarget:0 action:0];
-
-	// Select active encoding
-	theCode = [[TSEncodingSupport sharedInstance] defaultEncoding];
-	[encodingMenu selectItemWithTag: theCode];
+	[encodingMenu selectItemWithTag: [[TSEncodingSupport sharedInstance] defaultEncoding]];
 
 	result = [super runModalOpenPanel: openPanel forTypes: extensions];
 	if (result == YES) {
