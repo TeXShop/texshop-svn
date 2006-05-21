@@ -40,6 +40,38 @@ AFTER the 2.10 release, we can move on to other things. Top on the list:
 
 
 
+The following is a preliminary, incomplete list of changes since 2.09b:
+-- BEGIN DRAFT ---
+- Major (and I mean it!) overhaul of the TeXShop source code, which resolved
+  many leaks, removed duplicate code, cleaned up cruft, simplified many things,
+  and, and and... Most importantly, this will make it a lot easier to implement
+  future modifications to TeXShop. However, due to the huge amount of change
+  involved, this is likely to have introduced a couple regressions. too. Please
+  bear with us while we work on fixing these, and report any problems you
+  encounter via the new TeXShop bug tracker:
+    <https://sourceforge.net/tracker/?group_id=155796&atid=797238>
+- Moved TeXShop source code into a Subversion repository hosted at SourceForge.net,
+  see also <https://sourceforge.net/projects/texshop/>
+
+- Added Cmd-, as hotkey for prefs dialog in all localizations
+- Changed 'Goto Error' hotkey from Cmd-E to Cmd-Ctrl-E (to enable 'Use selection for find')
+- Rewrote the syntax coloring code, which is now a lot faster (in particular for big files)
+- Rewrote file encoding support, which makes it much easier to add new encodings in the future
+- Replaced certain internal wrapper programs (unamewrap, TEXTEDIT.app) by code which performs the respective actions directly
+
+To stress it again, we made literally hundreds of internal changes, many of which
+you won't notice for now, but which will enable us to make further changes in the
+hopefully not so distant future. For some rough and incomplete notes on what we
+are considering to do, see <http://svn.sourceforge.net/viewcvs.cgi/texshop/trunk/TODO?view=markup>.
+
+Finally, if you encounter bugs, have feature requests, or want to help with the
+development of TeXShop, then <https://sourceforge.net/projects/texshop/> is the
+place to go.
+-- END DRAFT ---
+
+
+
+
 
 The following is an export from my OmniOutliner file, and only a temporary placeholder.
 
