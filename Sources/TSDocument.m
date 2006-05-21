@@ -957,8 +957,7 @@ in other code when an external editor is being used. */
 
 - (void) chooseEncoding: sender
 {
-	int tag = [[sender selectedCell] tag];
-	_tempencoding = [[TSEncodingSupport sharedInstance] stringEncodingForTag: tag];
+	_tempencoding = [[sender selectedCell] tag];
 }
 
 - (NSStringEncoding) encoding
