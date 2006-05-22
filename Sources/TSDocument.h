@@ -75,12 +75,17 @@ enum RootCommand
 
 	IBOutlet NSTextView			*textView;		/*" textView displaying the current TeX source "*/
 	IBOutlet NSScrollView		*scrollView;		/*" scrollView for textView"*/
-	IBOutlet MyPDFView			*pdfView;		/*" view displaying the current preview "*/
 	IBOutlet NSWindow			*textWindow;		/*" window displaying the current document "*/
+
+	IBOutlet MyPDFView			*pdfView;		/*" view displaying the current preview "*/
 	IBOutlet NSWindow			*pdfWindow;		/*" window displaying the current pdf preview "*/
+
+	IBOutlet MyPDFKitView		*myPDFKitView;
 	IBOutlet NSWindow			*pdfKitWindow;
+
 	IBOutlet NSWindow			*outputWindow;		/*" window displaying the output of the running TeX process "*/
 	IBOutlet NSTextView			*outputText;		/*" text displaying the output of the running TeX process "*/
+
 	IBOutlet NSTextField		*texCommand;		/*" connected to the command textField on the errors panel "*/
 	IBOutlet NSPopUpButton		*popupButton;		/*" popupButton displaying all the TeX templates "*/
 	IBOutlet NSPanel			*projectPanel;
@@ -200,7 +205,6 @@ enum RootCommand
 	NSWindow            *callingWindow;
 	NSStringEncoding	_badEncoding;
 	BOOL                showBadEncodingDialog;
-	MyPDFKitView		*myPDFKitView;
 	BOOL				PDFfromKit;
 	unsigned int		pdfCharacterIndex;
 	BOOL				textSelectionYellow;

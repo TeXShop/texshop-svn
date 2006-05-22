@@ -166,6 +166,7 @@
                 mouseModeMatrixKK = NSMatrix; 
                 mouseModeMenu = NSMenu; 
                 mouseModeMenuKit = NSMenu; 
+                myPDFKitView = MyPDFKitView; 
                 nextButton = id; 
                 nextButtonKK = NSButton; 
                 openSaveBox = NSPopUpButton; 
