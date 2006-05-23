@@ -27,15 +27,14 @@
 
 @implementation TSPrintView : NSView
 
-- (TSPrintView *) initWithImageRep: (NSImageRep *) aRep
+- (TSPrintView *)initWithImageRep: (NSImageRep *) aRep
 {
 	NSRect	frame;
 
 	frame.origin.x = 0;
 	frame.origin.y = 0;
 	frame.size = [aRep size];
-	if ((self = [super initWithFrame: frame]))
-	{
+	if ((self = [super initWithFrame: frame])) {
 		_imageRep = [aRep retain];
 	}
 	// end
@@ -77,7 +76,7 @@
 }
 
 
-- (BOOL) knowsPageRange:(NSRangePointer)range
+- (BOOL)knowsPageRange:(NSRangePointer)range
 {
 	if ([_imageRep isKindOfClass:[NSPDFImageRep class]]) {
 		range->location = 1;
