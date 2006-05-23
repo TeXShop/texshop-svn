@@ -52,7 +52,7 @@
 	and Unindent items are assigned X, Y, Z, W with various combinations of option and
 	control keys. Since nobody would actually want to do this, the example is commented out;
 	use it as a guide and add similar definitions which are not bracketed inside the
-	comment symbols <!-- and --> 
+	comment symbols.
 --> 
 
 <!--
