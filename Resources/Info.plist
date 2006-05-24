@@ -579,7 +579,7 @@
 	<key>CFBundleExecutable</key>
 	<string>TeXShop</string>
 	<key>CFBundleGetInfoString</key>
-	<string>2.10-svn, Copyright 2001-2006, Richard Koch</string>
+	<string>$(MARKETING_VERSION), Copyright 2001-2006, Richard Koch</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>TeXShopHelp</string>
 	<key>CFBundleHelpBookName</key>
@@ -595,13 +595,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.10-svn</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>TeXs</string>
 	<key>CFBundleVersion</key>
-	<string>154</string>
+	<string>$(BUNDLE_VERSION)</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.4</string>
+	<string>10.4.0</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSMainNibFile</key>
