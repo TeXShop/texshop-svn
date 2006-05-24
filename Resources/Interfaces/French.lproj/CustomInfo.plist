@@ -1,196 +1,463 @@
-﻿{
-    NSInfoPlistVersion = "6.1";
-    NSAppVersion = "2";
-    NSHumanReadableShortName = "TeXShop";
-    NSHumanReadableCompleteName = "TeXShop"; 
-    NSHumanReadableCopyright = "Copyright (c) 2001-2006, Richard Koch 
- http://www.texshop.org";
-    CFBundleDocumentTypes = (
-     {
-        CFBundleTypeName = "tex";
-        CFBundleTypeReadableName = "Document TeX";
-        CFBundleTypeExtensions = ("tex", "TEX", "txt", "TXT");
-        CFBundleOSTypes = ("TEXT", "????");
-        CFBundleDOSNames = ("tex");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-      {
-        CFBundleTypeName = "NSPDFPboardType";
-        CFBundleTypeReadableName = "Document PDF";
-        CFBundleTypeExtensions = ("pdf");
-        CFBundleOSTypes = ("PDF");
-        CFBundleDOSNames = ("pdf");
-        CFBundleTypeRole = Viewer;
-        NSDocumentClass = TSDocument;
-      },
-      {
-        CFBundleTypeName = "NSTIFFPboardType";
-        CFBundleTypeReadableName = "Document TIFF";
-        CFBundleTypeExtensions = ("tiff", "tif");
-        CFBundleOSTypes = ("TIFF");
-        CFBundleDOSNames = ("tiff");
-        CFBundleTypeRole = Viewer;
-        NSDocumentClass = TSDocument;
-      },
-       {
-        CFBundleTypeName = "NSEPSPboardType";
-        CFBundleTypeReadableName = "Document EPS";
-        CFBundleTypeExtensions = ("eps");
-        CFBundleOSTypes = ("EPS");
-        CFBundleDOSNames = ("eps");
-        CFBundleTypeRole = Viewer;
-        NSDocumentClass = TSDocument;
-      },
-        {
-        CFBundleTypeName = "NSEPSIPboardType";
-        CFBundleTypeReadableName = "Document EPSI";
-        CFBundleTypeExtensions = ("epsi");
-        CFBundleOSTypes = ("EPSI");
-        CFBundleDOSNames = ("epsi");
-        CFBundleTypeRole = Viewer;
-        NSDocumentClass = TSDocument;
-      },
-    {
-        CFBundleTypeName = "LogFile";
-        CFBundleTypeReadableName = "Fichier TeX Log";
-        CFBundleTypeExtensions = ("log");
-        CFBundleOSTypes = ("LOG");
-        CFBundleDOSNames = ("eps");
-        CFBundleTypeRole = Viewer;
-        NSDocumentClass = TSDocument;
-      },
-      {
-        CFBundleTypeName = "AuxFile";
-        CFBundleTypeReadableName = "Fichier TeX Aux";
-        CFBundleTypeExtensions = ("aux");
-        CFBundleOSTypes = ("AUX");
-        CFBundleDOSNames = ("aux");
-        CFBundleTypeRole = Viewer;
-        NSDocumentClass = TSDocument;
-      },
-       {
-        CFBundleTypeName = "DVIFile";
-        CFBundleTypeReadableName = "Fichier TeX DVI";
-        CFBundleTypeExtensions = ("dvi");
-        CFBundleOSTypes = ("DVI");
-        CFBundleDOSNames = ("dvi");
-        CFBundleTypeRole = Viewer;
-        NSDocumentClass = TSDocument;
-      },
-      {
-        CFBundleTypeName = "bib";
-        CFBundleTypeReadableName = "Fichier TeX bib";
-        CFBundleTypeExtensions = ("bib");
-        CFBundleOSTypes = ("BIB");
-        CFBundleDOSNames = ("bib");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-      {
-        CFBundleTypeName = "PostscriptFile";
-        CFBundleTypeReadableName = "Fichier Postscript";
-        CFBundleTypeExtensions = ("ps");
-        CFBundleOSTypes = ("PS");
-        CFBundleDOSNames = ("ps");
-        CFBundleTypeRole = Viewer;
-        NSDocumentClass = TSDocument;
-      },
-      {
-        CFBundleTypeName = "TexshopFile";
-        CFBundleTypeReadableName = "Document-maître TeXShop";
-        CFBundleTypeExtensions = ("texshop");
-        CFBundleDOSNames = ("texshop");
-        CFBundleTypeRole = Viewer;
-        NSDocumentClass = TSDocument;
-      },
-       {
-        CFBundleTypeName = "mp";
-        CFBundleTypeReadableName = "mp";
-        CFBundleTypeExtensions = ("mp");
-        CFBundleDOSNames = ("MP");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-      {
-        CFBundleTypeName = "mf";
-        CFBundleTypeReadableName = "mf";
-        CFBundleTypeExtensions = ("mf");
-        CFBundleDOSNames = ("MF");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-       {
-        CFBundleTypeName = "ins";
-        CFBundleTypeReadableName = "Fichier INS";
-        CFBundleTypeExtensions = ("ins");
-        CFBundleDOSNames = ("INS");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-        {
-        CFBundleTypeName = "dtx";
-        CFBundleTypeReadableName = "Fichier DTX";
-        CFBundleTypeExtensions = ("dtx");
-        CFBundleDOSNames = ("DTX");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-        {
-        CFBundleTypeName = "sty";
-        CFBundleTypeReadableName = "Fichier STY";
-        CFBundleTypeExtensions = ("sty");
-        CFBundleDOSNames = ("STY");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-        {
-        CFBundleTypeName = "cls";
-        CFBundleTypeReadableName = "Fichier CLS";
-        CFBundleTypeExtensions = ("cls");
-        CFBundleDOSNames = ("CLS");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-       {
-        CFBundleTypeName = "def";
-        CFBundleTypeReadableName = "Fichier DEF";
-        CFBundleTypeExtensions = ("def");
-        CFBundleDOSNames = ("DEF");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-        {
-        CFBundleTypeName = "fd";
-        CFBundleTypeReadableName = "Fichier FD";
-        CFBundleTypeExtensions = ("fd");
-        CFBundleDOSNames = ("FD");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-        {
-        CFBundleTypeName = "ltx";
-        CFBundleTypeReadableName = "Fichier LTX";
-        CFBundleTypeExtensions = ("ltx");
-        CFBundleDOSNames = ("LTX");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-        {
-        CFBundleTypeName = "clo";
-        CFBundleTypeReadableName = "Fichier CLO";
-        CFBundleTypeExtensions = ("clo");
-        CFBundleDOSNames = ("CLO");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-        {
-        CFBundleTypeName = "Plain Text";
-        CFBundleTypeReadableName = "Texte en clair";
-        CFBundleTypeExtensions = ("txt", "text", "*");
-        CFBundleDOSNames = ("text/plain");
-        CFBundleTypeRole = Editor;
-        NSDocumentClass = TSDocument;
-      },
-    );
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>tex</string>
+			</array>
+			<key>CFBundleOSTypes</key>
+			<array>
+				<string>TEXT</string>
+				<string>????</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>tex</string>
+				<string>TEX</string>
+				<string>txt</string>
+				<string>TXT</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>tex</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Document TeX</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>pdf</string>
+			</array>
+			<key>CFBundleOSTypes</key>
+			<array>
+				<string>PDF</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pdf</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>NSPDFPboardType</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Document PDF</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>tiff</string>
+			</array>
+			<key>CFBundleOSTypes</key>
+			<array>
+				<string>TIFF</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>tiff</string>
+				<string>tif</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>NSTIFFPboardType</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Document TIFF</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>eps</string>
+			</array>
+			<key>CFBundleOSTypes</key>
+			<array>
+				<string>EPS</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>eps</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>NSEPSPboardType</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Document EPS</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>epsi</string>
+			</array>
+			<key>CFBundleOSTypes</key>
+			<array>
+				<string>EPSI</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>epsi</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>NSEPSIPboardType</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Document EPSI</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>eps</string>
+			</array>
+			<key>CFBundleOSTypes</key>
+			<array>
+				<string>LOG</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>log</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>LogFile</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier TeX Log</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>aux</string>
+			</array>
+			<key>CFBundleOSTypes</key>
+			<array>
+				<string>AUX</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>aux</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>AuxFile</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier TeX Aux</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>dvi</string>
+			</array>
+			<key>CFBundleOSTypes</key>
+			<array>
+				<string>DVI</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>dvi</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>DVIFile</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier TeX DVI</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>bib</string>
+			</array>
+			<key>CFBundleOSTypes</key>
+			<array>
+				<string>BIB</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>bib</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>bib</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier TeX bib</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>ps</string>
+			</array>
+			<key>CFBundleOSTypes</key>
+			<array>
+				<string>PS</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ps</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>PostscriptFile</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier Postscript</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>texshop</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>texshop</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>TexshopFile</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Document-maître TeXShop</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>MP</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>mp</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>mp</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>mp</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>MF</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>mf</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>mf</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>mf</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>INS</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ins</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>ins</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier INS</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>DTX</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>dtx</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>dtx</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier DTX</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>STY</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>sty</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>sty</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier STY</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>CLS</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>cls</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>cls</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier CLS</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>DEF</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>def</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>def</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier DEF</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>FD</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>fd</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>fd</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier FD</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>LTX</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ltx</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>ltx</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier LTX</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>CLO</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>clo</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>clo</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Fichier CLO</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleDOSNames</key>
+			<array>
+				<string>text/plain</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>txt</string>
+				<string>text</string>
+				<string>*</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Plain Text</string>
+			<key>CFBundleTypeReadableName</key>
+			<string>Texte en clair</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+		</dict>
+	</array>
+	<key>NSAppVersion</key>
+	<string>2</string>
+	<key>NSHumanReadableCompleteName</key>
+	<string>TeXShop</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright (c) 2001-2006, Richard Koch 
+ http://www.texshop.org</string>
+	<key>NSHumanReadableShortName</key>
+	<string>TeXShop</string>
+	<key>NSInfoPlistVersion</key>
+	<string>6.1</string>
+</dict>
+</plist>
