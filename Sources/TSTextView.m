@@ -140,9 +140,9 @@
 			NSPoint location = [self convertPoint:[sender draggingLocation] fromView:nil];
 			NSLayoutManager *layoutManager = [self layoutManager];
 			NSTextContainer *textContainer = [self textContainer];
-			float fraction;
+			float tmp;
 			int glyphIndex = [layoutManager glyphIndexForPoint:location
-				inTextContainer:textContainer fractionOfDistanceThroughGlyph:&fraction];
+				inTextContainer:textContainer fractionOfDistanceThroughGlyph:&tmp];
 			int characterIndex = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
 			NSRange selRange = [self selectedRange];
 			// moves cursor's position if necessary

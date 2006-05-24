@@ -56,8 +56,8 @@
 
 - (void)addChild:(TSMacroTreeNode*)child;
 - (void)addChildren:(NSArray*)children;
-- (void)insertChild:(TSMacroTreeNode*)child atIndex:(int)index;
-- (void)insertChildren:(NSArray*)children atIndex:(int)index;
+- (void)insertChild:(TSMacroTreeNode*)child atIndex:(int)idx;
+- (void)insertChildren:(NSArray*)children atIndex:(int)idx;
 - (void)removeChild:(TSMacroTreeNode*)child;
 - (void)removeFromParent;
 
@@ -68,7 +68,7 @@
 - (NSArray*)children;
 - (TSMacroTreeNode*)firstChild;
 - (TSMacroTreeNode*)lastChild;
-- (TSMacroTreeNode*)childAtIndex:(int)index;
+- (TSMacroTreeNode*)childAtIndex:(int)idx;
 
 - (BOOL)isDescendantOfNode:(TSMacroTreeNode*)node;
 	// returns YES if 'node' is an ancestor.
@@ -131,7 +131,7 @@
 @end
 
 @interface NSMutableArray (MyExtensions)
-- (void) insertObjectsFromArray:(NSArray *)array atIndex:(int)index;
+- (void) insertObjectsFromArray:(NSArray *)array atIndex:(int)idx;
 @end
 
 

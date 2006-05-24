@@ -255,9 +255,9 @@ static TSMacroOutlineController *_sharedOutlineViewController = nil;
 //		NSOutlineView.dataSource -> Instance of this class (or file's owner)
 
 // Required methods.
-- (id)outlineView:(NSOutlineView *)olv child:(int)index ofItem:(id)item
+- (id)outlineView:(NSOutlineView *)olv child:(int)idx ofItem:(id)item
 {
-	return [(item)?((TSMacroTreeNode*)item):rootOfTree childAtIndex:index];
+	return [(item)?((TSMacroTreeNode*)item):rootOfTree childAtIndex:idx];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)olv isItemExpandable:(id)item
@@ -402,7 +402,7 @@ static TSMacroOutlineController *_sharedOutlineViewController = nil;
 		}
 	}
 
-	// Set the item and child index in case we computed a retargeted one.
+	// Set the item and child idx in case we computed a retargeted one.
 	[outlineView setDropItem:targetNode dropChildIndex:childIndex];
 
 	return targetNodeIsValid ? NSDragOperationGeneric : NSDragOperationNone;
@@ -457,7 +457,7 @@ static TSMacroOutlineController *_sharedOutlineViewController = nil;
 {
 	TSMacroTreeNode * 		parentNode = nil;
 
-	// Determine the parent to insert into and the child index to insert at.
+	// Determine the parent to insert into and the child idx to insert at.
 	if ([(TSMacroTreeNode*)targetItem isLeaf]) {
 		parentNode = (childIndex == NSOutlineViewDropOnItemIndex ? [targetItem nodeParent] : targetItem);
 		childIndex = (childIndex == NSOutlineViewDropOnItemIndex ? [[targetItem nodeParent] indexOfChild: targetItem] + 1 : 0);
@@ -496,9 +496,9 @@ static TSMacroOutlineController *_sharedOutlineViewController = nil;
 	return items;
 }
 
-- (void)selectItems:(NSArray*)items byExtendingSelection:(BOOL)extend {
+- (void)selectItems:(NSArray*)items byExtendingSelection:(BOOL)shouldExtend {
 	int i;
-	if (extend == NO)
+	if (shouldExtend == NO)
 		[self deselectAll:nil];
 	for (i = 0; i < [items count]; i++) {
 		int row = [self rowForItem:[items objectAtIndex:i]];

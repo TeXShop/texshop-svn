@@ -134,7 +134,7 @@
 - (void)drawDotsForPage:(int)page atPoint: (NSPoint)p;
 - (void)drawPage:(PDFPage *)page;
 - (void)resetCursorRects;
-- (void)setIndexForMark: (int)index;
+- (void)setIndexForMark: (int)idx;
 - (void)setBoundsForMark: (NSRect)bounds;
 - (void)setDrawMark: (BOOL)value;
 - (void)setupSourceFiles;

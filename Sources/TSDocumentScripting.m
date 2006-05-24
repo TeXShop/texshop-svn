@@ -495,7 +495,7 @@
 //
 // -----------------------------------------------------------------------------
 
-- (void)insertInOrderedDocuments:(TSDocument *)doc atIndex:(int)index {
+- (void)insertInOrderedDocuments:(TSDocument *)doc atIndex:(int)idx {
 	[doc retain];	// Keep it around...
 	[[doc firstTextView] setSelectedRange:NSMakeRange(0, 0)];
 //	[doc setDocumentName:nil];

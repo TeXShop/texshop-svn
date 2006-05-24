@@ -1742,7 +1742,7 @@ preference change is cancelled. "*/
 	NSString	*text;
 	unsigned	start, end;
 	NSRange	myRange, nameRange;
-	unsigned	length, index;
+	unsigned	length, idx;
 	unsigned	lineNumber;
 	id <NSMenuItem> newItem;
 	BOOL enableAutoTagSections;
@@ -1751,7 +1751,7 @@ preference change is cancelled. "*/
 
 	text = [textView string];
 	length = [text length];
-	index = tagLocation + 10000;
+	idx = tagLocation + 10000;
 	lineNumber = tagLocationLine; // added
 	myRange.location = tagLocation;
 	myRange.length = 1;
@@ -1759,7 +1759,7 @@ preference change is cancelled. "*/
 	enableAutoTagSections = [SUD boolForKey: TagSectionsKey];
 
 	// Iterate over all lines
-	while ((myRange.location < length) && (myRange.location < index)) {
+	while ((myRange.location < length) && (myRange.location < idx)) {
 		[text getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
 		myRange.location = end;
 		lineNumber++;
@@ -2241,12 +2241,12 @@ preference change is cancelled. "*/
 	pdfSyncLine = line;
 }
 
-- (void)setCharacterIndex:(unsigned int)index
+- (void)setCharacterIndex:(unsigned int)idx
 {
-	pdfCharacterIndex = index;
+	pdfCharacterIndex = idx;
 }
 
-- (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView
+- (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)idx andTextView:(id)aTextView
 {
 	int             pdfPage;
 	BOOL            found, synclineFound;
@@ -2264,7 +2264,7 @@ preference change is cancelled. "*/
 
 	int syncMethod = [SUD integerForKey:SyncMethodKey];
 	if ((syncMethod == SEARCHONLY) || (syncMethod == SEARCHFIRST)) {
-		result = [self doNewPreviewSyncWithFilename:fileName andLine:line andCharacterIndex:index andTextView:aTextView];
+		result = [self doNewPreviewSyncWithFilename:fileName andLine:line andCharacterIndex:idx andTextView:aTextView];
 		if (result)
 			return;
 	}
@@ -2548,7 +2548,7 @@ preference change is cancelled. "*/
 }
 
 
-- (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView
+- (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)idx andTextView:(id)aTextView
 {
 	NSString			*theText, *searchText;
 	unsigned int		theIndex;
@@ -2572,7 +2572,7 @@ preference change is cancelled. "*/
 	theText = [aTextView string];
 	length = [theText length];
 
-	theIndex = index;
+	theIndex = idx;
 	testIndex = theIndex;
 	numberOfTests = 1;
 
@@ -3878,7 +3878,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSUndoManager	*	undoManager			= [textView undoManager];
 	NSMutableArray	*	indexesReversed		= [[[NSMutableArray alloc] init] autorelease];
 	NSEnumerator	*	indexesEnumerator	= [indexes objectEnumerator];
-	NSNumber		*	index;
+	NSNumber		*	idx;
     
     NSRange				selectedRange		= [textView selectedRange];
     BOOL                selected            = YES;
@@ -3887,10 +3887,10 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	if ((selectedRange.length == 0) && ((selectedRange = [textView2 selectedRange]).length == 0))
         selected = NO;
 	
-	while ((index = (NSNumber*)[indexesEnumerator nextObject]))
+	while ((idx = (NSNumber*)[indexesEnumerator nextObject]))
 	{
-		[_textStorage insertAttributedString: [[[NSAttributedString alloc] initWithString: @"\n"] autorelease] atIndex: [index unsignedIntValue]];
-		[indexesReversed insertObject: index atIndex: 0];
+		[_textStorage insertAttributedString: [[[NSAttributedString alloc] initWithString: @"\n"] autorelease] atIndex: [idx unsignedIntValue]];
+		[indexesReversed insertObject: idx atIndex: 0];
 	}
     
     if (selected)
@@ -3919,7 +3919,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSUndoManager	*	undoManager					= [textView undoManager];
 	NSMutableArray	*	indexesReversed				= [[[NSMutableArray alloc] init] autorelease];
 	NSEnumerator	*	indexesEnumerator			= [indexes objectEnumerator];
-	NSNumber		*	index;
+	NSNumber		*	idx;
 	
     NSRange				selectedRange		= [textView selectedRange];
     BOOL                selected            = YES;
@@ -3928,10 +3928,10 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	if ((selectedRange.length == 0) && ((selectedRange = [textView2 selectedRange]).length == 0))
         selected = NO;
     
-	while ((index = (NSNumber*)[indexesEnumerator nextObject]))
+	while ((idx = (NSNumber*)[indexesEnumerator nextObject]))
 	{
-		[_textStorage deleteCharactersInRange: NSMakeRange([index unsignedIntValue], 1)];
-		[indexesReversed insertObject: index atIndex: 0];
+		[_textStorage deleteCharactersInRange: NSMakeRange([idx unsignedIntValue], 1)];
+		[indexesReversed insertObject: idx atIndex: 0];
 	}
     
     if (selected)

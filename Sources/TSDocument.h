@@ -280,8 +280,8 @@ enum RootCommand
 - (void)showSyncMarks:sender;
 - (BOOL)syncState;
 - (void) flipShowSync: sender;
-- (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView;
-- (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)index andTextView:(id)aTextView;
+- (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)idx andTextView:(id)aTextView;
+- (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)idx andTextView:(id)aTextView;
 - (void)trashAUXFiles: sender;
 - (void)trashAUX;
 - (void)tryBadEncodingDialog: (NSWindow *)theWindow;
@@ -292,7 +292,7 @@ enum RootCommand
 - (void)doForward: (id)sender;
 - (id) mousemodeMenu;
 - (id) mousemodeMatrix;
-- (void) setCharacterIndex:(unsigned int)index;
+- (void) setCharacterIndex:(unsigned int)idx;
 - (BOOL) textSelectionYellow;
 - (void) setTextSelectionYellow:(BOOL)value;
 // - (void) printDocumentWithSettings: (NSDictionary :)printSettings showPrintPanel:(BOOL)showPrintPanel delegate:(id)delegate 

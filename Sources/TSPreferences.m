@@ -1117,7 +1117,7 @@ This method retrieves the application preferences from the defaults object and s
 
 	myTag = [defaults integerForKey:PdfColorParam1Key];
 	itemIndex = [_colorParam1Popup indexOfItemWithTag: myTag];
-	if (itemIndex == -1) itemIndex = 2; // default index = 2
+	if (itemIndex == -1) itemIndex = 2; // default idx = 2
 	[_colorParam1Popup selectItemAtIndex: itemIndex];
 
 	myTag = [defaults integerForKey:MetaPostCommandKey];

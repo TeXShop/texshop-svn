@@ -500,9 +500,9 @@
 		NSPopUpButton *popup = [[TSPreferences sharedInstance] imageCopyTypePopup];
 		if (popup)
 		{
-			int index = [popup indexOfItemWithTag: imageCopyType];
-			if (index != -1)
-				[popup selectItemAtIndex: index];
+			int idx = [popup indexOfItemWithTag: imageCopyType];
+			if (idx != -1)
+				[popup selectItemAtIndex: idx];
 		}
 		// end mitsu 1.29b
 		// save this to User Defaults

@@ -757,17 +757,17 @@
 
 // --------------------------------------------------------------------------------------------- outlineView:child:ofItem
 
-- (id) outlineView: (NSOutlineView *) outlineView child: (int) index ofItem: (id) item
+- (id) outlineView: (NSOutlineView *) outlineView child: (int) idx ofItem: (id) item
 {
 	if (item == NULL)
 	{
 		if (_outline)
-			return [[_outline childAtIndex: index] retain];
+			return [[_outline childAtIndex: idx] retain];
 		else
 			return NULL;
 	}
 	else
-		return [[(PDFOutline *)item childAtIndex: index] retain];
+		return [[(PDFOutline *)item childAtIndex: idx] retain];
 }
 
 // ----------------------------------------------------------------------------------------- outlineView:isItemExpandable
@@ -1013,9 +1013,9 @@
 
 #pragma mark =====drawPage=====
 
-- (void)setIndexForMark: (int)index
+- (void)setIndexForMark: (int)idx
 {
-	pageIndexForMark = index;
+	pageIndexForMark = idx;
 }
 
 - (void)setBoundsForMark: (NSRect)bounds

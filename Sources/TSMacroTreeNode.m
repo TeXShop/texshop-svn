@@ -110,19 +110,19 @@
 	[children makeObjectsPerformSelector:@selector(setNodeParent:) withObject:self];
 }
 
-- (void)insertChild:(TSMacroTreeNode*)child atIndex:(int)index
+- (void)insertChild:(TSMacroTreeNode*)child atIndex:(int)idx
 {
 	if (!_nodeChildren)
 		_nodeChildren = [[NSMutableArray alloc] init];
-	[_nodeChildren insertObject:child atIndex:index];
+	[_nodeChildren insertObject:child atIndex:idx];
 	[child setNodeParent: self];
 }
 
-- (void)insertChildren:(NSArray*)children atIndex:(int)index
+- (void)insertChildren:(NSArray*)children atIndex:(int)idx
 {
 	if (!_nodeChildren)
 		_nodeChildren = [[NSMutableArray alloc] init];
-	[_nodeChildren insertObjectsFromArray: children atIndex: index];
+	[_nodeChildren insertObjectsFromArray: children atIndex: idx];
 	[children makeObjectsPerformSelector:@selector(setNodeParent:) withObject:self];
 }
 
@@ -140,9 +140,9 @@
 
 - (void)removeChild:(TSMacroTreeNode*)child
 {
-	int index = [self indexOfChild: child];
-	if (index!=NSNotFound) {
-		[self removeChildrenIdenticalTo: [NSArray arrayWithObject: [self childAtIndex:index]]];
+	int idx = [self indexOfChild: child];
+	if (idx!=NSNotFound) {
+		[self removeChildrenIdenticalTo: [NSArray arrayWithObject: [self childAtIndex:idx]]];
 	}
 }
 
@@ -191,9 +191,9 @@
 	return [_nodeChildren lastObject];
 }
 
-- (TSMacroTreeNode*)childAtIndex:(int)index
+- (TSMacroTreeNode*)childAtIndex:(int)idx
 {
-	return [_nodeChildren objectAtIndex:index];
+	return [_nodeChildren objectAtIndex:idx];
 }
 
 - (BOOL)isDescendantOfNode:(TSMacroTreeNode*)node
@@ -616,11 +616,11 @@
 
 @implementation NSMutableArray (MyExtensions)
 
-- (void) insertObjectsFromArray:(NSArray *)array atIndex:(int)index {
+- (void) insertObjectsFromArray:(NSArray *)array atIndex:(int)idx {
 	NSObject *entry = nil;
 	NSEnumerator *enumerator = [array objectEnumerator];
 	while ((entry = [enumerator nextObject])) {
-		[self insertObject:entry atIndex:index++];
+		[self insertObject:entry atIndex:idx++];
 	}
 }
 

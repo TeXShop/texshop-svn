@@ -86,7 +86,7 @@
 
 - (NSArray *)orderedDocuments;
 - (BOOL)application:(NSApplication *)sender delegateHandlesKey:(NSString *)key;
-- (void)insertInOrderedDocuments:(TSDocument *)doc atIndex:(int)index;
+- (void)insertInOrderedDocuments:(TSDocument *)doc atIndex:(int)idx;
 - (id)handleOpenForExternalEditorCommand:(NSScriptCommand*)command;
 @end
 
