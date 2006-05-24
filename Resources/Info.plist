@@ -15,7 +15,7 @@
 			<key>CFBundleTypeIconFile</key>
 			<string>tex.icns</string>
 			<key>CFBundleTypeName</key>
-			<string>tex</string>
+			<string>TeX Document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSItemContentTypes</key>
@@ -192,6 +192,12 @@
 			<array>
 				<string>pdf</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>pdf.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/pdf</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>NSPDFPboardType</string>
 			<key>CFBundleTypeOSTypes</key>
@@ -208,6 +214,10 @@
 			<array>
 				<string>tiff</string>
 				<string>tif</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>image/tiff</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>NSTIFFPboardType</string>
@@ -226,8 +236,12 @@
 				<string>jpg</string>
 				<string>jpeg</string>
 			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>image/jpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
-			<string>JPEG Image</string>
+			<string>jpeg</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>JPEG</string>
@@ -241,6 +255,10 @@
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>eps</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/postscript</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>NSEPSPboardType</string>
@@ -257,6 +275,10 @@
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>epsi</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/postscript</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>epsi</string>
@@ -305,6 +327,10 @@
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>ps</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/postscript</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>PostscriptFile</string>
@@ -383,7 +409,7 @@
 				<string>def</string>
 			</array>
 			<key>CFBundleTypeName</key>
-			<string>def</string>
+			<string>DEF File</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>DEF</string>
@@ -435,24 +461,6 @@
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>DN</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>NSDocumentClass</key>
-			<string>TSDocument</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>pdf</string>
-			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>pdf.icns</string>
-			<key>CFBundleTypeName</key>
-			<string>pdf</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>PDF</string>
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
@@ -555,7 +563,7 @@
 				<string>text/plain</string>
 			</array>
 			<key>CFBundleTypeName</key>
-			<string>Plain Text</string>
+			<string>NSStringPboardType</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>****</string>
@@ -571,7 +579,7 @@
 	<key>CFBundleExecutable</key>
 	<string>TeXShop</string>
 	<key>CFBundleGetInfoString</key>
-	<string>2.10-svn</string>
+	<string>2.10-svn, Copyright 2001-2006, Richard Koch</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>TeXShopHelp</string>
 	<key>CFBundleHelpBookName</key>
@@ -579,7 +587,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Icons.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>TeXShop</string>
+	<string>org.texshop.texshop</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.1</string>
 	<key>CFBundleName</key>
@@ -587,11 +595,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>TeXShop</string>
+	<string>2.10-svn</string>
 	<key>CFBundleSignature</key>
 	<string>TeXs</string>
 	<key>CFBundleVersion</key>
-	<string>2.10-svn</string>
+	<string>154</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.4</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSMainNibFile</key>
