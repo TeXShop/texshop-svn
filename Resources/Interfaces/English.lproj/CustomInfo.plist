@@ -1,5 +1,3 @@
-/* Localized versions of Info.plist keys */
-
 {
     NSInfoPlistVersion = "6.1";
     NSAppVersion = "2";
@@ -16,7 +14,7 @@
         CFBundleDOSNames = ("tex");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
+      },
       {
         CFBundleTypeName = "NSPDFPboardType";
         CFBundleTypeReadableName = "PDF Document";
@@ -25,7 +23,7 @@
         CFBundleDOSNames = ("pdf");
         CFBundleTypeRole = Viewer;
         NSDocumentClass = TSDocument;
-      }
+      },
       {
         CFBundleTypeName = "NSTIFFPboardType";
         CFBundleTypeReadableName = "TIFF Document";
@@ -34,8 +32,8 @@
         CFBundleDOSNames = ("tiff");
         CFBundleTypeRole = Viewer;
         NSDocumentClass = TSDocument;
-      }
-       {
+      },
+      {
         CFBundleTypeName = "NSEPSPboardType";
         CFBundleTypeReadableName = "EPS Document";
         CFBundleTypeExtensions = ("eps");
@@ -43,8 +41,8 @@
         CFBundleDOSNames = ("eps");
         CFBundleTypeRole = Viewer;
         NSDocumentClass = TSDocument;
-      }
-        {
+      },
+      {
         CFBundleTypeName = "NSEPSIPboardType";
         CFBundleTypeReadableName = "EPSI Document";
         CFBundleTypeExtensions = ("epsi");
@@ -52,8 +50,8 @@
         CFBundleDOSNames = ("epsi");
         CFBundleTypeRole = Viewer;
         NSDocumentClass = TSDocument;
-      }
-    {
+      },
+      {
         CFBundleTypeName = "LogFile";
         CFBundleTypeReadableName = "TeX Log File";
         CFBundleTypeExtensions = ("log");
@@ -61,7 +59,7 @@
         CFBundleDOSNames = ("eps");
         CFBundleTypeRole = Viewer;
         NSDocumentClass = TSDocument;
-      }
+      },
       {
         CFBundleTypeName = "AuxFile";
         CFBundleTypeReadableName = "TeX Aux File";
@@ -70,8 +68,8 @@
         CFBundleDOSNames = ("aux");
         CFBundleTypeRole = Viewer;
         NSDocumentClass = TSDocument;
-      }
-       {
+      },
+      {
         CFBundleTypeName = "DVIFile";
         CFBundleTypeReadableName = "TeX DVI File";
         CFBundleTypeExtensions = ("dvi");
@@ -79,7 +77,7 @@
         CFBundleDOSNames = ("dvi");
         CFBundleTypeRole = Viewer;
         NSDocumentClass = TSDocument;
-      }
+      },
       {
         CFBundleTypeName = "bib";
         CFBundleTypeReadableName = "TeX bib File";
@@ -88,7 +86,7 @@
         CFBundleDOSNames = ("bib");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
+      },
       {
         CFBundleTypeName = "PostscriptFile";
         CFBundleTypeReadableName = "Postscript File";
@@ -97,7 +95,7 @@
         CFBundleDOSNames = ("ps");
         CFBundleTypeRole = Viewer;
         NSDocumentClass = TSDocument;
-      }
+      },
       {
         CFBundleTypeName = "TexshopFile";
         CFBundleTypeReadableName = "TeXShop Root File";
@@ -105,7 +103,7 @@
         CFBundleDOSNames = ("texshop");
         CFBundleTypeRole = Viewer;
         NSDocumentClass = TSDocument;
-      }
+      },
       {
         CFBundleTypeName = "mp";
         CFBundleTypeReadableName = "mp";
@@ -113,7 +111,7 @@
         CFBundleDOSNames = ("MP");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
+      },
       {
         CFBundleTypeName = "mf";
         CFBundleTypeReadableName = "mf";
@@ -121,15 +119,15 @@
         CFBundleDOSNames = ("MF");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
-       {
+      },
+      {
         CFBundleTypeName = "ins";
         CFBundleTypeReadableName = "INS File";
         CFBundleTypeExtensions = ("ins");
         CFBundleDOSNames = ("INS");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
+      },
         {
         CFBundleTypeName = "dtx";
         CFBundleTypeReadableName = "DTX File";
@@ -137,62 +135,62 @@
         CFBundleDOSNames = ("DTX");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
-        {
+      },
+      {
         CFBundleTypeName = "sty";
         CFBundleTypeReadableName = "STY File";
         CFBundleTypeExtensions = ("sty");
         CFBundleDOSNames = ("STY");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
-        {
+      },
+      {
         CFBundleTypeName = "cls";
         CFBundleTypeReadableName = "CLS File";
         CFBundleTypeExtensions = ("cls");
         CFBundleDOSNames = ("CLS");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
-        {
+      },
+      {
         CFBundleTypeName = "def";
         CFBundleTypeReadableName = "DEF File";
         CFBundleTypeExtensions = ("def");
         CFBundleDOSNames = ("DEF");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
-        {
+      },
+      {
         CFBundleTypeName = "fd";
         CFBundleTypeReadableName = "FD File";
         CFBundleTypeExtensions = ("fd");
         CFBundleDOSNames = ("FD");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
-        {
+      },
+      {
         CFBundleTypeName = "ltx";
         CFBundleTypeReadableName = "LTX File";
         CFBundleTypeExtensions = ("ltx");
         CFBundleDOSNames = ("LTX");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
-        {
+      },
+      {
         CFBundleTypeName = "clo";
         CFBundleTypeReadableName = "CLO File";
         CFBundleTypeExtensions = ("clo");
         CFBundleDOSNames = ("CLO");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
-        {
+      },
+      {
         CFBundleTypeName = "Plain Text";
         CFBundleTypeReadableName = "Plain Text";
         CFBundleTypeExtensions = ("txt", "text", "*");
         CFBundleDOSNames = ("text/plain");
         CFBundleTypeRole = Editor;
         NSDocumentClass = TSDocument;
-      }
+      },
     );
 }
