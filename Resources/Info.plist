@@ -587,7 +587,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Icons.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.texshop.texshop</string>
+	<string>TeXShop</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.1</string>
 	<key>CFBundleName</key>
