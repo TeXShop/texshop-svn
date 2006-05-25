@@ -213,7 +213,6 @@
 		5217898608A7FAD600FC1D44 /* NSString-Extras.h in Headers */ = {isa = PBXBuildFile; fileRef = 5217898408A7FAD600FC1D44 /* NSString-Extras.h */; };
 		5217898708A7FAD600FC1D44 /* NSString-Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 5217898508A7FAD600FC1D44 /* NSString-Extras.m */; };
 		525C20AE08A94BA5009C5A9C /* OpenHandCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */; };
-		527DA9F50A24F30800A76865 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 527DA9F40A24F30800A76865 /* Info.plist */; };
 		529B9B73089D8287006CC11B /* BackAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B71089D8287006CC11B /* BackAdorn.tif */; };
 		529B9B74089D8287006CC11B /* ForwardAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B72089D8287006CC11B /* ForwardAdorn.tif */; };
 		52A4037008AE1F6C0070F041 /* Encodings.strings in Resources */ = {isa = PBXBuildFile; fileRef = 52A4036E08AE1F6C0070F041 /* Encodings.strings */; };
@@ -1280,7 +1279,6 @@
 				529B9B74089D8287006CC11B /* ForwardAdorn.tif in Resources */,
 				525C20AE08A94BA5009C5A9C /* OpenHandCursor.tiff in Resources */,
 				52E4BF8D08CA74C300726E11 /* TeXShop in Resources */,
-				527DA9F50A24F30800A76865 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1575,10 +1573,7 @@
 		5288880B089D023A0095E82D /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = "$(NATIVE_ARCH)";
 				BUNDLE_VERSION = 159;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = .;
@@ -1598,7 +1593,6 @@
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				MARKETING_VERSION = "2.10-svn";
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = TeXShop;
