@@ -7,7 +7,7 @@
 	<key>IBEditorPositions</key>
 	<dict>
 		<key>356</key>
-		<string>585 917 961 232 0 0 1920 1178 </string>
+		<string>479 692 961 232 0 0 1920 1178 </string>
 		<key>494</key>
 		<string>770 750 379 115 0 0 1920 1178 </string>
 		<key>577</key>
@@ -74,6 +74,8 @@
 	</dict>
 	<key>IBLastGroupID</key>
 	<string>16</string>
+	<key>IBOldestOS</key>
+	<integer>3</integer>
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>356</integer>
@@ -104,7 +106,5 @@
 			<string>NO</string>
 		</dict>
 	</dict>
-	<key>IBUsesTextArchiving</key>
-	<true/>
 </dict>
 </plist>
