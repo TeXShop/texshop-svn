@@ -237,31 +237,6 @@
 		};
 /* End PBXBuildRule section */
 
-/* Begin PBXBuildStyle section */
-		010D8EE3005C2F637F000001 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		010D8EE4005C2F637F000001 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		40C894C306080105000B55B4 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -1058,25 +1033,6 @@
 			buildRules = (
 				40E08A5707B741D50025F50B /* PBXBuildRule */,
 			);
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					/Users/koch/current/cvs_04_14/texshopsource,
-					/Users/koch/current/cvs_05_17/texshopsource,
-				);
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "Info-TeXShop__Upgraded_.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = "";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = TeXShop;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				WRAPPER_EXTENSION = app;
-			};
 			dependencies = (
 			);
 			name = TeXShop;
@@ -1091,12 +1047,6 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 5288880E089D023A0095E82D /* Build configuration list for PBXProject "TeXShop" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				010D8EE3005C2F637F000001 /* Development */,
-				010D8EE4005C2F637F000001 /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
