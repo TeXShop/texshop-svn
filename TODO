@@ -1,14 +1,8 @@
 Some of the things Richard and Max have to do before the release:
 
-* Update ogrekit for Intel compatibility (Dick)
-* Re-add all existing localizations (Max)
 * Backport all changes made between 2.03 and 2.09b:
-  - Source code has been updated
-  - Help files: TODO
-  - .nib files: TODO ? see above
   - TeX.mdimporter: TODO
 * Write a list of things that Max changed (at least the user visible stuff)
-* Update copyright notice in files to "2000-2006" (?)
 * Remove the fake "Eugene Algorithms", use "The TeXShop team" or so instead (?)
 * Modify the web site:
   - add a link the SF.net project page
@@ -35,7 +29,6 @@ AFTER the 2.10 release, we can move on to other things. Top on the list:
 * New localization system (Max)
 * Bette auto-update system; consider Sparkle <http://andymatuschak.org/pages/sparkle>
 * Use "Smart Crash Reports" <http://www.unsanity.com/smartcrashreports/>
-* Update to latest OgreKit
 * ...
 
 
@@ -80,18 +73,28 @@ Topic
     - [+] Subversion
         - [+] Create a local repository of the sources
         - [+] Find a public hoster for it. Maybe savannah?
-        - [+] With OgreKit in a vendor branch ?
+        - [+] With OgreKit in a vendor branch
     - [+] Bug tracker would be nice
         - [+] Maybe register a SF.net project? Or berlios, or savanah,
               or ...
     - [-] Cleanup
         - [-] Legal stuff
-            - [ ] Who or what is 'Eugene Algorithms' mentioned in the
+            - [-] Who or what is 'Eugene Algorithms' mentioned in the
                   Info.plist?
-            - [ ] Copyright probably should be 2000-2005 instead of
+                - [+] Apparently a fake entity
+                - [-] Replace it with something real
+                    - [+] For now, I inserted 'Richard Koch' instead
+                    - [ ] Future: Use "The TeXShop Team" or "The
+                          TeXShop Project" or so
+            - [+] Copyright probably should be 2000-2005 instead of
                   2001-2005
             - [+] Add GPL headers to source files
-        - [ ] Change stuff to point at texshop.org
+        - [-] Change stuff to point at texshop.org
+            - [+] In Info.plist
+            - [ ] In TeXShop help files
+            - [ ] On the TeXShop website itself
+            - [ ] Ultimately, texshop.org should be the main site,
+                  instead of redirecting to uoregon.edu
         - [-] Source
             - [+] Remove tons of commented out obsolete code
             - [+] Unify source formatting
@@ -99,8 +102,7 @@ Topic
             - [-] rename classes and files; in particular get rid of
                   the "My" prefix (use e.g. "TS" instead)
                 - [+] MainWindow -> TSTextWindow
-                - [+] MyWindow -> TSPDFWindow or TSPreviewWindow or
-                      TSGraphicsWindow
+                - [+] MyWindow -> TSPreviewWindow
                 - [+] MyTextView -> TSTextView
                 - [ ] MyPDFKitView -> TSPDFView or TSPDFKitView or
                       TSPreviewView
@@ -118,7 +120,7 @@ Topic
                 - [+] OutlineViewController -> TSMacroOutlineController
                 - [+] MyOutlineView -> TSMacroOutlineView
                 - [+] MyTreeNode -> TSMacroTreeNode
-                - [ ] MatrixTableView -> TSMatrixTableView
+                - [+] MatrixTableView -> TSMatrixTableView
                 - [+] Matrixcontroller -> TSMatrixPanelController
                 - [+] Autrecontroller -> TSLaTeXPanelController
                 - [+] EncodingSupport -> TSEncodingSupport
@@ -229,7 +231,7 @@ Topic
                 - [+] Add comments to encoding.strings which give the
                       hex key used in TextEncodingNames.string, to help
                       translators
-            - [ ] Abolish the intermediate encoding "tags", directly
+            - [+] Abolish the intermediate encoding "tags", directly
                   use NSStringEncoding
             - [ ] Currently "EncodingChangedNotification" is sent *to*
                   TSEncodingSupport, and this then modifies the
@@ -239,7 +241,7 @@ Topic
                   notification, and lets client code do its updates, as
                   needed. This would get rid of various ugly tricks and
                   hacks.
-        - [ ] Use preprocessor on Info.plist / CustomInfo.plist for the
+        - [+] Use preprocessor on Info.plist / CustomInfo.plist for the
               version strings -> reduce number of places where we have
               to update the version
         - [+] TEXTEDIT.app provides TEXEDIT support (see
@@ -249,7 +251,8 @@ Topic
         - [ ] Revise matrixpanel_1.plist
             - [ ] Use a dict instead of an array -> more flexible,
                   easier to maintain, forward compatible
-        - [ ] Remove the Bold/Italics/Alignment/Ruler options
+        - [ ] Remove the Bold/Italics/Alignment/Ruler options. We can
+              use the keyboard shortcuts for better things, too
         - [ ] Add a "Custom Tab width" option, e.g. to the "Fonts"
               dialog
     - [-] Bugs
@@ -363,7 +366,7 @@ Topic
                   click position
             - [+] The arrow buttons in the toolbar are strange; maybe
                   for pageup/down, copy the icons from Preview.app
-            - [ ] The "<" and ">" buttons in the toolbar look ugly ->
+            - [+] The "<" and ">" buttons in the toolbar look ugly ->
                   instead use the triangle buttons from Preview.app.
                   See also Cocoa Browser
             - [ ] Add Zoom in/out hotkeys (Cmd-Plus and Minus)
@@ -466,7 +469,11 @@ Topic
                 - [ ] Also, reduce the number of "critical"
                       translations (by not hardcoding strings into the
                       source etc.)
-                - [ ] Consider using http://www.blue-tec.com/locsuite/
+                - [ ] Use Localization tools
+                    - [ ] nibTranslate 0.7.1
+                    - [ ] AppleGlot
+                    - [ ] http://www.blue-tec.com/locsuite/
+                    - [ ] ...
             - [ ] Remove (or at least reduce) hardcoded strings
                 - [ ] [TSAppDelegate displayLatexPanel]
                 - [ ] [TSAppDelegate displayMatrixPanel]
@@ -476,17 +483,31 @@ Topic
                 - [ ] EncodingSupport setupForEncoding
                 - [ ] MacroEditor.m
                 - [ ] ... many more
-            - [ ] It might be easiest to remove all localizations for
-                  now
-                - [ ]  then cleanup and revamp the dialogs etc. 
-                - [ ] Next, ask the translators to create new
-                      localizations, based on the new .nib files (they
-                      can copy text from the old .nib files of course).
+            - [ ] Plan for transition
+                - [ ] Pick a tool / tool chain for the semi-automatic
+                      localization process
+                - [ ] Start with MainMenu.nib (it should be relatively
+                      easy to start with)
+                - [ ] get feedback from Dick & translators
+                - [ ] if successful, proceed with the other .nib files.
+                      We will ask translators to translate from
+                      scratch, though they can copy text from the old
+                      localizations
+                    - [ ] TSDocument
+                    - [ ] MacroEditor
+                    - [ ] matrixpanel
+                    - [ ] completionpanel
+                    - [ ] FindPanel (?)
+                    - [ ] Preferences -> but here it might be better to
+                          first redesign it from scratch!
                 - [ ] Future (incremental) updates of the localization
-                      then would be easy
+                      then would be easy. So would adding of new dialog
+                      elements etc.
         - [ ] Preference Dialog
-            - [ ] Overhaul the whole thing. It could look better, and
-                  be cleaner, IMHO
+            - [ ] Overhaul the whole thing. It could look a lot better,
+                  and be cleaner
+            - [ ] Make use of 'Bindings', for many settings we might
+                  not even need any code
             - [ ] Do not use the ugly NSBox borders (switch to type
                   "None"?)
             - [ ] Use bold headers on the NSBox
@@ -496,9 +517,10 @@ Topic
                   the text items: This reduces the amount of work that
                   has to be done to localize it (many lanuages need
                   more space than the english version of a given text)
-            - [ ] Add prefs for syntax coloring (and while doing that,
-                  change the NSUserDefault entries we use for colors to
-                  something better)
+            - [ ] Add more settings to the dialog
+                - [ ] ... for syntax coloring (and while doing that,
+                      change the NSUserDefault entries we use for
+                      colors to something better)
             - [ ] On the "Misc" pane, change the various radio buttons
                   to popup menus, which are each in its own row
         - [ ] Help / Documentation
@@ -520,14 +542,18 @@ Topic
         - [ ] Broken link to iTeXMac. Correct one:
               http://itexmac.sourceforge.net/
     - [ ] Misc
-        - [ ] New syntax coloring code disables printing colored sources
+        - [ ] New syntax coloring code disables printing colored
+              sources. Is this a problem for anybody? If so, we can try
+              to re-add this capability
         - [ ] Shouldn't we use ~/Library/Application Support/TeXShop
               instead of ~/Library/TeXShop ?
+            - [ ] Probably not worth all the work required to change it
         - [ ] Why is there a distinction between "--applescript direct"
               and "--applescript" ?
         - [ ] Write a syntax forma guideline, which specifies the
               formatting rules we use...
-        - [ ] latexmk support?
+        - [ ] latexmk support? alternatively, implement that
+              functionality on our own
             - [ ] http://semantics-online.org/geek/2004/07/latexmk_and_t
                   exshop_automagic_pdfpreview_of_latex_documents
             - [ ] http://www.phys.psu.edu/~collins/software/latexmk-jcc/
