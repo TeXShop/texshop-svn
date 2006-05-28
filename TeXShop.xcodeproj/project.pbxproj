@@ -10,8 +10,6 @@
 		40008E6B055436A5005D78AB /* mptopdfwrap in Resources */ = {isa = PBXBuildFile; fileRef = 40008E6A055436A5005D78AB /* mptopdfwrap */; };
 		400477A3057B0F06000B3E9D /* ScriptRunner.app in Resources */ = {isa = PBXBuildFile; fileRef = 400477A2057B0F06000B3E9D /* ScriptRunner.app */; };
 		401FA14006DBF8DD00EA4793 /* TeXShopHelp in Resources */ = {isa = PBXBuildFile; fileRef = 401FA0E106DBF8DD00EA4793 /* TeXShopHelp */; };
-		40217942083AB7620018C510 /* 3rdparty/OgreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40217941083AB7620018C510 /* 3rdparty/OgreKit.framework */; };
-		40217946083AB76F0018C510 /* 3rdparty/OgreKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 40217941083AB7620018C510 /* 3rdparty/OgreKit.framework */; };
 		403CA3180608D37000FFDBBC /* Defaults_pTeX_euc.plist in Resources */ = {isa = PBXBuildFile; fileRef = 403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */; };
 		403CA3190608D37000FFDBBC /* Defaults_pTeX_sjis.plist in Resources */ = {isa = PBXBuildFile; fileRef = 403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */; };
 		40658EEB07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 40658EEA07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff */; };
@@ -212,7 +210,9 @@
 		520C2EF108AE984C0010B1F8 /* TSDocument-Syntax.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */; };
 		5217898608A7FAD600FC1D44 /* NSString-Extras.h in Headers */ = {isa = PBXBuildFile; fileRef = 5217898408A7FAD600FC1D44 /* NSString-Extras.h */; };
 		5217898708A7FAD600FC1D44 /* NSString-Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 5217898508A7FAD600FC1D44 /* NSString-Extras.m */; };
-		522BC4F40A2A00A8007CAB82 /* TeX.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = 522BC49D0A2A0018007CAB82 /* TeX.mdimporter */; };
+		522BDD0E0A2A2407007CAB82 /* TeX.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = 522BDC4C0A2A11A2007CAB82 /* TeX.mdimporter */; };
+		522BDD110A2A2413007CAB82 /* OgreKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 522BDC5A0A2A11A3007CAB82 /* OgreKit.framework */; };
+		522BEB280A2A4A17007CAB82 /* OgreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522BDC580A2A11A3007CAB82 /* OgreKit.framework */; };
 		525C20AE08A94BA5009C5A9C /* OpenHandCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */; };
 		529B9B73089D8287006CC11B /* BackAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B71089D8287006CC11B /* BackAdorn.tif */; };
 		529B9B74089D8287006CC11B /* ForwardAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B72089D8287006CC11B /* ForwardAdorn.tif */; };
@@ -255,6 +255,72 @@
 		};
 /* End PBXBuildStyle section */
 
+/* Begin PBXContainerItemProxy section */
+		522BDC4B0A2A11A2007CAB82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 522BDC300A2A1158007CAB82 /* TeX.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AFF20F980957639F00B02DF3;
+			remoteInfo = TeX;
+		};
+		522BDC570A2A11A3007CAB82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 522BDC190A2A1153007CAB82 /* OgreKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = "OgreKit (Full Features)";
+		};
+		522BDC590A2A11A3007CAB82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 522BDC190A2A1153007CAB82 /* OgreKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4DC40BFC09150BDB0029A2A6;
+			remoteInfo = "OgreKit (without Find Panel)";
+		};
+		522BDC5B0A2A11A3007CAB82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 522BDC190A2A1153007CAB82 /* OgreKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4DC40C0409150C280029A2A6;
+			remoteInfo = "Regular Expression Test";
+		};
+		522BDC5D0A2A11A3007CAB82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 522BDC190A2A1153007CAB82 /* OgreKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4DC40C0F09150C3E0029A2A6;
+			remoteInfo = "Find Panel Test";
+		};
+		522BDC5F0A2A11A3007CAB82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 522BDC190A2A1153007CAB82 /* OgreKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4DC40C1A09150C730029A2A6;
+			remoteInfo = "My Find Panel Example";
+		};
+		522BDC610A2A11A3007CAB82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 522BDC190A2A1153007CAB82 /* OgreKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4DC40C3009150C9E0029A2A6;
+			remoteInfo = "Replace With Attributes Test";
+		};
+		522BDCE70A2A2225007CAB82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 522BDC300A2A1158007CAB82 /* TeX.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D57630D048677EA00EA77CD;
+			remoteInfo = TeX;
+		};
+		522BDCE90A2A222A007CAB82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 522BDC190A2A1153007CAB82 /* OgreKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = "OgreKit (Full Features)";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		40C894C306080105000B55B4 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -262,7 +328,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				40217946083AB76F0018C510 /* 3rdparty/OgreKit.framework in CopyFiles */,
+				522BDD110A2A2413007CAB82 /* OgreKit.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,7 +338,7 @@
 			dstPath = Contents/Library/Spotlight;
 			dstSubfolderSpec = 1;
 			files = (
-				522BC4F40A2A00A8007CAB82 /* TeX.mdimporter in CopyFiles */,
+				522BDD0E0A2A2407007CAB82 /* TeX.mdimporter in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -317,7 +383,6 @@
 		4005D64D03D1217000000009 /* MetaFontAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MetaFontAction.tiff; sourceTree = "<group>"; };
 		40160CAB0409574C00000009 /* Select.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Select.tiff; sourceTree = "<group>"; };
 		401FA0E206DBF8DD00EA4793 /* English */ = {isa = PBXFileReference; lastKnownFileType = folder; name = English; path = English.lproj/TeXShopHelp; sourceTree = "<group>"; };
-		40217941083AB7620018C510 /* 3rdparty/OgreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = 3rdparty/OgreKit.framework; sourceTree = "<group>"; };
 		403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Defaults_pTeX_euc.plist; sourceTree = "<group>"; };
 		403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Defaults_pTeX_sjis.plist; sourceTree = "<group>"; };
 		40658EEA07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DrawerToggleToolbarImage.tiff; sourceTree = "<group>"; };
@@ -375,7 +440,8 @@
 		522B9D450A28DBC0007CAB82 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/Encodings.strings; sourceTree = "<group>"; };
 		522B9D460A28DBC6007CAB82 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Portuguese; path = Portuguese.lproj/Encodings.strings; sourceTree = "<group>"; };
 		522B9D470A28DBCB007CAB82 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Romanian; path = Romanian.lproj/Encodings.strings; sourceTree = "<group>"; };
-		522BC49D0A2A0018007CAB82 /* TeX.mdimporter */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TeX.mdimporter; path = ../3rdparty/TeX.mdimporter; sourceTree = "<group>"; };
+		522BDC190A2A1153007CAB82 /* OgreKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OgreKit.xcodeproj; path = OgreKit/OgreKit.xcodeproj; sourceTree = "<group>"; };
+		522BDC300A2A1158007CAB82 /* TeX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TeX.xcodeproj; path = "TeX-mdimporter/TeX.xcodeproj"; sourceTree = "<group>"; };
 		525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OpenHandCursor.tiff; sourceTree = "<group>"; };
 		527DA9F40A24F30800A76865 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Info.plist; path = Resources/Info.plist; sourceTree = SOURCE_ROOT; };
 		52917147089D403900577613 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Dutch; path = Dutch.lproj/TeXShopHelp; sourceTree = "<group>"; };
@@ -630,7 +696,7 @@
 				407881920519249A006979EA /* Cocoa.framework in Frameworks */,
 				407881930519249A006979EA /* Carbon.framework in Frameworks */,
 				40CD91E307E4D82400DE6448 /* Quartz.framework in Frameworks */,
-				40217942083AB7620018C510 /* 3rdparty/OgreKit.framework in Frameworks */,
+				522BEB280A2A4A17007CAB82 /* OgreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,7 +769,6 @@
 		1058C7A8FEA54F5311CA2CBB /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				40217941083AB7620018C510 /* 3rdparty/OgreKit.framework */,
 				F506285400F4F04801000001 /* Carbon.framework */,
 				2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */,
 				2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */,
@@ -725,6 +790,7 @@
 			children = (
 				5288888E089D06B50095E82D /* Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
+				522BDC370A2A115E007CAB82 /* 3rdparty */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 			);
@@ -774,7 +840,6 @@
 				403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */,
 				403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */,
 				52E4BF4408CA74C300726E11 /* TeXShop */,
-				522BC49D0A2A0018007CAB82 /* TeX.mdimporter */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -812,6 +877,36 @@
 				40D1F2BE06040B1700087115 /* TSMatrixTableView.m */,
 			);
 			name = "Matrix Classes";
+			sourceTree = "<group>";
+		};
+		522BDC370A2A115E007CAB82 /* 3rdparty */ = {
+			isa = PBXGroup;
+			children = (
+				522BDC190A2A1153007CAB82 /* OgreKit.xcodeproj */,
+				522BDC300A2A1158007CAB82 /* TeX.xcodeproj */,
+			);
+			path = 3rdparty;
+			sourceTree = "<group>";
+		};
+		522BDC480A2A11A2007CAB82 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				522BDC4C0A2A11A2007CAB82 /* TeX.mdimporter */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		522BDC4D0A2A11A3007CAB82 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				522BDC580A2A11A3007CAB82 /* OgreKit.framework */,
+				522BDC5A0A2A11A3007CAB82 /* OgreKit.framework */,
+				522BDC5C0A2A11A3007CAB82 /* OgreTest.app */,
+				522BDC5E0A2A11A3007CAB82 /* OgreFindPanelTest.app */,
+				522BDC600A2A11A3007CAB82 /* MyFindPanelExample.app */,
+				522BDC620A2A11A3007CAB82 /* ReplaceWithAttributesTest.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		528029DB089D3DD900696FB9 /* Shellscripts */ = {
@@ -1072,6 +1167,8 @@
 				40E08A5707B741D50025F50B /* PBXBuildRule */,
 			);
 			dependencies = (
+				522BDCE80A2A2225007CAB82 /* PBXTargetDependency */,
+				522BDCEA0A2A222A007CAB82 /* PBXTargetDependency */,
 			);
 			name = TeXShop;
 			productInstallPath = "$(HOME)/Applications";
@@ -1105,11 +1202,73 @@
 			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* CocoaDocApp */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 522BDC4D0A2A11A3007CAB82 /* Products */;
+					ProjectRef = 522BDC190A2A1153007CAB82 /* OgreKit.xcodeproj */;
+				},
+				{
+					ProductGroup = 522BDC480A2A11A2007CAB82 /* Products */;
+					ProjectRef = 522BDC300A2A1158007CAB82 /* TeX.xcodeproj */;
+				},
+			);
 			targets = (
 				407880610519249A006979EA /* TeXShop */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		522BDC4C0A2A11A2007CAB82 /* TeX.mdimporter */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TeX.mdimporter;
+			remoteRef = 522BDC4B0A2A11A2007CAB82 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		522BDC580A2A11A3007CAB82 /* OgreKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = OgreKit.framework;
+			remoteRef = 522BDC570A2A11A3007CAB82 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		522BDC5A0A2A11A3007CAB82 /* OgreKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = OgreKit.framework;
+			remoteRef = 522BDC590A2A11A3007CAB82 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		522BDC5C0A2A11A3007CAB82 /* OgreTest.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = OgreTest.app;
+			remoteRef = 522BDC5B0A2A11A3007CAB82 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		522BDC5E0A2A11A3007CAB82 /* OgreFindPanelTest.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = OgreFindPanelTest.app;
+			remoteRef = 522BDC5D0A2A11A3007CAB82 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		522BDC600A2A11A3007CAB82 /* MyFindPanelExample.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = MyFindPanelExample.app;
+			remoteRef = 522BDC5F0A2A11A3007CAB82 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		522BDC620A2A11A3007CAB82 /* ReplaceWithAttributesTest.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = ReplaceWithAttributesTest.app;
+			remoteRef = 522BDC610A2A11A3007CAB82 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		4078807C0519249A006979EA /* Resources */ = {
@@ -1326,6 +1485,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		522BDCE80A2A2225007CAB82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = TeX;
+			targetProxy = 522BDCE70A2A2225007CAB82 /* PBXContainerItemProxy */;
+		};
+		522BDCEA0A2A222A007CAB82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "OgreKit (Full Features)";
+			targetProxy = 522BDCE90A2A222A007CAB82 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		01E48F61FF2A05357F000001 /* FindPanel.strings */ = {
@@ -1571,7 +1743,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		5288880B089D023A0095E82D /* Development */ = {
+		5288880B089D023A0095E82D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH)";
@@ -1604,9 +1776,9 @@
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
-			name = Development;
+			name = Debug;
 		};
-		5288880C089D023A0095E82D /* Deployment */ = {
+		5288880C089D023A0095E82D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -1639,7 +1811,7 @@
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = Release;
 		};
 		5288880D089D023A0095E82D /* Default */ = {
 			isa = XCBuildConfiguration;
@@ -1673,7 +1845,7 @@
 			};
 			name = Default;
 		};
-		5288880F089D023A0095E82D /* Development */ = {
+		5288880F089D023A0095E82D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_VERSION = 158;
@@ -1698,9 +1870,9 @@
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				WARNING_CFLAGS = "-Wextra";
 			};
-			name = Development;
+			name = Debug;
 		};
-		52888810089D023A0095E82D /* Deployment */ = {
+		52888810089D023A0095E82D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -1720,7 +1892,7 @@
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				WARNING_CFLAGS = "-Wextra";
 			};
-			name = Deployment;
+			name = Release;
 		};
 		52888811089D023A0095E82D /* Default */ = {
 			isa = XCBuildConfiguration;
@@ -1750,8 +1922,8 @@
 		5288880A089D023A0095E82D /* Build configuration list for PBXNativeTarget "TeXShop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5288880B089D023A0095E82D /* Development */,
-				5288880C089D023A0095E82D /* Deployment */,
+				5288880B089D023A0095E82D /* Debug */,
+				5288880C089D023A0095E82D /* Release */,
 				5288880D089D023A0095E82D /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1760,8 +1932,8 @@
 		5288880E089D023A0095E82D /* Build configuration list for PBXProject "TeXShop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5288880F089D023A0095E82D /* Development */,
-				52888810089D023A0095E82D /* Deployment */,
+				5288880F089D023A0095E82D /* Debug */,
+				52888810089D023A0095E82D /* Release */,
 				52888811089D023A0095E82D /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;

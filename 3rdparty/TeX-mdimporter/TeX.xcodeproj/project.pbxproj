@@ -262,7 +262,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		AF5D71CE0856930C006996C9 /* Development */ = {
+		AF5D71CE0856930C006996C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -297,9 +297,9 @@
 				WRAPPER_EXTENSION = mdimporter;
 				ZERO_LINK = NO;
 			};
-			name = Development;
+			name = Debug;
 		};
-		AF5D71CF0856930C006996C9 /* Deployment */ = {
+		AF5D71CF0856930C006996C9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
@@ -330,7 +330,7 @@
 				WRAPPER_EXTENSION = mdimporter;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = Release;
 		};
 		AF5D71D00856930C006996C9 /* Deployment */ = {
 			isa = XCBuildConfiguration;
@@ -394,21 +394,21 @@
 			};
 			name = Default;
 		};
-		AF5D71D30856930C006996C9 /* Development */ = {
+		AF5D71D30856930C006996C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
-			name = Development;
+			name = Debug;
 		};
-		AF5D71D40856930C006996C9 /* Deployment */ = {
+		AF5D71D40856930C006996C9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
-			name = Deployment;
+			name = Release;
 		};
 		AF5D71D50856930C006996C9 /* Deployment */ = {
 			isa = XCBuildConfiguration;
@@ -432,24 +432,24 @@
 		AF5D71CD0856930C006996C9 /* Build configuration list for PBXNativeTarget "TeX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AF5D71CE0856930C006996C9 /* Development */,
-				AF5D71CF0856930C006996C9 /* Deployment */,
+				AF5D71CE0856930C006996C9 /* Debug */,
+				AF5D71CF0856930C006996C9 /* Release */,
 				AF5D71D00856930C006996C9 /* Deployment */,
 				AF5D71D10856930C006996C9 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Deployment;
+			defaultConfigurationName = Release;
 		};
 		AF5D71D20856930C006996C9 /* Build configuration list for PBXProject "TeX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AF5D71D30856930C006996C9 /* Development */,
-				AF5D71D40856930C006996C9 /* Deployment */,
+				AF5D71D30856930C006996C9 /* Debug */,
+				AF5D71D40856930C006996C9 /* Release */,
 				AF5D71D50856930C006996C9 /* Deployment */,
 				AF5D71D60856930C006996C9 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Deployment;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
