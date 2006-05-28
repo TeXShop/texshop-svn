@@ -212,6 +212,7 @@
 		520C2EF108AE984C0010B1F8 /* TSDocument-Syntax.m in Sources */ = {isa = PBXBuildFile; fileRef = 520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */; };
 		5217898608A7FAD600FC1D44 /* NSString-Extras.h in Headers */ = {isa = PBXBuildFile; fileRef = 5217898408A7FAD600FC1D44 /* NSString-Extras.h */; };
 		5217898708A7FAD600FC1D44 /* NSString-Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 5217898508A7FAD600FC1D44 /* NSString-Extras.m */; };
+		522BC4F40A2A00A8007CAB82 /* TeX.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = 522BC49D0A2A0018007CAB82 /* TeX.mdimporter */; };
 		525C20AE08A94BA5009C5A9C /* OpenHandCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */; };
 		529B9B73089D8287006CC11B /* BackAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B71089D8287006CC11B /* BackAdorn.tif */; };
 		529B9B74089D8287006CC11B /* ForwardAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B72089D8287006CC11B /* ForwardAdorn.tif */; };
@@ -262,6 +263,16 @@
 			dstSubfolderSpec = 10;
 			files = (
 				40217946083AB76F0018C510 /* 3rdparty/OgreKit.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		522BC4C20A2A007A007CAB82 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/Spotlight;
+			dstSubfolderSpec = 1;
+			files = (
+				522BC4F40A2A00A8007CAB82 /* TeX.mdimporter in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,6 +375,7 @@
 		522B9D450A28DBC0007CAB82 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/Encodings.strings; sourceTree = "<group>"; };
 		522B9D460A28DBC6007CAB82 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Portuguese; path = Portuguese.lproj/Encodings.strings; sourceTree = "<group>"; };
 		522B9D470A28DBCB007CAB82 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Romanian; path = Romanian.lproj/Encodings.strings; sourceTree = "<group>"; };
+		522BC49D0A2A0018007CAB82 /* TeX.mdimporter */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TeX.mdimporter; path = ../3rdparty/TeX.mdimporter; sourceTree = "<group>"; };
 		525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OpenHandCursor.tiff; sourceTree = "<group>"; };
 		527DA9F40A24F30800A76865 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Info.plist; path = Resources/Info.plist; sourceTree = SOURCE_ROOT; };
 		52917147089D403900577613 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Dutch; path = Dutch.lproj/TeXShopHelp; sourceTree = "<group>"; };
@@ -762,6 +774,7 @@
 				403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */,
 				403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */,
 				52E4BF4408CA74C300726E11 /* TeXShop */,
+				522BC49D0A2A0018007CAB82 /* TeX.mdimporter */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1053,6 +1066,7 @@
 				407881910519249A006979EA /* Frameworks */,
 				407881940519249A006979EA /* Rez */,
 				40C894C306080105000B55B4 /* CopyFiles */,
+				522BC4C20A2A007A007CAB82 /* CopyFiles */,
 			);
 			buildRules = (
 				40E08A5707B741D50025F50B /* PBXBuildRule */,
@@ -1563,7 +1577,7 @@
 				ARCHS = "$(NATIVE_ARCH)";
 				BUNDLE_VERSION = 159;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = .;
+				FRAMEWORK_SEARCH_PATHS = 3rdparty;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -1601,7 +1615,7 @@
 				);
 				BUNDLE_VERSION = 159;
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = .;
+				FRAMEWORK_SEARCH_PATHS = 3rdparty;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
@@ -1635,7 +1649,7 @@
 					i386,
 				);
 				BUNDLE_VERSION = 159;
-				FRAMEWORK_SEARCH_PATHS = .;
+				FRAMEWORK_SEARCH_PATHS = 3rdparty;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_PEDANTIC = NO;
