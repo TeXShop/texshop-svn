@@ -2228,7 +2228,7 @@
 		}
 	}
 	
-	searchText = @"\\include{";
+	searchText = @"\include{";
 	done = NO;
 	maskRange.location = 0;
 	maskRange.length = sourceLength;
@@ -2263,7 +2263,7 @@
 			}
 		}
 
-	searchText = @"\\input{";
+	searchText = @"\input{";
 	done = NO;
 	maskRange.location = 0;
 	maskRange.length = sourceLength;
@@ -2309,7 +2309,7 @@
 			}
 		}
 
-	searchText = @"\\import{";
+	searchText = @"\import{";
 	done = NO;
 	maskRange.location = 0;
 	maskRange.length = sourceLength;
@@ -2401,8 +2401,8 @@
 	theIndex = [thePage characterIndexAtPoint:viewPosition];
 	if (theIndex < 0)
 		return NO;
-
-	if (sourceFiles == nil)
+	
+	if (sourceFiles == nil) 
 		[self setupSourceFiles];
 	numberOfFiles = [sourceFiles count];
 
