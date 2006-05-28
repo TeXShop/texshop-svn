@@ -237,6 +237,23 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXBuildStyle section */
+		522B9D550A29237E007CAB82 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		522B9D560A29237E007CAB82 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		40C894C306080105000B55B4 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -340,6 +357,13 @@
 		520C2EEF08AE984C0010B1F8 /* TSDocument-Syntax.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "TSDocument-Syntax.m"; sourceTree = "<group>"; };
 		5217898408A7FAD600FC1D44 /* NSString-Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Extras.h"; sourceTree = "<group>"; };
 		5217898508A7FAD600FC1D44 /* NSString-Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Extras.m"; sourceTree = "<group>"; };
+		522B9D410A28DBB0007CAB82 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/Encodings.strings; sourceTree = "<group>"; };
+		522B9D420A28DBB4007CAB82 /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/Encodings.strings; sourceTree = "<group>"; };
+		522B9D430A28DBB9007CAB82 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/Encodings.strings; sourceTree = "<group>"; };
+		522B9D440A28DBBC007CAB82 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/Encodings.strings; sourceTree = "<group>"; };
+		522B9D450A28DBC0007CAB82 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/Encodings.strings; sourceTree = "<group>"; };
+		522B9D460A28DBC6007CAB82 /* Portuguese */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Portuguese; path = Portuguese.lproj/Encodings.strings; sourceTree = "<group>"; };
+		522B9D470A28DBCB007CAB82 /* Romanian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Romanian; path = Romanian.lproj/Encodings.strings; sourceTree = "<group>"; };
 		525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OpenHandCursor.tiff; sourceTree = "<group>"; };
 		527DA9F40A24F30800A76865 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Info.plist; path = Resources/Info.plist; sourceTree = SOURCE_ROOT; };
 		52917147089D403900577613 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Dutch; path = Dutch.lproj/TeXShopHelp; sourceTree = "<group>"; };
@@ -1047,6 +1071,12 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 5288880E089D023A0095E82D /* Build configuration list for PBXProject "TeXShop" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				522B9D550A29237E007CAB82 /* Development */,
+				522B9D560A29237E007CAB82 /* Deployment */,
+			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -1369,6 +1399,13 @@
 			children = (
 				52A4036F08AE1F6C0070F041 /* English */,
 				52A403A708AE20020070F041 /* German */,
+				522B9D410A28DBB0007CAB82 /* Dutch */,
+				522B9D420A28DBB4007CAB82 /* French */,
+				522B9D430A28DBB9007CAB82 /* Italian */,
+				522B9D440A28DBBC007CAB82 /* Japanese */,
+				522B9D450A28DBC0007CAB82 /* Spanish */,
+				522B9D460A28DBC6007CAB82 /* Portuguese */,
+				522B9D470A28DBCB007CAB82 /* Romanian */,
 			);
 			name = Encodings.strings;
 			sourceTree = "<group>";
