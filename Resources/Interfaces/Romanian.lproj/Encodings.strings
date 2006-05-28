@@ -50,13 +50,13 @@
 "DOS Cyrillic"	= "Cyrillic (DOS)";
 
 /* "DOS Russian" corresponds to code 0x0000041b in TextEncodingNames.string */
-"DOS Russian"	= "Cyrillic (DOS)";
+"DOS Russian"	= "Russian (DOS)";
 
 /* "Windows Cyrillic" corresponds to code 0x00000502 in TextEncodingNames.string */
 "Windows Cyrillic"	= "Cyrillic (Windows)";
 
 /* "KOI8_R" corresponds to code 0x00000a02 in TextEncodingNames.string */
-"KOI8_R"	= "Cyrillic (KOI8-R)";
+"KOI8_R"	= "Russian (KOI8-R)";
 
 /* "Mac Chinese Traditional" corresponds to code 0x00000002 in TextEncodingNames.string */
 "Mac Chinese Traditional"	= "Traditional Chinese (Mac OS)";
