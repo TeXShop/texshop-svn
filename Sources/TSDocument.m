@@ -562,7 +562,6 @@
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
 {
 	NSView				*oldAccessoryView;
-	NSStringEncoding	theCode;
  
 
 	// Create the contents of the encoding menu on the fly
@@ -570,8 +569,7 @@
 	[[TSEncodingSupport sharedInstance] addEncodingsToMenu:[openSaveBox menu] withTarget:0 action:0];
 
 	// Select active encoding
-	theCode = [[TSEncodingSupport sharedInstance] defaultEncoding];
-	[openSaveBox selectItemWithTag: theCode];
+	[openSaveBox selectItemWithTag: _encoding];
 
 	// Get the active accessory view.
 	oldAccessoryView = [savePanel accessoryView];
