@@ -238,23 +238,6 @@
 		};
 /* End PBXBuildRule section */
 
-/* Begin PBXBuildStyle section */
-		522B9D550A29237E007CAB82 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Development;
-		};
-		522B9D560A29237E007CAB82 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXContainerItemProxy section */
 		522BDC4B0A2A11A2007CAB82 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1182,12 +1165,6 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 5288880E089D023A0095E82D /* Build configuration list for PBXProject "TeXShop" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				522B9D550A29237E007CAB82 /* Development */,
-				522B9D560A29237E007CAB82 /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -1813,38 +1790,6 @@
 			};
 			name = Release;
 		};
-		5288880D089D023A0095E82D /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				BUNDLE_VERSION = 159;
-				FRAMEWORK_SEARCH_PATHS = 3rdparty;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_PEDANTIC = NO;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Resources/Info.plist;
-				INFOPLIST_PREPROCESS = NO;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				MARKETING_VERSION = "2.10-svn";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = TeXShop;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				WRAPPER_EXTENSION = app;
-				ZERO_LINK = NO;
-			};
-			name = Default;
-		};
 		5288880F089D023A0095E82D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1894,28 +1839,6 @@
 			};
 			name = Release;
 		};
-		52888811089D023A0095E82D /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_VALUE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				WARNING_CFLAGS = "-Wextra";
-			};
-			name = Default;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1924,20 +1847,18 @@
 			buildConfigurations = (
 				5288880B089D023A0095E82D /* Debug */,
 				5288880C089D023A0095E82D /* Release */,
-				5288880D089D023A0095E82D /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		5288880E089D023A0095E82D /* Build configuration list for PBXProject "TeXShop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5288880F089D023A0095E82D /* Debug */,
 				52888810089D023A0095E82D /* Release */,
-				52888811089D023A0095E82D /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
