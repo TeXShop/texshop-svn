@@ -3,7 +3,7 @@
 //  TeX mdimporter
 //
 //  Created by Norman Gall on 20051220.
-//  Copyleft (c) 2005 Spookyhill. No rights reserved.
+//  Copyleft (c) 2005-2006 Spookyhill. No rights reserved.
 //
 
 

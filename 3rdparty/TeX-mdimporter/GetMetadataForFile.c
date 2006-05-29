@@ -18,25 +18,28 @@ Boolean GetMetadataForFile(void* thisInterface,
 
     // get the entire contents of the file
     NSData *data = [NSData dataWithContentsOfFile:(NSString *)pathToFile];
+	
+	if (data == nil) {
+		// if we failed to read the file, abort
+        [pool release]; // everyone out of the pool
+		return FALSE;
+	}
 
     // guess the encoding is UTF-8
     NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
     if(str == nil){
         // bad encoding choice
-        [str release];
         str = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
 	}
 	
     if(str == nil){
         // bad encoding choice
-        [str release];
         str = [[NSString alloc] initWithData:data encoding:NSMacOSRomanStringEncoding]; 
     }
 
     if(str == nil){
         // catastrophic failure; run like hell
-        [str release];
         [pool release]; // everyone out of the pool
         return FALSE;
     }

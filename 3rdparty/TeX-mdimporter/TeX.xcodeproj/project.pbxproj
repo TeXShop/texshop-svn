@@ -8,57 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		2C05A19C06CAA52B00D84F6F /* GetMetadataForFile.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.c */; };
+		522BAA7C0A29F8A4007CAB82 /* schema.xml in Resources */ = {isa = PBXBuildFile; fileRef = 522BAA7B0A29F8A4007CAB82 /* schema.xml */; };
 		8D576312048677EA00EA77CD /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 08FB77B6FE84183AC02AAC07 /* main.c */; settings = {ATTRIBUTES = (); }; };
 		8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
-		8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49A704867FD3000E48DA /* InfoPlist.strings */; };
-		AF18A14208294D0900D0F4B9 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D576317048677EA00EA77CD /* Info.plist */; };
 		AF69A9C4082933E4006AFD5F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF69A9C3082933E4006AFD5F /* CoreData.framework */; };
 		AF69A9D80829341E006AFD5F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF69A9D70829341E006AFD5F /* Foundation.framework */; };
 		C86B05270671AA6E00DD9006 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86B05260671AA6E00DD9006 /* CoreServices.framework */; };
-		C88FB7E40674480E006EBB30 /* schema.strings in Resources */ = {isa = PBXBuildFile; fileRef = C88FB7E30674480E006EBB30 /* schema.strings */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildStyle section */
-		014CEA3F0018CDD111CA2923 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
-			};
-			name = Development;
-		};
-		014CEA400018CDD111CA2923 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-			};
-			name = Deployment;
-		};
-		AF9E475D082C29F4001E84FF /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXFileReference section */
-		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		08FB77B6FE84183AC02AAC07 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = GetMetadataForFile.c; sourceTree = "<group>"; };
+		522BAA7B0A29F8A4007CAB82 /* schema.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = schema.xml; sourceTree = "<group>"; };
 		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AF69A9C3082933E4006AFD5F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		AF69A9D70829341E006AFD5F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		AFF20F980957639F00B02DF3 /* TeX.mdimporter */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TeX.mdimporter; sourceTree = BUILT_PRODUCTS_DIR; };
 		C86B05260671AA6E00DD9006 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
-		C88FB7DB0674470F006EBB30 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/schema.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,9 +68,8 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C88FB7E30674480E006EBB30 /* schema.strings */,
 				8D576317048677EA00EA77CD /* Info.plist */,
-				8D5B49A704867FD3000E48DA /* InfoPlist.strings */,
+				522BAA7B0A29F8A4007CAB82 /* schema.xml */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -150,33 +116,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = /Library/Spotlight;
-				LIBRARY_SEARCH_PATHS = "";
-				LIBRARY_STYLE = Bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
-				PRODUCT_NAME = TeX;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = mdimporter;
-				ZERO_LINK = NO;
-			};
 			dependencies = (
 			);
 			name = TeX;
@@ -191,13 +130,6 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = AF5D71D20856930C006996C9 /* Build configuration list for PBXProject "TeX" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				014CEA3F0018CDD111CA2923 /* Development */,
-				014CEA400018CDD111CA2923 /* Deployment */,
-				AF9E475D082C29F4001E84FF /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* TeX */;
 			projectDirPath = "";
@@ -212,9 +144,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */,
-				C88FB7E40674480E006EBB30 /* schema.strings in Resources */,
-				AF18A14208294D0900D0F4B9 /* Info.plist in Resources */,
+				522BAA7C0A29F8A4007CAB82 /* schema.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,25 +171,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		8D5B49A704867FD3000E48DA /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				089C167EFE841241C02AAC07 /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		C88FB7E30674480E006EBB30 /* schema.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C88FB7DB0674470F006EBB30 /* English */,
-			);
-			name = schema.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		AF5D71CE0856930C006996C9 /* Debug */ = {
@@ -302,6 +213,10 @@
 		AF5D71CF0856930C006996C9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -332,68 +247,6 @@
 			};
 			name = Release;
 		};
-		AF5D71D00856930C006996C9 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = /Library/Spotlight;
-				LIBRARY_SEARCH_PATHS = "";
-				LIBRARY_STYLE = Bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
-				PRODUCT_NAME = TeX;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = mdimporter;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		AF5D71D10856930C006996C9 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = /Library/Spotlight;
-				LIBRARY_SEARCH_PATHS = "";
-				LIBRARY_STYLE = Bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
-				PRODUCT_NAME = TeX;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = mdimporter;
-				ZERO_LINK = NO;
-			};
-			name = Default;
-		};
 		AF5D71D30856930C006996C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -410,22 +263,6 @@
 			};
 			name = Release;
 		};
-		AF5D71D50856930C006996C9 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-			};
-			name = Deployment;
-		};
-		AF5D71D60856930C006996C9 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-			};
-			name = Default;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -434,8 +271,6 @@
 			buildConfigurations = (
 				AF5D71CE0856930C006996C9 /* Debug */,
 				AF5D71CF0856930C006996C9 /* Release */,
-				AF5D71D00856930C006996C9 /* Deployment */,
-				AF5D71D10856930C006996C9 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -445,8 +280,6 @@
 			buildConfigurations = (
 				AF5D71D30856930C006996C9 /* Debug */,
 				AF5D71D40856930C006996C9 /* Release */,
-				AF5D71D50856930C006996C9 /* Deployment */,
-				AF5D71D60856930C006996C9 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
