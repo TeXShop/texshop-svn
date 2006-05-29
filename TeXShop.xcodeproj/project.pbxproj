@@ -212,7 +212,7 @@
 		5217898708A7FAD600FC1D44 /* NSString-Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 5217898508A7FAD600FC1D44 /* NSString-Extras.m */; };
 		522BDD0E0A2A2407007CAB82 /* TeX.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = 522BDC4C0A2A11A2007CAB82 /* TeX.mdimporter */; };
 		522BDD110A2A2413007CAB82 /* OgreKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 522BDC5A0A2A11A3007CAB82 /* OgreKit.framework */; };
-		522BEB280A2A4A17007CAB82 /* OgreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522BDC580A2A11A3007CAB82 /* OgreKit.framework */; };
+		525B62BC0A2B91540056EDA2 /* OgreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522BDC580A2A11A3007CAB82 /* OgreKit.framework */; };
 		525C20AE08A94BA5009C5A9C /* OpenHandCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */; };
 		529B9B73089D8287006CC11B /* BackAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B71089D8287006CC11B /* BackAdorn.tif */; };
 		529B9B74089D8287006CC11B /* ForwardAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = 529B9B72089D8287006CC11B /* ForwardAdorn.tif */; };
@@ -382,7 +382,7 @@
 		4077C62E03C7FB1E00000009 /* TSMacroOutlineController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSMacroOutlineController.h; sourceTree = "<group>"; };
 		4077C62F03C7FB1E00000009 /* TSMacroOutlineController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSMacroOutlineController.m; sourceTree = "<group>"; };
 		4077C63603C7FC0900000009 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MacroEditor.nib; sourceTree = "<group>"; };
-		407881970519249A006979EA /* TeXShop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeXShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		407881970519249A006979EA /* TeXShop.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TeXShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		407DE7540409C08300000009 /* MagGlass.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagGlass.tiff; sourceTree = "<group>"; };
 		407DE7560409C09600000009 /* MagGlassL.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagGlassL.tiff; sourceTree = "<group>"; };
 		40839127060963C800266FAB /* TextFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFinder.h; sourceTree = "<group>"; };
@@ -679,7 +679,7 @@
 				407881920519249A006979EA /* Cocoa.framework in Frameworks */,
 				407881930519249A006979EA /* Carbon.framework in Frameworks */,
 				40CD91E307E4D82400DE6448 /* Quartz.framework in Frameworks */,
-				522BEB280A2A4A17007CAB82 /* OgreKit.framework in Frameworks */,
+				525B62BC0A2B91540056EDA2 /* OgreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1726,7 +1726,7 @@
 				ARCHS = "$(NATIVE_ARCH)";
 				BUNDLE_VERSION = 159;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = 3rdparty;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -1764,7 +1764,7 @@
 				);
 				BUNDLE_VERSION = 159;
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = 3rdparty;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
