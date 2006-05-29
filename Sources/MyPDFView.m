@@ -379,9 +379,9 @@ scroller position.
 // 		calls "fitToSize" which calls "setFrameAndBounds" and "setMagnification"
 - (void)setupForPDFRep: (NSPDFImageRep *)newRep style: (int)newPageStyle{
 	int		pagenumber; // 0 to [newRep pageCount]-1
-	NSPoint topLeft, aPoint, theOrigin;
+	NSPoint topLeft = {0,0}, aPoint, theOrigin;
 	NSRect	myBounds, visRect;
-	NSSize 	oldSize;
+	NSSize 	oldSize = {0,0};
 	BOOL	modifiedRep = NO, copiesOnScroll;
 
 	copiesOnScroll = [(NSClipView *)[self superview] copiesOnScroll];
@@ -2239,12 +2239,12 @@ failed. If you change the code below, be sure to test carefully!
 
 - (void)doMagnifyingGlass:(NSEvent *)theEvent level: (int)level
 {
-	NSPoint mouseLocWindow, mouseLocView;
+	NSPoint mouseLocWindow = {0,0}, mouseLocView;
 	NSRect oldBounds, newBounds, magRectWindow, magRectView;
 	BOOL postNote, cursorVisible;
-	float magWidth, magHeight, magOffsetX, magOffsetY;
-	int originalLevel, currentLevel;
-	float magScale; 	//0.4	// you may want to change this
+	float magWidth = 0.0, magHeight = 0.0, magOffsetX = 0.0, magOffsetY = 0.0;
+	int originalLevel, currentLevel = 0.0;
+	float magScale = 0.0; 	//0.4	// you may want to change this
 
 	postNote = [self postsBoundsChangedNotifications];
 	[self setPostsBoundsChangedNotifications: NO];	// block the view from sending notification
@@ -2954,7 +2954,7 @@ failed. If you change the code below, be sure to test carefully!
 // get image data from the selected rectangle with specified type
 - (NSData *)imageDataFromSelectionType: (int)type
 {
-	NSRect visRect, newRect, selRectWindow;
+	NSRect visRect, newRect = NSMakeRect(0,0,0,0), selRectWindow;
 	NSData *data = nil;
 	NSBitmapImageRep *bitmap = nil;
 	NSImage *image = nil;
@@ -3146,7 +3146,7 @@ failed. If you change the code below, be sure to test carefully!
 // put the image data from selected rectangle into pasteboard
 - (void)copy: (id)sender
 {
-	NSString *dataType;
+	NSString *dataType = 0;
 	NSPasteboard *pboard = [NSPasteboard generalPasteboard];
 	int imageCopyType = [SUD integerForKey:PdfCopyTypeKey]; // mitsu 1.29b
 
@@ -3163,6 +3163,7 @@ failed. If you change the code below, be sure to test carefully!
 	NSData *data = [self imageDataFromSelectionType: imageCopyType];
 	if (data)
 	{
+		// FIXME: If imageCopyType is unknown, then dataType is 0 here!
 		[pboard declareTypes:[NSArray arrayWithObjects: dataType, nil] owner:self];
 		[pboard setData:data forType:dataType];
 	}
@@ -3233,7 +3234,7 @@ failed. If you change the code below, be sure to test carefully!
 {
 	NSPasteboard *pboard;
 	int imageCopyType;
-	NSString *dataType, *filePath;
+	NSString *dataType = 0, *filePath;
 	NSData *data;
 	NSImage *image;
 	NSSize dragOffset = NSMakeSize(0, 0);
@@ -3249,6 +3250,7 @@ failed. If you change the code below, be sure to test carefully!
 		dataType = NSPDFPboardType;
 	else if (imageCopyType == IMAGE_TYPE_EPS)
 		dataType = NSPostScriptPboardType;
+	// FIXME: If imageCopyType is unknown, then dataType is 0 here!
 	[pboard declareTypes:[NSArray arrayWithObjects: dataType,
 							NSFilenamesPboardType, nil] owner:self];
 

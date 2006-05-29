@@ -592,7 +592,7 @@
 	BOOL			srcExists, srcIsDir;
 	BOOL			dstExists, dstIsDir;
 	BOOL			result;
-	NSString		*reason;
+	NSString		*reason = 0;
 
 	fileManager = [NSFileManager defaultManager];
 	

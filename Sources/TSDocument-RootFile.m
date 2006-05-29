@@ -158,6 +158,7 @@
 	linesTested = 0;
 	myRange.location = 0;
 	myRange.length = 1;
+	sourcedocString = 0;
 
 	while ((myRange.location < length) && (!done) && (linesTested < 20)) {
 		[theSource getLineStart: &start end: &end contentsEnd: &irrelevant forRange: myRange];

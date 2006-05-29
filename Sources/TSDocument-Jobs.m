@@ -195,10 +195,10 @@
 - (NSString *) separate: (NSString *)myEngine into:(NSMutableArray *)args
 {
 	NSArray		*myList;
-	NSString		*myString, *middleString;
+	NSString		*myString, *middleString = 0;
 	int			size, i, pos;
 	BOOL		programFound, inMiddle;
-	NSString		*theEngine;
+	NSString		*theEngine = 0;
 	NSRange		aRange;
 
 	if (myEngine != nil) {
@@ -308,12 +308,11 @@
 	NSString		*imagePath;
 	NSString		*sourcePath;
 	NSString		*directoryPath;
-	NSString		*enginePath;
+	NSString		*enginePath = 0;
 	NSString		*gsPath;
 	NSString		*tetexBinPath;
 	NSString		*epstopdfPath;
 	BOOL			writeable, result;
-	NSString		*reason;
 	NSString		*argumentString;
 	NSString           *tempDestinationString;
 
@@ -327,6 +326,8 @@
 			// put converted file in folder named TempOutputKey; create that folder now
 			if (!([fileManager fileExistsAtPath: TempOutputKey]))
 			{
+				NSString		*reason = 0;
+
 				// create the necessary directories
 				NS_DURING
 					result = [fileManager createDirectoryAtPath:TempOutputKey attributes:nil];
@@ -791,8 +792,8 @@
 		
 		//   if (whichEngine < 5)
 		if ((whichEngineLocal == TexEngine) || (whichEngineLocal == LatexEngine) || (whichEngineLocal == MetapostEngine) || (whichEngineLocal == ContextEngine)) {
-			NSString* enginePath;
-			NSString* myEngine;
+			NSString* enginePath = 0;
+			NSString* myEngine = 0;
 /*
 			if ((theScript == kTypesetViaGhostScript) && ([SUD boolForKey:SavePSEnabledKey])
 				//        && (whichEngine != 2)   && (whichEngine != 4))

@@ -262,7 +262,7 @@ static id sharedMacroMenuController = nil;
 - (void)doMacro: (id)sender
 {
 	BOOL            result;
-	NSString        *reason;
+	NSString        *reason = 0;
 	NSMutableArray  *args;
 	NSString        *macroString;
 	

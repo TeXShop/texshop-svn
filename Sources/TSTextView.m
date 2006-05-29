@@ -391,7 +391,7 @@
 // New version by David Reitter selects beginning backslash with words as in "\int"
 - (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity
 {
-	NSRange	replacementRange;
+	NSRange	replacementRange = { 0, 0 };
 	NSString	*textString;
 	int		length, i, j;
 	BOOL	done;
@@ -632,7 +632,7 @@
 	static unsigned int completionListLocation = 0; // location to start search in the list
 	static unsigned textLocation = NSNotFound; // location of insertion point
 	BOOL foundCandidate;
-	NSString *textString, *foundString, *latexString;
+	NSString *textString, *foundString, *latexString = 0;
 	NSMutableString *newString;
 	unsigned selectedLocation, currentLength, from, to;
 	NSRange foundRange, searchRange, spaceRange, insRange, replaceRange;

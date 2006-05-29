@@ -696,7 +696,7 @@
 	if (mouseMode != NEW_MOUSE_MODE_SELECT_PDF)
 		[super copy:sender];
 	else {
-		NSString *dataType;
+		NSString *dataType = 0;
 		NSPasteboard *pboard = [NSPasteboard generalPasteboard];
 		int imageCopyType = [SUD integerForKey:PdfCopyTypeKey]; // mitsu 1.29b
 
@@ -711,12 +711,11 @@
 			dataType = NSPostScriptPboardType;
 
 		NSData *data = [self imageDataFromSelectionType: imageCopyType];
-		if (data)
-			{
-				[pboard declareTypes:[NSArray arrayWithObjects: dataType, nil] owner:self];
-				[pboard setData:data forType:dataType];
-			}
-		else
+		if (data) {
+			// FIXME: If imageCopyType is unknown, then dataType is 0 here!
+			[pboard declareTypes:[NSArray arrayWithObjects: dataType, nil] owner:self];
+			[pboard setData:data forType:dataType];
+		} else
 			NSRunAlertPanel(@"Error", @"failed to copy selection.", nil, nil, nil);
 		}
 }
@@ -2087,7 +2086,7 @@
 {
 	NSPasteboard *pboard;
 	int imageCopyType;
-	NSString *dataType, *filePath;
+	NSString *dataType = 0, *filePath;
 	NSData *data;
 	NSImage *image;
 	NSSize dragOffset = NSMakeSize(0, 0);
@@ -2106,6 +2105,7 @@
 		dataType = NSPDFPboardType;
 	else if (imageCopyType == IMAGE_TYPE_EPS)
 		dataType = NSPostScriptPboardType;
+	// FIXME: If imageCopyType is unknown, then dataType is 0 here!
 	[pboard declareTypes:[NSArray arrayWithObjects: dataType,
 							NSFilenamesPboardType, nil] owner:self];
 
@@ -2369,9 +2369,9 @@
 	int						numberOfFiles;
 	int						i;
 	BOOL					foundOne, foundMoreThanOne;
-	int						foundIndex;
-	NSRange					foundRange;
-	unsigned int			foundlength;
+	int						foundIndex = 0;
+	NSRange					foundRange = { 0, 0 };
+	unsigned int			foundlength = 0;
 	NSRange					correctedFoundRange;
 	TSDocument				*newDocument;
 	NSTextView				*myTextView;
@@ -3251,9 +3251,9 @@
 	NSPoint mouseLocWindow, mouseLocView, mouseLocDocumentView;
 	NSRect oldBounds, newBounds, magRectWindow, magRectView;
 	BOOL postNote, cursorVisible;
-	float magWidth, magHeight, magOffsetX, magOffsetY;
-	int originalLevel, currentLevel;
-	float magScale; 	//0.4	// you may want to change this
+	float magWidth = 0.0, magHeight = 0.0, magOffsetX = 0.0, magOffsetY = 0.0;
+	int originalLevel, currentLevel = 0.0;
+	float magScale = 0.0; 	//0.4	// you may want to change this
 	
 	postNote = [[self documentView] postsBoundsChangedNotifications];
 	[[self documentView] setPostsBoundsChangedNotifications: NO];

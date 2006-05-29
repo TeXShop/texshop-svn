@@ -2392,6 +2392,7 @@ preference change is cancelled. "*/
 	myRange.location = 0;
 	myRange.length = 1;
 	synclineFound = NO;
+	syncNumber = 0;
 	skipping = NO;
 	skipdepth = 0;
 	while (myRange.location < stringlength) {
@@ -3256,7 +3257,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSString		*text, *oldString;
 	NSRange		myRange, modifyRange, tempRange, oldRange;
 	unsigned		start, end, end1, changeStart, changeEnd;
-	int			theChar;
+	int			theChar = 0;
 	NSString	*theCommand = 0;
 	
 	text = [textView string];
@@ -3401,7 +3402,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	NSString		*path, *path1, *path2;
 	NSString		*extension;
 	NSString        *fileName, *objectFileName;
-	NSMutableArray  *pathsToBeMoved, *fileToBeMoved;
+	NSMutableArray  *pathsToBeMoved, *fileToBeMoved = 0;
 	id              anObject, stringObject;
 	int             myTag;
 	BOOL            doMove, isOneOfOther;
