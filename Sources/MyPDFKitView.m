@@ -2228,7 +2228,7 @@
 		}
 	}
 	
-	searchText = @"\include{";
+	searchText = @"\\include{";
 	done = NO;
 	maskRange.location = 0;
 	maskRange.length = sourceLength;
@@ -2247,7 +2247,7 @@
 			else {
 				maskRange.location = newSearchRange.location + 1;
 				maskRange.length = sourceLength - maskRange.location;
-				fileRange.location = searchRange.location + 8;
+				fileRange.location = searchRange.location + 9;
 				fileRange.length = newSearchRange.location - fileRange.location;
 				filePath = [sourceText substringWithRange: fileRange];
 				// if ([[filePath pathExtension] length] == 0)
@@ -2263,7 +2263,7 @@
 			}
 		}
 
-	searchText = @"\input{";
+	searchText = @"\\input{";
 	done = NO;
 	maskRange.location = 0;
 	maskRange.length = sourceLength;
@@ -2285,7 +2285,7 @@
 			else {
 				maskRange.location = newSearchRange.location + 1;
 				maskRange.length = sourceLength - maskRange.location;
-				fileRange.location = searchRange.location + 6;
+				fileRange.location = searchRange.location + 7;
 				fileRange.length = newSearchRange.location - fileRange.location;
 				filePath = [sourceText substringWithRange: fileRange];
 				// if ([[filePath pathExtension] length] == 0)
@@ -2309,7 +2309,7 @@
 			}
 		}
 
-	searchText = @"\import{";
+	searchText = @"\\import{";
 	done = NO;
 	maskRange.location = 0;
 	maskRange.length = sourceLength;
@@ -2327,7 +2327,7 @@
 			else {
 				maskRange.location = newSearchRange.location + 1;
 				maskRange.length = sourceLength - maskRange.location;
-				fileRange.location = searchRange.location + 7;
+				fileRange.location = searchRange.location + 8;
 				fileRange.length = newSearchRange.location - fileRange.location;
 				filePath = [sourceText substringWithRange: fileRange];
 				// if ([[filePath pathExtension] length] == 0)
