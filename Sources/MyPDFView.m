@@ -975,7 +975,7 @@ failed. If you change the code below, be sure to test carefully!
 // calculate the origin from page number
 - (NSPoint)pointForPage: (int)aPage
 {
-	NSPoint thePoint;
+	NSPoint thePoint = { 0, 0 };
 	if (pageStyle == PDF_MULTI_PAGE_STYLE)
 	{
 		thePoint.x = 0;
@@ -1283,11 +1283,11 @@ failed. If you change the code below, be sure to test carefully!
 
 	if (pageStyle == PDF_SINGLE_PAGE_STYLE)
 	{
+		pagenumber = [myRep pageCount] - 1;
 		if (pagenumber != [myRep currentPage])
 			[self cleanupMarquee: YES];
-		pagenumber = [myRep pageCount] - 1;
 		[currentPage setIntValue: (pagenumber + 1)];
-				[currentPage1 setIntValue: (pagenumber + 1)];
+		[currentPage1 setIntValue: (pagenumber + 1)];
 		[myRep setCurrentPage: pagenumber];
 		[currentPage display];
 		[self display];
