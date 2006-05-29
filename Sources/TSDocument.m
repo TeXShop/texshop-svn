@@ -2031,7 +2031,7 @@ preference change is cancelled. "*/
 	id			obj;
 	BOOL		doError;
 	int			myErrorNumber;
-	int			myErrorLine;
+	int			myErrorLine = -1;
 
 	myRoot = nil;
 	doError = NO;
@@ -2347,6 +2347,7 @@ preference change is cancelled. "*/
 		
 		// now search for matching ')'
 		
+		stringlength = [syncInfo length];
 		myRange.location = 0;
 		myRange.length = 1;
 		skipping = NO;
