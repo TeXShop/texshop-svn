@@ -1780,10 +1780,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wextra",
-				);
+				WARNING_CFLAGS = "-Wmost";
 			};
 			name = Debug;
 		};
@@ -1809,10 +1806,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wextra",
-				);
+				WARNING_CFLAGS = "-Wmost";
 			};
 			name = Release;
 		};
