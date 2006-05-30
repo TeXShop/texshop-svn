@@ -1753,7 +1753,7 @@
 		5288880C089D023A0095E82D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_VERSION = 199;
+				BUNDLE_VERSION = 206;
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
