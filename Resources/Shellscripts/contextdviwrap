@@ -1,7 +1,7 @@
 #!/bin/tcsh
 
 # This short script calls texexec to run a conTeXt job
-# Richard Koch; September 14, 2001
+# Richard Koch; September 14, 2001 and May 29, 2006
 
 set mygspath = "$argv[2]"
 if (-x ${mygspath}/ps2pdf) then
@@ -31,17 +31,17 @@ endif
 if ("$argv[3]" == "Panther") then
     
     if ("$pstest" == "no") then
-	altpdflatex --distiller /usr/bin/pstopdf "${filename:r}.dvi"
+	simpdftex latex --distiller /usr/bin/pstopdf "${filename:r}.dvi"
     else
-	altpdflatex --distiller /usr/bin/pstopdf --keep-psfile "${filename:r}.dvi"
+	simpdftex latex --distiller /usr/bin/pstopdf --keep-psfile "${filename:r}.dvi"
     endif
     
 else
 
     if ("$pstest" == "no") then
-	altpdflatex "${filename:r}.dvi"
+	simpdftex latex "${filename:r}.dvi"
     else
-	altpdflatex --keep-psfile "${filename:r}.dvi"
+	simpdftex latex --keep-psfile "${filename:r}.dvi"
     endif
 
 endif
