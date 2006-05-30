@@ -2195,6 +2195,10 @@
 	currentIndex = 0;
 	sourceText = [[myDocument textView] string];
 	sourceLength = [sourceText length];
+	
+	
+	// TODO: It should be possible to unify the following four loops. There are a few
+	// differences, but those aren't a real problem.
 
 	searchText = @"%!TEX projectfile =";
 	done = NO;
@@ -2204,13 +2208,13 @@
 	// experiments show that the syntax is \include{file} where "file" cannot include ".tex" but the name must be "file.tex"
 	while ((!done) && (maskRange.length > 0) && (currentIndex < NUMBER_OF_SOURCE_FILES)) {
 		searchRange = [sourceText rangeOfString: searchText options:NSLiteralSearch range:maskRange];
-		if (searchRange.location == NSNotFound) 
+		if (searchRange.location == NSNotFound)
 			done = YES;
 		else {
 			maskRange.location = searchRange.location + 1;
 			maskRange.length = sourceLength - maskRange.location;
 			[sourceText getLineStart: &startIndex end: &lineEndIndex contentsEnd: &contentsEndIndex forRange: searchRange];
-			newSearchRange.location = searchRange.location + 19;
+			newSearchRange.location = searchRange.location + [searchText length];
 			newSearchRange.length = contentsEndIndex - newSearchRange.location;
 			filePath = [sourceText substringWithRange: newSearchRange];
 			if (filePath)
@@ -2247,7 +2251,7 @@
 			else {
 				maskRange.location = newSearchRange.location + 1;
 				maskRange.length = sourceLength - maskRange.location;
-				fileRange.location = searchRange.location + 9;
+				fileRange.location = searchRange.location + [searchText length];
 				fileRange.length = newSearchRange.location - fileRange.location;
 				filePath = [sourceText substringWithRange: fileRange];
 				// if ([[filePath pathExtension] length] == 0)
@@ -2258,10 +2262,10 @@
 				if (([manager fileExistsAtPath: filePath isDirectory:&isDir]) && (!isDir)) {
 					[sourceFiles insertObject: filePath atIndex: currentIndex];
 					currentIndex++;
-					}
 				}
 			}
 		}
+	}
 
 	searchText = @"\\input{";
 	done = NO;
@@ -2285,7 +2289,7 @@
 			else {
 				maskRange.location = newSearchRange.location + 1;
 				maskRange.length = sourceLength - maskRange.location;
-				fileRange.location = searchRange.location + 7;
+				fileRange.location = searchRange.location + [searchText length];
 				fileRange.length = newSearchRange.location - fileRange.location;
 				filePath = [sourceText substringWithRange: fileRange];
 				// if ([[filePath pathExtension] length] == 0)
@@ -2303,11 +2307,11 @@
 					if (([manager fileExistsAtPath: filePath isDirectory:&isDir]) && (!isDir)) {
 						[sourceFiles insertObject: filePath atIndex: currentIndex];
 						currentIndex++;
-						}
 					}
 				}
 			}
 		}
+	}
 
 	searchText = @"\\import{";
 	done = NO;
@@ -2327,7 +2331,7 @@
 			else {
 				maskRange.location = newSearchRange.location + 1;
 				maskRange.length = sourceLength - maskRange.location;
-				fileRange.location = searchRange.location + 8;
+				fileRange.location = searchRange.location + [searchText length];
 				fileRange.length = newSearchRange.location - fileRange.location;
 				filePath = [sourceText substringWithRange: fileRange];
 				// if ([[filePath pathExtension] length] == 0)
@@ -2338,10 +2342,10 @@
 				if (([manager fileExistsAtPath: filePath isDirectory:&isDir]) && (!isDir)) {
 					[sourceFiles insertObject: filePath atIndex: currentIndex];
 					currentIndex++;
-					}
 				}
 			}
 		}
+	}
 
 // These last lines are for debugging only
 //	int numberOfFiles = [sourceFiles count];
