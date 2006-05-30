@@ -107,8 +107,6 @@ enum RootCommand
 	IBOutlet NSPopUpButton		*programButton;
 	IBOutlet NSPopUpButton		*programButtonEE;
 
-	IBOutlet NSButton			*previousButtonKK;
-	IBOutlet NSButton			*nextButtonKK;
 	IBOutlet NSBox				*gotopageOutletKK;
 	IBOutlet NSBox				*magnificationOutletKK;
 	IBOutlet NSMatrix			*mouseModeMatrixKK;

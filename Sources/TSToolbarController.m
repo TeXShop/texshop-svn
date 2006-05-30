@@ -193,10 +193,6 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 	[previousButton removeFromSuperview];
 	[nextButton retain];
 	[nextButton removeFromSuperview];
-	[previousButtonKK retain];
-	[previousButtonKK removeFromSuperview];
-	[nextButtonKK retain];
-	[nextButtonKK removeFromSuperview];
 	[gotopageOutlet retain];
 	[gotopageOutlet removeFromSuperview];
 	[magnificationOutlet retain];
@@ -602,23 +598,13 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 
 
 	if ([itemIdent isEqual: kPreviousPageButtonKKTID]) {
-		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
-													customView:previousButtonKK];
-		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-		[menuFormRep setTitle: [toolbarItem label]];
-		[menuFormRep setAction: @selector(previousPage:)];
-		[toolbarItem setMenuFormRepresentation: menuFormRep];
-		return toolbarItem;
+		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
+											 imageName:@"PreviousPageAlternateAction" target:self action:@selector(doPreviousPageKK:)];
 	}
 
 	if ([itemIdent isEqual: kNextPageButtonKKTID]) {
-		toolbarItem =  [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
-													customView:nextButtonKK];
-		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-		[menuFormRep setTitle: [toolbarItem label]];
-		[menuFormRep setAction: @selector(nextPage:)];
-		[toolbarItem setMenuFormRepresentation: menuFormRep];
-		return toolbarItem;
+		return [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
+											 imageName:@"NextPageAlternateAction" target:self action:@selector(doNextPageKK:)];
 	}
 
 

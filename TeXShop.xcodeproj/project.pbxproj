@@ -12,6 +12,8 @@
 		401FA14006DBF8DD00EA4793 /* TeXShopHelp in Resources */ = {isa = PBXBuildFile; fileRef = 401FA0E106DBF8DD00EA4793 /* TeXShopHelp */; };
 		403CA3180608D37000FFDBBC /* Defaults_pTeX_euc.plist in Resources */ = {isa = PBXBuildFile; fileRef = 403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */; };
 		403CA3190608D37000FFDBBC /* Defaults_pTeX_sjis.plist in Resources */ = {isa = PBXBuildFile; fileRef = 403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */; };
+		404145A60A2C13360024BD8E /* NextPageAlternateAction.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 404145A50A2C13360024BD8E /* NextPageAlternateAction.tiff */; };
+		404145A80A2C13550024BD8E /* PreviousPageAlternateAction.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 404145A70A2C13550024BD8E /* PreviousPageAlternateAction.tiff */; };
 		40658EEB07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 40658EEA07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff */; };
 		406A69F5060F8C170028E210 /* detexwrap in Resources */ = {isa = PBXBuildFile; fileRef = 406A69F4060F8C170028E210 /* detexwrap */; };
 		407880640519249A006979EA /* TSConsoleWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CFF0E9000ACFC67F000001 /* TSConsoleWindow.h */; };
@@ -368,6 +370,8 @@
 		401FA0E206DBF8DD00EA4793 /* English */ = {isa = PBXFileReference; lastKnownFileType = folder; name = English; path = English.lproj/TeXShopHelp; sourceTree = "<group>"; };
 		403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Defaults_pTeX_euc.plist; sourceTree = "<group>"; };
 		403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Defaults_pTeX_sjis.plist; sourceTree = "<group>"; };
+		404145A50A2C13360024BD8E /* NextPageAlternateAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = NextPageAlternateAction.tiff; sourceTree = "<group>"; };
+		404145A70A2C13550024BD8E /* PreviousPageAlternateAction.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PreviousPageAlternateAction.tiff; sourceTree = "<group>"; };
 		40658EEA07EBD7E70088F777 /* DrawerToggleToolbarImage.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DrawerToggleToolbarImage.tiff; sourceTree = "<group>"; };
 		4068429A0405969B00000009 /* MyPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPDFView.h; sourceTree = "<group>"; };
 		4068429B0405969B00000009 /* MyPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPDFView.m; sourceTree = "<group>"; };
@@ -702,8 +706,10 @@
 				F5ECC3110214673901DF2474 /* MakeIndexAction.tiff */,
 				F5ECC3120214673901DF2474 /* MetaPostAction.tiff */,
 				F5ECC3130214673901DF2474 /* NextPageAction.tiff */,
+				404145A50A2C13360024BD8E /* NextPageAlternateAction.tiff */,
 				525C20AD08A94BA5009C5A9C /* OpenHandCursor.tiff */,
 				F5ECC3140214673901DF2474 /* PreviousPageAction.tiff */,
+				404145A70A2C13550024BD8E /* PreviousPageAlternateAction.tiff */,
 				40160CAB0409574C00000009 /* Select.tiff */,
 				40A3BBC703CCC58100000009 /* Separator.tiff */,
 				F5ECC3150214673901DF2474 /* TeXAction.tiff */,
@@ -1409,6 +1415,8 @@
 				529B9B74089D8287006CC11B /* ForwardAdorn.tif in Resources */,
 				525C20AE08A94BA5009C5A9C /* OpenHandCursor.tiff in Resources */,
 				52E4BF8D08CA74C300726E11 /* TeXShop in Resources */,
+				404145A60A2C13360024BD8E /* NextPageAlternateAction.tiff in Resources */,
+				404145A80A2C13550024BD8E /* PreviousPageAlternateAction.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
