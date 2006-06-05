@@ -1839,11 +1839,10 @@ end tell
 					<key>content</key>
 					<string>\begin{table}[htdp]
 \caption{default}
-\begin{center}
+\centering
 \begin{tabular}{|c|c|}
 #SEL##INS#
 \end{tabular}
-\end{center}
 \label{default}
 \end{table}%
 </string>
@@ -1860,11 +1859,10 @@ end tell
 				<dict>
 					<key>content</key>
 					<string>\begin{figure}[htbp]
-\begin{center}
+\centering
 #SEL##INS#
 \caption{default}
 \label{default}
-\end{center}
 \end{figure}
 </string>
 					<key>name</key>
@@ -1873,11 +1871,10 @@ end tell
 				<dict>
 					<key>content</key>
 					<string>\begin{figure}[htbp]
-\begin{center}
+\centering
 \epsfile{file=#SEL##INS#,scale=0.8}
 \caption{{\bf default}}
 \label{default}
-\end{center}
 \end{figure}
 </string>
 					<key>name</key>

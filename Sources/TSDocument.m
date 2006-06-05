@@ -743,6 +743,7 @@ in other code when an external editor is being used. */
 															  withCharacter:OgreLfNewlineCharacter];
 		}
 		[[_textStorage mutableString] setString:content];
+		[self setupTags];
 
 		return YES;
 	} else {
@@ -1678,6 +1679,29 @@ preference change is cancelled. "*/
 
 
 #pragma mark Tag menu
+
+- (void)newTag: (id)sender
+{
+	NSString		*text;
+	NSRange		myRange, tempRange;
+	unsigned		start, end, end1, changeStart, changeEnd;
+
+	text = [textView string];
+	myRange = [textView selectedRange];
+	// get old string for Undo
+	[text getLineStart:&start end:&end contentsEnd:&end1 forRange:myRange];
+	tempRange.location = start;
+	tempRange.length = 0;
+	[textView replaceCharactersInRange:tempRange withString:@"%:\n"];
+	changeStart = tempRange.location;
+	changeEnd = changeStart + 2;
+	[self fixColor:changeStart :changeEnd];
+	[self registerUndoWithString:@"" location:tempRange.location
+						length:3 key: @"New Tag"];
+	tempRange.location = start+2;
+	tempRange.length = 0;
+	[textView setSelectedRange: tempRange];
+}
 
 - (void) doTag: sender
 {
@@ -3345,29 +3369,6 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 }
 
 // end mitsu 1.29
-
-- (void)newTag: (id)sender
-{
-	NSString		*text;
-	NSRange		myRange, tempRange;
-	unsigned		start, end, end1, changeStart, changeEnd;
-
-	text = [textView string];
-	myRange = [textView selectedRange];
-	// get old string for Undo
-	[text getLineStart:&start end:&end contentsEnd:&end1 forRange:myRange];
-	tempRange.location = start;
-	tempRange.length = 0;
-	[textView replaceCharactersInRange:tempRange withString:@"%:\n"];
-	changeStart = tempRange.location;
-	changeEnd = changeStart + 2;
-	[self fixColor:changeStart :changeEnd];
-	[self registerUndoWithString:@"" location:tempRange.location
-						length:3 key: @"New Tag"];
-	tempRange.location = start+2;
-	tempRange.length = 0;
-	[textView setSelectedRange: tempRange];
-}
 
 - (void)trashAUXFiles: sender
 {
