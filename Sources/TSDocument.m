@@ -163,6 +163,8 @@
 	[aTextView setBackgroundColor: backgroundColor];
 	[aTextView setInsertionPointColor: insertionpointColor];
 	[aTextView setAcceptsGlyphInfo: YES]; // suggested by Itoh 1.35 (A)
+
+	[(TSTextView *)aTextView setDocument: self];
 }
 
 #pragma mark NSDocument interface
@@ -175,6 +177,7 @@
 
 
 // this method gives a name "Untitled-n" for new documents
+// FIXME: Why do we do this? Lots of code and hackery just to change a space to a dash?
 -(NSString *)displayName
 {
 	if ([self fileName] == nil) // file is a new one
@@ -211,7 +214,6 @@
 	BOOL			imageFound;
 	NSString		*theFileName;
 	int				defaultcommand;
-	NSSize			contentSize;
 	NSDictionary	*myAttributes;
 	int				i;
 	BOOL			done;
@@ -241,23 +243,10 @@
 		default: lineBreakMode = NSLineBreakByCharWrapping;		break;
 	}
 
-	/* New forsplit */
-
-
-	contentSize = [scrollView contentSize];
-	textView1 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
-	[self setupTextView:textView1];
-	[(TSTextView *)textView1 setDocument: self];
-	[scrollView setDocumentView:textView1];
-	[textView1 release];
 	textView = textView1;
-	/* End of New */
-	// forsplit
 
-	contentSize = [scrollView2 contentSize];
-	textView2 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
+	[self setupTextView:textView1];
 	[self setupTextView:textView2];
-	[(TSTextView *)textView2 setDocument: self];
 	if (spellExists)
 		[textView2 setContinuousSpellCheckingEnabled:[SUD boolForKey:SpellCheckEnabledKey]];
 
@@ -265,9 +254,6 @@
 	[scrollView2 setHasHorizontalRuler: NO];
 	[textView2 setUsesRuler: NO];
 	// end witten
-
-	[scrollView2 setDocumentView:textView2];
-	[textView2 release];
 
 
 	// Create a custom NSTextStorage and make sure the two NSTextViews both use it.

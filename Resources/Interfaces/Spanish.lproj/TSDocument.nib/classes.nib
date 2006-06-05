@@ -88,6 +88,7 @@
         }, 
         {CLASS = NSCursor; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {CLASS = NSTextView; LANGUAGE = ObjC; SUPERCLASS = NSText; }, 
         {
             CLASS = TSConsoleWindow; 
             LANGUAGE = ObjC; 
@@ -213,6 +214,12 @@
             LANGUAGE = ObjC; 
             OUTLETS = {myDocument = id; }; 
             SUPERCLASS = NSWindow; 
+        }, 
+        {
+            ACTIONS = {registerForCommandCompletion = id; }; 
+            CLASS = TSTextView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTextView; 
         }, 
         {CLASS = TextFinder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
     ); 
