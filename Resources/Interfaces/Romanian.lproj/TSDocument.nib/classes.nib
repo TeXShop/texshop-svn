@@ -133,7 +133,9 @@
                 newTag = id; 
                 okForPrintRequest = id; 
                 okForRequest = id; 
+                okLine = id; 
                 printSource = id; 
+                quitLine = id; 
                 quitMagnificationPanel = id; 
                 quitPagenumberPanel = id; 
                 removeNewLinesFromSelection = id; 
