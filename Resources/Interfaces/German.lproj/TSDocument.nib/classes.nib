@@ -134,10 +134,12 @@
                 okForPrintRequest = id; 
                 okForRequest = id; 
                 okLine = id; 
+                okProject = id; 
                 printSource = id; 
                 quitLine = id; 
                 quitMagnificationPanel = id; 
                 quitPagenumberPanel = id; 
+                quitProject = id; 
                 removeNewLinesFromSelection = id; 
                 saveDocument = id; 
                 setLineBreakMode = id; 

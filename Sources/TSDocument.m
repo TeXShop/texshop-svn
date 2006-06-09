@@ -298,20 +298,8 @@
 
 	_documentType = isTeX;
 	fileExtension = [[self fileName] pathExtension];
-
-	if (( ! [fileExtension isEqualToString: @"tex"]) && ( ! [fileExtension isEqualToString: @"TEX"])
-		&& ( ! [fileExtension isEqualToString: @"dtx"]) && ( ! [fileExtension isEqualToString: @"ins"])
-		&& ( ! [fileExtension isEqualToString: @"sty"]) && ( ! [fileExtension isEqualToString: @"cls"])
-		&& ( ! [fileExtension isEqualToString: @"Rnw"])
-		// added by mitsu --(N) support for .def, .fd, .ltx. .clo
-		&& ( ! [fileExtension isEqualToString: @"def"]) && ( ! [fileExtension isEqualToString: @"fd"])
-		&& ( ! [fileExtension isEqualToString: @"ltx"]) && ( ! [fileExtension isEqualToString: @"clo"])
-		// end addition
-		&& ( ! [fileExtension isEqualToString: @""]) && ( ! [fileExtension isEqualToString: @"mp"])
-		&& ( ! [fileExtension isEqualToString: @"mf"])
-		&& ( ! [fileExtension isEqualToString: @"bib"])
-		&& ( ! [fileExtension isEqualToString: @"ly"])
-		&& ([[NSFileManager defaultManager] fileExistsAtPath: [self fileName]]))
+	
+	if ((! [self isTexExtension: fileExtension]) && ([[NSFileManager defaultManager] fileExistsAtPath: [self fileName]]))
 	{
 		[self setFileType: fileExtension];
 		[typesetButton setEnabled: NO];
@@ -590,6 +578,25 @@ in other code when an external editor is being used. */
 		return [super isDocumentEdited];
 }
 
+- (BOOL) isTexExtension: (NSString *)extension
+{
+	
+	if (([extension isEqualToString: @"tex"]) || ([extension isEqualToString: @"TEX"])
+		|| ([extension isEqualToString: @"dtx"]) || ([extension isEqualToString: @"ins"])
+		|| ([extension isEqualToString: @"sty"]) || ([extension isEqualToString: @"cls"])
+		|| ([extension isEqualToString: @"Rnw"])
+		// added by mitsu --(N) support for .def, .fd, .ltx. .clo
+		|| ([extension isEqualToString: @"def"]) || ([extension isEqualToString: @"fd"])
+		|| ([extension isEqualToString: @"ltx"]) || ([extension isEqualToString: @"clo"])
+		// end addition
+		|| ([extension isEqualToString: @""]) || ([extension isEqualToString: @"mp"])
+		|| ([extension isEqualToString: @"mf"])
+		|| ([extension isEqualToString: @"bib"])
+		|| ([extension isEqualToString: @"ly"]))
+		return YES;
+	else
+		return NO;
+}
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType {
 
@@ -659,11 +666,15 @@ in other code when an external editor is being used. */
 
 - (BOOL)readFromFile:(NSString *)fileName ofType:(NSString *)type {
 	id 			myData;
-	NSString            *firstBytes, *encodingString, *testString;
+	NSString            *firstBytes, *encodingString, *testString, *theExtension;
 	NSRange             encodingRange, newEncodingRange, myRange, theRange;
 	unsigned            length, start, end;
 	BOOL                done;
 	int                 linesTested;
+
+	theExtension = [fileName pathExtension];
+	if (! [self isTexExtension: theExtension])
+		return YES;
 
 	myData = [NSData dataWithContentsOfFile:fileName];
 

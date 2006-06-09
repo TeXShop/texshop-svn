@@ -225,11 +225,15 @@ enum RootCommand
 - (id) pagenumberPanel;
 - (void) quitMagnificationPanel: sender;
 - (void) quitPagenumberPanel: sender;
+- (void) quitLine: sender;
+- (void) quitProject: sender;
 - (void) showStatistics: sender;
 - (void) updateStatistics: sender;
 - (void) doTemplate: sender;
 - (void) printSource: sender;
 - (void) okForRequest: sender;
+- (void) okLine: sender;
+- (void) okProject: sender;
 - (void) chooseEncoding: sender;
 - (NSStringEncoding) encoding;
 - (void) okForPrintRequest: sender;
@@ -267,6 +271,7 @@ enum RootCommand
 - (void) refreshPDFAndBringFront: (BOOL)front;
 - (void) refreshTEXT;
 - (NSString *)displayName;
+- (BOOL) isTexExtension: (NSString *)extension;
 - (NSPDFImageRep *) myTeXRep;
 - (NSDictionary *)fileAttributesToWriteToFile:(NSString *)fullDocumentPath ofType:(NSString *)documentTypeName saveOperation:(NSSaveOperationType)saveOperationType;
 - (BOOL)isDocumentEdited;
