@@ -363,6 +363,7 @@
 			[previousButton setEnabled:NO];
 			[nextButton setEnabled:NO];
 		} else if (([fileExtension isEqualToString: @"tiff"]) ||
+				 ([fileExtension isEqualToString: @"png"]) ||
 				 ([fileExtension isEqualToString: @"tif"])) {
 			imageFound = YES;
 			texRep = [[NSBitmapImageRep imageRepWithContentsOfFile: imagePath] retain];
@@ -609,7 +610,7 @@ in other code when an external editor is being used. */
 {
 	if (
 		([extension isEqualToString: @"dvi"]) || ([extension isEqualToString: @"ps"])
-		|| ([extension isEqualToString: @"eps"]) 
+		|| ([extension isEqualToString: @"eps"]) || ([extension isEqualToString: @"png"]) 
 		|| ([extension isEqualToString: @"tif"]) || ([extension isEqualToString: @"tiff"])
 		|| ([extension isEqualToString: @"jpg"]) || ([extension isEqualToString: @"JPG"])
 		|| ([extension isEqualToString: @"jpeg"]) 
