@@ -110,6 +110,7 @@
 	NSDictionary *factoryDefaults;
 //	OgreTextFinder *theFinder;
 	id theFinder;
+	BOOL isDirectory, pathExists, templateDirectoryExists;
 
 	g_macroType = LatexEngine;
 	
@@ -180,8 +181,18 @@
 	// present inside ~/Library/TeXShop.
 	//
 	// This must come before dealing with TSEncodingSupport and MacoMenuController below
+	
+	pathExists = [[NSFileManager defaultManager] 
+		fileExistsAtPath:[[TeXShopPath stringByStandardizingPath] stringByAppendingPathComponent:@"Templates"] 
+		isDirectory: &isDirectory];
+	templateDirectoryExists = (pathExists && isDirectory); 
+	
 	[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop"]
-			  toPath:[TeXShopPath stringByStandardizingPath]];
+				toPath:[TeXShopPath stringByStandardizingPath]];
+	
+	if (! templateDirectoryExists)
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Templates"] 
+				toPath:[[TeXShopPath stringByStandardizingPath] stringByAppendingPathComponent:@"Templates"]];
 
 // Finish configuration of various pieces
 	[[TSMacroMenuController sharedInstance] loadMacros];
