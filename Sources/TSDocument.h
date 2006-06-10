@@ -267,6 +267,7 @@ enum RootCommand
 - (void) refreshTEXT;
 - (NSString *)displayName;
 - (BOOL) isTexExtension: (NSString *)extension;
+- (BOOL) isTextExtension: (NSString *)extension;
 - (NSPDFImageRep *) myTeXRep;
 - (NSDictionary *)fileAttributesToWriteToFile:(NSString *)fullDocumentPath ofType:(NSString *)documentTypeName saveOperation:(NSSaveOperationType)saveOperationType;
 - (BOOL)isDocumentEdited;

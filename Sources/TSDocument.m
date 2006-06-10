@@ -178,8 +178,11 @@
 
 // this method gives a name "Untitled-n" for new documents
 // FIXME: Why do we do this? Lots of code and hackery just to change a space to a dash?
-// Please don't change this without asking. Right now I'm in the middle of something else
-// and don't remember details, but I remember that this was an important fix!
+// KOCH: This code fixed a bug which bothered lots of users. The Mac
+// automatically names untitled files: Untitled, Untitled 2, Untitled 3, etc.
+// Since these files have names with spaces, TeX wouldn't accept them.
+// I'm reluctant to change this. The TeX in Gerben's release allows spaces in names
+// (I think). But other TeX distributions may not.
 -(NSString *)displayName
 {
 	if ([self fileName] == nil) // file is a new one
@@ -580,6 +583,7 @@ in other code when an external editor is being used. */
 		return [super isDocumentEdited];
 }
 
+// Check if should syntax color and allow typesetting by some engine or other
 - (BOOL) isTexExtension: (NSString *)extension
 {
 	
@@ -599,6 +603,23 @@ in other code when an external editor is being used. */
 	else
 		return NO;
 }
+
+// Check if should read at all for source window; graphic files shoulnd't go to text window
+- (BOOL) isTextExtension: (NSString *)extension
+{
+	if (
+		([extension isEqualToString: @"dvi"]) || ([extension isEqualToString: @"ps"])
+		|| ([extension isEqualToString: @"eps"]) 
+		|| ([extension isEqualToString: @"tif"]) || ([extension isEqualToString: @"tiff"])
+		|| ([extension isEqualToString: @"jpg"]) || ([extension isEqualToString: @"JPG"])
+		|| ([extension isEqualToString: @"jpeg"]) 
+		)
+		return NO;
+	else
+		return YES;
+}
+
+
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType {
 
@@ -675,7 +696,7 @@ in other code when an external editor is being used. */
 	int                 linesTested;
 
 	theExtension = [fileName pathExtension];
-	if (! [self isTexExtension: theExtension])
+	if (! [self isTextExtension: theExtension])
 		return YES;
 
 	myData = [NSData dataWithContentsOfFile:fileName];
