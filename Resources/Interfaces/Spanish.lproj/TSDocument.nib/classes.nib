@@ -98,6 +98,7 @@
         {
             ACTIONS = {
                 abort = id; 
+                cancelForPanel = id; 
                 changeAutoComplete = id; 
                 chooseEncoding = id; 
                 chooseProgram = id; 
@@ -131,15 +132,10 @@
                 flipShowSync = id; 
                 hardWrapSelection = id; 
                 newTag = id; 
-                okForPrintRequest = id; 
-                okForRequest = id; 
-                okLine = id; 
-                okProject = id; 
+                okForPanel = id; 
                 printSource = id; 
-                quitLine = id; 
                 quitMagnificationPanel = id; 
                 quitPagenumberPanel = id; 
-                quitProject = id; 
                 removeNewLinesFromSelection = id; 
                 saveDocument = id; 
                 setLineBreakMode = id; 

@@ -159,7 +159,6 @@ enum RootCommand
 	NSDate		*startDate;
 	NSPDFImageRep	*texRep;
 	NSData		*previousFontData;	/*" holds font data in case preferences change is cancelled "*/
-	int			myPrefResult;
 	BOOL		fileIsTex;
 	TSDocumentType			_documentType;
 	int			errorLine[NUMBEROFERRORS];
@@ -225,18 +224,14 @@ enum RootCommand
 - (id) pagenumberPanel;
 - (void) quitMagnificationPanel: sender;
 - (void) quitPagenumberPanel: sender;
-- (void) quitLine: sender;
-- (void) quitProject: sender;
+- (void) okForPanel: sender;
+- (void) cancelForPanel: sender;
 - (void) showStatistics: sender;
 - (void) updateStatistics: sender;
 - (void) doTemplate: sender;
 - (void) printSource: sender;
-- (void) okForRequest: sender;
-- (void) okLine: sender;
-- (void) okProject: sender;
 - (void) chooseEncoding: sender;
 - (NSStringEncoding) encoding;
-- (void) okForPrintRequest: sender;
 - (void) close;
 - (void) setProjectFile: sender;
 - (void) doLine: sender;

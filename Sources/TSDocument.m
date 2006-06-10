@@ -178,6 +178,8 @@
 
 // this method gives a name "Untitled-n" for new documents
 // FIXME: Why do we do this? Lots of code and hackery just to change a space to a dash?
+// Please don't change this without asking. Right now I'm in the middle of something else
+// and don't remember details, but I remember that this was an important fix!
 -(NSString *)displayName
 {
 	if ([self fileName] == nil) // file is a new one
@@ -822,7 +824,10 @@ in other code when an external editor is being used. */
 		[printOperation runOperation];
 		[printView release];
 	} else if (_documentType == isTeX)
+		{
 		result = [NSApp runModalForWindow: printRequestPanel];
+		[printRequestPanel close];
+		}
 }
 
 - (BOOL)keepBackupFile
@@ -1111,9 +1116,6 @@ in other code when an external editor is being used. */
 	// notifications for pdftex and pdflatex
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkATaskStatus:)
 		name:NSTaskDidTerminateNotification object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkPrefClose:)
-		name:NSWindowWillCloseNotification object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeTexOutput:)
 		name:NSFileHandleReadCompletionNotification object:nil];
@@ -1458,42 +1460,14 @@ preference change is cancelled. "*/
 	[self fixMacroMenu];
 }
 
-- (void) okProject: sender
+- (void) okForPanel: sender
 {
-	myPrefResult = 0;
-	[projectPanel close];
+	[NSApp stopModalWithCode: 0];
 }
 
-- (void) quitProject: sender
+- (void) cancelForPanel: sender
 {
-	myPrefResult = 1;
-	[projectPanel close];
-}
-
-
-- (void) okForRequest: sender
-{
-	myPrefResult = 0;
-	[requestWindow close];
-}
-
-- (void) okForPrintRequest: sender
-{
-	myPrefResult = 0;
-	[printRequestPanel close];
-}
-
-
-- (void) okLine: sender
-{
-	myPrefResult = 0;
-	[linePanel close];
-}
-
-- (void) quitLine: sender
-{
-	myPrefResult = 1;
-	[linePanel close];
+	[NSApp stopModalWithCode: 1];
 }
 
 - (void) setProjectFile: sender
@@ -1503,10 +1477,10 @@ preference change is cancelled. "*/
 
 	if (! [self fileName]) {
 		result = [NSApp runModalForWindow: requestWindow];
+		[requestWindow close];
 	}
 	else {
 
-		myPrefResult = 2;
 		project = [[[self fileName] stringByDeletingPathExtension]
 			stringByAppendingString: @".texshop"];
 		if ([[NSFileManager defaultManager] fileExistsAtPath: project]) {
@@ -1517,6 +1491,7 @@ preference change is cancelled. "*/
 			[projectName setStringValue: [[self fileName] lastPathComponent]];
 		[projectName selectText: self];
 		result = [NSApp runModalForWindow: projectPanel];
+		[projectPanel close];
 		if (result == 0) {
 			nameString = [projectName stringValue];
 			//            if ([nameString isAbsolutePath])
@@ -1536,8 +1511,8 @@ preference change is cancelled. "*/
 {
 	int		result, line;
 
-	myPrefResult = 2;
 	result = [NSApp runModalForWindow: linePanel];
+	[linePanel close];
 	if (result == 0) {
 		line = [lineBox intValue];
 		[self toLine: line];
@@ -2769,21 +2744,6 @@ preference change is cancelled. "*/
 			[textWindow setInitialFirstResponder: textView];
 			[textWindow makeFirstResponder: textView];
 		}
-	}
-}
-
-
-- (void) checkPrefClose: (NSNotification *)aNotification
-{
-	int	finalResult;
-
-	if (([aNotification object] == projectPanel) ||
-		([aNotification object] == requestWindow) ||
-		([aNotification object] == linePanel) ||
-		([aNotification object] == printRequestPanel)) {
-		finalResult = myPrefResult;
-		if (finalResult == 2) finalResult = 0;
-		[NSApp stopModalWithCode: finalResult];
 	}
 }
 
