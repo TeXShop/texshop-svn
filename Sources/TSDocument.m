@@ -2773,7 +2773,7 @@ preference change is cancelled. "*/
 {
 	NSString		*newOutput, *numberOutput, *searchString, *tempString, *detexString;
 	NSData		*myData, *detexData;
-	NSRange		myRange, lineRange, searchRange;
+	NSRange		myRange, lineRange, searchRange, testRange;
 	int			error;
 	int                 lineCount, wordCount, charCount;
 	unsigned int	myLength;
@@ -2794,8 +2794,11 @@ preference change is cancelled. "*/
 			}
 			// 1.35 (F) end
 			
-			if ((makeError) && ([newOutput length] > 2) && (errorNumber < NUMBEROFERRORS)) {
-				myLength = [newOutput length];
+			myLength = [newOutput length];
+			testRange.location = [newOutput length] - 2;
+			testRange.length = 1; 
+			if ((makeError) && (myLength > 2) && (errorNumber < NUMBEROFERRORS)  &&
+					([[newOutput substringWithRange: testRange] isEqualToString: @"?"])) { 
 				searchString = @"l.";
 				lineRange.location = 0;
 				lineRange.length = 1;
@@ -2817,6 +2820,7 @@ preference change is cancelled. "*/
 					}
 				}
 			}
+
 			
 			typesetStart = YES;
 			
