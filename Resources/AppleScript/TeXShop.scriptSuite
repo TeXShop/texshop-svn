@@ -6,7 +6,7 @@
 	<string>TeXs</string>
 	<key>Classes</key>
 	<dict>
-		<key>MyDocument</key>
+		<key>TSDocument</key>
 		<dict>
 			<key>AppleEventCode</key>
 			<string>docu</string>
@@ -133,7 +133,7 @@
 					<key>AppleEventCode</key>
 					<string>docu</string>
 					<key>Type</key>
-					<string>MyDocument</string>
+					<string>TSDocument</string>
 				</dict>
 			</dict>
 		</dict>
