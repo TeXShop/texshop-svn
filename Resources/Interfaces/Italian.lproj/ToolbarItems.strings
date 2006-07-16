@@ -1,5 +1,3 @@
-/* needs to be localized */
-
 tiLabelSave				= "Salva";
 tiPaletteLabelSave			= "Salva";
 tiToolTipSave				= "Salva il sorgente del documento";

@@ -1,6 +1,4 @@
-﻿/* needs to be localized */
-
-tiLabelSave				= "Sichern";
+﻿tiLabelSave				= "Sichern";
 tiPaletteLabelSave			= "Sichern";
 tiToolTipSave				= "Quelltext des Dokuments sichern";
 

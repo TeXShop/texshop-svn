@@ -1,5 +1,3 @@
-/* needs to be localized */
-
 tiLabelSave				= "保存";
 tiPaletteLabelSave			= "保存";
 tiToolTipSave				= "書類を保存します";
