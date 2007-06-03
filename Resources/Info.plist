@@ -406,6 +406,26 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>drv</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>drv</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>DRV</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<true/>
+			<key>NSDocumentClass</key>
+			<string>TSDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>def</string>
 			</array>
 			<key>CFBundleTypeName</key>

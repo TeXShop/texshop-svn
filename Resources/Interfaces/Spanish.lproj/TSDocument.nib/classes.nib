@@ -88,7 +88,6 @@
         }, 
         {CLASS = NSCursor; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
-        {CLASS = NSTextView; LANGUAGE = ObjC; SUPERCLASS = NSText; }, 
         {
             CLASS = TSConsoleWindow; 
             LANGUAGE = ObjC; 
@@ -98,7 +97,6 @@
         {
             ACTIONS = {
                 abort = id; 
-                cancelForPanel = id; 
                 changeAutoComplete = id; 
                 chooseEncoding = id; 
                 chooseProgram = id; 
@@ -132,14 +130,20 @@
                 flipShowSync = id; 
                 hardWrapSelection = id; 
                 newTag = id; 
-                okForPanel = id; 
+                okForPrintRequest = id; 
+                okForRequest = id; 
+                okLine = id; 
+                okProject = id; 
                 printSource = id; 
+                quitLine = id; 
                 quitMagnificationPanel = id; 
                 quitPagenumberPanel = id; 
+                quitProject = id; 
                 removeNewLinesFromSelection = id; 
                 saveDocument = id; 
                 setLineBreakMode = id; 
                 setProjectFile = id; 
+                showIndexColor = id; 
                 showInfo = id; 
                 showStatistics = id; 
                 showSyncMarks = id; 
@@ -155,6 +159,7 @@
                 drawerKK = NSImageView; 
                 gotopageOutlet = id; 
                 gotopageOutletKK = NSBox; 
+                indexColorBox = id; 
                 lineBox = NSTextField; 
                 linePanel = NSPanel; 
                 macroButton = NSPopUpButton; 
@@ -214,12 +219,6 @@
             LANGUAGE = ObjC; 
             OUTLETS = {myDocument = id; }; 
             SUPERCLASS = NSWindow; 
-        }, 
-        {
-            ACTIONS = {registerForCommandCompletion = id; }; 
-            CLASS = TSTextView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSTextView; 
         }, 
         {CLASS = TextFinder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
     ); 

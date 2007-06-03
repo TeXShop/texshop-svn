@@ -196,7 +196,6 @@
 		4096186505824CF2000D94FD /* TSMatrixPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4096186305824CF2000D94FD /* TSMatrixPanelController.m */; };
 		40A43B83056FE6ED00AFDC86 /* TeXShop.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = 40A43B82056FE6ED00AFDC86 /* TeXShop.scriptSuite */; };
 		40B1DDC806EB6E540083A311 /* altpdftex in Resources */ = {isa = PBXBuildFile; fileRef = 40B1DDC706EB6E540083A311 /* altpdftex */; };
-		40B52DB80A3B8FE80056500C /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 40B52DA20A3B8FE80056500C /* Templates */; };
 		40B7DEAB057139E2002872F2 /* TSDocumentScripting.h in Headers */ = {isa = PBXBuildFile; fileRef = 40B7DEA9057139E2002872F2 /* TSDocumentScripting.h */; };
 		40B7DEAC057139E2002872F2 /* TSDocumentScripting.m in Sources */ = {isa = PBXBuildFile; fileRef = 40B7DEAA057139E2002872F2 /* TSDocumentScripting.m */; };
 		40CD913807E4CE6C00DE6448 /* MyPDFKitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 40CD913407E4CE6C00DE6448 /* MyPDFKitView.h */; };
@@ -387,7 +386,7 @@
 		4077C62E03C7FB1E00000009 /* TSMacroOutlineController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSMacroOutlineController.h; sourceTree = "<group>"; };
 		4077C62F03C7FB1E00000009 /* TSMacroOutlineController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSMacroOutlineController.m; sourceTree = "<group>"; };
 		4077C63603C7FC0900000009 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MacroEditor.nib; sourceTree = "<group>"; };
-		407881970519249A006979EA /* TeXShop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeXShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		407881970519249A006979EA /* TeXShop.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TeXShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		407DE7540409C08300000009 /* MagGlass.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagGlass.tiff; sourceTree = "<group>"; };
 		407DE7560409C09600000009 /* MagGlassL.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagGlassL.tiff; sourceTree = "<group>"; };
 		40839127060963C800266FAB /* TextFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFinder.h; sourceTree = "<group>"; };
@@ -402,7 +401,6 @@
 		40AA2B8203C79AF800000009 /* TSEncodingSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSEncodingSupport.m; sourceTree = "<group>"; };
 		40B1DDC706EB6E540083A311 /* altpdftex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = altpdftex; sourceTree = "<group>"; };
 		40B275F603EF6F9D00000009 /* split.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = split.tiff; sourceTree = "<group>"; };
-		40B52DA20A3B8FE80056500C /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
 		40B7DEA9057139E2002872F2 /* TSDocumentScripting.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TSDocumentScripting.h; sourceTree = "<group>"; };
 		40B7DEAA057139E2002872F2 /* TSDocumentScripting.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TSDocumentScripting.m; sourceTree = "<group>"; };
 		40BA4A4704B54E5500000B3B /* split1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = split1.png; sourceTree = "<group>"; };
@@ -831,7 +829,6 @@
 				403CA3160608D37000FFDBBC /* Defaults_pTeX_euc.plist */,
 				403CA3170608D37000FFDBBC /* Defaults_pTeX_sjis.plist */,
 				52E4BF4408CA74C300726E11 /* TeXShop */,
-				40B52DA20A3B8FE80056500C /* Templates */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1420,7 +1417,6 @@
 				52E4BF8D08CA74C300726E11 /* TeXShop in Resources */,
 				404145A60A2C13360024BD8E /* NextPageAlternateAction.tiff in Resources */,
 				404145A80A2C13550024BD8E /* PreviousPageAlternateAction.tiff in Resources */,
-				40B52DB80A3B8FE80056500C /* Templates in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1735,7 +1731,7 @@
 		5288880B089D023A0095E82D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_VERSION = 199;
+				BUNDLE_VERSION = 210;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -1757,7 +1753,7 @@
 		5288880C089D023A0095E82D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_VERSION = 206;
+				BUNDLE_VERSION = 210;
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;

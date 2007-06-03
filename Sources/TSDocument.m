@@ -1,6 +1,6 @@
 /*
  * TeXShop - TeX editor for Mac OS
- * Copyright (C) 2000-2005 Richard Koch
+ * Copyright (C) 2000-2007 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@
 
 - (id)init
 {
+
 	[super init];
 
 	errorNumber = 0;
@@ -70,6 +71,7 @@
 	regularColorAttribute = 0;
 	commandColorAttribute = 0;
 	commentColorAttribute = 0;
+	indexColorAttribute = 0;
 	markerColorAttribute = 0;
 
 	tagLine = NO;
@@ -90,6 +92,9 @@
 	showBadEncodingDialog = NO;
 	PDFfromKit = NO;
 	textSelectionYellow = NO;
+	showSync = NO;
+	showIndexColor = NO;
+
 
 	_encoding = [[TSDocumentController sharedDocumentController] encoding];
 
@@ -115,6 +120,7 @@
 	[commentColorAttribute release];
 	[commandColorAttribute release];
 	[markerColorAttribute release];
+	[indexColorAttribute release];
 
 	[mSelection release];
 	[_textStorage release];
@@ -163,8 +169,6 @@
 	[aTextView setBackgroundColor: backgroundColor];
 	[aTextView setInsertionPointColor: insertionpointColor];
 	[aTextView setAcceptsGlyphInfo: YES]; // suggested by Itoh 1.35 (A)
-
-	[(TSTextView *)aTextView setDocument: self];
 }
 
 #pragma mark NSDocument interface
@@ -177,12 +181,6 @@
 
 
 // this method gives a name "Untitled-n" for new documents
-// FIXME: Why do we do this? Lots of code and hackery just to change a space to a dash?
-// KOCH: This code fixed a bug which bothered lots of users. The Mac
-// automatically names untitled files: Untitled, Untitled 2, Untitled 3, etc.
-// Since these files have names with spaces, TeX wouldn't accept them.
-// I'm reluctant to change this. The TeX in Gerben's release allows spaces in names
-// (I think). But other TeX distributions may not.
 -(NSString *)displayName
 {
 	if ([self fileName] == nil) // file is a new one
@@ -219,12 +217,14 @@
 	BOOL			imageFound;
 	NSString		*theFileName;
 	int				defaultcommand;
+	NSSize			contentSize;
 	NSDictionary	*myAttributes;
 	int				i;
 	BOOL			done;
 	NSString		*defaultCommand;
 
 	[super windowControllerDidLoadNib:aController];
+	
 
 	// can this fix the printer; Feb 1, 2006
 	
@@ -248,10 +248,23 @@
 		default: lineBreakMode = NSLineBreakByCharWrapping;		break;
 	}
 
-	textView = textView1;
+	/* New forsplit */
 
+
+	contentSize = [scrollView contentSize];
+	textView1 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
 	[self setupTextView:textView1];
+	[(TSTextView *)textView1 setDocument: self];
+	[scrollView setDocumentView:textView1];
+	[textView1 release];
+	textView = textView1;
+	/* End of New */
+	// forsplit
+
+	contentSize = [scrollView2 contentSize];
+	textView2 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
 	[self setupTextView:textView2];
+	[(TSTextView *)textView2 setDocument: self];
 	if (spellExists)
 		[textView2 setContinuousSpellCheckingEnabled:[SUD boolForKey:SpellCheckEnabledKey]];
 
@@ -259,6 +272,9 @@
 	[scrollView2 setHasHorizontalRuler: NO];
 	[textView2 setUsesRuler: NO];
 	// end witten
+
+	[scrollView2 setDocumentView:textView2];
+	[textView2 release];
 
 
 	// Create a custom NSTextStorage and make sure the two NSTextViews both use it.
@@ -277,22 +293,23 @@
 	[self configureTypesetButton];
 	[self setupToolbar];
 
-	if ([SUD boolForKey:ShowSyncMarksKey])
+	if ([SUD boolForKey:ShowSyncMarksKey]) {
 		[syncBox setState:1];
+		showSync = YES;
+		}
 
 	[self setupColors];
 
 	doAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
 	[self fixAutoMenu];
-
-
+	
 	/* when opening an empty document, must open the source editor */
 	if ((theFileName == nil) && _externalEditor)
 		_externalEditor = NO;
-
+		
 	[self registerForNotifications];
 	[self setupFromPreferencesUsingWindowController:aController];
-
+	
 	[pdfView setDocument: self]; /* This was commented out!! Don't do it; needed by Ghostscript; Dick */
 	// the next line caused jpg and tiff files to fail, so we do it later
 	//   [pdfView resetMagnification];
@@ -304,7 +321,19 @@
 	_documentType = isTeX;
 	fileExtension = [[self fileName] pathExtension];
 	
-	if ((! [self isTexExtension: fileExtension]) && ([[NSFileManager defaultManager] fileExistsAtPath: [self fileName]]))
+	if (( ! [fileExtension isEqualToString: @"tex"]) && ( ! [fileExtension isEqualToString: @"TEX"])
+		&& ( ! [fileExtension isEqualToString: @"dtx"]) && ( ! [fileExtension isEqualToString: @"ins"])
+		&& ( ! [fileExtension isEqualToString: @"sty"]) && ( ! [fileExtension isEqualToString: @"cls"])
+		&& ( ! [fileExtension isEqualToString: @"Rnw"])
+		// added by mitsu --(N) support for .def, .fd, .ltx. .clo
+		&& ( ! [fileExtension isEqualToString: @"def"]) && ( ! [fileExtension isEqualToString: @"fd"])
+		&& ( ! [fileExtension isEqualToString: @"ltx"]) && ( ! [fileExtension isEqualToString: @"clo"])
+		// end addition
+		&& ( ! [fileExtension isEqualToString: @""]) && ( ! [fileExtension isEqualToString: @"mp"])
+		&& ( ! [fileExtension isEqualToString: @"mf"])
+		&& ( ! [fileExtension isEqualToString: @"bib"])
+		&& ( ! [fileExtension isEqualToString: @"ly"])
+		&& ([[NSFileManager defaultManager] fileExistsAtPath: [self fileName]]))
 	{
 		[self setFileType: fileExtension];
 		[typesetButton setEnabled: NO];
@@ -314,7 +343,7 @@
 	}
 
 	/* handle images */
-
+	
 	// mitsu 1.29 (S4)-- flipped clip view
 	// the following code allows the window to be anchored at top left when scrolled
 	[pdfView retain]; // hold it when clipView is released
@@ -347,7 +376,7 @@
 				myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
 				_pdfLastModDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
 			}
-
+			
 			[pdfKitWindow setTitle: [[self fileName] lastPathComponent]];
 			// [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4;
 			// supposed to allow command click of window title to lead to file, but doesn't
@@ -363,7 +392,6 @@
 			[previousButton setEnabled:NO];
 			[nextButton setEnabled:NO];
 		} else if (([fileExtension isEqualToString: @"tiff"]) ||
-				 ([fileExtension isEqualToString: @"png"]) ||
 				 ([fileExtension isEqualToString: @"tif"])) {
 			imageFound = YES;
 			texRep = [[NSBitmapImageRep imageRepWithContentsOfFile: imagePath] retain];
@@ -384,6 +412,7 @@
 		}
 
 		if (imageFound) {
+		
 			if (_documentType == isPDF) {
 
 				PDFfromKit = YES;
@@ -395,7 +424,9 @@
 					_pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey]
 																		target:self selector:@selector(refreshPDFWindow:) userInfo:nil repeats:YES] retain];
 				}
-			} else {
+			} else
+			
+			   {
 				[pdfView setImageType: _documentType];
 				[pdfView setImageRep: texRep]; // this releases old one!
 
@@ -424,6 +455,7 @@
 	detexPipe = nil;
 
 	if (!_externalEditor) {
+		[self setupTags];
 		myRange.location = 0;
 		myRange.length = 0;
 		[textView setSelectedRange: myRange];
@@ -584,43 +616,6 @@ in other code when an external editor is being used. */
 		return [super isDocumentEdited];
 }
 
-// Check if should syntax color and allow typesetting by some engine or other
-- (BOOL) isTexExtension: (NSString *)extension
-{
-	
-	if (([extension isEqualToString: @"tex"]) || ([extension isEqualToString: @"TEX"])
-		|| ([extension isEqualToString: @"dtx"]) || ([extension isEqualToString: @"ins"])
-		|| ([extension isEqualToString: @"sty"]) || ([extension isEqualToString: @"cls"])
-		|| ([extension isEqualToString: @"Rnw"])
-		// added by mitsu --(N) support for .def, .fd, .ltx. .clo
-		|| ([extension isEqualToString: @"def"]) || ([extension isEqualToString: @"fd"])
-		|| ([extension isEqualToString: @"ltx"]) || ([extension isEqualToString: @"clo"])
-		// end addition
-		|| ([extension isEqualToString: @""]) || ([extension isEqualToString: @"mp"])
-		|| ([extension isEqualToString: @"mf"])
-		|| ([extension isEqualToString: @"bib"])
-		|| ([extension isEqualToString: @"ly"]))
-		return YES;
-	else
-		return NO;
-}
-
-// Check if should read at all for source window; graphic files shoulnd't go to text window
-- (BOOL) isTextExtension: (NSString *)extension
-{
-	if (
-		([extension isEqualToString: @"dvi"]) || ([extension isEqualToString: @"ps"])
-		|| ([extension isEqualToString: @"eps"]) || ([extension isEqualToString: @"png"]) 
-		|| ([extension isEqualToString: @"tif"]) || ([extension isEqualToString: @"tiff"])
-		|| ([extension isEqualToString: @"jpg"]) || ([extension isEqualToString: @"JPG"])
-		|| ([extension isEqualToString: @"jpeg"]) 
-		)
-		return NO;
-	else
-		return YES;
-}
-
-
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType {
 
@@ -688,19 +683,78 @@ in other code when an external editor is being used. */
 }
 
 
-- (BOOL)readFromFile:(NSString *)fileName ofType:(NSString *)type {
-	id 			myData;
-	NSString            *firstBytes, *encodingString, *testString, *theExtension;
+- (NSStringEncoding)dataEncoding:(NSData *)theData {
+	NSString            *firstBytes, *encodingString, *testString;
 	NSRange             encodingRange, newEncodingRange, myRange, theRange;
 	unsigned            length, start, end;
 	BOOL                done;
 	int                 linesTested;
+	NSStringEncoding	theEncoding;
+	
+	// theEncoding = [[TSEncodingSupport sharedInstance] defaultEncoding]; this error broke the encoding menu in the save panel
+	theEncoding = _encoding;
 
-	theExtension = [fileName pathExtension];
-	if (! [self isTextExtension: theExtension])
-		return YES;
+	// FIXME: Unify this with the code in dataRepresentationOfType:
+	if ((GetCurrentKeyModifiers() & optionKey) == 0) {
+		firstBytes = [[NSString alloc] initWithData:theData encoding:NSMacOSRomanStringEncoding];
+		length = [firstBytes length];
+		done = NO;
+		linesTested = 0;
+		myRange.location = 0;
+		myRange.length = 1;
+
+		while ((myRange.location < length) && (!done) && (linesTested < 20)) {
+			[firstBytes getLineStart: &start end: &end contentsEnd: nil forRange: myRange];
+			myRange.location = end;
+			myRange.length = 1;
+			linesTested++;
+
+			// FIXME: Simplify the following code
+			theRange.location = start; theRange.length = (end - start);
+			testString = [firstBytes substringWithRange: theRange];
+			encodingRange = [testString rangeOfString:@"%!TEX encoding ="];
+			if (encodingRange.location != NSNotFound) {
+				done = YES;
+				newEncodingRange.location = encodingRange.location + 16;
+				newEncodingRange.length = [testString length] - newEncodingRange.location;
+				if (newEncodingRange.length > 0) {
+					encodingString = [[testString substringWithRange: newEncodingRange]
+						stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+					theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForKey: encodingString];
+				}
+			} else if ([SUD boolForKey:UseOldHeadingCommandsKey]) {
+				encodingRange = [testString rangeOfString:@"%&encoding="];
+				if (encodingRange.location != NSNotFound) {
+					done = YES;
+					newEncodingRange.location = encodingRange.location + 11;
+					newEncodingRange.length = [testString length] - newEncodingRange.location;
+					if (newEncodingRange.length > 0) {
+						encodingString = [[testString substringWithRange: newEncodingRange]
+							stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						theEncoding = [[TSEncodingSupport sharedInstance] stringEncodingForKey: encodingString];
+					}
+				}
+			}
+		}
+
+		[firstBytes release];
+	}
+
+	return theEncoding;
+}
+
+- (BOOL)readFromFile:(NSString *)fileName ofType:(NSString *)type {
+	NSData				*myData;
+	// NSString            *firstBytes, *encodingString, *testString;
+	// NSRange             encodingRange, newEncodingRange, myRange, theRange;
+	// unsigned            length, start, end;
+	// BOOL                done;
+	// int                 linesTested;
 
 	myData = [NSData dataWithContentsOfFile:fileName];
+	_encoding = _tempencoding = [self dataEncoding: myData];
+	
+/*
 
 	// FIXME: Unify this with the code in dataRepresentationOfType:
 	if ((GetCurrentKeyModifiers() & optionKey) == 0) {
@@ -747,6 +801,8 @@ in other code when an external editor is being used. */
 
 		[firstBytes release];
 	}
+	
+*/
 
 
 	NSString *content;
@@ -758,13 +814,19 @@ in other code when an external editor is being used. */
 	}
 
 	if (content) {
+		// zenitani 1.35 (A) -- normalizing newline character for regular expression
 		if ([SUD boolForKey:ConvertLFKey]) {
-			// zenitani 1.35 (A) -- normalizing newline character for regular expression
 			content = [OGRegularExpression replaceNewlineCharactersInString:content
 															  withCharacter:OgreLfNewlineCharacter];
 		}
+		// zenitani 2.10 (A) -- decode utf.sty format
+		if( [SUD boolForKey:ptexUtfOutputEnabledKey] ) {
+			OGRegularExpression     *utfRegex;
+			utfRegex = [OGRegularExpression regularExpressionWithString:@"\\\\(UTF|UTFK|UTFT|UTFC){([0-9a-fA-F]{4})}"];
+			content = [utfRegex replaceAllMatchesInString: content delegate:self
+						replaceSelector:@selector(decodeUtfStyFormat:contextInfo:) contextInfo:nil];
+		}
 		[[_textStorage mutableString] setString:content];
-		[self setupTags];
 
 		return YES;
 	} else {
@@ -786,6 +848,16 @@ in other code when an external editor is being used. */
 	}
 	return result;
 }
+
+// zenitani 2.10 (A) -- decode utf.sty format
+- (NSString *)decodeUtfStyFormat:(OGRegularExpressionMatch *)aMatch contextInfo:(id)contextInfo
+{
+	unsigned int u, d;
+	if( sscanf([[aMatch substringAtIndex:2] cString],"%02X%02X",&u,&d) != 2 ) return nil;
+	NSLog([NSString stringWithFormat: @"%d %d %C", u, d, 256*u + d]);
+	return [NSString stringWithFormat: @"%C", 256*u + d];
+}
+
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
@@ -846,10 +918,7 @@ in other code when an external editor is being used. */
 		[printOperation runOperation];
 		[printView release];
 	} else if (_documentType == isTeX)
-		{
 		result = [NSApp runModalForWindow: printRequestPanel];
-		[printRequestPanel close];
-		}
 }
 
 - (BOOL)keepBackupFile
@@ -1139,6 +1208,9 @@ in other code when an external editor is being used. */
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkATaskStatus:)
 		name:NSTaskDidTerminateNotification object:nil];
 
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkPrefClose:)
+		name:NSWindowWillCloseNotification object:nil];
+
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeTexOutput:)
 		name:NSFileHandleReadCompletionNotification object:nil];
 
@@ -1191,21 +1263,25 @@ in other code when an external editor is being used. */
 /*" This method reads the NSUserDefaults and restores the settings before the document will actually be displayed.
 "*/
 {
+
 	// inhibit ordering of windows by windowController.
 	[windowController setShouldCascadeWindows:NO];
-
+	
 	// restore window position for the document window
-	switch ([SUD integerForKey:DocumentWindowPosModeKey])
-	{
-		case DocumentWindowPosSave:
-			[textWindow setFrameAutosaveName:DocumentWindowNameKey];
-			break;
+	
+	// strangely, the "setFrameFromString" below causes a long delay is the file type is "pdf" but not for "tiff" or other types!
+	if (! [[[self fileName] pathExtension] isEqualToString: @"pdf"])
+		switch ([SUD integerForKey:DocumentWindowPosModeKey])
+		{
+			case DocumentWindowPosSave:
+				[textWindow setFrameAutosaveName:DocumentWindowNameKey];
+				break;
 
-		case DocumentWindowPosFixed:
-			[textWindow setFrameFromString:[SUD stringForKey:DocumentWindowFixedPosKey]];
-			break;
-	}
-
+			case DocumentWindowPosFixed:
+				[textWindow setFrameFromString:[SUD stringForKey:DocumentWindowFixedPosKey]];
+				break;
+		}
+	
 	// restore window position for the pdf window
 	switch ([SUD integerForKey:PdfWindowPosModeKey])
 	{
@@ -1218,13 +1294,13 @@ in other code when an external editor is being used. */
 			[pdfWindow setFrameFromString:[SUD stringForKey:PdfWindowFixedPosKey]];
 			[pdfKitWindow setFrameFromString:[SUD stringForKey:PdfWindowFixedPosKey]];
 	}
-
+	
 	// restore the font for document if desired
 	if ([SUD boolForKey:SaveDocumentFontKey] == YES)
 	{
 		[self setDocumentFontFromPreferences:nil];
 	}
-
+	
 /*
 	// setup the popUp with all of our template names
 	[popupButton addItemsWithTitles:[[TSPreferences sharedInstance] allTemplateNames]];
@@ -1482,14 +1558,42 @@ preference change is cancelled. "*/
 	[self fixMacroMenu];
 }
 
-- (void) okForPanel: sender
+- (void) okProject: sender
 {
-	[NSApp stopModalWithCode: 0];
+	myPrefResult = 0;
+	[projectPanel close];
 }
 
-- (void) cancelForPanel: sender
+- (void) quitProject: sender
 {
-	[NSApp stopModalWithCode: 1];
+	myPrefResult = 1;
+	[projectPanel close];
+}
+
+
+- (void) okForRequest: sender
+{
+	myPrefResult = 0;
+	[requestWindow close];
+}
+
+- (void) okForPrintRequest: sender
+{
+	myPrefResult = 0;
+	[printRequestPanel close];
+}
+
+
+- (void) okLine: sender
+{
+	myPrefResult = 0;
+	[linePanel close];
+}
+
+- (void) quitLine: sender
+{
+	myPrefResult = 1;
+	[linePanel close];
 }
 
 - (void) setProjectFile: sender
@@ -1499,10 +1603,10 @@ preference change is cancelled. "*/
 
 	if (! [self fileName]) {
 		result = [NSApp runModalForWindow: requestWindow];
-		[requestWindow close];
 	}
 	else {
 
+		myPrefResult = 2;
 		project = [[[self fileName] stringByDeletingPathExtension]
 			stringByAppendingString: @".texshop"];
 		if ([[NSFileManager defaultManager] fileExistsAtPath: project]) {
@@ -1513,7 +1617,6 @@ preference change is cancelled. "*/
 			[projectName setStringValue: [[self fileName] lastPathComponent]];
 		[projectName selectText: self];
 		result = [NSApp runModalForWindow: projectPanel];
-		[projectPanel close];
 		if (result == 0) {
 			nameString = [projectName stringValue];
 			//            if ([nameString isAbsolutePath])
@@ -1533,8 +1636,8 @@ preference change is cancelled. "*/
 {
 	int		result, line;
 
+	myPrefResult = 2;
 	result = [NSApp runModalForWindow: linePanel];
-	[linePanel close];
 	if (result == 0) {
 		line = [lineBox intValue];
 		[self toLine: line];
@@ -1587,7 +1690,7 @@ preference change is cancelled. "*/
 	NSUndoManager	*myManager;
 	NSMutableDictionary	*myDictionary;
 	NSNumber		*theLocation, *theLength;
-	id			myData;
+	NSData			*myData;
 	NSStringEncoding	theEncoding;
 
 	NSRange 		NewlineRange;
@@ -1624,8 +1727,9 @@ preference change is cancelled. "*/
 		nameString = [nameString stringByAppendingPathComponent:[theItem title]];
 		nameString = [nameString stringByAppendingPathExtension:@"tex"];
 */
-		theEncoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
+		// theEncoding = [[TSEncodingSupport sharedInstance] defaultEncoding];
 		myData = [NSData dataWithContentsOfFile:nameString];
+		theEncoding = [self dataEncoding: myData];
 		templateString = [[[NSMutableString alloc] initWithData:myData encoding:theEncoding] autorelease];
 
 		// check and rebuild the trailing string...
@@ -1673,29 +1777,6 @@ preference change is cancelled. "*/
 
 
 #pragma mark Tag menu
-
-- (void)newTag: (id)sender
-{
-	NSString		*text;
-	NSRange		myRange, tempRange;
-	unsigned		start, end, end1, changeStart, changeEnd;
-
-	text = [textView string];
-	myRange = [textView selectedRange];
-	// get old string for Undo
-	[text getLineStart:&start end:&end contentsEnd:&end1 forRange:myRange];
-	tempRange.location = start;
-	tempRange.length = 0;
-	[textView replaceCharactersInRange:tempRange withString:@"%:\n"];
-	changeStart = tempRange.location;
-	changeEnd = changeStart + 2;
-	[self fixColor:changeStart :changeEnd];
-	[self registerUndoWithString:@"" location:tempRange.location
-						length:3 key: @"New Tag"];
-	tempRange.location = start+2;
-	tempRange.length = 0;
-	[textView setSelectedRange: tempRange];
-}
 
 - (void) doTag: sender
 {
@@ -2769,11 +2850,26 @@ preference change is cancelled. "*/
 	}
 }
 
+
+- (void) checkPrefClose: (NSNotification *)aNotification
+{
+	int	finalResult;
+
+	if (([aNotification object] == projectPanel) ||
+		([aNotification object] == requestWindow) ||
+		([aNotification object] == linePanel) ||
+		([aNotification object] == printRequestPanel)) {
+		finalResult = myPrefResult;
+		if (finalResult == 2) finalResult = 0;
+		[NSApp stopModalWithCode: finalResult];
+	}
+}
+
 - (void) writeTexOutput: (NSNotification *)aNotification
 {
 	NSString		*newOutput, *numberOutput, *searchString, *tempString, *detexString;
 	NSData		*myData, *detexData;
-	NSRange		myRange, lineRange, searchRange, testRange;
+	NSRange		myRange, lineRange, searchRange;
 	int			error;
 	int                 lineCount, wordCount, charCount;
 	unsigned int	myLength;
@@ -2794,11 +2890,8 @@ preference change is cancelled. "*/
 			}
 			// 1.35 (F) end
 			
-			myLength = [newOutput length];
-			testRange.location = [newOutput length] - 2;
-			testRange.length = 1; 
-			if ((makeError) && (myLength > 2) && (errorNumber < NUMBEROFERRORS)  &&
-					([[newOutput substringWithRange: testRange] isEqualToString: @"?"])) { 
+			if ((makeError) && ([newOutput length] > 2) && (errorNumber < NUMBEROFERRORS)) {
+				myLength = [newOutput length];
 				searchString = @"l.";
 				lineRange.location = 0;
 				lineRange.length = 1;
@@ -2820,7 +2913,6 @@ preference change is cancelled. "*/
 					}
 				}
 			}
-
 			
 			typesetStart = YES;
 			
@@ -2928,9 +3020,28 @@ preference change is cancelled. "*/
 - (void) flipShowSync: sender
 {
 	int theState = [syncBox state];
-	[syncBox setState: (1 - theState)];
+	int newState = 1 - theState;
+	[syncBox setState: newState];
+	if ( newState == 1 )
+		showSync = YES;
+	else
+		showSync = NO;
 	[myPDFKitView display];
 }
+
+- (void) flipIndexColorState: sender
+{
+	int theState = [indexColorBox state];
+	int newState = 1 - theState;
+	[indexColorBox setState: newState];
+	if (newState == 1)
+		showIndexColor = YES;
+	else
+		showIndexColor = NO;
+	[self colorizeVisibleAreaInTextView:textView1];
+	[self colorizeVisibleAreaInTextView:textView2];
+}
+
 
 
 - (void) fixMacroMenu
@@ -3269,6 +3380,10 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 	
 	text = [textView string];
 	myRange = [textView selectedRange];
+	// the next line fixes a bug where nothing is commented out if the cursor is at the start of a line
+	if ((myRange.length == 0) && (myRange.location < [text length]))
+		myRange.length = 1;
+
 	// get old string for Undo
 	[text getLineStart:&start end:&end contentsEnd:&end1 forRange:myRange];
 	oldRange.location = start;
@@ -3352,6 +3467,29 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 }
 
 // end mitsu 1.29
+
+- (void)newTag: (id)sender
+{
+	NSString		*text;
+	NSRange		myRange, tempRange;
+	unsigned		start, end, end1, changeStart, changeEnd;
+
+	text = [textView string];
+	myRange = [textView selectedRange];
+	// get old string for Undo
+	[text getLineStart:&start end:&end contentsEnd:&end1 forRange:myRange];
+	tempRange.location = start;
+	tempRange.length = 0;
+	[textView replaceCharactersInRange:tempRange withString:@"%:\n"];
+	changeStart = tempRange.location;
+	changeEnd = changeStart + 2;
+	[self fixColor:changeStart :changeEnd];
+	[self registerUndoWithString:@"" location:tempRange.location
+						length:3 key: @"New Tag"];
+	tempRange.location = start+2;
+	tempRange.length = 0;
+	[textView setSelectedRange: tempRange];
+}
 
 - (void)trashAUXFiles: sender
 {
@@ -3485,16 +3623,34 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 
 - (void) showSyncMarks: sender
 {
+	if ([syncBox state] == 1)
+		showSync = YES;
+	else
+		showSync = NO;
    [myPDFKitView display];
 }
 
-- (BOOL)syncState
+- (BOOL)syncState // warning; can be called after syncBox is disposed
 {
-	if ([syncBox state] == 1)
-		return YES;
-	else
-		return NO;
+	return showSync;
 }
+
+- (void) showIndexColor: sender
+{
+	if ([indexColorBox state] == 1)
+		showIndexColor = YES;
+	else
+		showIndexColor = NO;
+	[self colorizeVisibleAreaInTextView:textView1];
+	[self colorizeVisibleAreaInTextView:textView2];
+}
+
+- (BOOL)indexColorState // warning: can be called after indexColorBox is disposed
+{
+	return showIndexColor;
+}
+
+
 
 - (BOOL)fromKit
 {

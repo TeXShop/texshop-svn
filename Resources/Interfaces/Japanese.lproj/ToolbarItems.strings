@@ -1,3 +1,5 @@
+/* needs to be localized */
+
 tiLabelSave				= "保存";
 tiPaletteLabelSave			= "保存";
 tiToolTipSave				= "書類を保存します";
@@ -106,6 +108,9 @@ tiLabelSyncMarks			= "Syncマーク";
 tiPaletteLabelSyncMarks			= "Syncマーク";
 tiToolTipSyncMarks			= "Syncマークを表示します";
 
+tiLabelColorIndex				= "ColorIndex";
+tiPaletteLabelColorIndex		= "Color Index";
+tiToolTipColorIndex				= "Color Index Commands";
 
 tiLabelTypesetKIT				= "タイプセット";
 tiPaletteLabelTypesetKIT		= "タイプセット";

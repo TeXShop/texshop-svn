@@ -93,6 +93,9 @@ NSString *commandblueKey = @"commandblue";
 NSString *markerredKey = @"markerred";
 NSString *markergreenKey = @"markergreen";
 NSString *markerblueKey = @"markerblue";
+NSString *indexredKey = @"indexred";
+NSString *indexgreenKey = @"indexgreen";
+NSString *indexblueKey = @"indexblue";
 NSString *background_RKey = @"background_R";
 NSString *background_GKey = @"background_G";
 NSString *background_BKey = @"background_B";
@@ -140,6 +143,7 @@ NSString *ReleaseDocumentClassesKey = @"ReleaseDocumentClasses"; // 0 = if 10.4.
 NSString *RedConsoleAfterErrorKey = @"RedConsoleAfterError"; // NO or YES
 NSString *PreviewDrawerOpenKey = @"PreviewDrawerOpen"; // NO or YES
 NSString *ConTeXtTagsKey = @"ConTeXtTags"; // NO or YES
+NSString *RevisePathKey = @"RevisePath"; // NO or YES
 
 
 // Paths
@@ -154,11 +158,13 @@ NSString *ScriptsPath = @"~/Library/TeXShop/Scripts";
 NSString *AutoCompletionPath = @"~/Library/TeXShop/Keyboard";
 NSString *MenuShortcutsPath = @"~/Library/TeXShop/Menus";
 NSString *MacrosPath = @"~/Library/TeXShop/Macros";
+NSString *CommandCompletionFolderPath = @"~/Library/TeXShop/CommandCompletion";
 NSString *CommandCompletionPath = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt";
 
 // TODO: Shouldn't we use  NSTemporaryDirectory() (or a path based on it) rather than the following three paths?
 NSString *TempPath = @"/tmp/TeXShop_Applescripts";
 NSString *TempOutputKey = @"/tmp/TeXShop_Output";
+NSString *DraggedImageFolderPath = @"~/Library/TeXShop/DraggedImages";
 NSString *DraggedImagePath = @"~/Library/TeXShop/DraggedImages/texshop_image"; // mitsu 1.29 drag & drop
 
 

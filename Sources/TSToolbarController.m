@@ -46,13 +46,14 @@ static NSString*	kProgramTID			= @"Program";
 static NSString*	kTeXTID 			= @"TeX";
 static NSString*	kLaTeXTID 			= @"LaTeX";
 static NSString*	kBibTeXTID 			= @"BibTeX";
-static NSString*	kMakeIndexTID 			= @"MakeIndex";
-static NSString*	kMetaPostTID 			= @"MetaPost";
+static NSString*	kMakeIndexTID 		= @"MakeIndex";
+static NSString*	kMetaPostTID 		= @"MetaPost";
 static NSString*	kConTeXTID 			= @"ConTeX";
 static NSString*	kMetaFontID			= @"MetaFont";
 static NSString*	kTagsTID 			= @"Tags";
-static NSString*	kTemplatesID 			= @"Templates";
-static NSString*	kAutoCompleteID			= @"AutoComplete";  //warning: used in TSDocument's fixAutoMenu
+static NSString*	kTemplatesID 		= @"Templates";
+static NSString*	kAutoCompleteID		= @"AutoComplete";  //warning: used in TSDocument's fixAutoMenu
+static NSString*    kColorIndexTID		= @"ColorIndex";
 // forsplit
 static NSString*	kSplitID			= @"Split";
 // end forsplit
@@ -185,6 +186,8 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 	[macroButton removeFromSuperview];
 	[macroButtonEE retain];
 	[macroButtonEE removeFromSuperview];
+	[indexColorBox retain];
+	[indexColorBox removeFromSuperview];
 	// end addition
 	[[self textWindow] setToolbar: [self makeToolbar: kSourceToolbarIdentifier]];
 
@@ -786,6 +789,21 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 		[toolbarItem setMenuFormRepresentation: menuFormRep];
 		return toolbarItem;
 	}
+	
+	if ([itemIdent isEqual: kColorIndexTID]) {
+		toolbarItem = [self makeToolbarItemWithItemIdentifier:itemIdent key:itemIdent
+												   customView:indexColorBox];
+		menuFormRep = [[[NSMenuItem alloc] init] autorelease];
+		submenu = [[[NSMenu alloc] init] autorelease];
+		submenuItem = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Color Index", @"Color Index")
+												  action: @selector(flipIndexColorState:) keyEquivalent:@""] autorelease];
+		[submenu addItem: submenuItem];
+		[menuFormRep setSubmenu: submenu];
+		[menuFormRep setTitle: [toolbarItem label]];
+		[toolbarItem setMenuFormRepresentation: menuFormRep];
+		return toolbarItem;
+	}
+
 
 
 
@@ -927,6 +945,7 @@ static NSString*	kDrawerKKTID			= @"DrawerKIT";
 					kAutoCompleteID,
 					kSplitID,
 					kMacrosTID,
+					kColorIndexTID,
 					NSToolbarPrintItemIdentifier,
 					NSToolbarCustomizeToolbarItemIdentifier,
 					NSToolbarFlexibleSpaceItemIdentifier,

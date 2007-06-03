@@ -1,3 +1,5 @@
+/* needs to be localized */
+
 tiLabelSave				= "Guardar";
 tiPaletteLabelSave			= "Guardar";
 tiToolTipSave				= "Guardar el código del documento";
@@ -106,6 +108,9 @@ tiLabelSyncMarks			= "SyncMarks";
 tiPaletteLabelSyncMarks			= "Sync Marks";
 tiToolTipSyncMarks			= "Mostrar Sync Marks";
 
+tiLabelColorIndex				= "ColorIndex";
+tiPaletteLabelColorIndex		= "Color Index";
+tiToolTipColorIndex				= "Color Index Commands";
 
 tiLabelTypesetKIT				= "Componer";
 tiPaletteLabelTypesetKIT		= "Componer";

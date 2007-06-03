@@ -1,6 +1,6 @@
 /*
  * TeXShop - TeX editor for Mac OS
- * Copyright (C) 2000-2005 Richard Koch
+ * Copyright (C) 2000-2007 Richard Koch
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -815,6 +815,9 @@ person script. See also: DefaultTypesetMode.
 	[[_undoManager prepareWithInvocationTarget:SUD] setBool:[SUD boolForKey:ptexUtfOutputEnabledKey] forKey:ptexUtfOutputEnabledKey];
 
 	[SUD setBool:[sender state] forKey:ptexUtfOutputEnabledKey];
+
+	// zenitani 2.10 (A) UTF-8 + utf.sty situation
+	[[TSEncodingSupport sharedInstance] setupForEncoding];
 }
 
 

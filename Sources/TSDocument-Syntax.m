@@ -73,6 +73,25 @@ static BOOL isValidTeXCommandChar(int c)
 	unsigned	aLineStart;
 	unsigned	aLineEnd;
 	unsigned	end;
+	BOOL		colorIndexDifferently;
+	
+	/*
+	
+	Experiments show that TSDocument routines can be called in the following order
+	
+		close
+		colorizeText
+		dealloc
+		
+	Thus colorizeText can be called after close but before dealloc. By the time it is
+	called, some of the pieces of the document, including the toolbar, have been deallocated.
+	
+	This is why the code below does not itself look at the indexColorBox to get its state.
+	
+	*/
+	
+	colorIndexDifferently = [self indexColorState];
+
 	
 	// Fetch the underlying layout manager and string.
 	layoutManager = [aTextView layoutManager];
@@ -131,7 +150,29 @@ static BOOL isValidTeXCommandChar(int c)
 					colorRange.length = location - colorRange.location;
 				}
 			}
-			[layoutManager addTemporaryAttributes:commandColorAttribute forCharacterRange:colorRange];
+			if (colorIndexDifferently) {
+				NSString *commandString = [textString substringWithRange: colorRange];
+				if ([commandString isEqualToString: @"\\index"]) {
+					int parens = 0;
+					BOOL notDone = YES;
+					while ((location < aLineEnd) && (notDone)) {
+						theChar = [textString characterAtIndex: location];
+						location++;
+						colorRange.length = location - colorRange.location;
+						if (theChar == '{') 
+							parens++;
+						if (theChar == '}')
+							parens--;
+						if (parens == 0)
+							notDone = NO;
+						}
+					[layoutManager addTemporaryAttributes:indexColorAttribute forCharacterRange:colorRange];
+					}
+				else
+					[layoutManager addTemporaryAttributes:commandColorAttribute forCharacterRange:colorRange];
+				}
+			else
+				[layoutManager addTemporaryAttributes:commandColorAttribute forCharacterRange:colorRange];
 		} else
 			location++;
 	}
@@ -150,7 +191,7 @@ static BOOL isValidTeXCommandChar(int c)
 	[commandColorAttribute release];
 	[commentColorAttribute release];
 	[markerColorAttribute release];
-
+	[indexColorAttribute release];
 
 	//
 	// Setup the new ones. Note that only color and underline attributes are supported!
@@ -178,6 +219,12 @@ static BOOL isValidTeXCommandChar(int c)
 	b = [SUD floatForKey:markerblueKey];
 	color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
 	markerColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+	
+	r = [SUD floatForKey:indexredKey];
+	g = [SUD floatForKey:indexgreenKey];
+	b = [SUD floatForKey:indexblueKey];
+	color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
+	indexColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
 }
 
 // This method is invoked when the syntax highlighting preferences are changed.

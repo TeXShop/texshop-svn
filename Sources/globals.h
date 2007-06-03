@@ -290,6 +290,9 @@ extern NSString *commandblueKey;
 extern NSString *markerredKey;
 extern NSString *markergreenKey;
 extern NSString *markerblueKey;
+extern NSString *indexredKey;
+extern NSString *indexgreenKey;
+extern NSString *indexblueKey;
 
 extern NSString *background_RKey;
 extern NSString *background_GKey;
@@ -338,6 +341,7 @@ extern NSString *ReleaseDocumentClassesKey;
 extern NSString *RedConsoleAfterErrorKey;
 extern NSString *PreviewDrawerOpenKey;
 extern NSString *ConTeXtTagsKey;
+extern NSString *RevisePathKey;
 // end mitsu 1.29
 
 
@@ -355,7 +359,9 @@ extern NSString *TempOutputKey;
 extern NSString *AutoCompletionPath;
 extern NSString *MenuShortcutsPath;
 extern NSString *MacrosPath;
+extern NSString *CommandCompletionFolderPath;
 extern NSString *CommandCompletionPath; // mitsu 1.29 (P)
+extern NSString *DraggedImageFolderPath;
 extern NSString *DraggedImagePath; // mitsu 1.29 drag & drop
 
 

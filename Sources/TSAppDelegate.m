@@ -64,20 +64,40 @@
 
 
 - (void)testForIntel;
-{
+{	
+	// The default value for the preference is now /usr/texbin as of Jan 11, 2007.
+	// I make this change unless a hidden preference says not to.
+	// 
 	// if the processor is intel and the path variable preference is /usr/local/tetex/bin/powerpc-apple-darwin-current,
 	// then change that preference permanently to /usr/local/tetex/bin/i386-apple-darwin-current
-
-    NSString *binPath = [SUD stringForKey:TetexBinPath];
-    if (! [binPath isEqualToString:@"/usr/local/teTeX/bin/powerpc-apple-darwin-current"])
-		return;
 	
-	// Determine CPU type
-	cpu_type_t cputype;
-	size_t s = sizeof cputype;
-	if (sysctlbyname("hw.cputype", &cputype, &s, NULL, 0) == 0 && cputype == CPU_TYPE_I386) {
-		[SUD setObject:@"/usr/local/teTeX/bin/i386-apple-darwin-current" forKey:TetexBinPath];
-		[SUD synchronize];
+	BOOL canRevisePath = [SUD boolForKey:RevisePathKey];
+    NSString *binPath = [SUD stringForKey:TetexBinPath];
+	
+	if (canRevisePath) {
+		if ( [binPath isEqualToString:@"/usr/local/teTeX/bin/powerpc-apple-darwin-current"] ||
+			[binPath isEqualToString:@"/usr/local/teTeX/bin/i386-apple-darwin-current"] ) {
+			
+			[SUD setObject:@"/usr/texbin" forKey:TetexBinPath];
+			[SUD setObject:@"NO" forKey:RevisePathKey];
+			[SUD synchronize];
+			
+			}
+		}
+		
+	else {
+
+			
+		if (! [binPath isEqualToString:@"/usr/local/teTeX/bin/powerpc-apple-darwin-current"])
+			return;
+	
+		// Determine CPU type
+		cpu_type_t cputype;
+		size_t s = sizeof cputype;
+		if (sysctlbyname("hw.cputype", &cputype, &s, NULL, 0) == 0 && cputype == CPU_TYPE_I386) {
+			[SUD setObject:@"/usr/local/teTeX/bin/i386-apple-darwin-current" forKey:TetexBinPath];
+			[SUD synchronize];
+		}
 	}
 }
 
@@ -110,7 +130,6 @@
 	NSDictionary *factoryDefaults;
 //	OgreTextFinder *theFinder;
 	id theFinder;
-	BOOL isDirectory, pathExists, templateDirectoryExists;
 
 	g_macroType = LatexEngine;
 	
@@ -182,18 +201,67 @@
 	//
 	// This must come before dealing with TSEncodingSupport and MacoMenuController below
 	
-	pathExists = [[NSFileManager defaultManager] 
-		fileExistsAtPath:[[TeXShopPath stringByStandardizingPath] stringByAppendingPathComponent:@"Templates"] 
-		isDirectory: &isDirectory];
-	templateDirectoryExists = (pathExists && isDirectory); 
-	
-	[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop"]
-				toPath:[TeXShopPath stringByStandardizingPath]];
-	
-	if (! templateDirectoryExists)
-		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Templates"] 
-				toPath:[[TeXShopPath stringByStandardizingPath] stringByAppendingPathComponent:@"Templates"]];
-
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	if (! [fileManager fileExistsAtPath: [TeXShopPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop"]
+			  toPath:[TeXShopPath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [CommandCompletionFolderPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/CommandCompletion"]
+			  toPath:[CommandCompletionFolderPath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [DraggedImageFolderPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/DraggedImages"]
+			  toPath:[DraggedImageFolderPath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [EnginePath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/Engines"]
+			  toPath:[EnginePath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [AutoCompletionPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/Keyboard"]
+			  toPath:[AutoCompletionPath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [LatexPanelPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/LatexPanel"]
+			  toPath:[LatexPanelPath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [MacrosPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/Macros"]
+			  toPath:[MacrosPath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [MatrixPanelPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/MatrixPanel"]
+			  toPath:[MatrixPanelPath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [MenuShortcutsPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/Menus"]
+			  toPath:[MenuShortcutsPath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [ScriptsPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/Scripts"]
+			  toPath:[ScriptsPath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [TexTemplatePath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/Templates"]
+			  toPath:[TexTemplatePath stringByStandardizingPath]];
+		}
+		
+	if (! [fileManager fileExistsAtPath: [BinaryPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/bin"]
+			  toPath:[BinaryPath stringByStandardizingPath]];
+		}
+		
 // Finish configuration of various pieces
 	[[TSMacroMenuController sharedInstance] loadMacros];
 	[self finishAutoCompletionConfigure];

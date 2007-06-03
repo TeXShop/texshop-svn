@@ -159,6 +159,7 @@ enum RootCommand
 	NSDate		*startDate;
 	NSPDFImageRep	*texRep;
 	NSData		*previousFontData;	/*" holds font data in case preferences change is cancelled "*/
+	int			myPrefResult;
 	BOOL		fileIsTex;
 	TSDocumentType			_documentType;
 	int			errorLine[NUMBEROFERRORS];
@@ -171,6 +172,7 @@ enum RootCommand
 	NSDictionary		*commandColorAttribute;
 	NSDictionary		*commentColorAttribute;
 	NSDictionary		*markerColorAttribute;
+	NSDictionary		*indexColorAttribute;
 
 	NSTimer		*tagTimer;		/*" Timer that repeatedly handles tag updates "*/
 	unsigned	tagLocation;
@@ -182,6 +184,7 @@ enum RootCommand
 	BOOL                taskDone;
 	int                 pdfSyncLine;
 	id                  syncBox;
+	id					indexColorBox;
 	BOOL                aggressiveTrash;
 
 	BOOL		_externalEditor;
@@ -205,6 +208,9 @@ enum RootCommand
 	BOOL				PDFfromKit;
 	unsigned int		pdfCharacterIndex;
 	BOOL				textSelectionYellow;
+	BOOL				showIndexColor; // this is related to a bug where the source draws after the toolbar is disposed
+	BOOL				showSync; // this fixes a bug in which the pdfkit draws a final time and accesses a toolbar button after it is disposed
+
 
 	//Michael Witten: mfwitten@mit.edu
 	NSLineBreakMode		lineBreakMode;
@@ -224,14 +230,14 @@ enum RootCommand
 - (id) pagenumberPanel;
 - (void) quitMagnificationPanel: sender;
 - (void) quitPagenumberPanel: sender;
-- (void) okForPanel: sender;
-- (void) cancelForPanel: sender;
 - (void) showStatistics: sender;
 - (void) updateStatistics: sender;
 - (void) doTemplate: sender;
 - (void) printSource: sender;
+- (void) okForRequest: sender;
 - (void) chooseEncoding: sender;
 - (NSStringEncoding) encoding;
+- (void) okForPrintRequest: sender;
 - (void) close;
 - (void) setProjectFile: sender;
 - (void) doLine: sender;
@@ -266,8 +272,6 @@ enum RootCommand
 - (void) refreshPDFAndBringFront: (BOOL)front;
 - (void) refreshTEXT;
 - (NSString *)displayName;
-- (BOOL) isTexExtension: (NSString *)extension;
-- (BOOL) isTextExtension: (NSString *)extension;
 - (NSPDFImageRep *) myTeXRep;
 - (NSDictionary *)fileAttributesToWriteToFile:(NSString *)fullDocumentPath ofType:(NSString *)documentTypeName saveOperation:(NSSaveOperationType)saveOperationType;
 - (BOOL)isDocumentEdited;
@@ -279,6 +283,9 @@ enum RootCommand
 - (void)showSyncMarks:sender;
 - (BOOL)syncState;
 - (void) flipShowSync: sender;
+- (void)showIndexColor:sender;
+- (BOOL)indexColorState;
+- (void) flipIndexColorState: sender;
 - (void)doPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)idx andTextView:(id)aTextView;
 - (BOOL)doNewPreviewSyncWithFilename:(NSString *)fileName andLine:(int)line andCharacterIndex:(unsigned int)idx andTextView:(id)aTextView;
 - (void)trashAUXFiles: sender;
@@ -343,6 +350,7 @@ enum RootCommand
 - (void)resetMacroButton:(NSNotification *)notification;
 
 - (NSString *)filterBackslashes:(NSString *)aString;
+- (NSStringEncoding)dataEncoding:(NSData *)theData;
 
 @end
 

@@ -513,7 +513,9 @@ static id _sharedInstance = nil;
 - (void)panelWillClose:(NSNotification *)notification
 {
 	shown = NO;
-	[[[NSApp windowsMenu] itemWithTitle:NSLocalizedString(@"Close Matrix Panel", @"Close Matrix Panel")] setTitle:NSLocalizedString(@"Matrix Panel...", @"Matrix Panel...")];
+	NSMenuItem *myItem = [[NSApp windowsMenu] itemWithTitle:NSLocalizedString(@"Close Matrix Panel", @"Close Matrix Panel")];
+	[myItem  setTitle:NSLocalizedString(@"Matrix Panel...", @"Matrix Panel...")];
+	[myItem setTag:0];
 }
 
 - (void)panelDidMove:(NSNotification *)notification

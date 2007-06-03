@@ -1,4 +1,10 @@
-﻿/* "MacOSRoman" corresponds to code 0x00010000 in TextEncodingNames.string */
+﻿/* Encoding names. Some of these are are taken from a system file:
+   /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Resources/*.lproj/TextEncodingNames.string
+   where * corresponds to one of multiple possible languages.
+*/
+
+
+/* "MacOSRoman" corresponds to code 0x00010000 in TextEncodingNames.string */
 "MacOSRoman"	= "Western (Mac OS Roman)";
 
 /* "IsoLatin" corresponds to code 0x00000201 in TextEncodingNames.string */

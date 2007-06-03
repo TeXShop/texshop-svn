@@ -248,8 +248,9 @@ static id _sharedInstance = nil;
 - (void)panelWillClose:(NSNotification *)notification
 {
 	shown = NO;
-	[[[NSApp windowsMenu] itemWithTitle:NSLocalizedString(@"Close LaTeX Panel", @"Close LaTeX Panel")]
-		setTitle:NSLocalizedString(@"LaTeX Panel...", @"LaTeX Panel...")];
+	NSMenuItem *myItem = [[NSApp windowsMenu] itemWithTitle:NSLocalizedString(@"Close LaTeX Panel", @"Close LaTeX Panel")];
+	[myItem  setTitle:NSLocalizedString(@"LaTeX Panel...", @"LaTeX Panel...")];
+	[myItem setTag:0];
 }
 
 - (void)panelDidMove:(NSNotification *)notification
