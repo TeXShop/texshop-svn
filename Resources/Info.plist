@@ -599,7 +599,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
-	<string>${MARKETING_VERSION}, Copyright 2001-2006, Richard Koch</string>
+	<string>${MARKETING_VERSION}, Copyright 2001-2007, Richard Koch</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>TeXShopHelp</string>
 	<key>CFBundleHelpBookName</key>
