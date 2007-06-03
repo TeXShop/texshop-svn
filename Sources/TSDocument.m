@@ -59,7 +59,6 @@
 
 - (id)init
 {
-
 	[super init];
 
 	errorNumber = 0;
@@ -169,6 +168,8 @@
 	[aTextView setBackgroundColor: backgroundColor];
 	[aTextView setInsertionPointColor: insertionpointColor];
 	[aTextView setAcceptsGlyphInfo: YES]; // suggested by Itoh 1.35 (A)
+
+	[(TSTextView *)aTextView setDocument: self];
 }
 
 #pragma mark NSDocument interface
@@ -229,7 +230,6 @@
 	NSString		*defaultCommand;
 
 	[super windowControllerDidLoadNib:aController];
-	
 
 	// can this fix the printer; Feb 1, 2006
 	
@@ -253,23 +253,10 @@
 		default: lineBreakMode = NSLineBreakByCharWrapping;		break;
 	}
 
-	/* New forsplit */
-
-
-	contentSize = [scrollView contentSize];
-	textView1 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
-	[self setupTextView:textView1];
-	[(TSTextView *)textView1 setDocument: self];
-	[scrollView setDocumentView:textView1];
-	[textView1 release];
 	textView = textView1;
-	/* End of New */
-	// forsplit
 
-	contentSize = [scrollView2 contentSize];
-	textView2 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
+	[self setupTextView:textView1];
 	[self setupTextView:textView2];
-	[(TSTextView *)textView2 setDocument: self];
 	if (spellExists)
 		[textView2 setContinuousSpellCheckingEnabled:[SUD boolForKey:SpellCheckEnabledKey]];
 
@@ -277,9 +264,6 @@
 	[scrollView2 setHasHorizontalRuler: NO];
 	[textView2 setUsesRuler: NO];
 	// end witten
-
-	[scrollView2 setDocumentView:textView2];
-	[textView2 release];
 
 
 	// Create a custom NSTextStorage and make sure the two NSTextViews both use it.
@@ -301,20 +285,21 @@
 	if ([SUD boolForKey:ShowSyncMarksKey]) {
 		[syncBox setState:1];
 		showSync = YES;
-		}
+	}
 
 	[self setupColors];
 
 	doAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
 	[self fixAutoMenu];
-	
+
+
 	/* when opening an empty document, must open the source editor */
 	if ((theFileName == nil) && _externalEditor)
 		_externalEditor = NO;
-		
+
 	[self registerForNotifications];
 	[self setupFromPreferencesUsingWindowController:aController];
-	
+
 	[pdfView setDocument: self]; /* This was commented out!! Don't do it; needed by Ghostscript; Dick */
 	// the next line caused jpg and tiff files to fail, so we do it later
 	//   [pdfView resetMagnification];
@@ -337,7 +322,7 @@
 	}
 
 	/* handle images */
-	
+
 	// mitsu 1.29 (S4)-- flipped clip view
 	// the following code allows the window to be anchored at top left when scrolled
 	[pdfView retain]; // hold it when clipView is released
@@ -370,7 +355,7 @@
 				myAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: imagePath traverseLink:NO];
 				_pdfLastModDate = [[myAttributes objectForKey:NSFileModificationDate] retain];
 			}
-			
+
 			[pdfKitWindow setTitle: [[self fileName] lastPathComponent]];
 			// [pdfWindow setRepresentedFilename: [self fileName]]; //mitsu July4;
 			// supposed to allow command click of window title to lead to file, but doesn't
@@ -407,7 +392,6 @@
 		}
 
 		if (imageFound) {
-		
 			if (_documentType == isPDF) {
 
 				PDFfromKit = YES;
@@ -419,9 +403,7 @@
 					_pdfRefreshTimer = [[NSTimer scheduledTimerWithTimeInterval: [SUD floatForKey: RefreshTimeKey]
 																		target:self selector:@selector(refreshPDFWindow:) userInfo:nil repeats:YES] retain];
 				}
-			} else
-			
-			   {
+			} else {
 				[pdfView setImageType: _documentType];
 				[pdfView setImageRep: texRep]; // this releases old one!
 
@@ -846,8 +828,8 @@ in other code when an external editor is being used. */
 	}
 
 	if (content) {
-		// zenitani 1.35 (A) -- normalizing newline character for regular expression
 		if ([SUD boolForKey:ConvertLFKey]) {
+			// zenitani 1.35 (A) -- normalizing newline character for regular expression
 			content = [OGRegularExpression replaceNewlineCharactersInString:content
 															  withCharacter:OgreLfNewlineCharacter];
 		}
@@ -1295,10 +1277,9 @@ in other code when an external editor is being used. */
 /*" This method reads the NSUserDefaults and restores the settings before the document will actually be displayed.
 "*/
 {
-
 	// inhibit ordering of windows by windowController.
 	[windowController setShouldCascadeWindows:NO];
-	
+
 	// restore window position for the document window
 	
 	// strangely, the "setFrameFromString" below causes a long delay is the file type is "pdf" but not for "tiff" or other types!
@@ -1326,13 +1307,13 @@ in other code when an external editor is being used. */
 			[pdfWindow setFrameFromString:[SUD stringForKey:PdfWindowFixedPosKey]];
 			[pdfKitWindow setFrameFromString:[SUD stringForKey:PdfWindowFixedPosKey]];
 	}
-	
+
 	// restore the font for document if desired
 	if ([SUD boolForKey:SaveDocumentFontKey] == YES)
 	{
 		[self setDocumentFontFromPreferences:nil];
 	}
-	
+
 /*
 	// setup the popUp with all of our template names
 	[popupButton addItemsWithTitles:[[TSPreferences sharedInstance] allTemplateNames]];
@@ -1783,7 +1764,30 @@ preference change is cancelled. "*/
 
 #pragma mark Tag menu
 
-- (void) doTag: sender
+- (void)newTag: (id)sender
+{
+	NSString		*text;
+	NSRange		myRange, tempRange;
+	unsigned		start, end, end1, changeStart, changeEnd;
+
+	text = [textView string];
+	myRange = [textView selectedRange];
+	// get old string for Undo
+	[text getLineStart:&start end:&end contentsEnd:&end1 forRange:myRange];
+	tempRange.location = start;
+	tempRange.length = 0;
+	[textView replaceCharactersInRange:tempRange withString:@"%:\n"];
+	changeStart = tempRange.location;
+	changeEnd = changeStart + 2;
+	[self fixColor:changeStart :changeEnd];
+	[self registerUndoWithString:@"" location:tempRange.location
+						length:3 key: @"New Tag"];
+	tempRange.location = start+2;
+	tempRange.length = 0;
+	[textView setSelectedRange: tempRange];
+}
+
+- (void) doTag: (id)sender
 {
 	NSString	*text, *titleString, *matchString;
 	unsigned	start, end;
@@ -3013,30 +3017,18 @@ preference change is cancelled. "*/
 
 - (void) flipShowSync: sender
 {
-	int theState = [syncBox state];
-	int newState = 1 - theState;
-	[syncBox setState: newState];
-	if ( newState == 1 )
-		showSync = YES;
-	else
-		showSync = NO;
+	showSync = ![syncBox state];
+	[syncBox setState: showSync];
 	[myPDFKitView display];
 }
 
 - (void) flipIndexColorState: sender
 {
-	int theState = [indexColorBox state];
-	int newState = 1 - theState;
-	[indexColorBox setState: newState];
-	if (newState == 1)
-		showIndexColor = YES;
-	else
-		showIndexColor = NO;
+	showIndexColor = ![indexColorBox state];
+	[indexColorBox setState: showIndexColor];
 	[self colorizeVisibleAreaInTextView:textView1];
 	[self colorizeVisibleAreaInTextView:textView2];
 }
-
-
 
 - (void) fixMacroMenu
 {
@@ -3462,29 +3454,6 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 
 // end mitsu 1.29
 
-- (void)newTag: (id)sender
-{
-	NSString		*text;
-	NSRange		myRange, tempRange;
-	unsigned		start, end, end1, changeStart, changeEnd;
-
-	text = [textView string];
-	myRange = [textView selectedRange];
-	// get old string for Undo
-	[text getLineStart:&start end:&end contentsEnd:&end1 forRange:myRange];
-	tempRange.location = start;
-	tempRange.length = 0;
-	[textView replaceCharactersInRange:tempRange withString:@"%:\n"];
-	changeStart = tempRange.location;
-	changeEnd = changeStart + 2;
-	[self fixColor:changeStart :changeEnd];
-	[self registerUndoWithString:@"" location:tempRange.location
-						length:3 key: @"New Tag"];
-	tempRange.location = start+2;
-	tempRange.length = 0;
-	[textView setSelectedRange: tempRange];
-}
-
 - (void)trashAUXFiles: sender
 {
 	NSString        *theSource;
@@ -3617,10 +3586,7 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 
 - (void) showSyncMarks: sender
 {
-	if ([syncBox state] == 1)
-		showSync = YES;
-	else
-		showSync = NO;
+	showSync = [syncBox state];
    [myPDFKitView display];
 }
 
@@ -3643,8 +3609,6 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 {
 	return showIndexColor;
 }
-
-
 
 - (BOOL)fromKit
 {

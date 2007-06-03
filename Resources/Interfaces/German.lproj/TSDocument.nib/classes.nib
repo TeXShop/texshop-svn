@@ -88,6 +88,7 @@
         }, 
         {CLASS = NSCursor; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {CLASS = NSTextView; LANGUAGE = ObjC; SUPERCLASS = NSText; }, 
         {
             CLASS = TSConsoleWindow; 
             LANGUAGE = ObjC; 
@@ -97,6 +98,7 @@
         {
             ACTIONS = {
                 abort = id; 
+                cancelForPanel = id; 
                 changeAutoComplete = id; 
                 chooseEncoding = id; 
                 chooseProgram = id; 
@@ -127,19 +129,14 @@
                 doTexTemp = id; 
                 doTypeset = id; 
                 doTypesetEE = id; 
+                flipIndexColorState = id; 
                 flipShowSync = id; 
                 hardWrapSelection = id; 
-                myAction = id; 
                 newTag = id; 
-                okForPrintRequest = id; 
-                okForRequest = id; 
-                okLine = id; 
-                okProject = id; 
+                okForPanel = id; 
                 printSource = id; 
-                quitLine = id; 
                 quitMagnificationPanel = id; 
                 quitPagenumberPanel = id; 
-                quitProject = id; 
                 removeNewLinesFromSelection = id; 
                 saveDocument = id; 
                 setLineBreakMode = id; 
@@ -220,6 +217,12 @@
             LANGUAGE = ObjC; 
             OUTLETS = {myDocument = id; }; 
             SUPERCLASS = NSWindow; 
+        }, 
+        {
+            ACTIONS = {registerForCommandCompletion = id; }; 
+            CLASS = TSTextView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTextView; 
         }, 
         {CLASS = TextFinder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
     ); 
