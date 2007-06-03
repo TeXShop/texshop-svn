@@ -181,6 +181,11 @@
 
 
 // this method gives a name "Untitled-n" for new documents
+ // KOCH: This code fixed a bug which bothered lots of users. The Mac
+ // automatically names untitled files: Untitled, Untitled 2, Untitled 3, etc.
+ // Since these files have names with spaces, TeX wouldn't accept them.
+ // I'm reluctant to change this. The TeX in Gerben's release allows spaces in names
+ // (I think). But other TeX distributions may not.
 -(NSString *)displayName
 {
 	if ([self fileName] == nil) // file is a new one
@@ -321,18 +326,7 @@
 	_documentType = isTeX;
 	fileExtension = [[self fileName] pathExtension];
 	
-	if (( ! [fileExtension isEqualToString: @"tex"]) && ( ! [fileExtension isEqualToString: @"TEX"])
-		&& ( ! [fileExtension isEqualToString: @"dtx"]) && ( ! [fileExtension isEqualToString: @"ins"])
-		&& ( ! [fileExtension isEqualToString: @"sty"]) && ( ! [fileExtension isEqualToString: @"cls"])
-		&& ( ! [fileExtension isEqualToString: @"Rnw"])
-		// added by mitsu --(N) support for .def, .fd, .ltx. .clo
-		&& ( ! [fileExtension isEqualToString: @"def"]) && ( ! [fileExtension isEqualToString: @"fd"])
-		&& ( ! [fileExtension isEqualToString: @"ltx"]) && ( ! [fileExtension isEqualToString: @"clo"])
-		// end addition
-		&& ( ! [fileExtension isEqualToString: @""]) && ( ! [fileExtension isEqualToString: @"mp"])
-		&& ( ! [fileExtension isEqualToString: @"mf"])
-		&& ( ! [fileExtension isEqualToString: @"bib"])
-		&& ( ! [fileExtension isEqualToString: @"ly"])
+	if ((! [self isTexExtension: fileExtension])
 		&& ([[NSFileManager defaultManager] fileExistsAtPath: [self fileName]]))
 	{
 		[self setFileType: fileExtension];
@@ -392,6 +386,7 @@
 			[previousButton setEnabled:NO];
 			[nextButton setEnabled:NO];
 		} else if (([fileExtension isEqualToString: @"tiff"]) ||
+				 ([fileExtension isEqualToString: @"png"]) ||
 				 ([fileExtension isEqualToString: @"tif"])) {
 			imageFound = YES;
 			texRep = [[NSBitmapImageRep imageRepWithContentsOfFile: imagePath] retain];
@@ -615,6 +610,43 @@ in other code when an external editor is being used. */
 	else
 		return [super isDocumentEdited];
 }
+
+// Check if should syntax color and allow typesetting by some engine or other
+- (BOOL) isTexExtension: (NSString *)extension
+{
+	
+	if (([extension isEqualToString: @"tex"]) || ([extension isEqualToString: @"TEX"])
+		|| ([extension isEqualToString: @"dtx"]) || ([extension isEqualToString: @"ins"])
+		|| ([extension isEqualToString: @"sty"]) || ([extension isEqualToString: @"cls"])
+		|| ([extension isEqualToString: @"Rnw"])
+		// added by mitsu --(N) support for .def, .fd, .ltx. .clo
+		|| ([extension isEqualToString: @"def"]) || ([extension isEqualToString: @"fd"])
+		|| ([extension isEqualToString: @"ltx"]) || ([extension isEqualToString: @"clo"])
+		// end addition
+		|| ([extension isEqualToString: @""]) || ([extension isEqualToString: @"mp"])
+		|| ([extension isEqualToString: @"mf"])
+		|| ([extension isEqualToString: @"bib"])
+		|| ([extension isEqualToString: @"ly"]))
+		return YES;
+	else
+		return NO;
+}
+
+// Check if should read at all for source window; graphic files shoulnd't go to text window
+- (BOOL) isTextExtension: (NSString *)extension
+{
+	if (
+		([extension isEqualToString: @"dvi"]) || ([extension isEqualToString: @"ps"])
+		|| ([extension isEqualToString: @"eps"]) || ([extension isEqualToString: @"png"]) 
+		|| ([extension isEqualToString: @"tif"]) || ([extension isEqualToString: @"tiff"])
+		|| ([extension isEqualToString: @"jpg"]) || ([extension isEqualToString: @"JPG"])
+		|| ([extension isEqualToString: @"jpeg"]) 
+		)
+		return NO;
+	else
+		return YES;
+}
+
 
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType {
@@ -918,7 +950,10 @@ in other code when an external editor is being used. */
 		[printOperation runOperation];
 		[printView release];
 	} else if (_documentType == isTeX)
+		{
 		result = [NSApp runModalForWindow: printRequestPanel];
+		[printRequestPanel close];
+		}
 }
 
 - (BOOL)keepBackupFile
@@ -1207,9 +1242,6 @@ in other code when an external editor is being used. */
 	// notifications for pdftex and pdflatex
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkATaskStatus:)
 		name:NSTaskDidTerminateNotification object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkPrefClose:)
-		name:NSWindowWillCloseNotification object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeTexOutput:)
 		name:NSFileHandleReadCompletionNotification object:nil];
@@ -1558,42 +1590,14 @@ preference change is cancelled. "*/
 	[self fixMacroMenu];
 }
 
-- (void) okProject: sender
+- (void) okForPanel: sender
 {
-	myPrefResult = 0;
-	[projectPanel close];
+	[NSApp stopModalWithCode: 0];
 }
 
-- (void) quitProject: sender
+- (void) cancelForPanel: sender
 {
-	myPrefResult = 1;
-	[projectPanel close];
-}
-
-
-- (void) okForRequest: sender
-{
-	myPrefResult = 0;
-	[requestWindow close];
-}
-
-- (void) okForPrintRequest: sender
-{
-	myPrefResult = 0;
-	[printRequestPanel close];
-}
-
-
-- (void) okLine: sender
-{
-	myPrefResult = 0;
-	[linePanel close];
-}
-
-- (void) quitLine: sender
-{
-	myPrefResult = 1;
-	[linePanel close];
+	[NSApp stopModalWithCode: 1];
 }
 
 - (void) setProjectFile: sender
@@ -1603,10 +1607,10 @@ preference change is cancelled. "*/
 
 	if (! [self fileName]) {
 		result = [NSApp runModalForWindow: requestWindow];
+		[requestWindow close];
 	}
 	else {
 
-		myPrefResult = 2;
 		project = [[[self fileName] stringByDeletingPathExtension]
 			stringByAppendingString: @".texshop"];
 		if ([[NSFileManager defaultManager] fileExistsAtPath: project]) {
@@ -1617,6 +1621,7 @@ preference change is cancelled. "*/
 			[projectName setStringValue: [[self fileName] lastPathComponent]];
 		[projectName selectText: self];
 		result = [NSApp runModalForWindow: projectPanel];
+		[projectPanel close];
 		if (result == 0) {
 			nameString = [projectName stringValue];
 			//            if ([nameString isAbsolutePath])
@@ -1636,8 +1641,8 @@ preference change is cancelled. "*/
 {
 	int		result, line;
 
-	myPrefResult = 2;
 	result = [NSApp runModalForWindow: linePanel];
+	[linePanel close];
 	if (result == 0) {
 		line = [lineBox intValue];
 		[self toLine: line];
@@ -2850,26 +2855,11 @@ preference change is cancelled. "*/
 	}
 }
 
-
-- (void) checkPrefClose: (NSNotification *)aNotification
-{
-	int	finalResult;
-
-	if (([aNotification object] == projectPanel) ||
-		([aNotification object] == requestWindow) ||
-		([aNotification object] == linePanel) ||
-		([aNotification object] == printRequestPanel)) {
-		finalResult = myPrefResult;
-		if (finalResult == 2) finalResult = 0;
-		[NSApp stopModalWithCode: finalResult];
-	}
-}
-
 - (void) writeTexOutput: (NSNotification *)aNotification
 {
 	NSString		*newOutput, *numberOutput, *searchString, *tempString, *detexString;
 	NSData		*myData, *detexData;
-	NSRange		myRange, lineRange, searchRange;
+	NSRange		myRange, lineRange, searchRange, testRange;
 	int			error;
 	int                 lineCount, wordCount, charCount;
 	unsigned int	myLength;
@@ -2890,8 +2880,11 @@ preference change is cancelled. "*/
 			}
 			// 1.35 (F) end
 			
-			if ((makeError) && ([newOutput length] > 2) && (errorNumber < NUMBEROFERRORS)) {
-				myLength = [newOutput length];
+			myLength = [newOutput length];
+			testRange.location = [newOutput length] - 2;
+			testRange.length = 1; 
+			if ((makeError) && (myLength > 2) && (errorNumber < NUMBEROFERRORS)  &&
+					([[newOutput substringWithRange: testRange] isEqualToString: @"?"])) { 
 				searchString = @"l.";
 				lineRange.location = 0;
 				lineRange.length = 1;
@@ -2913,6 +2906,7 @@ preference change is cancelled. "*/
 					}
 				}
 			}
+
 			
 			typesetStart = YES;
 			

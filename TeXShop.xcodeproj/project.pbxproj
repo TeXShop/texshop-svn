@@ -386,7 +386,7 @@
 		4077C62E03C7FB1E00000009 /* TSMacroOutlineController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSMacroOutlineController.h; sourceTree = "<group>"; };
 		4077C62F03C7FB1E00000009 /* TSMacroOutlineController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSMacroOutlineController.m; sourceTree = "<group>"; };
 		4077C63603C7FC0900000009 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MacroEditor.nib; sourceTree = "<group>"; };
-		407881970519249A006979EA /* TeXShop.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TeXShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		407881970519249A006979EA /* TeXShop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeXShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		407DE7540409C08300000009 /* MagGlass.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagGlass.tiff; sourceTree = "<group>"; };
 		407DE7560409C09600000009 /* MagGlassL.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagGlassL.tiff; sourceTree = "<group>"; };
 		40839127060963C800266FAB /* TextFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFinder.h; sourceTree = "<group>"; };
