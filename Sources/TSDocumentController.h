@@ -29,9 +29,12 @@
 	NSView				*encodingView;
 	NSPopUpButton		*encodingMenu;
 	NSStringEncoding	_encoding;
+	BOOL				doList;
 }
 - (IBAction)openDocument:(id)sender;
 - (void)initializeEncoding;
 - (int)runModalOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)extensions;
 - (NSStringEncoding)encoding;
+- (void)noteNewRecentDocument:(NSDocument *)aDocument;
+- (void)listDocument:(BOOL)value;
 @end

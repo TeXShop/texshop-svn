@@ -29,6 +29,13 @@
 
 @implementation TSDocumentController : NSDocumentController
 
+- (void)init
+{
+	[super init];
+	doList = YES;
+}
+
+
 - (void)initializeEncoding  // the idea is that this is called after preferences is set up
 {
 	// We use the _encoding field to store the encoding to be used for the
@@ -77,5 +84,17 @@
 	}
 	return result;
 }
+
+- (void)noteNewRecentDocument:(NSDocument *)aDocument
+{
+	if (doList)
+		[super noteNewRecentDocument:aDocument];
+}
+
+- (void)listDocument:(BOOL)value;
+{
+	doList = value;
+}
+
 
 @end

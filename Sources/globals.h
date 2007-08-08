@@ -346,6 +346,8 @@ extern NSString *RevisePathKey;
 
 
 /*" Paths "*/
+extern NSString *DesktopPath;
+extern NSString *MoviesPath;
 extern NSString *TeXShopPath;
 extern NSString *TexTemplatePath;
 extern NSString *TexTemplateMorePath;

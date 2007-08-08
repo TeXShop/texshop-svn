@@ -60,6 +60,8 @@
 - (id)init
 {
 	[super init];
+	
+	isFullScreen = NO;
 
 	errorNumber = 0;
 	whichError = 0;
@@ -93,6 +95,8 @@
 	textSelectionYellow = NO;
 	showSync = NO;
 	showIndexColor = NO;
+	isLoading = NO;
+	firstTime = NO;
 
 
 	_encoding = [[TSDocumentController sharedDocumentController] encoding];
@@ -147,6 +151,9 @@
 - (void)setupTextView:(NSTextView *)aTextView
 {
 	NSColor		*backgroundColor, *insertionpointColor;
+	NSData		*fontData;
+	NSFont		*font;
+
 
 	backgroundColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:background_RKey]
 												green: [SUD floatForKey:background_GKey]
@@ -164,12 +171,22 @@
 	[aTextView setAllowsUndo:YES];
 	[aTextView setRichText:NO];
 	[aTextView setUsesFontPanel:YES];
-	[aTextView setFont:[NSFont userFontOfSize:12.0]];
+	
+// August 7, 2007; Koch; fix bug where system doesn't pick up user's font preference	
+	fontData = [SUD objectForKey:DocumentFontKey];
+	if (fontData != nil)
+		{
+		font = [NSUnarchiver unarchiveObjectWithData:fontData];
+		[textView setFont:font];
+		}
+	else
+		[aTextView setFont:[NSFont userFontOfSize:12.0]];
+	
 	[aTextView setBackgroundColor: backgroundColor];
 	[aTextView setInsertionPointColor: insertionpointColor];
 	[aTextView setAcceptsGlyphInfo: YES]; // suggested by Itoh 1.35 (A)
 
-	[(TSTextView *)aTextView setDocument: self];
+	// [(TSTextView *)aTextView setDocument: self]; //Koch commented this out on August 3, 2007, but is uncertain
 }
 
 #pragma mark NSDocument interface
@@ -230,6 +247,13 @@
 	NSString		*defaultCommand;
 
 	[super windowControllerDidLoadNib:aController];
+	
+	// WARNING: I moved this to the start from much further on; the original location is still present
+	// but commented out. This speeds up loading dramatically, and I think it causes no problems. The basic idea is
+	// to resize windows before they have data rather than afterward; resizing after editing data is present
+	// causes all of the data to be reformatted.
+	[self setupFromPreferencesUsingWindowController:aController];
+
 
 	// can this fix the printer; Feb 1, 2006
 	
@@ -253,10 +277,27 @@
 		default: lineBreakMode = NSLineBreakByCharWrapping;		break;
 	}
 
+	// The following code replaced by the next three lines
+	/*
+	contentSize = [scrollView contentSize];
+	textView1 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
+	[self setupTextView:textView1];
+	[(TSTextView *)textView1 setDocument: self];
+	[scrollView setDocumentView:textView1];
+	[textView1 release];
 	textView = textView1;
+	// forsplit
 
+	contentSize = [scrollView2 contentSize];
+	textView2 = [[TSTextView alloc] initWithFrame: NSMakeRect(0, 0, contentSize.width, contentSize.height)];
+	[self setupTextView:textView2];
+	[(TSTextView *)textView2 setDocument: self];
+	*/
+	
+	textView = textView1;
 	[self setupTextView:textView1];
 	[self setupTextView:textView2];
+	
 	if (spellExists)
 		[textView2 setContinuousSpellCheckingEnabled:[SUD boolForKey:SpellCheckEnabledKey]];
 
@@ -265,6 +306,11 @@
 	[textView2 setUsesRuler: NO];
 	// end witten
 
+	// Again the next commented out
+	/*
+	[scrollView2 setDocumentView:textView2];
+	[textView2 release];
+	*/
 
 	// Create a custom NSTextStorage and make sure the two NSTextViews both use it.
 	[[textView1 layoutManager] replaceTextStorage:_textStorage];
@@ -298,7 +344,9 @@
 		_externalEditor = NO;
 
 	[self registerForNotifications];
-	[self setupFromPreferencesUsingWindowController:aController];
+	
+	// The following line was moved to the top of the routine to speed up document loading; Koch
+	// [self setupFromPreferencesUsingWindowController:aController];
 
 	[pdfView setDocument: self]; /* This was commented out!! Don't do it; needed by Ghostscript; Dick */
 	// the next line caused jpg and tiff files to fail, so we do it later
@@ -759,12 +807,13 @@ in other code when an external editor is being used. */
 
 - (BOOL)readFromFile:(NSString *)fileName ofType:(NSString *)type {
 	NSData				*myData;
+	unsigned int		theLength;
 	// NSString            *firstBytes, *encodingString, *testString;
 	// NSRange             encodingRange, newEncodingRange, myRange, theRange;
 	// unsigned            length, start, end;
 	// BOOL                done;
 	// int                 linesTested;
-
+	
 	myData = [NSData dataWithContentsOfFile:fileName];
 	_encoding = _tempencoding = [self dataEncoding: myData];
 	
@@ -828,8 +877,8 @@ in other code when an external editor is being used. */
 	}
 
 	if (content) {
+		// zenitani 1.35 (A) -- normalizing newline character for regular expression
 		if ([SUD boolForKey:ConvertLFKey]) {
-			// zenitani 1.35 (A) -- normalizing newline character for regular expression
 			content = [OGRegularExpression replaceNewlineCharactersInString:content
 															  withCharacter:OgreLfNewlineCharacter];
 		}
@@ -840,8 +889,17 @@ in other code when an external editor is being used. */
 			content = [utfRegex replaceAllMatchesInString: content delegate:self
 						replaceSelector:@selector(decodeUtfStyFormat:contextInfo:) contextInfo:nil];
 		}
+		
+		theLength = [content length];
+		// NSLog([NSString stringWithFormat:@"%d", theLength]);
+		if (theLength > 100000) {
+			// safeLength = theLength - 100000;
+			isLoading = YES;
+			firstTime = YES;
+			}
+		
 		[[_textStorage mutableString] setString:content];
-
+	
 		return YES;
 	} else {
 		return NO;
@@ -1224,6 +1282,9 @@ in other code when an external editor is being used. */
 	// notifications for pdftex and pdflatex
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkATaskStatus:)
 		name:NSTaskDidTerminateNotification object:nil];
+		
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkPrefClose:)
+		name:NSWindowWillCloseNotification object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeTexOutput:)
 		name:NSFileHandleReadCompletionNotification object:nil];
@@ -1571,14 +1632,42 @@ preference change is cancelled. "*/
 	[self fixMacroMenu];
 }
 
-- (void) okForPanel: sender
+- (void) okProject: sender
 {
-	[NSApp stopModalWithCode: 0];
+	myPrefResult = 0;
+	[projectPanel close];
 }
 
-- (void) cancelForPanel: sender
+- (void) quitProject: sender
 {
-	[NSApp stopModalWithCode: 1];
+	myPrefResult = 1;
+	[projectPanel close];
+}
+
+
+- (void) okForRequest: sender
+{
+	myPrefResult = 0;
+	[requestWindow close];
+}
+
+- (void) okForPrintRequest: sender
+{
+	myPrefResult = 0;
+	[printRequestPanel close];
+}
+
+
+- (void) okLine: sender
+{
+	myPrefResult = 0;
+	[linePanel close];
+}
+
+- (void) quitLine: sender
+{
+	myPrefResult = 1;
+	[linePanel close];
 }
 
 - (void) setProjectFile: sender
@@ -1588,10 +1677,10 @@ preference change is cancelled. "*/
 
 	if (! [self fileName]) {
 		result = [NSApp runModalForWindow: requestWindow];
-		[requestWindow close];
 	}
 	else {
 
+		myPrefResult = 2;
 		project = [[[self fileName] stringByDeletingPathExtension]
 			stringByAppendingString: @".texshop"];
 		if ([[NSFileManager defaultManager] fileExistsAtPath: project]) {
@@ -1602,7 +1691,6 @@ preference change is cancelled. "*/
 			[projectName setStringValue: [[self fileName] lastPathComponent]];
 		[projectName selectText: self];
 		result = [NSApp runModalForWindow: projectPanel];
-		[projectPanel close];
 		if (result == 0) {
 			nameString = [projectName stringValue];
 			//            if ([nameString isAbsolutePath])
@@ -1622,6 +1710,7 @@ preference change is cancelled. "*/
 {
 	int		result, line;
 
+	myPrefResult = 2;
 	result = [NSApp runModalForWindow: linePanel];
 	[linePanel close];
 	if (result == 0) {
@@ -2859,6 +2948,20 @@ preference change is cancelled. "*/
 	}
 }
 
+- (void) checkPrefClose: (NSNotification *)aNotification
+{
+	int	finalResult;
+
+	if (([aNotification object] == projectPanel) ||
+		([aNotification object] == requestWindow) ||
+		([aNotification object] == linePanel) ||
+		([aNotification object] == printRequestPanel)) {
+		finalResult = myPrefResult;
+		if (finalResult == 2) finalResult = 0;
+		[NSApp stopModalWithCode: finalResult];
+	}
+}
+
 - (void) writeTexOutput: (NSNotification *)aNotification
 {
 	NSString		*newOutput, *numberOutput, *searchString, *tempString, *detexString;
@@ -3017,18 +3120,30 @@ preference change is cancelled. "*/
 
 - (void) flipShowSync: sender
 {
-	showSync = ![syncBox state];
-	[syncBox setState: showSync];
+	int theState = [syncBox state];
+	int newState = 1 - theState;
+	[syncBox setState: newState];
+	if ( newState == 1 )
+		showSync = YES;
+	else
+		showSync = NO;
 	[myPDFKitView display];
 }
 
 - (void) flipIndexColorState: sender
 {
-	showIndexColor = ![indexColorBox state];
-	[indexColorBox setState: showIndexColor];
+
+	int theState = [indexColorBox state];
+	int newState = 1 - theState;
+	[indexColorBox setState: newState];
+	if (newState == 1)
+		showIndexColor = YES;
+	else
+		showIndexColor = NO;
 	[self colorizeVisibleAreaInTextView:textView1];
 	[self colorizeVisibleAreaInTextView:textView2];
 }
+
 
 - (void) fixMacroMenu
 {
@@ -3586,7 +3701,10 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 
 - (void) showSyncMarks: sender
 {
-	showSync = [syncBox state];
+	if ([syncBox state] == 1)
+		showSync = YES;
+	else
+		showSync = NO;
    [myPDFKitView display];
 }
 
@@ -4054,4 +4172,109 @@ static NSArray *tabStopArrayForFontAndTabWidth(NSFont *font, unsigned tabWidth) 
 }
 
 // end witten
+
+// the next routine is needed because otherwise the following two routines do nothing when TeXShop
+// is started with no TeXShop.plist file present
+- (void) fixPreferences
+{
+	[SUD synchronize];
+}
+
+- (void) saveSourcePosition
+{
+	NSWindow	*activeWindow;
+	activeWindow = [[TSWindowManager sharedInstance] activeTextWindow];
+
+	if (activeWindow != nil) {
+		[self fixPreferences];
+		[SUD setInteger:DocumentWindowPosFixed forKey:DocumentWindowPosModeKey];
+		[SUD setObject:[activeWindow stringWithSavedFrame] forKey:DocumentWindowFixedPosKey];
+		[SUD synchronize];
+		}
+}
+
+- (void) savePreviewPosition
+{ 
+	NSWindow	*activeWindow;
+	activeWindow = [[TSWindowManager sharedInstance] activePDFWindow];
+
+	if (activeWindow != nil) {
+		[self fixPreferences];
+		[SUD setInteger:DocumentWindowPosFixed forKey:PdfWindowPosModeKey];
+		[SUD setObject:[activeWindow stringWithSavedFrame] forKey:PdfWindowFixedPosKey];
+		[SUD synchronize];
+		}
+
+}
+
+- (void) fullscreen: sender
+{
+	int				windowLevel;
+	NSRect			screenRect;
+	PDFDocument		*pdfDoc;
+	NSString		*imagePath;
+	PDFPage			*myCurrentPage, *newPage;
+	int				currentPageIndex;
+
+	
+	imagePath = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+	if (! imagePath)
+		return;
+	if (![[NSFileManager defaultManager] fileExistsAtPath: imagePath]) 
+		return;
+		
+	if (CGDisplayCapture( kCGDirectMainDisplay ) != kCGErrorSuccess) {
+        NSLog( @"Couldn't capture the main display!" );
+		}
+	else {
+		isFullScreen = YES;
+		windowLevel = CGShieldingWindowLevel();
+		[fullscreenWindow setLevel:windowLevel];
+		screenRect = [[NSScreen mainScreen] frame];
+		[fullscreenWindow setFrame: screenRect display: NO];
+		[fullscreenWindow setBackgroundColor:[NSColor darkGrayColor]];
+	
+		[fullscreenPDFView setDisplayMode: kPDFDisplaySinglePage];
+		[fullscreenPDFView setAutoScales: YES];
+		pdfDoc = [[[PDFDocument alloc] initWithURL: [NSURL fileURLWithPath: imagePath]] autorelease];
+		[fullscreenPDFView setDocument: pdfDoc];
+		
+		myCurrentPage = [myPDFKitView currentPage];
+		currentPageIndex = [[myPDFKitView document] indexForPage: myCurrentPage];
+		newPage = [[fullscreenPDFView document] pageAtIndex: currentPageIndex];
+		[fullscreenPDFView goToPage: newPage];
+		
+		[fullscreenWindow makeKeyAndOrderFront:nil];
+		}
+
+}
+
+- (void)endFullScreen
+{
+	PDFPage	*myCurrentPage;
+	int		currentPageNumber;
+	
+	
+	if (isFullScreen) {
+		isFullScreen = NO;
+		
+		myCurrentPage = [fullscreenPDFView currentPage];
+		currentPageNumber = [[fullscreenPDFView document] indexForPage: myCurrentPage];
+		currentPageNumber++;
+		[myPDFKitView goToKitPageNumber: currentPageNumber];
+		
+        // Release the display(s)
+        if (CGDisplayRelease( kCGDirectMainDisplay ) != kCGErrorSuccess) {
+        	NSLog( @"Couldn't release the display(s)!" );
+        	// Note: if you display an error dialog here, make sure you set
+        	// its window level to the same one as the shield window level,
+        	// or the user won't see anything.
+			}
+			
+		[fullscreenWindow orderOut:self];
+		}
+}
+
+
+
 @end

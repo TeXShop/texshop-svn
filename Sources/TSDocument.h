@@ -23,6 +23,9 @@
  */
 
 #import <AppKit/AppKit.h>
+#import "TSFullscreenWindow.h"
+#import <Quartz/Quartz.h>
+
 
 #define NUMBEROFERRORS	20
 
@@ -132,6 +135,10 @@ enum RootCommand
 
 	NSTextStorage				*_textStorage;
 	BOOL		windowIsSplit;
+	
+	BOOL				isFullScreen;
+	TSFullscreenWindow	*fullscreenWindow;
+	PDFView				*fullscreenPDFView;
 
 	NSStringEncoding	_encoding;
 	NSStringEncoding	_tempencoding;
@@ -159,6 +166,7 @@ enum RootCommand
 	NSDate		*startDate;
 	NSPDFImageRep	*texRep;
 	NSData		*previousFontData;	/*" holds font data in case preferences change is cancelled "*/
+	int			myPrefResult;
 	BOOL		fileIsTex;
 	TSDocumentType			_documentType;
 	int			errorLine[NUMBEROFERRORS];
@@ -209,6 +217,9 @@ enum RootCommand
 	BOOL				textSelectionYellow;
 	BOOL				showIndexColor; // this is related to a bug where the source draws after the toolbar is disposed
 	BOOL				showSync; // this fixes a bug in which the pdfkit draws a final time and accesses a toolbar button after it is disposed
+	BOOL				isLoading;
+	BOOL				firstTime;
+	NSTimeInterval		colorTime;
 
 
 	//Michael Witten: mfwitten@mit.edu
@@ -229,12 +240,14 @@ enum RootCommand
 - (id) pagenumberPanel;
 - (void) quitMagnificationPanel: sender;
 - (void) quitPagenumberPanel: sender;
-- (void) okForPanel: sender;
-- (void) cancelForPanel: sender;
+- (void) okForPanel: sender;  //needed?
+- (void) cancelForPanel: sender;  //needed?
 - (void) showStatistics: sender;
 - (void) updateStatistics: sender;
 - (void) doTemplate: sender;
 - (void) printSource: sender;
+- (void) okForRequest: sender;
+- (void) okForPrintRequest: sender;
 - (void) chooseEncoding: sender;
 - (NSStringEncoding) encoding;
 - (void) close;
@@ -271,8 +284,8 @@ enum RootCommand
 - (void) refreshPDFAndBringFront: (BOOL)front;
 - (void) refreshTEXT;
 - (NSString *)displayName;
-- (BOOL) isTexExtension: (NSString *)extension;
-- (BOOL) isTextExtension: (NSString *)extension;
+- (BOOL) isTexExtension: (NSString *)extension;  //needed?
+- (BOOL) isTextExtension: (NSString *)extension; //needed?
 - (NSPDFImageRep *) myTeXRep;
 - (NSDictionary *)fileAttributesToWriteToFile:(NSString *)fullDocumentPath ofType:(NSString *)documentTypeName saveOperation:(NSSaveOperationType)saveOperationType;
 - (BOOL)isDocumentEdited;
@@ -302,6 +315,11 @@ enum RootCommand
 - (void) setCharacterIndex:(unsigned int)idx;
 - (BOOL) textSelectionYellow;
 - (void) setTextSelectionYellow:(BOOL)value;
+- (void) saveSourcePosition;
+- (void) savePreviewPosition;
+- (void) fullscreen: (id)sender;
+- (void) endFullScreen;
+
 // - (void) printDocumentWithSettings: (NSDictionary :)printSettings showPrintPanel:(BOOL)showPrintPanel delegate:(id)delegate 
 // 	didPrintSelector:(SEL)didPrintSelector contextInfo:(void *)contextInfo;
 //-----------------------------------------------------------------------------

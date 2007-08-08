@@ -23,6 +23,7 @@
  */
 
 #import "UseMitsu.h"
+#import "TSMovie.h"
 
 #import <Cocoa/Cocoa.h>
 
@@ -31,6 +32,7 @@
 @interface TSAppDelegate : NSObject
 {
 	BOOL	_forPreview;
+	TSMovie	*myMovie;
 }
 
 - (IBAction)displayMatrixPanel:(id)sender; //  MatrixPanel Addition by Jonas 1.32 Nov 28 03
@@ -51,4 +53,6 @@
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender;
 - (void)ogreKitWillHackFindMenu:(OgreTextFinder*)textFinder;
 - (IBAction)checkForUpdate:(id)sender; // Update checker
+- (void)configureMovieMenu;
+- (IBAction)doMovie:(id)sender;
 @end

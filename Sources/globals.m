@@ -147,6 +147,8 @@ NSString *RevisePathKey = @"RevisePath"; // NO or YES
 
 
 // Paths
+NSString *DesktopPath = @"~/Desktop/";
+NSString *MoviesPath = @"~/Library/TeXShop/Movies";
 NSString *TeXShopPath = @"~/Library/TeXShop";
 NSString *TexTemplatePath = @"~/Library/TeXShop/Templates";
 NSString *TexTemplateMorePath = @"~/Library/TeXShop/Templates/More";

@@ -262,11 +262,18 @@
 			  toPath:[BinaryPath stringByStandardizingPath]];
 		}
 		
+	if (! [fileManager fileExistsAtPath: [MoviesPath stringByStandardizingPath]] ) {
+		[self mirrorPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"TeXShop/Movies"]
+			  toPath:[MoviesPath stringByStandardizingPath]];
+		}
+
+		
 // Finish configuration of various pieces
 	[[TSMacroMenuController sharedInstance] loadMacros];
 	[self finishAutoCompletionConfigure];
 	[self finishMenuKeyEquivalentsConfigure];
 	[self configureExternalEditor];
+	[self configureMovieMenu];
 
 	if ([[SUD stringForKey:EncodingKey] isEqualToString:@"MacJapanese"])
 		g_texChar = YEN;
@@ -537,6 +544,60 @@
 		[sender setTag:0];
 	}
 }
+
+- (IBAction)doMovie:(id)sender
+{
+	NSString *title = [[sender title] stringByAppendingString:@".mov"];
+	[myMovie doMovie:title];
+}
+
+- (void)configureMovieMenu
+{
+	NSFileManager *fm;
+	NSString      *basePath, *path, *title;
+	NSArray       *fileList;
+	// NSMenu 	  *submenu;
+	BOOL	   isDirectory;
+	unsigned i;
+	// unsigned lv = 3;
+	
+	NSMenu *helpMenu = [[[NSApp mainMenu] itemWithTitle:
+					NSLocalizedString(@"Help", @"Help")] submenu];
+
+	
+	NSMenu *texshopDemosMenu = [[helpMenu itemWithTitle:
+					NSLocalizedString(@"TeXShop Demos", @"TeXShop Demos")] submenu];
+	
+	if (!texshopDemosMenu)
+		return;
+		
+	fm       = [ NSFileManager defaultManager ];
+	basePath = [[ MoviesPath stringByAppendingString:@"/TeXShop"] stringByStandardizingPath ];
+	fileList = [ fm directoryContentsAtPath: basePath ];
+
+	for (i = 0; i < [fileList count]; i++) {
+		title = [ fileList objectAtIndex: i ];
+		path  = [ basePath stringByAppendingPathComponent: title ];
+		if ([fm fileExistsAtPath:path isDirectory: &isDirectory]) {
+			if (isDirectory )
+				{;
+				// [popupButton addItemWithTitle: @""];
+				// newItem = [popupButton lastItem];
+				// [newItem setTitle: title];
+				// submenu = [[[NSMenu alloc] init] autorelease];
+				// [self makeMenuFromDirectory: submenu basePath: path
+				//					 action: @selector(doTemplate:) level: lv];
+				// [newItem setSubmenu: submenu];
+				} 
+			else if ([[[title pathExtension] lowercaseString] isEqualToString: @"mov"]) {
+				title = [title stringByDeletingPathExtension];
+				[texshopDemosMenu addItemWithTitle:title action: @selector(doMovie:) keyEquivalent:@"" ];
+			}
+		}
+	}
+}
+
+
 
 
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem

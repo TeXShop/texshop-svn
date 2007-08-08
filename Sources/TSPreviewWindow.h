@@ -40,6 +40,9 @@
 - (void) pagenumberDidEnd:(NSWindow *)sheet returnCode: (int)returnCode contextInfo: (void *)contextInfo;
 - (void) previousPage: sender;
 - (void) nextPage: sender;
+- (void) zoomIn: sender;
+- (void) zoomOut: sender;
+
 
 - (void) firstPage: sender;
 - (void) lastPage: sender;
@@ -55,6 +58,7 @@
 - (void) doChooseMethod: sender;
 - (void) rotateClockwise: sender;
 - (void) rotateCounterclockwise: sender;
+- (void) savePreviewPosition: sender;
 - (void) orderOut: sender;
 - (void) sendEvent:(NSEvent *)theEvent;
 - (void) associatedWindow: sender;

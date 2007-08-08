@@ -504,6 +504,29 @@ extern NSPanel *pageNumberWindow;
 		[[myDocument pdfView] changePDFViewSize: sender];
 }
 
+- (void)zoomIn: (id)sender
+{
+	if ([myDocument fromKit])
+		[[myDocument pdfKitView] zoomIn: sender];
+}
+
+- (void)zoomOut: (id)sender
+{
+	if ([myDocument fromKit])
+		[[myDocument pdfKitView] zoomOut: sender];
+}
+
+- (void)fullscreen: (id)sender
+{
+	if ([myDocument fromKit])
+		[myDocument fullscreen: sender];
+}
+
+- (void) savePreviewPosition: sender
+{
+	[myDocument savePreviewPosition];
+}
+
 - (void)copy: (id)sender
 {
 	if ([myDocument fromKit])

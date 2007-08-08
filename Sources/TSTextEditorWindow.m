@@ -128,4 +128,10 @@
 	[super sendEvent: theEvent];
 }
 
+- (void)saveSourcePosition: sender
+{
+	[myDocument saveSourcePosition];
+}
+
+
 @end

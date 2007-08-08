@@ -77,8 +77,10 @@
 	double							oldMagnification;
 
 	BOOL							downOverLink;
+	NSRect							rect;  // to simulate cacheImageInRect
 }
 
+// - (void) scheduleAddintToolips;
 - (void) setup;
 - (void) initializeDisplay;
 - (void) showWithPath: (NSString *)imagePath;
@@ -115,6 +117,9 @@
 - (void) mouseDragged: (NSEvent *) theEvent;
 - (void) mouseMoved: (NSEvent *) theEvent;
 - (void) scrollByDragging: (NSEvent *)theEvent;
+- (void) zoomIn: (id)sender;
+- (void) zoomOut: (id)sender;
+
 
 - (void)selectARect: (NSEvent *)theEvent;
 - (void)selectAll: (id)sender;
@@ -139,5 +144,7 @@
 - (void)setDrawMark: (BOOL)value;
 - (void)setupSourceFiles;
 - (void)keyDown:(NSEvent *)theEvent;
+- (void)updateBackground: (NSRect)aRect;
+- (void)goToKitPageNumber: (int) thePage; 
 @end
 

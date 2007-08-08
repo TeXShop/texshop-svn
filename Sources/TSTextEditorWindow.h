@@ -35,6 +35,7 @@
 - (TSDocument *)document;
 // end addition
 - (void) doChooseMethod: sender;
+- (void) saveSourcePosition: sender;
 - (void) makeKeyAndOrderFront:(id)sender;
 - (void) becomeMainWindow;
 - (void) sendEvent:(NSEvent *)theEvent;

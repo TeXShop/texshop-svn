@@ -62,18 +62,49 @@ static BOOL isValidTeXCommandChar(int c)
 // Colorize ("perform syntax highlighting") all the characters in the given range.
 // Can only recolor full lines, so the given range will be extended accordingly before the
 // coloring takes place.
+
+// This routine contains a very important bug fix. If a very large document is loaded, the
+// system immediately returns after the command which inserts text, and then text is added on
+// a thread. As this text is added, the document resizes, and each resize calls the syntax
+// coloring routine. The result is that the visible region is syntax colored over and over
+// again. If the user tries to edit during this time, the rotating cursor appears, and eventually
+// the program crashes.
+//
+// Notice the code below to avoid recoloring when the file is first opened!
 - (void)colorizeText:(NSTextView *)aTextView range:(NSRange)range
 {
 	NSLayoutManager *layoutManager;
-	NSString	*textString;
-	unsigned	length;
-	NSRange		colorRange;
-	unsigned	location;
-	int			theChar;
-	unsigned	aLineStart;
-	unsigned	aLineEnd;
-	unsigned	end;
-	BOOL		colorIndexDifferently;
+	NSString		*textString;
+	unsigned		length;
+	NSRange			colorRange;
+	unsigned		location;
+	int				theChar;
+	unsigned		aLineStart;
+	unsigned		aLineEnd;
+	unsigned		end;
+	BOOL			colorIndexDifferently;
+	NSTimeInterval	theTime;
+
+	if (isLoading) {
+		if (firstTime == YES) {
+			colorTime = [[NSDate date] timeIntervalSince1970];
+			firstTime = NO;
+			}
+		else {
+			theTime = [[NSDate date] timeIntervalSince1970];
+			// NSLog([NSString stringWithFormat:@"%f", theTime]);
+			// NSLog([NSString stringWithFormat:@"%f",colorTime]);
+			if ((theTime - colorTime) < 1.0) {
+				colorTime = theTime;
+				return;
+				}
+			else {
+				isLoading = NO;
+				// NSLog(@"it ended");
+				}
+			}
+		}
+	
 	
 	/*
 	
