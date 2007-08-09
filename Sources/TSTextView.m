@@ -590,6 +590,7 @@
 
 - (void)setDocument: (TSDocument *)doc
 {
+
 	_document = doc;
 }
 

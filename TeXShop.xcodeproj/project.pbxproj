@@ -1796,7 +1796,7 @@
 		5288880B089D023A0095E82D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_VERSION = 212;
+				BUNDLE_VERSION = 213;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1810,7 +1810,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MARKETING_VERSION = "2.12-svn";
+				MARKETING_VERSION = "2.13-svn";
 				PREBINDING = NO;
 				PRODUCT_NAME = TeXShop;
 				SECTORDER_FLAGS = "";
@@ -1823,7 +1823,7 @@
 		5288880C089D023A0095E82D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_VERSION = 212;
+				BUNDLE_VERSION = 213;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1835,7 +1835,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MARKETING_VERSION = "2.12-svn";
+				MARKETING_VERSION = "2.13-svn";
 				PREBINDING = NO;
 				PRODUCT_NAME = TeXShop;
 				SECTORDER_FLAGS = "";

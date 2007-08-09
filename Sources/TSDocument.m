@@ -151,8 +151,6 @@
 - (void)setupTextView:(NSTextView *)aTextView
 {
 	NSColor		*backgroundColor, *insertionpointColor;
-	NSData		*fontData;
-	NSFont		*font;
 
 
 	backgroundColor = [NSColor colorWithCalibratedRed: [SUD floatForKey:background_RKey]
@@ -171,22 +169,12 @@
 	[aTextView setAllowsUndo:YES];
 	[aTextView setRichText:NO];
 	[aTextView setUsesFontPanel:YES];
-	
-// August 7, 2007; Koch; fix bug where system doesn't pick up user's font preference	
-	fontData = [SUD objectForKey:DocumentFontKey];
-	if (fontData != nil)
-		{
-		font = [NSUnarchiver unarchiveObjectWithData:fontData];
-		[textView setFont:font];
-		}
-	else
-		[aTextView setFont:[NSFont userFontOfSize:12.0]];
-	
+	[aTextView setFont:[NSFont userFontOfSize:12.0]];
 	[aTextView setBackgroundColor: backgroundColor];
 	[aTextView setInsertionPointColor: insertionpointColor];
 	[aTextView setAcceptsGlyphInfo: YES]; // suggested by Itoh 1.35 (A)
 
-	// [(TSTextView *)aTextView setDocument: self]; //Koch commented this out on August 3, 2007, but is uncertain
+	[(TSTextView *)aTextView setDocument: self];
 }
 
 #pragma mark NSDocument interface
@@ -346,7 +334,13 @@
 	[self registerForNotifications];
 	
 	// The following line was moved to the top of the routine to speed up document loading; Koch
+	// However, the portion of this routine which sets the font needs to wait until now. 
 	// [self setupFromPreferencesUsingWindowController:aController];
+	if ([SUD boolForKey:SaveDocumentFontKey] == YES)
+	{
+		[self setDocumentFontFromPreferences:nil];
+	}
+
 
 	[pdfView setDocument: self]; /* This was commented out!! Don't do it; needed by Ghostscript; Dick */
 	// the next line caused jpg and tiff files to fail, so we do it later
@@ -1369,11 +1363,6 @@ in other code when an external editor is being used. */
 			[pdfKitWindow setFrameFromString:[SUD stringForKey:PdfWindowFixedPosKey]];
 	}
 
-	// restore the font for document if desired
-	if ([SUD boolForKey:SaveDocumentFontKey] == YES)
-	{
-		[self setDocumentFontFromPreferences:nil];
-	}
 
 /*
 	// setup the popUp with all of our template names

@@ -22,11 +22,19 @@
  *
  */
  
- /*
- This file has been modified to work around some Leopard bugs. The routines
- [NSWindow restoreCachedImage] and [NSWindow discardCachedImage] do not work with
- unusual Image Resolutions, so routines using them have been rewritten.
- */
+ // WARNING --------------------------------------------
+ // In Leopard, particularly when using the new Image Resolution ability, 
+ // NSWindow's cacheImageInRect, restoreCachedImage, and discardCachedImage
+ // do not work. Engineers at WWDC recommended better methods of rubber banding.
+ // 
+ // The code below is messy because the old cacheImage mechanism is present but
+ // commented out. It has been replaced by equivalent methods which work on Leopard
+ // and also on older operating systems.
+ // Eventually I'll clean up these routines, but for the moment I thought it
+ // best to leave the old code in place
+ // -----------------------------------------------------
+
+
 
 #import "MyPDFKitView.h"
 #import "MyPDFView.h"
@@ -2040,8 +2048,20 @@
 		//}
 		//else // probably one should use [NSPrintOperation PDFOperationWithView:insideRect:toData:]
 		//	[NSException raise: @"cannot handle rotated view" format: @""];
+		
+		// -----------------------------------------------------------------
+		// Richard Koch: August 9, 2007
+		// The code below works around a Leopard bug
+		// The following lines fail in Leopard at the final line
+		//      oldBackColor = [self backgroundColor]
+		//      [self setBackgroundColor: transparentColor];
+		//      data = [self dataWithPDFInsideRect: newRect];
+		//		[self setBackgroundColor: oldBackColor]
+		// However, this problem goes away if we do not call dataWithPDFInsideRect
+		// Apparently this line of code destroys oldBackColor
+		// To work around this, we must decompose oldBackColor and then reconstruct it
 
-				// oldBackColor = [self backgroundColor];
+		// oldBackColor = [self backgroundColor];
 		oldBackColor = [[self backgroundColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace]; 
 		float backRedColor, backGreenColor, backBlueColor, backAlphaColor;
 		backRedColor = [oldBackColor redComponent];
@@ -2049,10 +2069,6 @@
 		backBlueColor = [oldBackColor blueComponent];
 		backAlphaColor = [oldBackColor alphaComponent];
 		
-		// The line below is truly mysterious. It sets the background color to be transparent.
-		// Then the text has no background, as desired. But nothing else is affected. Also resetting
-		// the background color as commented out below breaks things!!
-
 		backColor = [NSColor colorWithCalibratedRed: 1.0
 		green: 0.0 blue: 0.0
 		alpha: 0.0];
@@ -2062,13 +2078,13 @@
 			data = [self dataWithPDFInsideRect: newRect];
 		else // IMAGE_TYPE_EPS
 			data = [self dataWithEPSInsideRect: newRect];
-
 			
-		// oldBackColor = [NSColor colorWithCalibratedRed:.5 green: .5 blue: .5 alpha: 1];
 		NSColor *olderBackColor = [NSColor colorWithCalibratedRed: backRedColor green: backGreenColor blue: backBlueColor alpha: backAlphaColor];
 		[self setBackgroundColor: olderBackColor];
-
 		// [self setBackgroundColor: oldBackColor];
+		
+		// end of workaround
+		// --------------------------------------------------------------
 
 	}
 	NS_HANDLER
