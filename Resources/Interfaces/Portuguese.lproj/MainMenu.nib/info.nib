@@ -4,13 +4,11 @@
 <dict>
 	<key>IBFramework Version</key>
 	<string>613</string>
-	<key>IBLastKnownRelativeProjectPath</key>
-	<string>../../../../TeXShop.xcodeproj</string>
 	<key>IBOldestOS</key>
 	<integer>5</integer>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>769</integer>
+		<integer>682</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>9A499</string>

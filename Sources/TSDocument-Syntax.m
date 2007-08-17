@@ -183,7 +183,8 @@ static BOOL isValidTeXCommandChar(int c)
 			}
 			if (colorIndexDifferently) {
 				NSString *commandString = [textString substringWithRange: colorRange];
-				if ([commandString isEqualToString: @"\\index"]) {
+				// esindex below is a Spanish indexing command
+				if (([commandString isEqualToString: @"\\index"]) || ([commandString isEqualToString: @"\\esindex"])) {
 					int parens = 0;
 					BOOL notDone = YES;
 					while ((location < aLineEnd) && (notDone)) {

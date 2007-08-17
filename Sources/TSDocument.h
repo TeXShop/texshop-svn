@@ -166,7 +166,6 @@ enum RootCommand
 	NSDate		*startDate;
 	NSPDFImageRep	*texRep;
 	NSData		*previousFontData;	/*" holds font data in case preferences change is cancelled "*/
-	int			myPrefResult;
 	BOOL		fileIsTex;
 	TSDocumentType			_documentType;
 	int			errorLine[NUMBEROFERRORS];

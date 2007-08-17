@@ -678,12 +678,12 @@
 {
 	NSString *currentVersion = [[[NSBundle bundleForClass:[self class]]
 		infoDictionary] objectForKey:@"CFBundleVersion"];
-
+		
 	NSDictionary *texshopVersionDictionary = [NSDictionary dictionaryWithContentsOfURL:
 		[NSURL URLWithString:@"http://www.uoregon.edu/~koch/texshop/texshop-current.txt"]];
 
 	NSString *latestVersion = [texshopVersionDictionary valueForKey:@"TeXShop"];
-
+	
 	int button;
 	if(latestVersion == nil){
 		NSRunAlertPanel(NSLocalizedString(@"Error",

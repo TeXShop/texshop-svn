@@ -110,7 +110,7 @@ tiToolTipSyncMarks			= "Mostrar Sync Marks";
 
 tiLabelColorIndex				= "ColorIndex";
 tiPaletteLabelColorIndex		= "Color Index";
-tiToolTipColorIndex				= "Color Index Commands";
+tiToolTipColorIndex				= "Colorear comandos del índice";
 
 tiLabelTypesetKIT				= "Componer";
 tiPaletteLabelTypesetKIT		= "Componer";

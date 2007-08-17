@@ -148,6 +148,37 @@
 	[super dealloc];
 }
 
+-(BOOL)doNotReadSource;
+{
+	NSString	*theFileName;
+	NSString	*fileExtension;
+	BOOL		doPreview;
+	
+	theFileName = [self fileName];
+	fileExtension = [theFileName pathExtension];
+	
+	doPreview = [[[NSApplication sharedApplication] delegate] forPreview];
+
+	if (theFileName == nil)
+		return YES;
+	else if ( doPreview)
+		return YES;
+	else if 
+		(([fileExtension isEqualToString: @"pdf"]) ||
+		([fileExtension isEqualToString: @"jpeg"]) ||
+		([fileExtension isEqualToString: @"jpg"]) ||
+		([fileExtension isEqualToString: @"JPG"]) ||
+		([fileExtension isEqualToString: @"tif"]) ||
+		([fileExtension isEqualToString: @"tiff"]) ||
+		([fileExtension isEqualToString: @"eps"]) ||
+		([fileExtension isEqualToString: @"png"]) ||
+		([fileExtension isEqualToString: @"dvi"]) ||
+		([fileExtension isEqualToString: @"ps"]))
+			return YES;
+		else
+			return NO;
+}
+
 - (void)setupTextView:(NSTextView *)aTextView
 {
 	NSColor		*backgroundColor, *insertionpointColor;
@@ -221,6 +252,7 @@
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController
 {
 	BOOL			spellExists;
+	BOOL			skipTextWindow;
 	NSString		*imagePath;
 	NSString		*theSource;
 	NSString		*fileExtension;
@@ -242,6 +274,39 @@
 	// causes all of the data to be reformatted.
 	[self setupFromPreferencesUsingWindowController:aController];
 
+
+		
+	/* when opening an empty document, must open the source editor */
+	theFileName = [self fileName];
+	fileExtension = [[self fileName] pathExtension];
+
+	_externalEditor = [[[NSApplication sharedApplication] delegate] forPreview];
+	if ((theFileName == nil) && _externalEditor)
+		_externalEditor = NO;
+		
+	_documentType = isTeX;
+	
+	fileIsTex = YES;
+	
+	if ((! [self isTexExtension: fileExtension])
+		&& ([[NSFileManager defaultManager] fileExistsAtPath: [self fileName]]))
+	{
+		[self setFileType: fileExtension];
+		[typesetButton setEnabled: NO];
+		[typesetButtonEE setEnabled: NO];
+		_documentType = isOther;
+		fileIsTex = NO;
+	}
+
+
+	if (theFileName == nil)
+		skipTextWindow = NO;
+	else if ([self doNotReadSource]) {
+		skipTextWindow = YES;
+		}
+	else
+		skipTextWindow = NO;
+		
 
 	// can this fix the printer; Feb 1, 2006
 	
@@ -282,6 +347,7 @@
 	[(TSTextView *)textView2 setDocument: self];
 	*/
 	
+if (! skipTextWindow) {
 	textView = textView1;
 	[self setupTextView:textView1];
 	[self setupTextView:textView2];
@@ -309,9 +375,7 @@
 	windowIsSplit = NO;
 	//  endforsplit
 
-
-	_externalEditor = [[[NSApplication sharedApplication] delegate] forPreview];
-	theFileName = [self fileName];
+	}
 
 	[self configureTypesetButton];
 	[self setupToolbar];
@@ -326,10 +390,6 @@
 	doAutoComplete = [SUD boolForKey:AutoCompleteEnabledKey];
 	[self fixAutoMenu];
 
-
-	/* when opening an empty document, must open the source editor */
-	if ((theFileName == nil) && _externalEditor)
-		_externalEditor = NO;
 
 	[self registerForNotifications];
 	
@@ -349,19 +409,6 @@
 
 	whichScript = [SUD integerForKey:DefaultScriptKey];
 	[self fixTypesetMenu];
-
-	_documentType = isTeX;
-	fileExtension = [[self fileName] pathExtension];
-	
-	if ((! [self isTexExtension: fileExtension])
-		&& ([[NSFileManager defaultManager] fileExistsAtPath: [self fileName]]))
-	{
-		[self setFileType: fileExtension];
-		[typesetButton setEnabled: NO];
-		[typesetButtonEE setEnabled: NO];
-		_documentType = isOther;
-		fileIsTex = NO;
-	}
 
 	/* handle images */
 
@@ -808,6 +855,9 @@ in other code when an external editor is being used. */
 	// BOOL                done;
 	// int                 linesTested;
 	
+	if ([self doNotReadSource])
+		return YES;
+
 	myData = [NSData dataWithContentsOfFile:fileName];
 	_encoding = _tempencoding = [self dataEncoding: myData];
 	
@@ -1277,9 +1327,6 @@ in other code when an external editor is being used. */
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkATaskStatus:)
 		name:NSTaskDidTerminateNotification object:nil];
 		
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkPrefClose:)
-		name:NSWindowWillCloseNotification object:nil];
-
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeTexOutput:)
 		name:NSFileHandleReadCompletionNotification object:nil];
 
@@ -1621,43 +1668,16 @@ preference change is cancelled. "*/
 	[self fixMacroMenu];
 }
 
-- (void) okProject: sender
+- (void) okForPanel: sender
 {
-	myPrefResult = 0;
-	[projectPanel close];
+	[NSApp stopModalWithCode: 0];
 }
 
-- (void) quitProject: sender
+- (void) cancelForPanel: sender
 {
-	myPrefResult = 1;
-	[projectPanel close];
+	[NSApp stopModalWithCode: 1];
 }
 
-
-- (void) okForRequest: sender
-{
-	myPrefResult = 0;
-	[requestWindow close];
-}
-
-- (void) okForPrintRequest: sender
-{
-	myPrefResult = 0;
-	[printRequestPanel close];
-}
-
-
-- (void) okLine: sender
-{
-	myPrefResult = 0;
-	[linePanel close];
-}
-
-- (void) quitLine: sender
-{
-	myPrefResult = 1;
-	[linePanel close];
-}
 
 - (void) setProjectFile: sender
 {
@@ -1666,10 +1686,10 @@ preference change is cancelled. "*/
 
 	if (! [self fileName]) {
 		result = [NSApp runModalForWindow: requestWindow];
+		[requestWindow close];
 	}
 	else {
 
-		myPrefResult = 2;
 		project = [[[self fileName] stringByDeletingPathExtension]
 			stringByAppendingString: @".texshop"];
 		if ([[NSFileManager defaultManager] fileExistsAtPath: project]) {
@@ -1680,6 +1700,7 @@ preference change is cancelled. "*/
 			[projectName setStringValue: [[self fileName] lastPathComponent]];
 		[projectName selectText: self];
 		result = [NSApp runModalForWindow: projectPanel];
+		[projectPanel close];
 		if (result == 0) {
 			nameString = [projectName stringValue];
 			//            if ([nameString isAbsolutePath])
@@ -1699,7 +1720,7 @@ preference change is cancelled. "*/
 {
 	int		result, line;
 
-	myPrefResult = 2;
+	// myPrefResult = 2;
 	result = [NSApp runModalForWindow: linePanel];
 	[linePanel close];
 	if (result == 0) {
@@ -2934,20 +2955,6 @@ preference change is cancelled. "*/
 			[textWindow setInitialFirstResponder: textView];
 			[textWindow makeFirstResponder: textView];
 		}
-	}
-}
-
-- (void) checkPrefClose: (NSNotification *)aNotification
-{
-	int	finalResult;
-
-	if (([aNotification object] == projectPanel) ||
-		([aNotification object] == requestWindow) ||
-		([aNotification object] == linePanel) ||
-		([aNotification object] == printRequestPanel)) {
-		finalResult = myPrefResult;
-		if (finalResult == 2) finalResult = 0;
-		[NSApp stopModalWithCode: finalResult];
 	}
 }
 

@@ -4,8 +4,6 @@
 <dict>
 	<key>IBFramework Version</key>
 	<string>613</string>
-	<key>IBLastKnownRelativeProjectPath</key>
-	<string>../../../../TeXShop.xcodeproj</string>
 	<key>IBOldestOS</key>
 	<integer>5</integer>
 	<key>IBOpenObjects</key>

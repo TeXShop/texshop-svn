@@ -9,6 +9,7 @@
 #import "HelpDocuments.h"
 #import "TSDocumentController.h"
 #import "Globals.h"
+#import "TSDocument.h"
 
 @interface HelpDocuments (Private)
 
@@ -21,11 +22,20 @@
 - (void)displayFile:(NSString *)fileName
 {
 	TSDocumentController	*myController;
+	NSURL					*myURL;
+	NSError					*outError;
+	TSDocument				*myDocument;
  	
+	myURL = [NSURL fileURLWithPath: fileName];
 	myController = [TSDocumentController sharedDocumentController];
-	[myController listDocument:NO];
-	[myController openDocumentWithContentsOfFile: fileName display: YES];
-	[myController listDocument:YES];
+	myDocument = [myController documentForURL: myURL];
+	if (myDocument != nil) 
+		[[myDocument pdfKitWindow] makeKeyAndOrderFront:self];
+	else {
+		[myController listDocument:NO];
+		[myController openDocumentWithContentsOfURL: myURL display: YES error:&outError];
+		[myController listDocument:YES];
+		}
 }
 
 - (IBAction)displayGettingStartedTeXShop:sender
