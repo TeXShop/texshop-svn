@@ -45,7 +45,7 @@
 "Preview" = "Vorschau";
 "Display Format" = "Anzeigeformat";// mitsu 1.29b
 "Magnification" = "Vergrößerung";// mitsu 1.29b
-"Copy Format" = "Bildkopie Format";// mitsu 1.29b
+"Copy Format" = "Kopierformat"; //"Bildkopie Format";// mitsu 1.29b
 "ToolbarItems" = "Werkzeugleistenelemente";
 "Autocompletion" = "Autovervollständigung";
 "Completion" = "Vervollständigung";
